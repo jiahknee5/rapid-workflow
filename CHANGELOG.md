@@ -2,6 +2,24 @@
 
 All notable changes to Johnny's AI Build Workflow are documented here.
 
+## [0.4.0] — 2026-05-27
+
+### Added
+- `/forge status` command — structured terminal dashboard showing phase, agents, tasks, safety, alerts, cost
+- Agent heartbeat protocol — `HEARTBEAT.json` updated every 5m during P6 with per-agent status, task, progress metrics, test counts, blocker info
+- Enforced `claude-peers set_summary` — mandatory on spawn + on status change, with specific format: `[FORGE {role}] {status}: {description}`
+- Stall detection tightened from 15m silence to 10m stale heartbeat
+- `TEST_RESULTS.md` and `P6_EXIT.json` added to state files table
+
+### Fixed
+- 6 gap fixes from autonomous build test (applied externally):
+  - Gap 1: Reference project protocol — spec is authority, reference is pattern guide
+  - Gap 2: Smoke test mandatory — orchestrator runs build/test directly via Bash
+  - Gap 3: Code review mandatory — P7 blocked until all tasks have APPROVE verdict
+  - Gap 4: Secret scanning — grep for credentials after every agent return
+  - Gap 5: Phase 7 unambiguous — "Execute via Bash, not a file audit"
+  - Gap 6: P6_EXIT.json enforcement — STATE.json blocked until all assertions pass
+
 ## [0.3.0] — 2026-05-27
 
 ### Added
