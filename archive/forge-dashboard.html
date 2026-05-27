@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FORGE Observe — Live Dashboard</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FFFFFF; --surface: #F7F8FA; --surface-alt: #F0F2F5;
+  --border: #D4D8DE; --border-light: #E2E5EA;
+  --text: #1A2744; --text-muted: #4A5568; --text-dim: #8896A6;
+  --navy: #1A2744; --blue: #2B6CB0; --blue-dim: rgba(43,108,176,0.08);
+  --green: #276749; --green-dim: rgba(39,103,73,0.08);
+  --red: #C53030; --red-dim: rgba(197,48,48,0.06);
+  --amber: #B7791F; --amber-dim: rgba(183,121,31,0.08);
+  --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
+  --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
+  --radius: 4px; --radius-sm: 3px;
+  --mono: "SF Mono", "Fira Code", "Consolas", monospace;
+}
+html { background: var(--surface); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body { margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
+
+/* Top bar */
+.topbar { background: var(--navy); color: #fff; padding: 10px 20px; display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
+.topbar-title { font-size: 1rem; font-weight: 800; letter-spacing: 0.02em; }
+.topbar-title span { color: var(--teal); font-weight: 400; margin-left: 6px; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.topbar-stat { display: flex; flex-direction: column; align-items: center; }
+.topbar-stat .val { font-size: 1.1rem; font-weight: 700; }
+.topbar-stat .lbl { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; }
+.topbar-phase { background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.72rem; font-weight: 600; }
+.topbar-dot { width: 8px; height: 8px; border-radius: 50%; background: #48BB78; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+
+/* Main layout */
+.main { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 280px; background: var(--bg); border-right: 1px solid var(--border); overflow-y: auto; flex-shrink: 0; padding: 12px; }
+.event-stream { flex: 1; overflow-y: auto; padding: 0; background: var(--bg); }
+
+/* Agent cards */
+.agent-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; position: relative; }
+.agent-card.active { border-left: 3px solid var(--green); }
+.agent-card.complete { border-left: 3px solid var(--text-dim); opacity: 0.6; }
+.agent-card.error { border-left: 3px solid var(--red); }
+.agent-name { font-size: 0.78rem; font-weight: 700; color: var(--navy); }
+.agent-role { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.agent-task { font-size: 0.68rem; color: var(--text-muted); margin-top: 4px; }
+.agent-stats { display: flex; gap: 8px; margin-top: 6px; font-size: 0.6rem; color: var(--text-dim); }
+.agent-stats .st { background: var(--surface-alt); padding: 2px 6px; border-radius: 2px; }
+.ctx-bar { height: 4px; background: var(--border-light); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.ctx-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+.ctx-bar-fill.low { background: var(--green); }
+.ctx-bar-fill.mid { background: var(--amber); }
+.ctx-bar-fill.high { background: var(--red); }
+
+/* Section labels */
+.section-label { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); padding: 8px 0 4px; }
+
+/* Event rows */
+.event-row { display: flex; align-items: flex-start; padding: 4px 16px; border-bottom: 1px solid var(--border-light); font-family: var(--mono); font-size: 0.72rem; line-height: 1.6; transition: background 0.2s; }
+.event-row:hover { background: var(--surface); }
+.event-row.new { animation: flash 1s; }
+@keyframes flash { 0% { background: var(--blue-dim); } 100% { background: transparent; } }
+.ev-time { color: var(--text-dim); width: 80px; flex-shrink: 0; font-size: 0.65rem; }
+.ev-seq { color: var(--text-dim); width: 40px; flex-shrink: 0; text-align: right; margin-right: 8px; font-size: 0.62rem; }
+.ev-agent { width: 90px; flex-shrink: 0; font-weight: 600; font-size: 0.68rem; }
+.ev-type { width: 80px; flex-shrink: 0; font-weight: 700; font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 1px 4px; border-radius: 2px; text-align: center; margin-right: 8px; }
+.ev-detail { flex: 1; color: var(--text-muted); word-break: break-word; }
+.ev-ctx { width: 60px; flex-shrink: 0; text-align: right; color: var(--text-dim); font-size: 0.62rem; }
+.ev-arrow { color: var(--teal); font-weight: 800; margin: 0 4px; }
+
+/* Event type colors */
+.ev-SPAWN { background: var(--navy); color: #fff; }
+.ev-PHASE { background: var(--blue); color: #fff; }
+.ev-GATE { background: var(--amber); color: #fff; }
+.ev-READ { background: var(--blue-dim); color: var(--blue); }
+.ev-WRITE { background: var(--green-dim); color: var(--green); }
+.ev-TOOL { background: var(--purple-dim); color: var(--purple); }
+.ev-SEND { background: var(--teal-dim); color: var(--teal); }
+.ev-RECV { background: var(--teal-dim); color: var(--teal); }
+.ev-LOOP_START, .ev-LOOP_ITER, .ev-LOOP_END { background: var(--amber-dim); color: var(--amber); }
+.ev-DECIDE { background: var(--purple-dim); color: var(--purple); }
+.ev-ESCALATE { background: var(--red-dim); color: var(--red); }
+.ev-ERROR { background: var(--red); color: #fff; }
+.ev-COMPLETE { background: var(--green); color: #fff; }
+.ev-CONTEXT { background: var(--surface-alt); color: var(--text-dim); }
+
+/* Event header */
+.ev-header { display: flex; align-items: center; padding: 6px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); position: sticky; top: 0; z-index: 10; }
+.ev-header > span { display: inline-block; }
+
+/* Scroll anchor */
+.scroll-anchor { height: 1px; }
+
+/* Empty state */
+.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-dim); gap: 8px; }
+.empty-icon { font-size: 2rem; opacity: 0.3; }
+.empty-text { font-size: 0.82rem; }
+.empty-hint { font-size: 0.68rem; opacity: 0.6; }
+
+/* Graph panel */
+.graph-panel { border-bottom: 1px solid var(--border); background: var(--bg); overflow: hidden; transition: max-height 0.3s ease; max-height: 320px; position: relative; }
+.graph-panel.collapsed { max-height: 0; border-bottom: none; }
+.graph-toggle { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0; padding: 2px 12px; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); cursor: pointer; z-index: 5; }
+.graph-toggle:hover { color: var(--navy); }
+.graph-svg { width: 100%; height: 280px; }
+.graph-svg text { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+
+/* Graph nodes */
+.g-node { cursor: default; }
+.g-node rect { rx: 4; ry: 4; stroke-width: 1.5; }
+.g-node-label { font-size: 10px; font-weight: 700; text-anchor: middle; }
+.g-node-role { font-size: 7.5px; font-weight: 500; text-anchor: middle; fill: #8896A6; }
+.g-node-ctx { font-size: 7px; font-weight: 600; text-anchor: middle; }
+
+/* Graph edges */
+.g-edge { fill: none; stroke-width: 1.5; opacity: 0.25; }
+.g-edge.active { opacity: 1; stroke-width: 2; }
+.g-edge.active { animation: edgePulse 1.5s ease-in-out; }
+@keyframes edgePulse { 0% { opacity: 1; stroke-width: 2.5; } 100% { opacity: 0.4; stroke-width: 1.5; } }
+.g-arrow { fill: var(--teal); opacity: 0.3; }
+.g-arrow.active { opacity: 1; }
+
+/* Context ring */
+.g-ctx-bg { fill: none; stroke: #E2E5EA; stroke-width: 2.5; }
+.g-ctx-fill { fill: none; stroke-width: 2.5; stroke-linecap: round; transition: stroke-dashoffset 0.5s; }
+
+/* Edge labels */
+.g-edge-label { font-size: 6.5px; fill: var(--teal); font-weight: 600; opacity: 0; }
+.g-edge-label.active { opacity: 1; }
+
+/* View tabs */
+.view-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); }
+.view-tab { padding: 6px 16px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; user-select: none; }
+.view-tab:hover { color: var(--navy); }
+.view-tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Health view */
+.health { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; overflow-y: auto; }
+.health-hero { grid-column: 1 / -1; display: flex; align-items: center; gap: 20px; padding: 16px 20px; border-radius: var(--radius); }
+.health-hero.ok { background: var(--green-dim); border: 1px solid var(--green); }
+.health-hero.warn { background: var(--amber-dim); border: 1px solid var(--amber); }
+.health-hero.bad { background: var(--red-dim); border: 1px solid var(--red); }
+.health-hero.idle { background: var(--surface); border: 1px solid var(--border); }
+.health-icon { font-size: 2rem; line-height: 1; }
+.health-msg { flex: 1; }
+.health-msg h2 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.health-msg p { font-size: 0.78rem; color: var(--text-muted); margin: 0; }
+.health-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.health-card h3 { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.health-metric { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.health-metric-sub { font-size: 0.68rem; color: var(--text-muted); margin-top: 4px; }
+.health-progress { height: 8px; background: var(--border-light); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+.health-progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+.health-agents { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.health-agent-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 10px; font-size: 0.65rem; font-weight: 600; border: 1px solid var(--border); background: var(--bg); cursor: pointer; transition: all 0.15s; }
+.health-agent-pill:hover { border-color: var(--navy); }
+.health-agent-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+.health-blockers { margin-top: 8px; }
+.health-blocker { font-size: 0.72rem; color: var(--red); padding: 4px 0; border-bottom: 1px solid var(--border-light); }
+.health-blocker:last-child { border-bottom: none; }
+.health-recent { margin-top: 6px; }
+.health-recent-item { font-size: 0.72rem; color: var(--text-muted); padding: 3px 0; display: flex; gap: 8px; }
+.health-recent-time { color: var(--text-dim); font-size: 0.62rem; width: 50px; flex-shrink: 0; }
+.health-recent-text { flex: 1; }
+
+/* Filter bar */
+.filter-bar { display: flex; align-items: center; gap: 8px; padding: 4px 16px; background: var(--surface); border-bottom: 1px solid var(--border); font-size: 0.62rem; }
+.filter-bar.hidden { display: none; }
+.filter-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-weight: 600; background: var(--navy); color: #fff; cursor: pointer; }
+.filter-pill:hover { opacity: 0.8; }
+.filter-clear { color: var(--text-dim); cursor: pointer; text-decoration: underline; }
+
+/* Gantt chart */
+.gantt-panel { background: var(--bg); overflow-x: auto; overflow-y: hidden; max-height: 320px; }
+.gantt-svg { min-width: 100%; height: 300px; }
+.gantt-svg text { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+
+/* Gantt arc headers */
+.gantt-arc-bg { opacity: 0.04; }
+.gantt-arc-label { font-size: 8px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* Gantt phase rows */
+.gantt-row-bg { fill: transparent; }
+.gantt-row-bg:nth-child(even) { fill: var(--surface); }
+.gantt-phase-label { font-size: 8.5px; font-weight: 600; }
+.gantt-phase-sublabel { font-size: 7px; fill: #8896A6; }
+
+/* Gantt bars */
+.gantt-bar { rx: 2; ry: 2; transition: width 0.5s; }
+.gantt-bar-auto { fill: var(--green); opacity: 0.7; }
+.gantt-bar-gate { fill: var(--amber); opacity: 0.8; }
+.gantt-bar-active { opacity: 1; }
+.gantt-bar-active.gantt-bar-auto { animation: barPulse 2s infinite; }
+@keyframes barPulse { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.6; } }
+.gantt-bar-complete { opacity: 0.5; }
+.gantt-bar-label { font-size: 7px; font-weight: 600; fill: #fff; }
+
+/* Gantt now-line */
+.gantt-now { stroke: var(--red); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.gantt-now-label { font-size: 7px; fill: var(--red); font-weight: 700; }
+
+/* Gantt agent markers */
+.gantt-agent-dot { r: 3; stroke: #fff; stroke-width: 1; }
+.gantt-agent-tooltip { font-size: 6.5px; fill: var(--text-dim); }
+
+/* Responsive */
+@media (max-width: 768px) { .sidebar { display: none; } .graph-panel { max-height: 240px; } .graph-svg { height: 220px; } .gantt-panel { max-height: 260px; } }
+</style>
+</head>
+<body>
+
+<!-- FORGE Document Suite Nav -->
+<nav style="display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-bottom: 1px solid var(--border, #E1E4E8); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em; background: var(--bg-alt, var(--bg, #FAFBFC));">
+  <span style="color: var(--accent, #5E6AD2); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.58rem; margin-right: 8px;">FORGE</span>
+  <a href="forge-autonomous-build.html" style="color: var(--text-2, #57606A); padding: 4px 10px; border-radius: var(--radius-sm, 4px); text-decoration: none;">Architecture</a>
+  <a href="forge-dashboard-v2.html" style="color: var(--text, #1B1F24); background: var(--surface, #F4F5F7); padding: 4px 10px; border-radius: var(--radius-sm, 4px); text-decoration: none; border: 1px solid var(--border, #E1E4E8);">Observatory</a>
+  <a href="forge-vs-tdd-scaffold.html" style="color: var(--text-2, #57606A); padding: 4px 10px; border-radius: var(--radius-sm, 4px); text-decoration: none;">Comparison</a>
+  <a href="FORGE.md" style="color: var(--text-2, #57606A); padding: 4px 10px; border-radius: var(--radius-sm, 4px); text-decoration: none;">Reference</a>
+</nav>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-title">FORGE<span>Observe</span></div>
+  <div class="topbar-dot" id="live-dot"></div>
+  <div class="topbar-phase" id="phase-badge">—</div>
+  <div class="topbar-right">
+    <div class="topbar-stat"><span class="val" id="stat-agents">0</span><span class="lbl">Agents</span></div>
+    <div class="topbar-stat"><span class="val" id="stat-events">0</span><span class="lbl">Events</span></div>
+    <div class="topbar-stat"><span class="val" id="stat-ctx">—</span><span class="lbl">Context Est.</span></div>
+  </div>
+</div>
+
+<!-- View Tabs + Panels -->
+<div class="view-tabs">
+  <div class="view-tab active" onclick="switchView('health')">Health</div>
+  <div class="view-tab" onclick="switchView('graph')">Agent Graph</div>
+  <div class="view-tab" onclick="switchView('gantt')">Timeline</div>
+</div>
+
+<div class="view-panel active" id="view-health">
+  <div class="health" id="health-view"></div>
+</div>
+
+<div class="view-panel" id="view-graph">
+  <div class="graph-panel" id="graph-panel" style="max-height:none;">
+    <svg class="graph-svg" id="graph-svg" viewBox="0 0 900 280">
+      <defs>
+        <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+          <polygon points="0 0, 6 2, 0 4" class="g-arrow" />
+        </marker>
+        <marker id="arrowhead-active" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+          <polygon points="0 0, 6 2, 0 4" class="g-arrow active" />
+        </marker>
+      </defs>
+      <g id="graph-edges"></g>
+      <g id="graph-nodes"></g>
+    </svg>
+  </div>
+</div>
+
+<div class="view-panel" id="view-gantt">
+  <div class="gantt-panel">
+    <svg class="gantt-svg" id="gantt-svg" viewBox="0 0 1200 300"></svg>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <!-- Sidebar: Agent Cards -->
+  <div class="sidebar">
+    <div class="section-label">Active Agents</div>
+    <div id="agent-cards">
+      <div class="empty" style="height: auto; padding: 24px 0;">
+        <div class="empty-text">No agents yet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Stream -->
+  <div class="event-stream" id="event-stream">
+    <div class="filter-bar hidden" id="filter-bar">
+      <span style="color:var(--text-dim)">Showing:</span>
+      <span class="filter-pill" id="filter-pill" onclick="clearFilter()">— <span style="font-size:0.7rem;margin-left:2px;">&times;</span></span>
+      <span class="filter-clear" onclick="clearFilter()">show all</span>
+    </div>
+    <div class="ev-header">
+      <span style="width:80px">Time</span>
+      <span style="width:40px;text-align:right;margin-right:8px">#</span>
+      <span style="width:90px">Agent</span>
+      <span style="width:80px;text-align:center;margin-right:8px">Event</span>
+      <span style="flex:1">Detail</span>
+      <span style="width:60px;text-align:right">Context</span>
+    </div>
+    <div id="event-rows">
+      <div class="empty" id="empty-state">
+        <div class="empty-icon">&#x25CE;</div>
+        <div class="empty-text">Waiting for events</div>
+        <div class="empty-hint">Start a /forge build to see live activity</div>
+      </div>
+    </div>
+    <div class="scroll-anchor" id="scroll-anchor"></div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let lastSeq = 0;
+let allEvents = [];
+let autoScroll = true;
+const agentColors = {};
+const colorPool = ['navy','blue','green','purple','teal','amber','red'];
+let colorIdx = 0;
+
+function getAgentColor(agent) {
+  if (!agentColors[agent]) {
+    agentColors[agent] = colorPool[colorIdx % colorPool.length];
+    colorIdx++;
+  }
+  return agentColors[agent];
+}
+
+function fmtTime(t) {
+  if (!t) return '—';
+  const d = new Date(t);
+  return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function fmtCtx(ctx) {
+  if (!ctx) return '';
+  if (typeof ctx === 'string') return ctx;
+  if (ctx > 1000000) return '~' + (ctx / 1000000).toFixed(1) + 'M';
+  if (ctx > 1000) return '~' + Math.round(ctx / 1000) + 'K';
+  return '~' + ctx;
+}
+
+function ctxPercent(ctx) {
+  if (!ctx) return 0;
+  let n = ctx;
+  if (typeof n === 'string') n = parseInt(n.replace(/[~Kk]/g, '')) * (n.includes('K') || n.includes('k') ? 1000 : 1);
+  return Math.min(100, Math.round((n / 200000) * 100));
+}
+
+function ctxLevel(pct) {
+  if (pct < 50) return 'low';
+  if (pct < 80) return 'mid';
+  return 'high';
+}
+
+function renderAgentCards(agents) {
+  const container = document.getElementById('agent-cards');
+  if (!agents.length) {
+    container.innerHTML = '<div class="empty" style="height:auto;padding:24px 0;"><div class="empty-text">No agents yet</div></div>';
+    return;
+  }
+  container.innerHTML = agents.map(a => {
+    const pct = ctxPercent(a.ctx_est);
+    const level = ctxLevel(pct);
+    const c = getAgentColor(a.agent);
+    const isFiltered = activeFilter === a.agent;
+    return `<div class="agent-card ${a.status}" onclick="filterByAgent('${a.agent}')" style="cursor:pointer;${isFiltered ? 'border-color:var(--navy);box-shadow:0 0 0 1px var(--navy);' : ''}">
+      <div class="agent-name" style="color:var(--${c})">${a.agent}</div>
+      <div class="agent-role">${a.role || '—'}</div>
+      ${a.task ? `<div class="agent-task">${a.task}: ${a.last_detail || ''}</div>` : ''}
+      <div class="agent-stats">
+        <span class="st">R:${a.reads}</span>
+        <span class="st">W:${a.writes}</span>
+        <span class="st">S:${a.sends}</span>
+        ${a.loops ? `<span class="st">L:${a.loops}</span>` : ''}
+        <span class="st">${fmtCtx(a.ctx_est)}</span>
+      </div>
+      <div class="ctx-bar"><div class="ctx-bar-fill ${level}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderEvent(evt, isNew) {
+  const c = getAgentColor(evt.agent || 'system');
+  let detail = evt.detail || '';
+
+  if (evt.event === 'SEND' && evt.target) {
+    detail = `<span class="ev-arrow">→ ${evt.target}</span> ${detail}`;
+  } else if (evt.event === 'RECV' && evt.from) {
+    detail = `<span class="ev-arrow">← ${evt.from}</span> ${detail}`;
+  }
+
+  const human = humanize(evt);
+  const visible = !activeFilter || evt.agent === activeFilter;
+  return `<div class="event-row${isNew ? ' new' : ''}" style="${visible ? '' : 'display:none;'}">
+    <span class="ev-time">${fmtTime(evt.t)}</span>
+    <span class="ev-seq">${evt.seq || ''}</span>
+    <span class="ev-agent" style="color:var(--${c});cursor:pointer;" onclick="filterByAgent('${evt.agent || ''}')">${evt.agent || '—'}</span>
+    <span class="ev-type ev-${evt.event || 'TOOL'}">${evt.event || '?'}</span>
+    <span class="ev-detail" title="${detail}">${human}</span>
+    <span class="ev-ctx">${fmtCtx(evt.ctx_est)}</span>
+  </div>`;
+}
+
+function renderEvents(events, newOnly) {
+  const container = document.getElementById('event-rows');
+  const empty = document.getElementById('empty-state');
+  if (empty && events.length > 0) empty.remove();
+
+  if (newOnly) {
+    const newEvents = events.filter(e => (e.seq || 0) > lastSeq);
+    newEvents.forEach(e => {
+      container.insertAdjacentHTML('beforeend', renderEvent(e, true));
+    });
+  } else {
+    container.innerHTML = events.map(e => renderEvent(e, false)).join('');
+  }
+
+  if (events.length > 0) {
+    lastSeq = Math.max(...events.map(e => e.seq || 0));
+  }
+
+  if (autoScroll) {
+    document.getElementById('scroll-anchor').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function updateMeta(meta) {
+  document.getElementById('phase-badge').textContent = meta.phase || '—';
+  document.getElementById('stat-agents').textContent = meta.active_agents || 0;
+  document.getElementById('stat-events').textContent = meta.total_events || 0;
+  document.getElementById('stat-ctx').textContent = fmtCtx(meta.ctx_total_est) || '—';
+}
+
+async function poll() {
+  try {
+    const [evRes, agRes, metaRes] = await Promise.all([
+      fetch(`${API}/api/events?since=${lastSeq}`),
+      fetch(`${API}/api/agents`),
+      fetch(`${API}/api/meta`)
+    ]);
+    const events = await evRes.json();
+    const agents = await agRes.json();
+    const meta = await metaRes.json();
+
+    if (events.length > 0) {
+      allEvents = allEvents.concat(events.filter(e => (e.seq || 0) > lastSeq));
+      // Sliding window — keep last 2000 events in memory
+      if (allEvents.length > MAX_DOM_EVENTS) allEvents = allEvents.slice(-MAX_DOM_EVENTS);
+      renderEvents(allEvents, true);
+    }
+    renderAgentCards(agents);
+    renderHealth(agents, meta, allEvents);
+    renderGraph(agents, allEvents);
+    renderGantt(allEvents, agents);
+    updateMeta(meta);
+    // Save lastVisitSeq for "since last visit" tracking
+    try { localStorage.setItem('forge-observe-lastSeq', String(lastSeq)); } catch(e) {}
+    document.getElementById('live-dot').style.background = '#48BB78';
+  } catch (err) {
+    document.getElementById('live-dot').style.background = '#C53030';
+  }
+}
+
+// === CONSTANTS ===
+const MAX_DOM_EVENTS = 2000;
+let activeFilter = null;
+let lastVisitSeq = 0;
+try { lastVisitSeq = parseInt(localStorage.getItem('forge-observe-lastSeq') || '0'); } catch(e) {}
+
+// === HUMAN-READABLE EVENT DESCRIPTIONS ===
+function humanize(evt) {
+  const a = evt.agent || '?';
+  const d = evt.detail || '';
+  switch(evt.event) {
+    case 'SPAWN': return `${a} came online — ${d}`;
+    case 'PHASE': return `Entering ${evt.phase || '?'}: ${d}`;
+    case 'GATE': return `Paused for your review — ${d}`;
+    case 'READ': return `${a} read ${d}`;
+    case 'WRITE': return `${a} wrote ${d}`;
+    case 'TOOL': return `${a} ran: ${d}`;
+    case 'SEND': return `${a} sent to ${evt.target || '?'}: ${d}`;
+    case 'RECV': return `${a} received from ${evt.from || '?'}: ${d}`;
+    case 'LOOP_START': return `${a} starting loop — ${d}`;
+    case 'LOOP_ITER': return `${a} retry ${d}`;
+    case 'LOOP_END': return `${a} loop finished — ${d}`;
+    case 'DECIDE': return `${a} decided: ${d}`;
+    case 'ESCALATE': return `${a} escalated: ${d}`;
+    case 'ERROR': return `${a} hit an error: ${d}`;
+    case 'COMPLETE': return `${a} finished — ${d}`;
+    case 'CONTEXT': return `${a} context checkpoint: ${d}`;
+    default: return d || evt.event || '?';
+  }
+}
+
+// === FILTERING ===
+function filterByAgent(agentName) {
+  activeFilter = agentName;
+  document.getElementById('filter-bar').classList.remove('hidden');
+  document.getElementById('filter-pill').innerHTML = `${agentName} <span style="font-size:0.7rem;margin-left:2px;">&times;</span>`;
+  rerenderFilteredEvents();
+}
+function clearFilter() {
+  activeFilter = null;
+  document.getElementById('filter-bar').classList.add('hidden');
+  rerenderFilteredEvents();
+}
+function rerenderFilteredEvents() {
+  const filtered = activeFilter ? allEvents.filter(e => e.agent === activeFilter) : allEvents;
+  const container = document.getElementById('event-rows');
+  const recent = filtered.slice(-MAX_DOM_EVENTS);
+  container.innerHTML = recent.map(e => renderEvent(e, false)).join('');
+  if (autoScroll) document.getElementById('scroll-anchor').scrollIntoView({ behavior: 'smooth' });
+}
+
+// === HEALTH VIEW ===
+function renderHealth(agents, meta, events) {
+  const el = document.getElementById('health-view');
+  const totalTasks = agents.reduce((s,a) => s + (a.task ? 1 : 0), 0);
+  const completedAgents = agents.filter(a => a.status === 'complete').length;
+  const activeAgents = agents.filter(a => a.status === 'active').length;
+  const errorAgents = agents.filter(a => a.status === 'error');
+  const blockers = events.filter(e => e.event === 'ERROR' || e.event === 'ESCALATE' || e.event === 'DRIFT_CRITICAL');
+  const newSinceVisit = events.filter(e => (e.seq || 0) > lastVisitSeq).length;
+  const ctxMax = Math.max(...agents.map(a => ctxPercent(a.ctx_est) || 0), 0);
+
+  // Determine health status
+  let status = 'idle', icon = '&#x25CE;', headline = 'Waiting for a build', sub = 'Start a /forge build to see live activity';
+  if (events.length > 0 && activeAgents > 0) {
+    if (errorAgents.length > 0 || blockers.length > 0) {
+      status = 'bad'; icon = '&#x26A0;'; headline = `${errorAgents.length} agent error${errorAgents.length !== 1 ? 's' : ''}, ${blockers.length} blocker${blockers.length !== 1 ? 's' : ''}`;
+      sub = 'Action needed — check the blockers below';
+    } else if (ctxMax > 75) {
+      status = 'warn'; icon = '&#x23F3;'; headline = 'Build running — context pressure high';
+      sub = `${activeAgents} agent${activeAgents !== 1 ? 's' : ''} active, highest context at ${ctxMax}% — consider checkpoint`;
+    } else {
+      status = 'ok'; icon = '&#x2714;'; headline = 'Build running — everything looks healthy';
+      sub = `${activeAgents} agent${activeAgents !== 1 ? 's' : ''} active in ${meta.phase || '?'}`;
+    }
+  } else if (events.length > 0 && activeAgents === 0) {
+    status = 'ok'; icon = '&#x2714;'; headline = 'Build complete';
+    sub = `${events.length} events, ${completedAgents} agent${completedAgents !== 1 ? 's' : ''} finished`;
+  }
+
+  const agentPills = agents.map(a => {
+    const c = getAgentColor(a.agent);
+    const dotColor = a.status === 'active' ? '#48BB78' : a.status === 'error' ? '#C53030' : '#8896A6';
+    return `<span class="health-agent-pill" onclick="filterByAgent('${a.agent}');switchView('events');" title="Click to filter events"><span class="dot" style="background:${dotColor}"></span>${a.agent}</span>`;
+  }).join('');
+
+  const blockerHtml = blockers.slice(-5).map(b =>
+    `<div class="health-blocker">&#x26A0; ${humanize(b)}</div>`
+  ).join('') || '<div style="font-size:0.72rem;color:var(--text-dim);">No blockers</div>';
+
+  const recentHtml = events.slice(-8).reverse().map(e =>
+    `<div class="health-recent-item"><span class="health-recent-time">${fmtTime(e.t)}</span><span class="health-recent-text">${humanize(e)}</span></div>`
+  ).join('') || '<div style="font-size:0.72rem;color:var(--text-dim);">No events yet</div>';
+
+  const tasksDone = agents.filter(a => a.status === 'complete').length;
+  const tasksTotal = agents.length || 1;
+  const taskPct = Math.round((tasksDone / tasksTotal) * 100);
+
+  el.innerHTML = `
+    <div class="health-hero ${status}">
+      <div class="health-icon">${icon}</div>
+      <div class="health-msg"><h2>${headline}</h2><p>${sub}</p></div>
+      ${newSinceVisit > 0 ? `<div style="background:var(--navy);color:#fff;padding:4px 10px;border-radius:10px;font-size:0.65rem;font-weight:700;">${newSinceVisit} new since last visit</div>` : ''}
+    </div>
+
+    <div class="health-card">
+      <h3>Phase</h3>
+      <div class="health-metric">${meta.phase || '—'}</div>
+      <div class="health-metric-sub">${events.length} events total</div>
+    </div>
+
+    <div class="health-card">
+      <h3>Agents</h3>
+      <div class="health-metric">${activeAgents} <span style="font-size:0.8rem;font-weight:400;color:var(--text-muted);">active</span></div>
+      <div class="health-agents">${agentPills || '<span style="font-size:0.68rem;color:var(--text-dim);">None spawned yet</span>'}</div>
+    </div>
+
+    <div class="health-card">
+      <h3>Context Pressure</h3>
+      <div class="health-metric" style="color:${ctxMax > 75 ? 'var(--red)' : ctxMax > 50 ? 'var(--amber)' : 'var(--green)'}">${ctxMax}%</div>
+      <div class="health-metric-sub">Highest agent context usage</div>
+      <div class="health-progress"><div class="health-progress-fill" style="width:${ctxMax}%;background:${ctxMax > 75 ? 'var(--red)' : ctxMax > 50 ? 'var(--amber)' : 'var(--green)'}"></div></div>
+    </div>
+
+    <div class="health-card">
+      <h3>Cost</h3>
+      <div class="health-metric">${fmtCtx(meta.ctx_total_est)}</div>
+      <div class="health-metric-sub">Total context tokens estimated</div>
+    </div>
+
+    <div class="health-card" style="grid-column: 1 / -1;">
+      <h3>Blockers &amp; Errors</h3>
+      <div class="health-blockers">${blockerHtml}</div>
+    </div>
+
+    <div class="health-card" style="grid-column: 1 / -1;">
+      <h3>Recent Activity</h3>
+      <div class="health-recent">${recentHtml}</div>
+    </div>
+  `;
+}
+
+// === VIEW SWITCHING ===
+function switchView(view) {
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+  // 'events' is a virtual view that switches to the event stream in the main area
+  if (view === 'events') {
+    document.querySelector('.view-tab[onclick*="health"]').classList.add('active');
+    document.getElementById('view-health').classList.add('active');
+    // Scroll to event stream
+    document.getElementById('event-stream').scrollTop = document.getElementById('event-stream').scrollHeight;
+    return;
+  }
+  document.querySelector(`.view-tab[onclick*="${view}"]`).classList.add('active');
+  document.getElementById(`view-${view}`).classList.add('active');
+}
+
+// === GANTT CHART ===
+const PIPELINE = [
+  { id: 'P0', label: 'Vision', arc: 1, type: 'auto' },
+  { id: 'P1', label: 'Structure', arc: 1, type: 'auto' },
+  { id: 'P1b', label: 'PRD Decompose', arc: 1, type: 'auto' },
+  { id: 'G0', label: 'Enhanced PRD', arc: 1, type: 'gate' },
+  { id: 'P2', label: 'Panels', arc: 1, type: 'auto' },
+  { id: 'P3', label: 'Research', arc: 1, type: 'auto' },
+  { id: 'G1', label: 'Direction', arc: 1, type: 'gate' },
+  { id: 'P4', label: 'Spec', arc: 2, type: 'auto' },
+  { id: 'P5', label: 'Tasks + Eval', arc: 2, type: 'auto' },
+  { id: 'G2', label: 'Architecture', arc: 2, type: 'gate' },
+  { id: 'P6', label: 'Build', arc: 3, type: 'auto' },
+  { id: 'P7', label: 'Test + Visual QA', arc: 3, type: 'auto' },
+  { id: 'P8', label: 'Gap Loop', arc: 3, type: 'auto' },
+  { id: 'G3', label: 'Ship Decision', arc: 3, type: 'gate' },
+  { id: 'P9', label: 'Deploy', arc: 3, type: 'auto' },
+  { id: 'P10', label: 'Product Pulse', arc: 4, type: 'auto' },
+];
+
+const ARC_META = {
+  1: { label: 'ARC 1: UNDERSTAND', color: '#2B6CB0', dim: 'rgba(43,108,176,0.06)' },
+  2: { label: 'ARC 2: SPECIFY', color: '#553C9A', dim: 'rgba(85,60,154,0.05)' },
+  3: { label: 'ARC 3: EXECUTE + CONVERGE', color: '#276749', dim: 'rgba(39,103,73,0.06)' },
+  4: { label: 'ARC 4: COMPOUND', color: '#0D7377', dim: 'rgba(13,115,119,0.05)' },
+};
+
+let phaseTimestamps = {};
+
+function renderGantt(events, agents) {
+  const svg = document.getElementById('gantt-svg');
+  const labelW = 130;
+  const rowH = 17;
+  const topPad = 24;
+  const totalH = topPad + PIPELINE.length * rowH + 20;
+  const svgW = 1200;
+  const barArea = svgW - labelW - 20;
+
+  svg.setAttribute('viewBox', `0 0 ${svgW} ${totalH}`);
+  svg.style.height = totalH + 'px';
+
+  events.forEach(e => {
+    if (e.event === 'PHASE' && e.phase) {
+      const pid = e.phase.replace(/:.*/,'').trim();
+      if (!phaseTimestamps[pid]) phaseTimestamps[pid] = {};
+      if (!phaseTimestamps[pid].start) phaseTimestamps[pid].start = new Date(e.t).getTime();
+      phaseTimestamps[pid].last = new Date(e.t).getTime();
+    }
+    if (e.event === 'GATE' && e.phase) {
+      const pid = e.phase.replace(/:.*/,'').trim();
+      if (!phaseTimestamps[pid]) phaseTimestamps[pid] = {};
+      if (!phaseTimestamps[pid].start) phaseTimestamps[pid].start = new Date(e.t).getTime();
+      phaseTimestamps[pid].last = new Date(e.t).getTime();
+    }
+    if (e.phase) {
+      const pid = e.phase.replace(/:.*/,'').trim();
+      if (phaseTimestamps[pid]) phaseTimestamps[pid].last = new Date(e.t).getTime();
+    }
+  });
+
+  const allTimes = Object.values(phaseTimestamps).flatMap(p => [p.start, p.last].filter(Boolean));
+  if (allTimes.length === 0) {
+    svg.innerHTML = `<text x="${svgW/2}" y="${totalH/2}" text-anchor="middle" fill="#8896A6" font-size="11">Waiting for phase events — start a /forge build</text>`;
+    return;
+  }
+  const tMin = Math.min(...allTimes);
+  const tMax = Math.max(Date.now(), Math.max(...allTimes) + 10000);
+  const tRange = tMax - tMin || 1;
+  const tToX = t => labelW + ((t - tMin) / tRange) * barArea;
+
+  let html = '';
+
+  // Arc background bands
+  let arcRanges = {};
+  PIPELINE.forEach((p, i) => {
+    if (!arcRanges[p.arc]) arcRanges[p.arc] = { first: i, last: i };
+    arcRanges[p.arc].last = i;
+  });
+  Object.entries(arcRanges).forEach(([arc, range]) => {
+    const meta = ARC_META[arc];
+    const y = topPad + range.first * rowH;
+    const h = (range.last - range.first + 1) * rowH;
+    html += `<rect x="0" y="${y}" width="${svgW}" height="${h}" fill="${meta.dim}" class="gantt-arc-bg" />`;
+    html += `<text x="4" y="${y + 9}" class="gantt-arc-label" fill="${meta.color}">${meta.label}</text>`;
+  });
+
+  // Phase rows
+  PIPELINE.forEach((p, i) => {
+    const y = topPad + i * rowH;
+    const meta = ARC_META[p.arc];
+
+    // Row background
+    if (i % 2 === 0) html += `<rect x="${labelW}" y="${y}" width="${barArea + 20}" height="${rowH}" fill="rgba(0,0,0,0.02)" />`;
+
+    // Phase label
+    html += `<text x="${labelW - 6}" y="${y + rowH/2 + 3}" text-anchor="end" class="gantt-phase-label" fill="${meta.color}">${p.id}</text>`;
+    html += `<text x="${labelW - 6}" y="${y + rowH/2 + 10}" text-anchor="end" class="gantt-phase-sublabel">${p.label}</text>`;
+
+    // Bar
+    const ts = phaseTimestamps[p.id];
+    if (ts && ts.start) {
+      const x1 = tToX(ts.start);
+      const x2 = tToX(ts.last || ts.start);
+      const w = Math.max(4, x2 - x1);
+      const currentPhase = events.length > 0 ? events[events.length - 1].phase?.replace(/:.*/,'').trim() : '';
+      const isActive = currentPhase === p.id;
+      const isGate = p.type === 'gate';
+      const barClass = isGate ? 'gantt-bar gantt-bar-gate' : `gantt-bar gantt-bar-auto${isActive ? ' gantt-bar-active' : ''}`;
+
+      html += `<rect x="${x1}" y="${y + 2}" width="${w}" height="${rowH - 4}" class="${barClass}" />`;
+
+      // Duration label
+      const durMs = (ts.last || ts.start) - ts.start;
+      const durS = Math.round(durMs / 1000);
+      const durLabel = durS < 60 ? `${durS}s` : `${Math.round(durS/60)}m`;
+      if (w > 24) {
+        html += `<text x="${x1 + 4}" y="${y + rowH/2 + 2.5}" class="gantt-bar-label">${durLabel}</text>`;
+      }
+
+      // Agent dots on bars
+      if (isActive) {
+        agents.filter(a => a.status === 'active').forEach((a, ai) => {
+          const cx = x2 - 6 - ai * 8;
+          const c = getAgentColor(a.agent);
+          html += `<circle cx="${cx}" cy="${y + rowH/2}" r="3" fill="var(--${c})" stroke="#fff" stroke-width="1" class="gantt-agent-dot"><title>${a.agent}</title></circle>`;
+        });
+      }
+    }
+  });
+
+  // Now line
+  const nowX = tToX(Date.now());
+  html += `<line x1="${nowX}" y1="${topPad - 4}" x2="${nowX}" y2="${totalH - 10}" class="gantt-now" />`;
+  html += `<text x="${nowX + 3}" y="${topPad - 6}" class="gantt-now-label">now</text>`;
+
+  // Time axis (bottom)
+  const steps = 6;
+  for (let i = 0; i <= steps; i++) {
+    const t = tMin + (tRange * i / steps);
+    const x = tToX(t);
+    const d = new Date(t);
+    const label = d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    html += `<text x="${x}" y="${totalH - 4}" text-anchor="middle" font-size="7" fill="#8896A6">${label}</text>`;
+    html += `<line x1="${x}" y1="${topPad}" x2="${x}" y2="${totalH - 14}" stroke="#E2E5EA" stroke-width="0.5" />`;
+  }
+
+  svg.innerHTML = html;
+}
+
+// === GRAPH RENDERING ===
+
+const ROLE_POSITIONS = {
+  orchestrator: { x: 450, y: 40, tier: 0 },
+  supervisor:   { x: 450, y: 110, tier: 1 },
+  'impl-1':     { x: 200, y: 190, tier: 2 },
+  'impl-2':     { x: 350, y: 190, tier: 2 },
+  'impl-3':     { x: 500, y: 190, tier: 2 },
+  'impl-4':     { x: 650, y: 190, tier: 2 },
+  watchdog:     { x: 750, y: 110, tier: 1 },
+  reviewer:     { x: 750, y: 190, tier: 2 },
+  tester:       { x: 150, y: 110, tier: 1 },
+  'visual-qa':  { x: 50,  y: 190, tier: 2 },
+  panelist:     { x: 150, y: 40, tier: 0 },
+  researcher:   { x: 280, y: 40, tier: 0 },
+  'spec-writer':{ x: 620, y: 40, tier: 0 },
+};
+
+const ROLE_COLORS = {
+  orchestrator: { fill: '#1A2744', stroke: '#1A2744', text: '#FFFFFF' },
+  supervisor:   { fill: '#276749', stroke: '#276749', text: '#FFFFFF' },
+  implementor:  { fill: 'rgba(39,103,73,0.08)', stroke: '#276749', text: '#276749' },
+  watchdog:     { fill: 'rgba(197,48,48,0.06)', stroke: '#C53030', text: '#C53030' },
+  reviewer:     { fill: 'rgba(197,48,48,0.06)', stroke: '#C53030', text: '#C53030' },
+  tester:       { fill: 'rgba(43,108,176,0.08)', stroke: '#2B6CB0', text: '#2B6CB0' },
+  panelist:     { fill: 'rgba(85,60,154,0.07)', stroke: '#553C9A', text: '#553C9A' },
+  researcher:   { fill: 'rgba(85,60,154,0.07)', stroke: '#553C9A', text: '#553C9A' },
+  default:      { fill: '#F7F8FA', stroke: '#D4D8DE', text: '#1A2744' },
+};
+
+function getNodePos(agentName) {
+  if (ROLE_POSITIONS[agentName]) return ROLE_POSITIONS[agentName];
+  const existing = Object.keys(ROLE_POSITIONS).length;
+  return { x: 100 + (existing % 6) * 130, y: 250, tier: 3 };
+}
+
+function getRoleColor(role, agentName) {
+  if (agentName === 'orchestrator') return ROLE_COLORS.orchestrator;
+  if (agentName === 'supervisor') return ROLE_COLORS.supervisor;
+  if (agentName === 'watchdog') return ROLE_COLORS.watchdog;
+  if (agentName === 'reviewer') return ROLE_COLORS.reviewer;
+  if (agentName?.startsWith('impl')) return ROLE_COLORS.implementor;
+  if (agentName?.startsWith('tester') || agentName?.startsWith('visual')) return ROLE_COLORS.tester;
+  if (agentName?.startsWith('panel')) return ROLE_COLORS.panelist;
+  if (agentName?.startsWith('research')) return ROLE_COLORS.researcher;
+  if (ROLE_COLORS[role]) return ROLE_COLORS[role];
+  return ROLE_COLORS.default;
+}
+
+function ctxRingPath(cx, cy, r, pct) {
+  const circumference = 2 * Math.PI * r;
+  const offset = circumference * (1 - Math.min(1, pct / 100));
+  return { circumference, offset };
+}
+
+let recentEdges = {};
+
+function renderGraph(agents, events) {
+  const nodesG = document.getElementById('graph-nodes');
+  const edgesG = document.getElementById('graph-edges');
+  if (!agents.length) return;
+
+  // Track recent SEND events (last 30 seconds)
+  const now = Date.now();
+  events.forEach(e => {
+    if (e.event === 'SEND' && e.target) {
+      const key = `${e.agent}->${e.target}`;
+      recentEdges[key] = { from: e.agent, to: e.target, t: new Date(e.t).getTime(), detail: e.detail || '' };
+    }
+  });
+  Object.keys(recentEdges).forEach(k => {
+    if (now - recentEdges[k].t > 30000) delete recentEdges[k];
+  });
+
+  // Assign positions for agents we haven't seen before
+  agents.forEach(a => {
+    if (!ROLE_POSITIONS[a.agent]) {
+      const count = Object.keys(ROLE_POSITIONS).length;
+      ROLE_POSITIONS[a.agent] = { x: 60 + (count % 7) * 120, y: 250, tier: 3 };
+    }
+  });
+
+  // Render edges
+  let edgesSvg = '';
+  const allEdgeKeys = new Set();
+
+  // Structural edges (always shown, dim)
+  const structuralEdges = [
+    ['orchestrator', 'supervisor'],
+    ['supervisor', 'impl-1'], ['supervisor', 'impl-2'], ['supervisor', 'impl-3'], ['supervisor', 'impl-4'],
+    ['orchestrator', 'panelist'], ['orchestrator', 'researcher'], ['orchestrator', 'spec-writer'],
+    ['supervisor', 'watchdog'], ['supervisor', 'reviewer'],
+    ['orchestrator', 'tester'],
+    ['orchestrator', 'watchdog'],
+  ];
+  const activeAgentNames = new Set(agents.map(a => a.agent));
+
+  structuralEdges.forEach(([from, to]) => {
+    if (!activeAgentNames.has(from) || !activeAgentNames.has(to)) return;
+    const pFrom = getNodePos(from);
+    const pTo = getNodePos(to);
+    const key = `${from}->${to}`;
+    const isActive = recentEdges[key] || recentEdges[`${to}->${from}`];
+    allEdgeKeys.add(key);
+    edgesSvg += `<line class="g-edge${isActive ? ' active' : ''}" x1="${pFrom.x}" y1="${pFrom.y + 18}" x2="${pTo.x}" y2="${pTo.y - 18}" stroke="${isActive ? '#0D7377' : '#D4D8DE'}" marker-end="url(#arrowhead${isActive ? '-active' : ''})" />`;
+  });
+
+  // Communication edges (from SEND events, teal with labels)
+  Object.values(recentEdges).forEach(edge => {
+    const key = `${edge.from}->${edge.to}`;
+    if (allEdgeKeys.has(key)) return;
+    if (!activeAgentNames.has(edge.from) || !activeAgentNames.has(edge.to)) return;
+    const pFrom = getNodePos(edge.from);
+    const pTo = getNodePos(edge.to);
+    const isRecent = (now - edge.t) < 5000;
+    const mx = (pFrom.x + pTo.x) / 2;
+    const my = (pFrom.y + pTo.y) / 2 - 8;
+    edgesSvg += `<line class="g-edge active" x1="${pFrom.x}" y1="${pFrom.y}" x2="${pTo.x}" y2="${pTo.y}" stroke="#0D7377" marker-end="url(#arrowhead-active)" />`;
+    if (isRecent && edge.detail) {
+      const label = edge.detail.length > 30 ? edge.detail.substring(0, 30) + '...' : edge.detail;
+      edgesSvg += `<text class="g-edge-label active" x="${mx}" y="${my}" text-anchor="middle">${label}</text>`;
+    }
+  });
+  edgesG.innerHTML = edgesSvg;
+
+  // Render nodes
+  let nodesSvg = '';
+  agents.forEach(a => {
+    const pos = getNodePos(a.agent);
+    const colors = getRoleColor(a.role, a.agent);
+    const pct = ctxPercent(a.ctx_est);
+    const ctxColor = pct < 50 ? '#276749' : pct < 80 ? '#B7791F' : '#C53030';
+    const ringR = 26;
+    const { circumference, offset } = ctxRingPath(pos.x, pos.y, ringR, pct);
+    const w = 100, h = 36;
+    const statusDot = a.status === 'active' ? '#48BB78' : a.status === 'error' ? '#C53030' : '#8896A6';
+
+    nodesSvg += `<g class="g-node" transform="translate(0,0)">`;
+    // Context ring
+    nodesSvg += `<circle class="g-ctx-bg" cx="${pos.x}" cy="${pos.y}" r="${ringR}" />`;
+    nodesSvg += `<circle class="g-ctx-fill" cx="${pos.x}" cy="${pos.y}" r="${ringR}" stroke="${ctxColor}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" transform="rotate(-90 ${pos.x} ${pos.y})" />`;
+    // Node box
+    nodesSvg += `<rect x="${pos.x - w/2}" y="${pos.y - h/2}" width="${w}" height="${h}" fill="${colors.fill}" stroke="${colors.stroke}" class="g-node" rx="4" ry="4" />`;
+    // Status dot
+    nodesSvg += `<circle cx="${pos.x - w/2 + 8}" cy="${pos.y - h/2 + 8}" r="3" fill="${statusDot}" />`;
+    // Labels
+    nodesSvg += `<text class="g-node-label" x="${pos.x}" y="${pos.y - 2}" fill="${colors.text}">${a.agent}</text>`;
+    nodesSvg += `<text class="g-node-role" x="${pos.x}" y="${pos.y + 10}">${a.role || ''}</text>`;
+    // Context label below
+    nodesSvg += `<text class="g-node-ctx" x="${pos.x}" y="${pos.y + ringR + 12}" fill="${ctxColor}">${fmtCtx(a.ctx_est)}</text>`;
+    nodesSvg += `</g>`;
+  });
+  nodesG.innerHTML = nodesSvg;
+}
+
+// Track scroll position for auto-scroll
+document.getElementById('event-stream').addEventListener('scroll', function() {
+  const el = this;
+  autoScroll = (el.scrollTop + el.clientHeight >= el.scrollHeight - 50);
+});
+
+// Initial load + poll
+poll();
+setInterval(poll, 2000);
+</script>
+</body>
+</html>

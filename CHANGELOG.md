@@ -2,6 +2,30 @@
 
 All notable changes to Johnny's AI Build Workflow are documented here.
 
+## [0.5.0] — 2026-05-27
+
+### Added
+- 3-terminal architecture for FORGE Phase 6 — orchestrator, supervisor, watchdog as persistent tmux sessions with claude-peers messaging (12 message types)
+- Compound Engineering integration (7 capabilities from [Every Inc. CE plugin](https://github.com/everyinc/compound-engineering-plugin)):
+  - Tiered multi-agent code review (5 parallel specialized reviewers with confidence gating)
+  - Compound learning capture (`.forge/LEARNINGS.md` — each build makes the next one smarter)
+  - Document review agents at gates G0/G1/G2 (feasibility, scope guardian, coherence, adversarial)
+  - Product Pulse (P10 — post-ship monitoring reports in `docs/pulse-reports/`)
+  - Session intelligence for crash recovery
+  - Structured debug protocol (reproduce → trace → hypothesis → test-first fix)
+  - Optimization loops in P8 (parallel experiments, measure, keep best)
+- Live observability dashboard (`forge-observe.py` + `forge-dashboard.html`) with agent topology graph, event stream, context estimation
+- P1b: PRD Decomposition phase with G0: Enhanced PRD Review human gate
+- McKinsey aesthetic + plain-English-first pattern applied to all documentation templates
+
+### Changed
+- Pipeline expanded from 10 phases / 3 gates to 12 phases / 4 gates (P1b + G0 + P10)
+- Phase 6 restructured into P6a–P6e sub-phases (terminal setup, build loop, watchdog loop, monitoring, shutdown)
+- Code review upgraded from single reviewer to tiered multi-agent review (5 specialized reviewers)
+- Gap loop (P8) expanded with optimization loop for MEDIUM/LOW gaps
+- Watchdog upgraded from event-triggered to persistent tmux terminal
+- Smoke test ownership moved from orchestrator to supervisor
+
 ## [0.4.0] — 2026-05-27
 
 ### Added

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FORGE vs TDD Agent-Crew Scaffold — Comparison</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FFFFFF; --surface: #F7F8FA; --surface-alt: #F0F2F5;
+  --border: #D4D8DE; --border-light: #E2E5EA;
+  --text: #1A2744; --text-muted: #4A5568; --text-dim: #8896A6;
+  --navy: #1A2744; --blue: #2B6CB0; --blue-dim: rgba(43,108,176,0.08);
+  --green: #276749; --green-dim: rgba(39,103,73,0.08);
+  --red: #C53030; --red-dim: rgba(197,48,48,0.06);
+  --amber: #B7791F; --amber-dim: rgba(183,121,31,0.08);
+  --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
+  --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
+  --radius: 4px;
+}
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body { max-width: 1060px; margin: 0 auto; padding: 48px 40px 96px; }
+h1 { font-size: 1.8rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+.subtitle { font-size: 0.95rem; color: var(--text-muted); max-width: 740px; margin-bottom: 32px; line-height: 1.7; }
+.section { margin-bottom: 48px; padding-top: 20px; border-top: 2.5px solid var(--navy); }
+.section-id { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.plain-english { font-size: 0.95rem; color: var(--text); line-height: 1.7; margin-bottom: 20px; max-width: 740px; }
+.plain-english strong { color: var(--navy); }
+table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-bottom: 20px; }
+th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+th:first-child { border-radius: var(--radius) 0 0 0; }
+th:last-child { border-radius: 0 var(--radius) 0 0; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+tr:nth-child(even) td { background: var(--surface); }
+td:first-child { font-weight: 600; color: var(--navy); width: 180px; }
+.tag { display: inline-block; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.06em; padding: 2px 6px; border-radius: 2px; }
+.tag-forge { background: var(--green-dim); color: var(--green); }
+.tag-scaffold { background: var(--blue-dim); color: var(--blue); }
+.tag-both { background: var(--purple-dim); color: var(--purple); }
+.tag-neither { background: var(--surface-alt); color: var(--text-dim); }
+.verdict { font-size: 0.82rem; color: var(--text); line-height: 1.6; padding: 14px 18px; border-left: 3px solid var(--navy); background: rgba(26,39,68,0.04); margin: 16px 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.verdict strong { color: var(--navy); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; }
+.card ul { margin: 0; padding-left: 16px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; }
+.source { font-size: 0.62rem; color: var(--text-dim); font-style: italic; margin-top: 12px; }
+@media (max-width: 768px) { body { padding: 28px 20px; } .grid-2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- FORGE Document Suite Nav -->
+<nav style="display: flex; align-items: center; gap: 6px; padding: 10px 0; margin-bottom: 24px; border-bottom: 1px solid var(--border-light); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;">
+  <span style="color: var(--navy); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.58rem; margin-right: 8px;">FORGE</span>
+  <a href="forge-architecture.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Architecture</a>
+  <a href="../tools/dashboard.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Observatory</a>
+  <a href="../tools/forge-spec.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Spec</a>
+  <a href="forge-comparison.html" style="color: var(--navy); background: var(--surface); padding: 4px 10px; border-radius: 3px; text-decoration: none; border: 1px solid var(--border);">Comparison</a>
+</nav>
+
+<h1>FORGE vs TDD Agent-Crew Scaffold</h1>
+<div class="subtitle">
+  Both systems solve the same problem: how do you run multi-agent software builds without the AI agents cutting corners, skipping tests, or drifting from the spec? They arrive at surprisingly similar conclusions through different paths. This comparison maps where they converge, where they diverge, and what each can learn from the other.
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-id">Exhibit 1</div>
+  <div class="section-title">Both systems solve the same six failure modes — but with different enforcement strategies</div>
+
+  <table>
+    <thead><tr><th style="width:180px">Failure Mode</th><th>TDD Agent-Crew Scaffold</th><th>FORGE</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Scope drift across sessions</td>
+        <td>Architecture doc as primary input; cross-doc invariants table checked per commit</td>
+        <td>Immutable PRD + derived spec with maintained diff; inter-stage assertions between every phase</td>
+      </tr>
+      <tr>
+        <td>TDD gets skipped</td>
+        <td>10-step <code>/tdd</code> walker with mandatory Step 2.5 test-design review checkpoint</td>
+        <td>Eval harness as task-00 (blocking dependency — R4); immutable test directory; phase gate hook blocks build without tests (R1)</td>
+      </tr>
+      <tr>
+        <td>Cross-doc drift</td>
+        <td>Enforced cross-doc invariants table; orchestrator checks typed models vs spec vs test pins</td>
+        <td>Watchdog drift detection (7 categories) on every PR, merge, and 30m periodic; CONTRACTS.md as interface contract</td>
+      </tr>
+      <tr>
+        <td>Lost session output</td>
+        <td>Hot-routed Step-9 categorization captures lessons, doc notes, future work during coding</td>
+        <td>MEMORY.md (append-only); compound learning capture at P6e; product pulse at P10</td>
+      </tr>
+      <tr>
+        <td>Context budget pressure</td>
+        <td>Separate sessions per role (lead, orchestrator, implementer) — each gets full context</td>
+        <td>3-terminal architecture (orchestrator, supervisor, watchdog via tmux); context-long checkpoint at ~200k tokens (R5)</td>
+      </tr>
+      <tr>
+        <td>Phase/step skipping</td>
+        <td>Close-out gating: <code>/session-end</code> and <code>/orchestrate-end</code> run checklists on demand</td>
+        <td>Phase gate hook (R1) blocks STATE.json writes unless artifacts exist; deliverable coverage assertion (R3)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-id">Exhibit 2</div>
+  <div class="section-title">Architecture comparison — both use role separation, but at different granularity</div>
+
+  <div class="grid-2">
+    <div class="card" style="border-top: 3px solid var(--blue);">
+      <h3>TDD Agent-Crew Scaffold</h3>
+      <ul>
+        <li><strong>3 roles:</strong> Team Lead (thin, durable) + Orchestrator (plans, reviews) + Implementer (per code area)</li>
+        <li>Communication via files + bounded direct messages</li>
+        <li>Team Lead persists across many orchestrator/implementer cycles</li>
+        <li>4 escalation categories reach human via lead</li>
+        <li>Single-operator fallback for smaller projects</li>
+        <li>13 slash commands</li>
+        <li>Project-agnostic — generates from your ARCHITECTURE.md</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top: 3px solid var(--green);">
+      <h3>FORGE</h3>
+      <ul>
+        <li><strong>10+ roles:</strong> Orchestrator + Supervisor + Watchdog + Impl &times;4 + Reviewer &times;5 + Tester + Panelists + Researchers + Doc Review Agents</li>
+        <li>Communication via claude-peers MCP (12 message types, JSON envelope)</li>
+        <li>3 persistent tmux terminals during build (P6)</li>
+        <li>4 human gates with document review pre-screening</li>
+        <li>Fast track (1 panel, 1 impl) and full track</li>
+        <li>12-phase pipeline with dynamic composition per project</li>
+        <li>Project-specific — generates pillars, panels, reviewers, tests from PRD</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-id">Exhibit 3</div>
+  <div class="section-title">Feature-by-feature capability matrix</div>
+
+  <table>
+    <thead><tr><th style="width:200px">Capability</th><th style="width:90px">Scaffold</th><th style="width:90px">FORGE</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>TDD enforcement</td><td><span class="tag tag-scaffold">10-step /tdd</span></td><td><span class="tag tag-forge">task-00 + hook</span></td><td>Scaffold: procedural walker. FORGE: structural dependency + gate hook.</td></tr>
+      <tr><td>Multi-agent build</td><td><span class="tag tag-scaffold">3 roles</span></td><td><span class="tag tag-forge">10+ roles</span></td><td>Scaffold: lean. FORGE: specialized (5 reviewer types, doc review agents, etc.)</td></tr>
+      <tr><td>Expert panels / design review</td><td><span class="tag tag-neither">No</span></td><td><span class="tag tag-forge">3 panels</span></td><td>FORGE runs business, technical, and SME panels before spec</td></tr>
+      <tr><td>PRD decomposition</td><td><span class="tag tag-scaffold">Interview</span></td><td><span class="tag tag-forge">P1b + G0</span></td><td>Scaffold: interactive interview. FORGE: automated decomposition + human gate.</td></tr>
+      <tr><td>Spec derivation with diff</td><td><span class="tag tag-neither">No</span></td><td><span class="tag tag-forge">P4</span></td><td>FORGE maintains diff between PRD and spec; scaffold uses ARCHITECTURE.md as living doc</td></tr>
+      <tr><td>Cross-doc invariants</td><td><span class="tag tag-scaffold">Invariants table</span></td><td><span class="tag tag-forge">CONTRACTS.md</span></td><td>Both: explicit interface contracts. Scaffold: table format. FORGE: file-level contracts per agent.</td></tr>
+      <tr><td>Drift detection</td><td><span class="tag tag-scaffold">Per commit</span></td><td><span class="tag tag-forge">7 categories</span></td><td>FORGE: dedicated watchdog terminal with 3 trigger points. Scaffold: orchestrator checks per commit.</td></tr>
+      <tr><td>Code review</td><td><span class="tag tag-scaffold">Orchestrator</span></td><td><span class="tag tag-forge">5&times; tiered</span></td><td>FORGE: parallel specialized reviewers with confidence gating. Scaffold: orchestrator reviews.</td></tr>
+      <tr><td>Step-9 hot routing</td><td><span class="tag tag-scaffold">Yes</span></td><td><span class="tag tag-forge">Decision Router</span></td><td>Both: classify decisions by severity. Scaffold: 4 categories. FORGE: 4 levels (tactical → strategic).</td></tr>
+      <tr><td>Lesson capture</td><td><span class="tag tag-scaffold">LESSONS.md</span></td><td><span class="tag tag-forge">LEARNINGS.md</span></td><td>Both: structured learning capture. FORGE compounds across builds (P10 → P0).</td></tr>
+      <tr><td>Phase gate enforcement</td><td><span class="tag tag-scaffold">Close-out gating</span></td><td><span class="tag tag-forge">Hook (R1)</span></td><td>Scaffold: user-triggered. FORGE: automatic hook blocks STATE.json advancement.</td></tr>
+      <tr><td>Context-pressure mitigation</td><td><span class="tag tag-scaffold">Role separation</span></td><td><span class="tag tag-forge">3 terminals + R5</span></td><td>Both: separate contexts. FORGE adds: checkpoint protocol at ~200k tokens.</td></tr>
+      <tr><td>Commit discipline</td><td><span class="tag tag-scaffold">N+2 per round</span></td><td><span class="tag tag-forge">Per task</span></td><td>Scaffold: atomic per-slice + session doc + round commit. FORGE: per-task with [SPEC §X.Y].</td></tr>
+      <tr><td>Visual QA</td><td><span class="tag tag-neither">No</span></td><td><span class="tag tag-forge">Playwright + vision</span></td><td>FORGE: screenshots at 3 viewports, Claude vision checks</td></tr>
+      <tr><td>Optimization loops</td><td><span class="tag tag-neither">No</span></td><td><span class="tag tag-forge">P8</span></td><td>FORGE: 3 parallel experiments, measure, keep best</td></tr>
+      <tr><td>Post-ship monitoring</td><td><span class="tag tag-neither">No</span></td><td><span class="tag tag-forge">P10 Pulse</span></td><td>FORGE: usage, performance, error reports feeding next build</td></tr>
+      <tr><td>Live observability dashboard</td><td><span class="tag tag-neither">No</span></td><td><span class="tag tag-forge">Gantt + topology</span></td><td>FORGE: real-time event stream, agent graph, timeline at localhost:4040</td></tr>
+      <tr><td>Project-agnostic generation</td><td><span class="tag tag-scaffold">Yes</span></td><td><span class="tag tag-forge">Yes</span></td><td>Both generate project-specific scaffolding from input docs</td></tr>
+      <tr><td>Single-operator fallback</td><td><span class="tag tag-scaffold">Yes</span></td><td><span class="tag tag-forge">Fast track</span></td><td>Both: scale down for smaller projects</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-id">Exhibit 4</div>
+  <div class="section-title">What each system should learn from the other</div>
+
+  <div class="grid-2">
+    <div class="card" style="border-top: 3px solid var(--green);">
+      <h3>What FORGE should learn from the Scaffold</h3>
+      <ul>
+        <li><strong>Step-9 hot routing is elegant.</strong> Captures lessons, doc notes, and future work during coding — not after. FORGE's Decision Router classifies decisions but doesn't route session-level learnings in real time.</li>
+        <li><strong>Close-out gating is user-triggered.</strong> The scaffold's <code>/session-end</code> and <code>/orchestrate-end</code> run when the human decides, not at natural boundaries. FORGE's gates are at fixed pipeline positions — adding a "close out this session" command would help with context management.</li>
+        <li><strong>Track-prefix naming for parallel work.</strong> The scaffold uses track prefixes (e.g., <code>BE-</code>, <code>FE-</code>) to prevent channel-bleed in multi-team work. FORGE's branch naming (<code>forge/phase-6/{task-slug}</code>) doesn't encode the track.</li>
+        <li><strong>Bounded messaging budgets.</strong> The scaffold explicitly caps inter-agent message length. FORGE's claude-peers messages are unbounded — adding a budget would prevent context inflation.</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top: 3px solid var(--blue);">
+      <h3>What the Scaffold should learn from FORGE</h3>
+      <ul>
+        <li><strong>Expert panels before coding.</strong> FORGE's P2 (3 panels: business, technical, SME) catches design flaws before implementation starts. The scaffold goes straight from architecture doc to tasks.</li>
+        <li><strong>Phase gate hooks are structural.</strong> FORGE's R1 hook literally blocks advancement — the scaffold relies on user-triggered close-out, which can be skipped under pressure.</li>
+        <li><strong>Tiered multi-agent review.</strong> 5 specialized reviewers with confidence gating catches more than a single orchestrator review. Different lenses find different bugs.</li>
+        <li><strong>Compound learning across builds.</strong> FORGE's P10 (product pulse) → P0 (next build) loop means each build starts smarter. The scaffold's LESSONS.md captures per-project learning but doesn't feed it forward.</li>
+        <li><strong>Visual QA and live observability.</strong> Playwright screenshots + Claude vision + a real-time Gantt dashboard are capabilities the scaffold doesn't address.</li>
+        <li><strong>Document review agents at gates.</strong> Pre-screening gate artifacts with feasibility/scope/adversarial reviewers before the human sees them is a force multiplier.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-id">Exhibit 5</div>
+  <div class="section-title">The fundamental difference is enforcement philosophy — the Scaffold trusts process, FORGE trusts hooks</div>
+
+  <div class="plain-english">
+    The TDD Agent-Crew Scaffold is a <strong>process-oriented system</strong>. It gives agents clear steps to follow (the 10-step /tdd walker), clear escalation rules (4 categories), and clear close-out procedures. It trusts that following the process produces good results. When the process fails, it adds more process.
+  </div>
+  <div class="plain-english">
+    FORGE started the same way — and learned the hard way that <strong>prose instructions fail under context pressure</strong>. An AI agent that is both the executor and the quality checker will cut corners when running low on context. FORGE's v2.4.0 (the R1–R6 fixes) moved enforcement from prose to structural mechanisms: hooks that block advancement, dependency graphs that make safety steps blocking, separate agents that audit independently, and concrete commands instead of vague directives.
+  </div>
+
+  <div class="verdict">
+    <strong>The Scaffold is where FORGE was at v1.0.</strong> It has the right ideas — role separation, TDD enforcement, cross-doc invariants, lesson capture — but the enforcement model relies on discipline. FORGE's evolution shows that discipline fails under pressure, and the fix is mechanical enforcement: hooks, dependency graphs, and independent watchdogs. The Scaffold's strongest unique contribution is hot-routed Step-9 categorization — capturing learnings during coding, not after — which FORGE should adopt.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-id">Exhibit 6</div>
+  <div class="section-title">When to use which</div>
+
+  <table>
+    <thead><tr><th style="width:200px">Scenario</th><th>Use Scaffold</th><th>Use FORGE</th></tr></thead>
+    <tbody>
+      <tr><td>Solo dev, 1-week sprint</td><td>Single-operator mode — lean, fast setup</td><td>Fast track — 1 panel, 1 implementor</td></tr>
+      <tr><td>Multi-week production build</td><td>Team pattern — if you want a lighter framework with less ceremony</td><td>Full track — if you want maximum safety mechanisms and observability</td></tr>
+      <tr><td>Safety-critical domain</td><td>Good — cross-doc invariants + TDD walker</td><td>Better — tiered review, watchdog, phase gates, constitution</td></tr>
+      <tr><td>Existing codebase</td><td>Better — designed to scaffold into existing repos</td><td>Both work, but FORGE assumes greenfield or major feature</td></tr>
+      <tr><td>Team wants to learn</td><td>Better — LESSONS.md + Step-9 capture during work</td><td>Better long-term — compound learning across builds + product pulse</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="source">
+  Sources: FORGE v2.4.0 (<code>~/projects/workflow/</code>) &bull; TDD Agent-Crew Scaffold (<code>github.com/SiWarlock/claude-code-tdd-agent-crew-scaffold</code>)
+</div>
+
+</body>
+</html>

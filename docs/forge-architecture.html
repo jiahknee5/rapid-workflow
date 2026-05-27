@@ -15,21 +15,38 @@
   --red: #C53030; --red-dim: rgba(197,48,48,0.06);
   --amber: #B7791F; --amber-dim: rgba(183,121,31,0.08);
   --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
+  --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
   --radius: 4px; --radius-sm: 3px;
 }
-html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-body { margin: 0; max-width: 980px; margin: 0 auto; padding: 40px 32px 80px; }
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
 
-/* Section system */
-.section { margin-bottom: 56px; padding-top: 20px; border-top: 2px solid var(--navy); }
-.section-id { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
-.section-title { font-size: 1.35rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; line-height: 1.25; }
-.section-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; }
+/* Section system — McKinsey action-title convention */
+.section { margin-bottom: 64px; padding-top: 24px; border-top: 2.5px solid var(--navy); }
+.section-id { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.section-title { font-size: 1.4rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px; max-width: 720px; line-height: 1.6; }
 
-/* Diagram container */
-.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
-.diagram-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
-.diagram-ref { font-size: 0.6rem; color: var(--text-dim); font-style: italic; margin-top: 8px; }
+/* Exhibit container — McKinsey exhibit convention */
+.diagram { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; position: relative; }
+.diagram-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.diagram-ref { font-size: 0.62rem; color: var(--text-dim); font-style: italic; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-light); }
+
+/* McKinsey layer — action titles, insights, implications, sources */
+.action-title { font-size: 1.05rem; font-weight: 700; color: var(--navy); line-height: 1.35; margin-bottom: 16px; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 14px 18px; margin: 16px 0; font-size: 0.85rem; line-height: 1.6; color: var(--text); }
+.key-insight strong { color: var(--navy); }
+.implication { font-size: 0.82rem; color: var(--navy); font-weight: 600; margin: 12px 0 4px; }
+.implication::before { content: '\2192\00a0'; color: var(--teal); font-weight: 800; }
+.source { font-size: 0.6rem; color: var(--text-dim); font-style: italic; margin-top: 12px; }
+.source::before { content: 'Source: '; font-style: normal; font-weight: 600; letter-spacing: 0.04em; }
+.exhibit-num { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); }
+
+/* Plain-English lead — accessible explanation before technical detail */
+.plain-english { font-size: 0.95rem; color: var(--text); line-height: 1.7; margin-bottom: 24px; max-width: 740px; }
+.plain-english strong { color: var(--navy); }
+.technical-detail { border-top: 1px solid var(--border-light); padding-top: 20px; margin-top: 8px; }
+.technical-detail::before { content: 'Technical detail'; display: block; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
 
 /* Nodes */
 .n { display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 0.72rem; font-weight: 600; text-align: center; background: var(--bg); white-space: nowrap; }
@@ -60,42 +77,184 @@ body { margin: 0; max-width: 980px; margin: 0 auto; padding: 40px 32px 80px; }
 .branch.no-bar > div::before { display: none; }
 
 /* Text blocks */
-.explain { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
-.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
-.card-sm { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 0.78rem; }
-h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.explain { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card-sm { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 0.78rem; }
+h3 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
 .footnote { font-size: 0.65rem; color: var(--text-dim); margin-top: 16px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
-.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.72rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); }
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.72rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); }
 .code-block .kw { color: var(--purple); } .code-block .fn { color: var(--blue); } .code-block .str { color: var(--green); } .code-block .comment { color: var(--text-dim); font-style: italic; } .code-block .num { color: var(--amber); }
-.compare-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-.compare-table th { text-align: left; padding: 6px 8px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); border-bottom: 2px solid var(--navy); background: var(--surface); }
-.compare-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+
+/* McKinsey table — navy header, clean rows */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; border-bottom: none; background: var(--navy); }
+.compare-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+.compare-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
 .compare-table tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout — McKinsey stat highlight */
+.metric { display: inline-flex; flex-direction: column; align-items: center; padding: 16px 20px; }
+.metric-value { font-size: 2rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+.metric-row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; padding: 12px 0; }
+
+/* Executive summary — McKinsey page-top pattern */
+.exec-summary { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 28px; border-radius: 0 var(--radius) var(--radius) 0; }
+.exec-summary h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.exec-summary ul { margin: 0; padding-left: 16px; font-size: 0.84rem; color: var(--text); line-height: 1.7; }
+.exec-summary li { margin-bottom: 4px; }
+.exec-summary li::marker { color: var(--navy); }
+
 .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
-.dot-g { background: var(--green); } .dot-a { background: var(--amber); } .dot-r { background: var(--red); }
-.legend { display: flex; gap: 16px; font-size: 0.6rem; color: var(--text-dim); margin-top: 6px; justify-content: center; }
-@media (max-width: 768px) { body { padding: 24px 16px; } .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr; } .branch { flex-direction: column; align-items: center; } }
+.dot-g { background: var(--green); } .dot-a { background: var(--amber); } .dot-r { background: var(--red); } .dot-t { background: var(--teal); }
+.legend { display: flex; gap: 16px; font-size: 0.6rem; color: var(--text-dim); margin-top: 8px; justify-content: center; }
+@media (max-width: 768px) { body { padding: 28px 20px; } .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr; } .branch { flex-direction: column; align-items: center; } .metric-row { gap: 16px; } }
 </style>
 </head>
 <body>
 
+<!-- FORGE Document Suite Nav -->
+<nav style="display: flex; align-items: center; gap: 6px; padding: 10px 0; margin-bottom: 24px; border-bottom: 1px solid var(--border-light); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;">
+  <span style="color: var(--navy); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.58rem; margin-right: 8px;">FORGE</span>
+  <a href="forge-architecture.html" style="color: var(--navy); background: var(--surface); padding: 4px 10px; border-radius: 3px; text-decoration: none; border: 1px solid var(--border);">Architecture</a>
+  <a href="../tools/dashboard.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Observatory</a>
+  <a href="../tools/forge-spec.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Spec</a>
+  <a href="forge-comparison.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Comparison</a>
+</nav>
+
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<header style="margin-bottom: 40px;">
+<header style="margin-bottom: 48px;">
   <div style="font-size: 2.2rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em;">FORGE</div>
-  <div style="font-size: 0.95rem; color: var(--text-muted); max-width: 640px; margin-top: 8px;">
-    Autonomous build system. Takes a product idea or PRD, runs a 10-phase pipeline with 4 safety mechanisms, and produces a deployed, spec-compliant application. Human input at 3 gates only. Start with D0 (full architecture), then drill into D1&ndash;D16 for detail.
+  <div class="plain-english" style="margin-top: 12px;">
+    FORGE is a <strong>dynamic workflow template that generates a project-specific build system</strong> every time it runs. You give it a product idea, and it assembles the right team of AI agents, the right expert panels, the right safety checks, and the right test strategy for that specific project. No two FORGE builds produce the same architecture. The pipeline structure is fixed &mdash; 12 phases, 4 human checkpoints &mdash; but everything inside is composed dynamically from a library of thinking frameworks. It stops at four checkpoints for your approval, and each build makes the next one smarter through compound learning.
+  </div>
+  <div style="font-size: 0.84rem; color: var(--text-muted); max-width: 700px; margin-top: 8px;">
+    <strong>Technically:</strong> a 12-phase pipeline with 4 safety mechanisms, a 3-terminal architecture during build (orchestrator + supervisor + watchdog via tmux/claude-peers), tiered multi-agent code review (5 specialized reviewers), document review agents at every gate, compound learning capture, and a post-ship product pulse loop. Start with D0 (full architecture), then drill into D1&ndash;D20 for detail.
   </div>
 </header>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- NAVIGATION                                                      -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<nav style="margin-bottom: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px;">
+  <div style="font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px;">Document Map</div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; font-size: 0.75rem;">
+    <div>
+      <div style="font-weight: 700; color: var(--navy); margin-bottom: 6px; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;">Foundation</div>
+      <a href="#principle" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">Core Principle</a>
+      <a href="#d0" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D0 &mdash; Full Architecture</a>
+      <a href="#d1" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D1 &mdash; Master Pipeline</a>
+      <a href="#d2" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D2 &mdash; Agent Topology</a>
+      <a href="#d19" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D19 &mdash; Dynamic Composition</a>
+    </div>
+    <div>
+      <div style="font-weight: 700; color: var(--blue); margin-bottom: 6px; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;">Arc 1: Understand</div>
+      <a href="#d3" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D3 &mdash; Human Gates (G0&ndash;G3)</a>
+      <a href="#d6" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D6 &mdash; Research Protocol</a>
+      <div style="font-weight: 700; color: var(--purple); margin-bottom: 6px; margin-top: 10px; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;">Arc 2: Specify</div>
+      <a href="#d7" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D7 &mdash; Fan-Out Sizing</a>
+      <a href="#d7b" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D7b &mdash; TDD / Eval Harness</a>
+    </div>
+    <div>
+      <div style="font-weight: 700; color: var(--green); margin-bottom: 6px; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;">Arc 3: Execute + Converge</div>
+      <a href="#d4" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D4 &mdash; Drift Detection</a>
+      <a href="#d5" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D5 &mdash; Decision Router</a>
+      <a href="#d8" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D8 &mdash; Build Loop</a>
+      <a href="#d9" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D9 &mdash; Gap Loop + Optimize</a>
+      <a href="#d10" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D10 &mdash; Visual QA</a>
+      <a href="#d20" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D20 &mdash; Compound Engineering</a>
+    </div>
+    <div>
+      <div style="font-weight: 700; color: var(--teal); margin-bottom: 6px; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;">Infrastructure</div>
+      <a href="#d11" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D11 &mdash; CI/CD</a>
+      <a href="#d12" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D12 &mdash; Economics</a>
+      <a href="#d13" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D13 &mdash; Observability</a>
+      <a href="#d14" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D14 &mdash; Configuration</a>
+      <a href="#d15" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D15 &mdash; Trust Model</a>
+      <a href="#d16" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D16 &mdash; Provenance</a>
+      <div style="font-weight: 700; color: var(--red); margin-bottom: 6px; margin-top: 10px; font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;">Appendix</div>
+      <a href="#d17" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D17 &mdash; Panel Corpus</a>
+      <a href="#d18" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D18 &mdash; Doc Deck System</a>
+      <a href="#d21" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">D21 &mdash; Agent &amp; Skill Catalog</a>
+      <a href="#index" style="display:block; color: var(--text-muted); text-decoration: none; padding: 2px 0;">Cross-Reference Index</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- CORE PRINCIPLE                                                  -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="principle">
+  <div class="section-id">Core Principle</div>
+  <div class="section-title">Separate the builder from the auditor &mdash; the single design decision that shapes every mechanism in FORGE</div>
+  <div class="plain-english">
+    When the same agent implements code and audits it, <strong>the implementor always wins</strong>. It produces visible progress &mdash; a working app, screenshots, a deploy. The auditor produces invisible safety &mdash; tests, assertions, coverage checks. Under time pressure or context pressure, invisible work gets skipped. Every time. This isn&rsquo;t a discipline problem. It&rsquo;s an incentive misalignment that no amount of prose instruction can fix.
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">The skip pattern &mdash; why prose enforcement fails</div>
+    <div class="vflow" style="padding: 12px 0;">
+      <div class="n n-primary" style="min-width: 320px;">Protocol says &ldquo;do X before proceeding&rdquo;</div>
+      <div class="vline"></div>
+      <div class="n n-blue" style="min-width: 320px;">X doesn&rsquo;t produce visible output<small>tests, assertions, reviews, coverage checks</small></div>
+      <div class="vline"></div>
+      <div class="n n-auto" style="min-width: 320px;">Next step DOES produce visible output<small>working code, screenshots, deploy, demo</small></div>
+      <div class="vline"></div>
+      <div class="n n-guard" style="min-width: 320px;">Agent skips X and does the exciting thing<small>every time, under any pressure</small></div>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">The structural fix &mdash; four mechanisms that replace prose with enforcement</div>
+    <div class="grid-2" style="gap: 12px;">
+      <div class="card" style="border-top: 3px solid var(--red);">
+        <h3>R1: Phase Gate Hook</h3>
+        <div style="font-size: 0.78rem; color: var(--text-muted);">
+          A shell script that <strong>blocks STATE.json writes</strong> unless required artifacts exist. Mechanically impossible to advance phases without the proof. <code>forge-phase-gate.sh</code> checks: eval harness before build, P6_EXIT.json before test, WALKTHROUGH.md before gaps.
+        </div>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--green);">
+        <h3>R2: Separate Watchdog Terminal</h3>
+        <div style="font-size: 0.78rem; color: var(--text-muted);">
+          A persistent tmux terminal whose <strong>only job is auditing</strong>. No implementation tasks, no progress incentive. Runs drift checks on every PR and merge, plus periodic 30m audit. Cannot be pressured by the implementor&rsquo;s context.
+        </div>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--amber);">
+        <h3>R4: Blocking Dependencies</h3>
+        <div style="font-size: 0.78rem; color: var(--text-muted);">
+          Safety steps are <strong>tasks in the dependency graph</strong>, not prose reminders. The eval harness is task-00 &mdash; every other task depends on it. The build literally cannot start until tests exist. A skippable step becomes an impossible-to-skip dependency.
+        </div>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--purple);">
+        <h3>CE: Independent Reviewers</h3>
+        <div style="font-size: 0.78rem; color: var(--text-muted);">
+          5 specialized reviewer subagents run <strong>in their own context</strong>, each with a single lens (correctness, security, spec, performance, maintainability). They cannot be influenced by the implementor&rsquo;s momentum or the operator&rsquo;s impatience. Confidence-gated verdict: any HIGH-confidence objection blocks the PR.
+        </div>
+      </div>
+    </div>
+    <div class="key-insight">
+      <strong>The test:</strong> if you see a step in this document described in words but not enforced by a hook, a dependency, or a separate agent &mdash; that step will eventually be skipped. Flag it.
+    </div>
+  </div>
+
+  <div class="footnote">Discovered through real build failures. The orchestrator accurately quoted protocol requirements when asked &mdash; it knew the rules. It skipped them anyway because the implementor role produces visible progress and the auditor role doesn&rsquo;t. The fix is never &ldquo;try harder.&rdquo; The fix is always structural.</div>
+</div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- D0 — FULL SYSTEM ARCHITECTURE (single comprehensive view)      -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d0">
   <div class="section-id">D0 &mdash; Full System Architecture</div>
-  <div class="section-title">The complete system: pipeline, agents, safety mechanisms, data flows, and communication — all in one view</div>
+  <div class="section-title">The complete system: pipeline, agents, safety mechanisms, data flows, and communication &mdash; all in one view</div>
+  <div class="plain-english">
+    This is the master map of everything FORGE does. <strong>Read it like an assembly line:</strong> work enters at the top as a product idea, moves through three stages (understand it, plan it, build it), and exits at the bottom as a deployed application. The left column shows which AI agent is working at each step. The middle column shows what that step produces. The right columns show the safety checks and the files created. The three amber rows are where FORGE pauses and asks a human to review before continuing.
+  </div>
   <div class="section-desc">Every other diagram (D1&ndash;D16) is a detail view of a region in this diagram. Columns: left = agents, center = pipeline phases, right = safety &amp; data. Read top to bottom.</div>
 
   <div class="diagram" style="padding: 24px; overflow-x: auto;">
@@ -143,7 +302,7 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
         <!-- ARC 1 header -->
         <tr><td colspan="4" style="padding: 6px 8px; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); border-bottom: 1px solid var(--border); background: var(--blue-dim);">Arc 1: Understand</td></tr>
 
-        <!-- P0-P1 -->
+        <!-- P0-P1-P1b -->
         <tr>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
             <div class="n n-primary" style="font-size: 0.62rem;">Orchestrator<small>skill</small></div>
@@ -152,12 +311,35 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
             <div class="n n-auto" style="font-size: 0.62rem;">P0: Vision</div>
             <div style="color: var(--text-dim); font-size: 0.55rem;">&#x2193;</div>
             <div class="n n-auto" style="font-size: 0.62rem;">P1: Structure</div>
+            <div style="color: var(--text-dim); font-size: 0.55rem;">&#x2193;</div>
+            <div class="n n-auto" style="font-size: 0.62rem;">P1b: PRD Decomposition</div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); color: var(--text-dim);">
             &mdash;
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
-            00-vision/*.md<br>01-intake/PRD.md (locked)<br>CONSTITUTION.md
+            00-vision/*.md<br>01-intake/PRD.md (locked)<br>01-intake/PRD-ENHANCED.md<br>CONSTITUTION.md
+          </td>
+        </tr>
+
+        <!-- GATE 0 -->
+        <tr style="background: var(--amber-dim);">
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
+            <div style="font-size: 0.55rem; color: var(--text-dim); margin-bottom: 4px;">Doc review agents:</div>
+            <div style="display: flex; gap: 3px; justify-content: center; flex-wrap: wrap;">
+              <div class="n n-guard" style="font-size: 0.5rem; padding: 2px 5px;">Feasibility</div>
+              <div class="n n-guard" style="font-size: 0.5rem; padding: 2px 5px;">Scope</div>
+              <div class="n n-guard" style="font-size: 0.5rem; padding: 2px 5px;">Coherence</div>
+            </div>
+          </td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
+            <div class="n n-gate" style="font-size: 0.65rem;">G0: Enhanced PRD (D3)</div>
+          </td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--amber);">
+            Doc reviewers pre-screen<br>Approve / Redirect
+          </td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
+            PRD-ENHANCED.md (corrected)
           </td>
         </tr>
 
@@ -195,14 +377,15 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 
         <!-- GATE 1 -->
         <tr style="background: var(--amber-dim);">
-          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--amber);">
-            &#x23F8; OPERATOR
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
+            <span style="font-weight: 700; color: var(--amber);">&#x23F8; OPERATOR</span>
+            <div style="font-size: 0.5rem; color: var(--text-dim); margin-top: 4px;">Pre-screen: Adversarial<br>+ Feasibility reviewers</div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
             <div class="n n-gate" style="font-size: 0.65rem;">G1: Direction (D3)</div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--amber);">
-            Approve / Redirect / Add context
+            Doc reviewers pre-screen<br>Approve / Redirect / Add context
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
             operator notes &rarr; MEMORY.md
@@ -249,13 +432,14 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
         <!-- GATE 2 -->
         <tr style="background: var(--red-dim);">
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--red);">
-            &#x23F8; OPERATOR<br><small style="font-weight: 400;">point of no return</small>
+            <span style="font-weight: 700; color: var(--red);">&#x23F8; OPERATOR</span><br><small style="font-weight: 400; color: var(--red);">point of no return</small>
+            <div style="font-size: 0.5rem; color: var(--text-dim); margin-top: 4px;">Pre-screen: Scope Guardian<br>+ Coherence + Adversarial</div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
             <div class="n n-gate" style="font-size: 0.65rem; border-color: var(--red); color: var(--red);">G2: Architecture (D3)</div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--red);">
-            Approve / Modify / Rescope<br>Provide API keys + .env
+            Doc reviewers pre-screen<br>Approve / Modify / Rescope<br>Provide API keys + .env
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
             .env (gitignored)
@@ -265,39 +449,49 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
         <!-- ARC 3 header -->
         <tr><td colspan="4" style="padding: 6px 8px; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); border-bottom: 1px solid var(--border); background: var(--green-dim);">Arc 3: Execute + Converge</td></tr>
 
-        <!-- P6 -->
+        <!-- P6 — 3-TERMINAL ARCHITECTURE -->
         <tr>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
-            <div class="n n-auto" style="font-size: 0.62rem; margin-bottom: 4px;">Supervisor<small>terminal</small></div>
+            <div class="n n-primary" style="font-size: 0.58rem; margin-bottom: 4px;">Orchestrator<small>monitors (tmux)</small></div>
+            <div style="font-size: 0.55rem; color: var(--text-dim);">&#x2193; spawns P6a</div>
+            <div class="n n-auto" style="font-size: 0.58rem; margin-bottom: 4px;">Supervisor<small>tmux terminal</small></div>
             <div style="font-size: 0.55rem; color: var(--text-dim);">&#x2193; assigns tasks to</div>
             <div style="display: flex; gap: 3px; justify-content: center; margin-top: 4px; flex-wrap: wrap;">
-              <div class="n n-auto" style="font-size: 0.55rem; padding: 3px 6px;">Impl 1<small>wt</small></div>
-              <div class="n n-auto" style="font-size: 0.55rem; padding: 3px 6px;">Impl 2<small>wt</small></div>
-              <div class="n n-auto" style="font-size: 0.55rem; padding: 3px 6px;">Impl 3<small>wt</small></div>
-              <div class="n n-auto" style="font-size: 0.55rem; padding: 3px 6px;">Impl 4<small>wt</small></div>
+              <div class="n n-auto" style="font-size: 0.5rem; padding: 2px 5px;">Impl 1<small>wt</small></div>
+              <div class="n n-auto" style="font-size: 0.5rem; padding: 2px 5px;">Impl 2<small>wt</small></div>
+              <div class="n n-auto" style="font-size: 0.5rem; padding: 2px 5px;">Impl 3<small>wt</small></div>
+              <div class="n n-auto" style="font-size: 0.5rem; padding: 2px 5px;">Impl 4<small>wt</small></div>
             </div>
             <div style="font-size: 0.5rem; color: var(--text-dim); margin-top: 4px;">fan-out: 1&ndash;4 (D7)</div>
+            <div class="n n-guard" style="font-size: 0.58rem; margin-top: 4px;">Watchdog<small>tmux terminal + /loop 30m</small></div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
             <div class="n n-auto" style="font-size: 0.62rem;">P6: Build (D8)</div>
             <div style="font-size: 0.55rem; color: var(--text-dim); margin-top: 4px;">
-              code &rarr; eval &rarr; pass?<br>
-              yes: PR &rarr; review &rarr; merge<br>
-              no: fix &times;3 &rarr; escalate
+              3-terminal architecture<br>
+              P6a: spawn &rarr; P6b: build loop<br>
+              P6c: watchdog loop<br>
+              P6d: monitor &rarr; P6e: shutdown<br>
+              claude-peers: 12 msg types
             </div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem;">
-            <div style="margin-bottom: 4px;"><span style="color: var(--red);">&#x25A0;</span> <strong>Watchdog (D4)</strong><br><span style="color: var(--text-dim);">on PR + merge + 30m</span></div>
-            <div style="margin-bottom: 4px;"><span style="color: var(--red);">&#x25A0;</span> <strong>Reviewer</strong><br><span style="color: var(--text-dim);">spec + constitution per PR</span></div>
+            <div style="margin-bottom: 4px;"><span style="color: var(--red);">&#x25A0;</span> <strong>Watchdog (D4)</strong><br><span style="color: var(--text-dim);">on PR_SUBMITTED + PR_MERGED + /loop 30m</span></div>
+            <div style="margin-bottom: 4px;"><span style="color: var(--red);">&#x25A0;</span> <strong>Tiered Review (5&times;)</strong><br><span style="color: var(--text-dim);">correctness &bull; spec &bull; security<br>performance &bull; maintainability<br>confidence gating + dedup</span></div>
             <div style="margin-bottom: 4px;"><span style="color: var(--red);">&#x25A0;</span> <strong>Keep-or-revert</strong><br><span style="color: var(--text-dim);">regression = git reset</span></div>
+            <div style="margin-bottom: 4px;"><span style="color: var(--red);">&#x25A0;</span> <strong>Structured debug</strong><br><span style="color: var(--text-dim);">reproduce &rarr; trace &rarr; hypothesis &rarr; fix</span></div>
             <div><span style="color: var(--red);">&#x25A0;</span> <strong>Cost breaker (D12)</strong><br><span style="color: var(--text-dim);">pause at 80% budget</span></div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
             git branches<br>
             .forge/AUDIT.json<br>
+            .forge/REVIEW.json<br>
+            .forge/MESSAGES.json<br>
+            .forge/LEARNINGS.md<br>
             .forge/MEMORY.md<br>
             .forge/COST.json<br>
-            TASKS.json (status updates)
+            .forge/prompts/<br>
+            TASKS.json (status)
           </td>
         </tr>
 
@@ -322,26 +516,29 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
           </td>
         </tr>
 
-        <!-- P8 — GAP LOOP -->
+        <!-- P8 — GAP LOOP + OPTIMIZATION -->
         <tr style="border-left: 3px solid var(--amber);">
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
             <div class="n n-primary" style="font-size: 0.62rem;">Orchestrator<small>classifies gaps</small></div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
-            <div class="n n-auto" style="font-size: 0.62rem;">P8: Gap Loop (D9)</div>
+            <div class="n n-auto" style="font-size: 0.62rem;">P8: Gap Loop + Optimize (D9)</div>
             <div style="font-size: 0.55rem; color: var(--text-dim); margin-top: 4px;">
-              classify by pillar + severity<br>
+              classify by pillar + severity + type<br>
               spec-level: re-derive &sect; &rarr; rebuild<br>
-              PRD-level: queue for G3
+              PRD-level: queue for G3<br>
+              optimization: 3&times; parallel experiments
             </div>
             <div style="font-size: 0.6rem; color: var(--amber); font-weight: 700; margin-top: 4px;">&#x21BB; loop to P6 (&times;3 max)</div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem;">
             <span style="color: var(--red);">&#x25A0;</span> Auto re-derivation<br>(spec-level only)<br>
+            <span style="color: var(--teal);">&#x25A0;</span> Optimization loops<br>(3&times; parallel, measure, keep best)<br>
             <span style="color: var(--text-dim);">PRD gaps &rarr; operator</span>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
             .forge/GAPS.json (updated)<br>
+            .forge/OPTIMIZE.json<br>
             01-intake/DIFF.md<br>
             04-spec/spec.md (re-derived)
           </td>
@@ -375,7 +572,31 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
             CI/CD pipeline (D11)<br>runs on final merge
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
-            README.md<br>RUNBOOK.md<br>.forge/RETRO.md<br>STATE: shipped
+            README.md<br>RUNBOOK.md<br>.forge/RETRO.md<br>.forge/LEARNINGS.md<br>STATE: shipped
+          </td>
+        </tr>
+
+        <!-- ARC 4 — COMPOUND header -->
+        <tr><td colspan="4" style="padding: 6px 8px; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); border-bottom: 1px solid var(--border); background: var(--teal-dim);">Arc 4: Compound (post-ship)</td></tr>
+
+        <!-- P10 -->
+        <tr>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
+            <div class="n" style="font-size: 0.62rem; border-color: var(--teal); color: var(--teal);">Orchestrator<small>/loop or manual</small></div>
+          </td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
+            <div class="n" style="font-size: 0.62rem; border-color: var(--teal); color: var(--teal);">P10: Product Pulse</div>
+            <div style="font-size: 0.55rem; color: var(--text-dim); margin-top: 4px;">
+              usage &bull; performance &bull; errors &bull; feedback<br>
+              time-windowed reports (24h, 7d, 30d)<br>
+              <span style="color: var(--teal); font-weight: 700;">&#x21BB; feeds back to P0 (next build)</span>
+            </div>
+          </td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
+            Optional post-ship<br>Skip on fast track
+          </td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
+            docs/pulse-reports/<br>YYYY-MM-DD.md
           </td>
         </tr>
       </tbody>
@@ -386,13 +607,15 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
       <div style="font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;">Cross-cutting: Communication &amp; Observability (D13)</div>
       <div style="display: flex; gap: 16px; flex-wrap: wrap;">
         <div class="n n-blue" style="font-size: 0.6rem;">.forge/MEMORY.md<small>append-only &bull; all agents &bull; persistent</small></div>
-        <div class="n" style="font-size: 0.6rem; border-color: var(--purple); color: var(--purple);">claude-peers MCP<small>real-time nudges &bull; inter-terminal</small></div>
+        <div class="n" style="font-size: 0.6rem; border-color: var(--purple); color: var(--purple);">claude-peers MCP<small>12 msg types &bull; 3 terminals &bull; JSON envelope</small></div>
+        <div class="n" style="font-size: 0.6rem; border-color: var(--teal); color: var(--teal);">.forge/LEARNINGS.md<small>compound learning &bull; read at P0 of next build</small></div>
         <div class="n" style="font-size: 0.6rem; border-color: var(--amber); color: var(--amber);">forge.yaml config (D14)<small>3-level cascade &bull; model routing</small></div>
         <div class="n n-guard" style="font-size: 0.6rem;">CONSTITUTION.md<small>Art. I&ndash;V inviolable &bull; checked every PR</small></div>
+        <div class="n n-blue" style="font-size: 0.6rem;">.forge/observe/*.jsonl<small>live dashboard &bull; localhost:4040</small></div>
       </div>
     </div>
 
-    <div class="diagram-ref" style="margin-top: 12px;">Every cell in this diagram maps to a detail view: D1 (pipeline flow), D2 (agent primitives), D3 (gate protocol), D4 (watchdog triggers), D5 (decision router), D6 (research protocol), D7 (fan-out), D7b (TDD/eval), D8 (build loop), D9 (gap loop), D10 (visual QA), D11 (CI/CD), D12 (economics), D13 (observability), D14 (config), D15 (trust model), D16 (methodology provenance).</div>
+    <div class="diagram-ref" style="margin-top: 12px;">Every cell maps to a detail view: D1 (pipeline), D2 (agents), D3 (gates), D4 (watchdog), D5 (decisions), D6 (research), D7 (fan-out), D7b (TDD), D8 (build loop), D9 (gap loop), D10 (visual QA), D11 (CI/CD), D12 (economics), D13 (observability), D14 (config), D15 (trust), D16 (provenance), D17 (panel corpus), D18 (doc decks), D19 (dynamic composition), D20 (compound engineering).</div>
   </div>
 </div>
 
@@ -401,8 +624,11 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d1">
   <div class="section-id">D1 &mdash; Master Pipeline</div>
-  <div class="section-title">The complete pipeline: 10 phases, 3 gates, 1 feedback loop</div>
-  <div class="section-desc">This is the primary diagram. Every subsequent diagram (D2&ndash;D12) is a detail view of a specific node or edge in this pipeline.</div>
+  <div class="section-title">The complete pipeline: 12 phases, 4 gates, 1 feedback loop, 1 compound loop</div>
+  <div class="plain-english">
+    The pipeline is the <strong>sequence of steps FORGE follows to turn an idea into working software</strong>. It has four acts: first, understand what needs to be built (decompose the PRD, consult expert panels, do research). Second, write a detailed plan. Third, build and test the software with a 3-terminal agent team, then fix anything that doesn&rsquo;t work. Fourth, after shipping, monitor how the product is actually used and feed that signal back into the next build. The system stops four times for human approval &mdash; after PRD decomposition, after research, after architecture, and before shipping.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> This is the horizontal read of D0&rsquo;s architecture table. Every subsequent diagram (D2&ndash;D21) is a detail view of a specific node or edge in this pipeline.</div>
 
   <div class="diagram">
     <div class="diagram-label">D1: Master Pipeline</div>
@@ -410,6 +636,8 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
       <div class="n" style="border-color: var(--red); color: var(--red);">Idea / PRD</div><span class="arr">&rarr;</span>
       <div class="n n-auto">P0: Vision</div><span class="arr">&rarr;</span>
       <div class="n n-auto">P1: Structure</div><span class="arr">&rarr;</span>
+      <div class="n n-auto">P1b: Decompose</div><span class="arr">&rarr;</span>
+      <div class="n n-gate">G0</div><span class="arr">&rarr;</span>
       <div class="n n-auto">P2: Panels</div><span class="arr">&rarr;</span>
       <div class="n n-auto">P3: Research</div><span class="arr">&rarr;</span>
       <div class="n n-gate">G1</div><span class="arr">&rarr;</span>
@@ -421,18 +649,20 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
       <div class="n n-auto">P8: Gaps</div><span class="arr arr-loop">&#x21BB;</span>
       <div class="n n-gate">G3</div><span class="arr">&rarr;</span>
       <div class="n n-auto">P9: Deploy</div><span class="arr">&rarr;</span>
-      <div class="n n-out">Ship</div>
+      <div class="n n-out">Ship</div><span class="arr">&rarr;</span>
+      <div class="n" style="border-color: var(--teal); color: var(--teal);">P10: Pulse</div><span class="arr" style="color: var(--teal);">&#x21BB;</span>
     </div>
     <div class="legend">
       <span><span class="dot dot-g"></span> Autonomous</span>
       <span><span class="dot dot-a"></span> Human gate</span>
       <span style="color: var(--amber);">&#x21BB; Gap loop (&times;3 max)</span>
+      <span style="color: var(--teal);">&#x21BB; Compound loop (pulse &rarr; next build)</span>
     </div>
-    <div class="diagram-ref">Detail views: D2 (agents), D3 (gates), D4 (drift), D5 (decisions), D6 (research), D7 (fan-out), D7b (TDD), D8 (build loop), D9 (gap loop), D10 (visual QA), D11 (CI/CD), D12 (cost), D13 (observability), D14 (config)</div>
+    <div class="diagram-ref">Detail views: D2 (agents), D3 (gates), D4 (drift), D5 (decisions), D6 (research), D7 (fan-out), D7b (TDD), D8 (build loop), D9 (gap+optimize), D10 (visual QA), D11 (CI/CD), D12 (cost), D13 (observability), D14 (config), D19 (dynamic composition), D20 (compound engineering)</div>
   </div>
 
   <div class="explain">
-    <strong>Three arcs.</strong> P0&ndash;P3 = Understand (challenge requirements). P4&ndash;P5 = Specify (derive buildable contract). P6&ndash;P9 = Execute + Converge (build, test, loop, ship). The gap loop (P8) re-derives the spec on failure &mdash; the code follows. Arc 3 is cyclical; Arcs 1&ndash;2 are linear.
+    <strong>Four arcs.</strong> P0&ndash;P3 = Understand (decompose PRD, challenge requirements). P4&ndash;P5 = Specify (derive buildable contract). P6&ndash;P9 = Execute + Converge (build with 3 terminals, test, gap loop, ship). P10 = Compound (post-ship pulse feeds next build). The gap loop (P8) re-derives the spec on failure. The compound loop (P10 &rarr; P0) makes each build smarter than the last.
   </div>
 
   <div class="explain">
@@ -450,6 +680,9 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <div class="section" id="d2">
   <div class="section-id">D2 &mdash; Agent Topology</div>
   <div class="section-title">10 agents mapped to pipeline phases, each selected for isolation and cost</div>
+  <div class="plain-english">
+    FORGE uses <strong>10 specialized AI agents, each with a specific job</strong>. One orchestrates the whole process. Others run expert panels, do research, write the spec, build the code, review it, test it, and watch for problems. They&rsquo;re organized like a small company: there&rsquo;s a manager (supervisor), a team of up to 4 builders working in parallel, a quality inspector (watchdog), and a tester. Each agent only sees and touches what it needs to &mdash; this prevents one agent&rsquo;s mistake from cascading into everything else.
+  </div>
   <div class="section-desc">References D1 phases. Three primitives: skill (orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). See D7 for fan-out sizing.</div>
 
   <div class="diagram">
@@ -503,7 +736,7 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
         <tr><td style="font-weight:700;">Supervisor</td><td>Terminal</td><td>Long-running, manages task queue</td><td>.forge/MEMORY.md</td></tr>
         <tr><td style="font-weight:700;">Implementor &times;4</td><td>Agent (worktree)</td><td>Parallel code; git isolation prevents conflicts</td><td>Branch git log</td></tr>
         <tr><td style="font-weight:700;">Reviewer</td><td>Subagent</td><td>Reads PR + spec, returns verdict. Optional 2nd model (Codex).</td><td>.forge/MEMORY.md</td></tr>
-        <tr><td style="font-weight:700;">Watchdog</td><td>Event + /loop 30m</td><td>On PR submit, on merge, every 30m on main. Never checks WIP.</td><td>.forge/AUDIT.json</td></tr>
+        <tr><td style="font-weight:700;">Watchdog</td><td>Terminal (tmux) + /loop 30m</td><td>Persistent tmux session, spawned P6a, killed P6e. Drift-checks on PR_SUBMITTED + PR_MERGED (claude-peers push), full-repo audit every 30m. Never checks WIP.</td><td>.forge/AUDIT.json</td></tr>
         <tr><td style="font-weight:700;">Tester</td><td>Subagent + Playwright</td><td>Runs tests + screenshots</td><td>.forge/GAPS.json</td></tr>
         <tr><td style="font-weight:700;">Decision Router</td><td>Prompt injection</td><td>Behavioral rule, no tools, all agents</td><td>MEMORY.md</td></tr>
       </tbody>
@@ -610,8 +843,11 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d3">
   <div class="section-id">D3 &mdash; Human Gates</div>
-  <div class="section-title">3 decision points where the pipeline pauses for operator input</div>
-  <div class="section-desc">References D1 G1, G2, G3. Escalation format enforced: every question includes options, recommendation, reversibility. See D5 for how non-gate decisions are routed.</div>
+  <div class="section-title">4 decision points where the pipeline pauses for operator input &mdash; each pre-screened by document review agents</div>
+  <div class="plain-english">
+    FORGE works autonomously, but it <strong>stops four times to ask you for approval</strong>. Before each stop, document review agents (feasibility, scope guardian, coherence, adversarial) pre-screen the artifacts so you see higher-quality material. The first stop is after decomposing the PRD into a checklist &mdash; &ldquo;did I understand the requirements correctly?&rdquo; The second is after expert panels and research &mdash; &ldquo;here&rsquo;s the direction, should I write the spec?&rdquo; The third is after the full spec &mdash; &ldquo;here&rsquo;s the architecture, should I start building?&rdquo; (point of no return). The fourth is after building and testing &mdash; &ldquo;should I ship?&rdquo;
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> The four amber rows in D0. References D1 G0, G1, G2, G3. Escalation format enforced: every question includes options, recommendation, reversibility. See D5 for how non-gate decisions are routed.</div>
 
   <div class="diagram">
     <div class="diagram-label">D3: Gate protocol</div>
@@ -630,7 +866,16 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
     </div>
   </div>
 
-  <div class="grid-3" style="margin-top: 12px;">
+  <div class="grid-4" style="margin-top: 12px;">
+    <div class="card" style="border-top: 2px solid var(--teal);">
+      <h3>G0: Enhanced PRD</h3>
+      <div style="font-size: 0.75rem; color: var(--text-muted);">
+        <strong>System:</strong> PRD-ENHANCED.md checklist, risky assumptions, open questions<br>
+        <strong>Pre-screen:</strong> Feasibility + Scope Guardian + Coherence reviewers<br>
+        <strong>Operator:</strong> Fix priorities, answer questions, confirm scope<br>
+        <strong>Position:</strong> Cheapest correction point (D1 between P1b&ndash;P2)
+      </div>
+    </div>
     <div class="card" style="border-top: 2px solid var(--amber);">
       <h3>G1: Direction</h3>
       <div style="font-size: 0.75rem; color: var(--text-muted);">
@@ -663,8 +908,11 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d4">
   <div class="section-id">D4 &mdash; Drift Detection</div>
-  <div class="section-title">7-category watchdog: triggered on PR submission, merge, and periodic audit — never on work-in-progress</div>
-  <div class="section-desc">References D1 P6. The watchdog does not run on a blind timer against in-progress worktrees — agents mid-implementation will always fail checks because the work isn't done. Instead, it triggers at 3 specific points where the code is claimed to be complete.</div>
+  <div class="section-title">7-category watchdog: triggered on PR submission, merge, and periodic audit &mdash; never on work-in-progress</div>
+  <div class="plain-english">
+    The watchdog is like <strong>a quality inspector who checks every piece of work before it gets merged into the final product</strong>. It looks for seven types of problems: Did the code match the plan? Did the interfaces stay consistent? Did anyone add features that weren&rsquo;t in the spec? Did the tests get weakened? The key design choice is that the watchdog only checks work that&rsquo;s claimed to be finished &mdash; it doesn&rsquo;t interrupt builders mid-task, because unfinished work will always look broken.
+  </div>
+  <div class="section-desc">References D1 P6. The watchdog does not run on a blind timer against in-progress worktrees &mdash; agents mid-implementation will always fail checks because the work isn't done. Instead, it triggers at 3 specific points where the code is claimed to be complete.</div>
 
   <div class="diagram">
     <div class="diagram-label">D4a: Watchdog trigger points (not a blind timer)</div>
@@ -719,6 +967,9 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <div class="section" id="d5">
   <div class="section-id">D5 &mdash; Decision Router</div>
   <div class="section-title">How agents classify decisions: act silently, log, escalate, or queue for gate</div>
+  <div class="plain-english">
+    While building, agents constantly face decisions &mdash; which variable name to use, which library to pick, whether to change an interface. <strong>The decision router tells every agent how to handle each decision based on how hard it is to undo.</strong> Trivial choices (naming, formatting) are made silently. Medium choices (library picks) are made and logged. Big choices (adding a dependency, changing an API) get escalated to the supervisor. Irreversible choices (dropping a feature, changing scope) are held for a human gate. This keeps the build moving fast on the small stuff while protecting against costly mistakes.
+  </div>
   <div class="section-desc">Injected into every agent prompt (D2). Prevents agents from pausing the build for trivial decisions or making irreversible choices without approval.</div>
 
   <div class="diagram">
@@ -761,6 +1012,9 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <div class="section" id="d6">
   <div class="section-id">D6 &mdash; Research Protocol</div>
   <div class="section-title">How panels and research agents produce grounded, traceable evidence</div>
+  <div class="plain-english">
+    When expert panels raise questions (&ldquo;which database should we use?&rdquo; or &ldquo;can this API handle our volume?&rdquo;), <strong>a research agent investigates and comes back with at least three options and a recommendation</strong>. Every finding gets labeled: VERIFIED means it was confirmed with a real source or test. UNVERIFIED means it&rsquo;s a reasonable assumption but hasn&rsquo;t been proven. OPEN means the research timed out and a human needs to weigh in. This prevents the system from building on top of guesses.
+  </div>
   <div class="section-desc">References D1 P2&ndash;P3. Every claim classified as VERIFIED, UNVERIFIED, or OPEN. OPEN questions surface at G1 (D3).</div>
 
   <div class="diagram">
@@ -795,6 +1049,9 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <div class="section" id="d7">
   <div class="section-id">D7 &mdash; Fan-Out Sizing</div>
   <div class="section-title">How the system determines implementor count during P5 (Task Decomposition)</div>
+  <div class="plain-english">
+    FORGE can run <strong>up to four builders working at the same time</strong>, but it doesn&rsquo;t always use all four. A small project with five simple tasks gets one builder. A medium project with a dozen tasks gets two. A complex project gets three or four. The cap at four exists because someone has to review all the work &mdash; and reviewing more than four parallel streams honestly is impossible. If a project needs more parallelism, FORGE runs two sequential rounds of four rather than fanning out to eight.
+  </div>
   <div class="section-desc">References D1 P5, D2 implementor row. Based on task count, dependency parallelism, and reviewer capacity. Cap: &le;4 (beyond 4, review quality degrades).</div>
 
   <div class="diagram">
@@ -820,6 +1077,9 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <div class="section" id="d7b">
   <div class="section-id">D7b &mdash; Test-Driven Development</div>
   <div class="section-title">Tests generated from workflow state machine before any code is written</div>
+  <div class="plain-english">
+    Before any code is written, <strong>FORGE generates a set of tests that define what &ldquo;working&rdquo; looks like</strong>. These tests come from the user workflow map &mdash; each step in the user&rsquo;s journey becomes a test case. The critical rule: the building agents are not allowed to change these tests. They can only write code that passes them. This prevents a common failure mode where an AI &ldquo;fixes&rdquo; a failing test by weakening the test instead of fixing the code.
+  </div>
   <div class="section-desc">References D1 P4&ndash;P5. The eval harness is immutable once generated &mdash; implementing agents cannot weaken, skip, or modify tests. This is the TDD red-green-refactor cycle, enforced structurally rather than by discipline. <em>Sources: Kent Beck, TDD (2002); Karpathy autoresearch "prepare.py is read-only."</em></div>
 
   <div class="diagram">
@@ -859,6 +1119,9 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <div class="section" id="d8">
   <div class="section-id">D8 &mdash; Build &amp; Bug-Fix Loop</div>
   <div class="section-title">How code is written, reviewed, and fixed without human intervention</div>
+  <div class="plain-english">
+    When an agent writes code, it immediately runs the tests. <strong>If the tests pass, the code gets submitted for review and merged. If they fail, the agent gets three tries to fix the problem.</strong> There&rsquo;s a critical safety rule: the codebase can only get better, never worse. If a change makes previously-passing tests fail, the change is automatically undone. This &ldquo;ratchet&rdquo; guarantees that the project moves forward or stays put &mdash; it never regresses. After three failed fix attempts, the problem gets escalated rather than endlessly retried.
+  </div>
   <div class="section-desc">References D1 P6. Implements keep-or-revert ratchet: the branch only advances on verified improvement. Failed tests trigger a 3-attempt fix loop before escalation. <em>Source: Karpathy autoresearch (program.md: "improvements advance the branch; regressions git reset --hard").</em></div>
 
   <div class="diagram">
@@ -918,9 +1181,12 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- D9 — GAP LOOP                                                   -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d9">
-  <div class="section-id">D9 &mdash; Gap Loop</div>
-  <div class="section-title">The convergence mechanism: classify failures, re-derive spec, rebuild</div>
-  <div class="section-desc">References D1 P7&ndash;P8. The core mechanism that separates Forge from a one-shot build. Spec-level gaps auto-rederive. PRD-level gaps surface at G3 (D3). Max 3 iterations.</div>
+  <div class="section-id">D9 &mdash; Gap Loop + Optimization</div>
+  <div class="section-title">The convergence mechanism: classify failures, re-derive spec, rebuild &mdash; plus parallel optimization experiments for performance gaps</div>
+  <div class="plain-english">
+    After building and testing, problems are inevitable. The gap loop is how FORGE <strong>turns failures into fixes systematically</strong>. Each problem gets classified: is this a spec issue (the plan was wrong) or a PRD issue (the requirements were ambiguous)? Spec issues get auto-fixed by re-deriving the affected spec section and rebuilding. PRD issues get surfaced to the operator &mdash; FORGE doesn&rsquo;t guess. For performance/UX gaps (it works but could be better), FORGE runs up to 3 parallel experiments, measures each, and keeps the winner.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> The amber-bordered P8 row in Arc 3. References D1 P7&ndash;P8, the feedback arrow. Max 3 gap loop iterations; optimization runs once.</div>
 
   <div class="diagram">
     <div class="diagram-label">D9: Gap loop (D1 P7&ndash;P8, feedback arrow)</div>
@@ -966,8 +1232,11 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d10">
   <div class="section-id">D10 &mdash; Visual QA Loop</div>
-  <div class="section-title">Screenshot-driven UI verification at 3 viewports</div>
-  <div class="section-desc">References D1 P7, D4 visual drift category. Catches overlapping text, clipped elements, broken layouts that code review cannot see.</div>
+  <div class="section-title">Screenshot-driven UI verification at 3 viewports &mdash; the test that code review cannot perform</div>
+  <div class="plain-english">
+    Code review catches logic bugs but <strong>cannot see what the user sees</strong>. Visual QA takes screenshots of every surface at mobile (390px), tablet (768px), and desktop (1440px) viewports, then uses Claude&rsquo;s vision to check for overlapping text, clipped elements, and broken layouts. If something looks wrong, the implementor fixes it and the system re-screenshots &mdash; up to 3 times per component. The concrete walkthrough (R6) requires WALKTHROUGH.md with screenshot evidence before Phase 8 can begin.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> Part of the P7 row in Arc 3. References D4 visual drift category.</div>
 
   <div class="diagram">
     <div class="diagram-label">D10: Visual QA loop (D1 P7, D4 visual category)</div>
@@ -1009,8 +1278,11 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d11">
   <div class="section-id">D11 &mdash; CI/CD Pipeline</div>
-  <div class="section-title">Auto-generated pipeline that makes D4 (watchdog) permanent infrastructure</div>
-  <div class="section-desc">Generated during D1 P5. Runs on every PR and every merge to main. The drift-check stage reads spec.md directly. Platform: GitHub Actions or GitLab CI (configurable).</div>
+  <div class="section-title">Auto-generated pipeline that makes the watchdog permanent infrastructure &mdash; drift checking survives the build</div>
+  <div class="plain-english">
+    The watchdog (D4) runs during the build, but what happens after FORGE finishes? The CI/CD pipeline <strong>bakes the watchdog checks into permanent infrastructure</strong>. Every future PR and merge &mdash; even those made by humans months later &mdash; runs through the same drift detection, constitution checks, and visual QA that FORGE used during the build.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> Generated during P5, runs during P6+, survives after P9. Platform: GitHub Actions or GitLab CI (configurable in forge.yaml).</div>
 
   <div class="diagram">
     <div class="diagram-label">D11: CI/CD pipeline (generated at D1 P5, runs during D1 P6+)</div>
@@ -1033,8 +1305,11 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d12">
   <div class="section-id">D12 &mdash; Economics</div>
-  <div class="section-title">Three cost layers tracked at different timescales</div>
-  <div class="section-desc">Build tokens (one-time), runtime infra (monthly), deployed agent effectiveness (per-request). Each layer surfaces at a specific gate (D3). Cost circuit-breaker halts build at 80% of budget cap.</div>
+  <div class="section-title">Three cost layers tracked at different timescales &mdash; with a circuit-breaker that stops the build before it blows the budget</div>
+  <div class="plain-english">
+    AI builds can get expensive fast. FORGE tracks three cost layers: <strong>build tokens</strong> (what it costs to run the agents), <strong>runtime infrastructure</strong> (what it costs to deploy), and <strong>per-request effectiveness</strong> (what each AI call costs when users use the product). Each layer gets surfaced at the appropriate gate so the operator can make informed cost decisions. If build spending hits 80% of the budget cap, a circuit-breaker automatically pauses the build and alerts the operator.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> The cost breaker appears in the P6 Safety column. COST.json is in the Data column. References D3 gates for when costs are surfaced.</div>
 
   <div class="diagram">
     <div class="diagram-label">D12: Cost flow — when each layer is measured and surfaced</div>
@@ -1070,8 +1345,11 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d13">
   <div class="section-id">D13 &mdash; Observability</div>
-  <div class="section-title">How every agent, phase, and safety mechanism writes to a shared state layer</div>
-  <div class="section-desc">References all diagrams. Every agent writes to .forge/; every safety mechanism reads from it. Two communication channels: file-based (persistent, survives crashes) and claude-peers (real-time, inter-terminal). The operator queries state from any terminal at any time.</div>
+  <div class="section-title">Every agent writes structured events to a shared state layer, visible in a live dashboard with 4 visual themes</div>
+  <div class="plain-english">
+    Every action every agent takes &mdash; every file read, every write, every message sent, every decision made &mdash; gets <strong>logged as a structured event</strong> to a JSONL file. A live dashboard at <code>localhost:4040</code> merges all agent logs and shows them in real time: a health summary (&ldquo;should I be worried?&rdquo;), an agent topology graph, a Gantt timeline aligned to the pipeline arcs, and a filterable event stream. The dashboard has a <strong>Basic mode</strong> (health view only, human-readable descriptions) and an <strong>Expert mode</strong> (all views, raw data, context numbers). Four visual themes: Linear (clean white), Grafana (dark panels), Bloomberg Terminal (maximum density), Raycast (glass effects).
+  </div>
+  <div class="section-desc">References all diagrams. Three data layers: .forge/ state files (persistent), .forge/observe/*.jsonl (event stream), claude-peers MCP (real-time inter-terminal). The operator queries state via the dashboard or from any terminal at any time.</div>
 
   <div class="diagram">
     <div class="diagram-label">D13a: Data flow — who writes what, who reads what</div>
@@ -1086,41 +1364,61 @@ h3 { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 4p
           <tr><td style="font-weight:700;">GAPS.json</td><td>Tester (P7), gap loop (P8)</td><td>Orchestrator, operator</td><td>After test runs + walkthrough</td><td>D9, D10</td></tr>
           <tr><td style="font-weight:700;">COST.json</td><td>Orchestrator (per agent call)</td><td>Budget circuit-breaker, operator</td><td>After every agent spawn/return</td><td>D12</td></tr>
           <tr><td style="font-weight:700;">EVAL/</td><td>Spec writer (P5) &mdash; then locked</td><td>All implementors, tester</td><td>Written once, immutable</td><td>D7b, D8</td></tr>
+          <tr><td style="font-weight:700;">HEARTBEAT.json</td><td>Supervisor, implementors, watchdog</td><td>Orchestrator (stall detection)</td><td>Every 5 minutes during P6</td><td>D8</td></tr>
+          <tr><td style="font-weight:700;">TEST_RESULTS.md</td><td>Tester (P7)</td><td>Gap loop, operator</td><td>After test runs</td><td>D10</td></tr>
+          <tr><td style="font-weight:700;">RETRO.md</td><td>Orchestrator (P9)</td><td>Operator, next build</td><td>End of build</td><td>D1</td></tr>
+          <tr><td style="font-weight:700;">observe/*.jsonl</td><td>All agents (one file each)</td><td>Dashboard (localhost:4040)</td><td>Every event (read, write, send, tool, etc.)</td><td>D13, D19</td></tr>
+          <tr><td style="font-weight:700;">MESSAGES.json</td><td>All terminals (append)</td><td>All terminals (fallback)</td><td>Every claude-peers message</td><td>D13b</td></tr>
+          <tr><td style="font-weight:700;">REVIEW.json</td><td>Supervisor (P6b)</td><td>Operator, gap loop</td><td>After tiered code review</td><td>D20</td></tr>
+          <tr><td style="font-weight:700;">LEARNINGS.md</td><td>Orchestrator (P6e, P9)</td><td>Next build&rsquo;s P0</td><td>End of build + deploy</td><td>D20</td></tr>
+          <tr><td style="font-weight:700;">OPTIMIZE.json</td><td>Gap loop (P8)</td><td>Operator</td><td>After optimization experiments</td><td>D20</td></tr>
+          <tr><td style="font-weight:700;">WALKTHROUGH.md</td><td>Tester (P7)</td><td>Phase gate hook (R6)</td><td>After concrete walkthrough</td><td>D10, R6</td></tr>
+          <tr><td style="font-weight:700;">prompts/</td><td>Orchestrator (P6a)</td><td>Supervisor, watchdog (on spawn)</td><td>Generated once at P6 start</td><td>D8</td></tr>
+          <tr><td style="font-weight:700;">P6_EXIT.json</td><td>Orchestrator (P6e)</td><td>Phase gate hook (R1)</td><td>End of P6</td><td>D8, R1</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">D13b: Communication channels — file-based vs real-time</div>
+    <div class="diagram-label">D13b: Three communication layers — state files, event stream, real-time messaging</div>
     <div class="vflow" style="padding: 8px 0;">
-      <div class="branch no-bar" style="gap: 40px;">
+      <div class="branch no-bar" style="gap: 24px;">
         <div>
-          <div class="n n-primary" style="min-width: 200px;">File-based (.forge/)<small>persistent, survives crashes</small></div>
+          <div class="n n-primary" style="min-width: 180px;">State files (.forge/)<small>persistent &bull; survives crashes</small></div>
           <div class="vline"></div>
-          <div class="n n-auto" style="min-width: 200px;">MEMORY.md<small>append-only &bull; timestamped</small></div>
-          <div class="vline"></div>
-          <div class="branch no-bar" style="gap: 8px;">
-            <div class="n n-auto" style="font-size: 0.62rem;">Decisions</div>
-            <div class="n n-auto" style="font-size: 0.62rem;">Assignments</div>
-            <div class="n n-auto" style="font-size: 0.62rem;">Escalations</div>
-            <div class="n n-auto" style="font-size: 0.62rem;">Drift reports</div>
+          <div class="branch no-bar" style="gap: 6px;">
+            <div class="n n-auto" style="font-size: 0.58rem;">MEMORY.md</div>
+            <div class="n n-auto" style="font-size: 0.58rem;">TASKS.json</div>
+            <div class="n n-auto" style="font-size: 0.58rem;">AUDIT.json</div>
+            <div class="n n-auto" style="font-size: 0.58rem;">COST.json</div>
           </div>
           <div class="vline"></div>
-          <div style="font-size: 0.62rem; color: var(--text-dim);">All agents read before acting.<br>All agents write under own heading.<br>No overwrites, no deletions.</div>
+          <div style="font-size: 0.58rem; color: var(--text-dim);">All agents read before acting.<br>Append-only, no deletions.<br>Source of truth for --resume.</div>
         </div>
         <div>
-          <div class="n n-blue" style="min-width: 200px;">claude-peers MCP<small>real-time, inter-terminal</small></div>
+          <div class="n" style="min-width: 180px; border-color: var(--teal); color: var(--teal);">Event stream (observe/)<small>per-agent JSONL &bull; live dashboard</small></div>
           <div class="vline"></div>
-          <div class="n n-auto" style="min-width: 200px;">send_message / check_messages<small>nudges between terminals</small></div>
-          <div class="vline"></div>
-          <div class="branch no-bar" style="gap: 8px;">
-            <div class="n n-auto" style="font-size: 0.62rem;">Stall nudge</div>
-            <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.62rem;">Drift alert</div>
-            <div class="n n-guard" style="font-size: 0.62rem;">Build halt</div>
+          <div class="branch no-bar" style="gap: 6px;">
+            <div class="n" style="font-size: 0.58rem; border-color: var(--teal); color: var(--teal);">SPAWN</div>
+            <div class="n" style="font-size: 0.58rem; border-color: var(--teal); color: var(--teal);">READ/WRITE</div>
+            <div class="n" style="font-size: 0.58rem; border-color: var(--teal); color: var(--teal);">SEND/RECV</div>
+            <div class="n" style="font-size: 0.58rem; border-color: var(--teal); color: var(--teal);">LOOP_*</div>
           </div>
           <div class="vline"></div>
-          <div style="font-size: 0.62rem; color: var(--text-dim);">set_summary on spawn<br>so operator sees what<br>each terminal is doing.</div>
+          <div style="font-size: 0.58rem; color: var(--text-dim);">16 event types, JSON schema.<br>Merged by dashboard server.<br>Gantt + topology + health views.</div>
+        </div>
+        <div>
+          <div class="n n-blue" style="min-width: 180px;">claude-peers MCP<small>real-time &bull; 12 message types</small></div>
+          <div class="vline"></div>
+          <div class="branch no-bar" style="gap: 6px;">
+            <div class="n n-auto" style="font-size: 0.58rem;">PR_SUBMITTED</div>
+            <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.58rem;">DRIFT_*</div>
+            <div class="n n-guard" style="font-size: 0.58rem;">BUILD_HALT</div>
+            <div class="n n-auto" style="font-size: 0.58rem;">SHUTDOWN</div>
+          </div>
+          <div class="vline"></div>
+          <div style="font-size: 0.58rem; color: var(--text-dim);">JSON envelope per message.<br>Fallback: MESSAGES.json.<br>3 terminals during P6.</div>
         </div>
       </div>
     </div>
@@ -1197,7 +1495,36 @@ claude-peers list_peers --scope repo
     </div>
   </div>
 
-  <div class="diagram-ref" style="font-size: 0.62rem; color: var(--text-dim); margin-top: 8px;">
+  <div class="diagram">
+    <div class="diagram-label">D13e: Live observability dashboard — 4 themes, 2 modes, real-time event streaming</div>
+    <div class="grid-2" style="gap: 12px;">
+      <div>
+        <div class="explain" style="margin-bottom: 0;">
+          <strong>Launch:</strong> <code>python3 ~/projects/workflow/tools/observe-server.py</code> &rarr; <code>localhost:4040</code><br><br>
+          <strong>4 views:</strong><br>
+          &bull; <strong>Health</strong> (default) &mdash; &ldquo;should I be worried?&rdquo; in 2 seconds<br>
+          &bull; <strong>Events</strong> &mdash; filterable stream with human-readable descriptions<br>
+          &bull; <strong>Graph</strong> &mdash; agent topology with communication arrows<br>
+          &bull; <strong>Timeline</strong> &mdash; Gantt chart aligned to pipeline arcs
+        </div>
+      </div>
+      <div>
+        <div class="explain" style="margin-bottom: 0;">
+          <strong>2 modes:</strong><br>
+          &bull; <strong>Basic</strong> &mdash; health view + human-readable events (for vibe coders)<br>
+          &bull; <strong>Expert</strong> &mdash; all views + seq numbers + context columns + raw data<br><br>
+          <strong>4 themes:</strong><br>
+          &bull; <strong>Linear</strong> &mdash; clean white, purple accents, generous spacing<br>
+          &bull; <strong>Grafana</strong> &mdash; dark charcoal, blue/green accents, dense grids<br>
+          &bull; <strong>Bloomberg</strong> &mdash; pure black, orange monospace, zero radius<br>
+          &bull; <strong>Raycast</strong> &mdash; deep purple, glass blur, gradient accents
+        </div>
+      </div>
+    </div>
+    <div class="diagram-ref">Source: <code>tools/dashboard.html</code> + <code>forge-observe.py</code>. Dashboard polls every 2s. Agent events auto-merge and sort by timestamp. Filter by clicking any agent. &ldquo;N new since last visit&rdquo; badge persists via localStorage.</div>
+  </div>
+
+  <div class="footnote">
     Cross-refs: D4 (writes AUDIT.json), D5 (writes decisions to MEMORY.md), D7b (writes EVAL/), D8 (reads EVAL/, triggers on AUDIT), D9 (writes GAPS.json), D12 (writes COST.json, reads budget from forge.yaml).
   </div>
 </div>
@@ -1205,10 +1532,13 @@ claude-peers list_peers --scope repo
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- CONFIGURATION                                                   -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<div class="section" id="config">
+<div class="section" id="d14">
   <div class="section-id">D14 &mdash; Configuration</div>
   <div class="section-title">forge.yaml: 3-level override cascade controlling all agent and build behavior</div>
-  <div class="section-desc">Global defaults cascade to project overrides to CLI flags. Every agent reads forge.yaml on spawn. Changes propagate without restarting the build.</div>
+  <div class="plain-english">
+    FORGE is configured through a single file &mdash; <code>forge.yaml</code> &mdash; that controls everything from which AI model each agent uses to how many implementors run in parallel to the budget cap. There are <strong>three layers</strong>: global defaults (in <code>~/.forge/</code>), project overrides (in the repo&rsquo;s <code>.forge/</code>), and CLI flags that override both. Every agent reads the config on spawn, so you can change settings mid-build.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> The Config row at the top of D0&rsquo;s architecture table. Referenced by D2 (model routing per agent), D7 (implementor count), D12 (budget cap).</div>
 
   <div class="diagram">
     <div class="diagram-label">D14: Configuration cascade</div>
@@ -1247,7 +1577,10 @@ claude-peers list_peers --scope repo
 <div class="section" id="d15">
   <div class="section-id">D15 &mdash; Trust Model</div>
   <div class="section-title">Why the operator can walk away between gates: every autonomous phase has a catch mechanism</div>
-  <div class="section-desc">Each row shows what was previously manual, what replaces it, what catches failure autonomously, and what evidence the operator sees at the next gate. The operator reviews evidence, not claims.</div>
+  <div class="plain-english">
+    The point of FORGE is that <strong>you don&rsquo;t need to watch the build</strong>. Between gates, the system runs autonomously. But why should you trust it? Because every autonomous phase has a specific mechanism that catches failure before it compounds. The watchdog catches drift. The keep-or-revert ratchet prevents regressions. The phase gate hook prevents advancement without proof. When you check in at a gate, you see evidence &mdash; not claims.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> The Safety &amp; Guards column in D0 maps every mechanism to its phase. This section explains why those mechanisms earn the operator&rsquo;s trust.</div>
 
   <div class="diagram">
     <div class="diagram-label">D15: Trust chain — what replaces human effort, what catches failure</div>
@@ -1323,7 +1656,10 @@ claude-peers list_peers --scope repo
 <div class="section" id="d16">
   <div class="section-id">D16 &mdash; Methodology Provenance</div>
   <div class="section-title">Where each borrowed mechanism lives in the pipeline, and what it prevents</div>
-  <div class="section-desc">Every mechanism traces to a source. This table maps source &rarr; principle &rarr; where it appears in Forge &rarr; what failure mode it prevents. Mechanisms without a diagram reference are v1 gaps (acknowledged, not shipped).</div>
+  <div class="plain-english">
+    FORGE isn&rsquo;t invented from scratch &mdash; it <strong>assembles proven mechanisms from multiple sources</strong>: Karpathy&rsquo;s autoresearch (eval-first, keep-or-revert), Beck&rsquo;s TDD (tests before code), Zaharia&rsquo;s Compound AI Systems (inter-stage assertions), Every Inc.&rsquo;s Compound Engineering (tiered review, learning capture), and lessons from real FORGE build failures (R1&ndash;R6 enforcement). This table traces every mechanism to its source so you know why it exists and what breaks if you remove it.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> Every cell in D0&rsquo;s Safety column traces to a row in this table. Every mechanism exists because a specific failure mode was observed or predicted.</div>
 
   <div class="diagram">
     <div class="diagram-label">D16a: Incorporated mechanisms — active in the current system</div>
@@ -1396,6 +1732,74 @@ claude-peers list_peers --scope repo
           <td><strong>D1</strong> P0 &rarr; P2 (panels review through pillars)</td>
           <td><strong>Generic advice.</strong> Without project-specific pillars, panels produce boilerplate. Pillars force every finding to cite the specific project criteria it serves.</td>
         </tr>
+        <!-- COMPOUND ENGINEERING -->
+        <tr>
+          <td style="font-weight:700; color: var(--teal);">Compound Eng.<br><span style="font-weight:400; font-size:0.6rem;">Every Inc.</span></td>
+          <td>Tiered multi-agent code review<br><span style="color:var(--text-dim);">5 parallel specialized reviewers + confidence gating + dedup</span></td>
+          <td><strong>D20</strong> (CE integration)<br><strong>D8</strong> P6b step 4<br>.forge/REVIEW.json</td>
+          <td><strong>Single-reviewer blind spots.</strong> One reviewer misses what it&rsquo;s not looking for. 5 lenses (correctness, spec, security, performance, maintainability) with confidence-gated synthesis catch more, independently.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
+          <td>Compound learning capture<br><span style="color:var(--text-dim);">&ldquo;each unit of work should make the next one easier&rdquo;</span></td>
+          <td><strong>D20</strong> (CE integration)<br>P6e &rarr; .forge/LEARNINGS.md<br>Read at P0 of next build</td>
+          <td><strong>Rediscovering known solutions.</strong> Without structured capture, agents re-derive the same gotchas, patterns, and debug traces from scratch every build. Learnings compound across builds.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
+          <td>Document review agents at gates<br><span style="color:var(--text-dim);">parallel persona pre-screening</span></td>
+          <td><strong>D3</strong> G0, G1, G2<br>Feasibility, Scope Guardian,<br>Coherence, Adversarial</td>
+          <td><strong>Operator reviewing raw artifacts.</strong> Without pre-screening, the operator sees unfiltered spec output. Doc reviewers catch feasibility gaps, scope creep, and contradictions before the human reads anything.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
+          <td>Product Pulse (post-ship monitoring)<br><span style="color:var(--text-dim);">time-windowed reports feeding next build</span></td>
+          <td><strong>D20</strong> P10<br>docs/pulse-reports/<br>Feeds P0 of next build</td>
+          <td><strong>Building blind to user reality.</strong> Without post-ship signal, the next build guesses what matters. Pulse reports ground the next vision in actual usage, errors, and feedback.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
+          <td>Structured debug protocol<br><span style="color:var(--text-dim);">reproduce &rarr; trace &rarr; hypothesis &rarr; test-first fix</span></td>
+          <td><strong>D8</strong> P6b step 6<br>Replaces blind retry</td>
+          <td><strong>Random fix attempts.</strong> Without a protocol, agents try 3 random fixes and escalate. Structured debug forces root cause identification before the fix, producing lasting solutions.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
+          <td>Optimization loops<br><span style="color:var(--text-dim);">3&times; parallel experiments, measure, keep best</span></td>
+          <td><strong>D9</strong> P8 (gap loop)<br>.forge/OPTIMIZE.json</td>
+          <td><strong>First-try-is-final.</strong> For performance/UX gaps, the first approach may not be best. Parallel experiments with measurement find the optimal solution, not just a working one.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
+          <td>Session intelligence<br><span style="color:var(--text-dim);">search past session logs for crashed agent context</span></td>
+          <td><strong>D8</strong> P6d crash recovery<br>Re-spawn with continuity</td>
+          <td><strong>Cold-start on crash recovery.</strong> Without session intelligence, a re-spawned agent starts fresh and re-reads everything. With it, the replacement gets a summary of what the crashed agent was doing.</td>
+        </tr>
+        <!-- R1-R6 ENFORCEMENT -->
+        <tr>
+          <td style="font-weight:700; color: var(--red);">Forge retro<br><span style="font-weight:400; font-size:0.6rem;">R1&ndash;R6</span></td>
+          <td>Phase gate hook<br><span style="color:var(--text-dim);">blocks STATE.json without artifacts</span></td>
+          <td><strong>Core Principle</strong><br>forge-phase-gate.sh<br>PreToolUse hook on Write</td>
+          <td><strong>Phase skipping under pressure.</strong> The implementor skips invisible safety steps (tests, reviews, assertions) and does the exciting visible step instead. A hook makes advancement mechanically impossible without proof.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--red);">Forge retro</td>
+          <td>Eval harness as task-00<br><span style="color:var(--text-dim);">blocking dependency, not prose reminder</span></td>
+          <td><strong>D7b</strong> P5<br>task-00 in TASKS.json<br>Every task depends on it</td>
+          <td><strong>Eval step skipped under time pressure.</strong> As a &ldquo;step the orchestrator performs,&rdquo; it gets skipped. As task-00 with every task depending on it, the build literally cannot start without tests.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--red);">Forge retro</td>
+          <td>Context-long checkpoint<br><span style="color:var(--text-dim);">forced pause at ~200k tokens</span></td>
+          <td><strong>D1</strong> pipeline header<br>R5 protocol</td>
+          <td><strong>Urgency bias at context limit.</strong> At ~200k tokens the agent feels pressure to finish fast, skipping steps. The checkpoint forces a deliberate pause: write state, run checklist, log skips.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700; color: var(--red);">Forge retro</td>
+          <td>Concrete walkthrough commands<br><span style="color:var(--text-dim);">not &ldquo;run walkthrough&rdquo; but exact steps</span></td>
+          <td><strong>D10</strong> P7 step 4<br>.forge/WALKTHROUGH.md<br>Phase gate requires it</td>
+          <td><strong>Vague instructions interpreted as &ldquo;skip.&rdquo;</strong> &ldquo;Run agent walkthrough&rdquo; = vague = skipped. &ldquo;Navigate S1&ndash;S10, screenshot each, pass/fail per surface&rdquo; = concrete = followed.</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -1435,11 +1839,14 @@ claude-peers list_peers --scope repo
 
   <div class="footnote">
     Sources:<br>
-    &bull; <strong>Karpathy, A.</strong> autoresearch (2025) — ~/autoresearch/program.md. Eval-first, keep-or-revert, surgical changes, never-stop-never-ask.<br>
-    &bull; <strong>Karpathy Guidelines</strong> — ~/.claude/plugins/karpathy-skills/CLAUDE.md. Step-verify chains, explicit assumptions, verifiable success criteria.<br>
-    &bull; <strong>Zaharia, M. et al.</strong> "The Shift from Models to Compound AI Systems" (Berkeley AI Research, 2024). Inter-stage assertions, pipeline optimization, programmatic routing, DSPy Assert/Suggest.<br>
+    &bull; <strong>Karpathy, A.</strong> autoresearch (2025) &mdash; ~/autoresearch/program.md. Eval-first, keep-or-revert, surgical changes, never-stop-never-ask.<br>
+    &bull; <strong>Karpathy Guidelines</strong> &mdash; ~/.claude/plugins/karpathy-skills/CLAUDE.md. Step-verify chains, explicit assumptions, verifiable success criteria.<br>
+    &bull; <strong>Zaharia, M. et al.</strong> &ldquo;The Shift from Models to Compound AI Systems&rdquo; (Berkeley AI Research, 2024). Inter-stage assertions, pipeline optimization, programmatic routing, DSPy Assert/Suggest.<br>
+    &bull; <strong>Every Inc.</strong> Compound Engineering plugin (2025) &mdash; github.com/everyinc/compound-engineering-plugin. Tiered review, compound learning, doc review agents, product pulse, session intelligence, structured debug, optimization loops. &ldquo;Each unit of engineering work should make subsequent units easier, not harder.&rdquo;<br>
+    &bull; <strong>SiWarlock</strong> Claude Agent-Team Scaffolding &mdash; github.com/SiWarlock/claude-code-tdd-agent-crew-scaffold. 3-role agent team, 10-step TDD walker, Step-9 hot routing, cross-doc invariants, close-out gating. Comparison: forge-comparison.html.<br>
     &bull; <strong>Beck, K.</strong> Test-Driven Development by Example (2002). Red-green-refactor. Test surface owned by separate concern.<br>
-    &bull; <strong>Forge-native</strong> — gap loop, constitution, vision-as-lens, bounded fan-out. Developed across 5 gauntlet builds (589 commits).
+    &bull; <strong>Forge-native</strong> &mdash; gap loop, constitution, vision-as-lens, bounded fan-out. Developed across 5 gauntlet builds (589 commits).<br>
+    &bull; <strong>Forge retro (R1&ndash;R6)</strong> &mdash; enforcement mechanisms discovered through real build failures. Core insight: the orchestrator knew the rules and skipped them because the implementor role produces visible progress. Fix is structural, not behavioral.
   </div>
 </div>
 
@@ -1449,7 +1856,10 @@ claude-peers list_peers --scope repo
 <div class="section" id="d17">
   <div class="section-id">D17 &mdash; Panel Documentation Corpus</div>
   <div class="section-title">Every expert panel invocation produces a persistent, navigable record &mdash; organized by expert and by topic</div>
-  <div class="section-desc">References D1 P2, D6. When any expert panel skill runs (technical, business, SME, user, or project-specific), it writes a structured record to <code>panels/</code>. A navigation index auto-rebuilds on every addition. Two views: by-expert (what did Marcus say across all reviews?) and by-topic (all experts on the camera pipeline).</div>
+  <div class="plain-english">
+    When FORGE runs expert panels (business, technical, SME), the output isn&rsquo;t just a summary that gets consumed and forgotten. Every panel invocation produces a <strong>structured, searchable record</strong> organized two ways: by expert (what did the security engineer flag across all reviews?) and by topic (what did all experts say about the auth module?). This lets you spot systemic patterns &mdash; &ldquo;Marcus flagged touch targets in 4 of 6 reviews, this is a systemic issue.&rdquo;
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> Generated during P2 (Expert Panels) in Arc 1. References D6 (research protocol). Records stored in <code>panels/</code>.</div>
 
   <div class="diagram">
     <div class="diagram-label">D17a: Panel documentation flow</div>
@@ -1536,7 +1946,10 @@ claude-peers list_peers --scope repo
 <div class="section" id="d18">
   <div class="section-id">D18 &mdash; Documentation Deck System</div>
   <div class="section-title">Every numbered folder gets a navigable Reveal.js deck &mdash; one hub ties them all together with honest change tracking</div>
-  <div class="section-desc">References all phases. Generated by the <code>/docs</code> skill after every phase. Each deck uses McKinsey-style action titles, inline SVG diagrams, and the shared CSS vocabulary from <code>docs-deck-template.html</code>. Universal &mdash; works with any project structure.</div>
+  <div class="plain-english">
+    Documentation that&rsquo;s written at the end of a project is always wrong &mdash; it describes what people remember, not what happened. FORGE generates <strong>documentation as it builds</strong>, one deck per folder, updated after every phase. Each deck uses McKinsey-style action titles (sentences, not labels), inline SVG diagrams, and a shared CSS vocabulary. A master hub provides one-click navigation to every deck, and an honest change log tracks what actually changed and when.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> Part of P9 (Deploy + Document). Generated by <code>/docs</code> skill. Universal &mdash; works with any project structure that follows the numbered-folder pattern.</div>
 
   <div class="diagram">
     <div class="diagram-label">D18a: Documentation deck architecture</div>
@@ -1603,7 +2016,322 @@ claude-peers list_peers --scope repo
   <div class="explain">
     <strong>Universality:</strong> The /docs skill works with any project. It scans for numbered folders, reads whatever markdown is there, and generates decks. No hardcoded project references, no assumptions about folder names beyond the NN-* pattern. Partial structures produce partial documentation &mdash; empty folders get placeholder slides.
   </div>
-  <div class="footnote">Skill: <code>/docs build</code> generates all decks. <code>/docs hub</code> regenerates navigation only. <code>/docs status</code> shows folder inventory. CSS source: <code>~/projects/workflow/docs-deck-template.html</code>.</div>
+  <div class="footnote">Skill: <code>/docs build</code> generates all decks. <code>/docs hub</code> regenerates navigation only. <code>/docs status</code> shows folder inventory. CSS source: <code>~/projects/workflow/template-docs-deck.html</code>.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D19 — DYNAMIC COMPOSITION                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d19">
+  <div class="section-id">D19 &mdash; Dynamic Composition</div>
+  <div class="section-title">The pipeline is a fixed scaffold &mdash; everything inside is composed dynamically per project from a library of thinking frameworks</div>
+  <div class="plain-english">
+    FORGE doesn&rsquo;t run the same way twice. Each project gets a <strong>custom-built system</strong> assembled from reusable frameworks. A healthcare security project gets security-weighted reviewers, a children&rsquo;s ed-tech project gets accessibility-weighted reviewers. The pipeline order never changes, but the agents, panels, pillars, tests, and review criteria are all selected at runtime based on what the project needs. The orchestrator&rsquo;s job is to pick the right frameworks for this specific build.
+  </div>
+  <div class="section-desc">No two FORGE builds produce the same architecture. The pipeline (D1) is the deterministic scaffold. The content is composed from a framework library. When a project needs a capability that doesn&rsquo;t map to an existing framework, the orchestrator logs it as a gap and uses the closest available framework with documented adaptations.</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D19: Deterministic scaffold vs. dynamic composition</div>
+    <table class="compare-table">
+      <thead><tr><th style="width:140px;">Component</th><th>Deterministic (constant)</th><th>Dynamic (composed per project)</th></tr></thead>
+      <tbody>
+        <tr><td>Pipeline</td><td>12 phases in fixed order, 4 gates</td><td>&mdash;</td></tr>
+        <tr><td>Message contract</td><td>12 types, JSON envelope</td><td>&mdash;</td></tr>
+        <tr><td>Safety mechanisms</td><td>Keep-or-revert, immutable eval, cost breaker, shutdown handshake</td><td>&mdash;</td></tr>
+        <tr><td>Terminal architecture</td><td>3 terminals (orch, super, watch) during P6</td><td>&mdash;</td></tr>
+        <tr><td>Pillars (P0)</td><td>3&ndash;5 evaluation questions</td><td>Content: from project risks + goals</td></tr>
+        <tr><td>Constitution (P1)</td><td>Articles I&ndash;V inviolable</td><td>Articles VI&ndash;X: tailored to project safety</td></tr>
+        <tr><td>Panels (P2)</td><td>1&ndash;3 panels, synthesis protocol</td><td>Which panels + which panelists: selected by domain</td></tr>
+        <tr><td>Reviewer tiers (P6)</td><td>5 types, confidence gating, dedup</td><td>Reviewer weights shift by domain</td></tr>
+        <tr><td>Debug protocol (P6)</td><td>reproduce &rarr; trace &rarr; hypothesis &rarr; fix</td><td>How to trace: stack-specific</td></tr>
+        <tr><td>Optimization (P8)</td><td>3&times; parallel, measure, keep best</td><td>What to measure: from project pillars</td></tr>
+        <tr><td>Doc review agents</td><td>Feasibility + Scope + Coherence + Adversarial</td><td>Review criteria: from project constraints</td></tr>
+        <tr><td>Eval harness (P5)</td><td>Generated from workflow, immutable</td><td>Tests: from project workflow state machine</td></tr>
+        <tr><td>Learnings (P6e)</td><td>Structured format, compound loop</td><td>Content: from this build + prior builds</td></tr>
+        <tr><td>Product Pulse (P10)</td><td>Report format, pulse &rarr; vision loop</td><td>Data sources: from project deployment</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key-insight">
+    <strong>The compound loop</strong> (P10 &rarr; P0) means each build of the same project starts with more context: prior learnings, prior pulse reports, prior gap patterns. The system gets smarter per project, not just per build.
+  </div>
+
+  <div class="footnote">Rule: when composing dynamic components, always pull from existing frameworks defined in this document. Do not invent new protocols at runtime. If a project needs a capability that doesn&rsquo;t map, log it as a gap in MEMORY.md and use the closest available framework with documented adaptations.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D20 — COMPOUND ENGINEERING INTEGRATION                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d20">
+  <div class="section-id">D20 &mdash; Compound Engineering Integration</div>
+  <div class="section-title">Seven capabilities from Compound Engineering make each build smarter than the last &mdash; the system compounds, not just the code</div>
+  <div class="plain-english">
+    Traditional builds accumulate technical debt. Each feature adds complexity. Each bug fix leaves behind local knowledge that someone has to rediscover later. <strong>Compound Engineering inverts this:</strong> every build captures what was learned, every review surfaces patterns across the project, and every shipped product feeds real usage data back into the next build cycle. The system gets smarter with use.
+  </div>
+  <div class="section-desc">Inspired by the <a href="https://github.com/everyinc/compound-engineering-plugin">Compound Engineering plugin</a> by Every Inc. &mdash; &ldquo;Each unit of engineering work should make subsequent units easier, not harder.&rdquo;</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D20a: Seven compound capabilities mapped to FORGE phases</div>
+    <table class="compare-table">
+      <thead><tr><th style="width:50px;">#</th><th style="width:180px;">Capability</th><th style="width:80px;">Phase</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Tiered multi-agent review</td><td>P6b</td><td>5 parallel specialized reviewers (correctness, spec, security, performance, maintainability) with confidence gating + dedup synthesis</td></tr>
+        <tr><td>2</td><td>Compound learning capture</td><td>P6e, P9</td><td>Structured <code>.forge/LEARNINGS.md</code>: decisions, patterns, gotchas, debug traces. Future builds read at P0.</td></tr>
+        <tr><td>3</td><td>Document review agents</td><td>G0, G1, G2</td><td>Feasibility, Scope Guardian, Coherence, Adversarial pre-screen before operator reviews gate artifacts</td></tr>
+        <tr><td>4</td><td>Product Pulse</td><td>P10</td><td>Post-ship monitoring: usage, perf, errors, feedback. Time-windowed reports feed next build&rsquo;s P0.</td></tr>
+        <tr><td>5</td><td>Session intelligence</td><td>P6d</td><td>Searches past session logs for crashed agent&rsquo;s context. Re-spawn gets continuity, not cold start.</td></tr>
+        <tr><td>6</td><td>Structured debug</td><td>P6b</td><td>reproduce &rarr; trace root cause &rarr; form hypothesis &rarr; test-first fix. Replaces blind retry.</td></tr>
+        <tr><td>7</td><td>Optimization loops</td><td>P8</td><td>For MEDIUM/LOW gaps: 3 parallel experiment branches, measure against goal, keep best. Optional on fast track.</td></tr>
+        <tr><td>8</td><td>Simplification pass</td><td>P7</td><td>3 parallel agents (reuse, quality, efficiency) simplify code after tests pass. Only applies changes that keep tests green.</td></tr>
+        <tr><td>9</td><td>Compound refresh</td><td>P0</td><td>Refreshes stale LEARNINGS.md entries against current codebase before reading them into the new build.</td></tr>
+        <tr><td>10</td><td>Dogfood QA</td><td>P7</td><td>Autonomous diff-scoped browser QA with auto-fix loops. Screenshot, fix, retest, commit until green.</td></tr>
+        <tr><td>11</td><td>Learnings researcher</td><td>P6b</td><td>Before debug protocol, search past learnings for matching solutions. Prevents re-solving known problems.</td></tr>
+        <tr><td>12</td><td>Spec deepening pass</td><td>P5b</td><td>Sub-agent review: confidence ratings, missing flows, orphaned deliverables. Catches spec problems before G2.</td></tr>
+        <tr><td>13</td><td>Strategy as living doc</td><td>P0</td><td>VISION.md re-runnable. Subsequent builds diff against previous vision. Direction changes are explicit.</td></tr>
+        <tr><td>14</td><td>Interactive brainstorm</td><td>P0</td><td>For vague inputs, collaborative Q&amp;A before mechanical decomposition. Writes BRAINSTORM.md.</td></tr>
+        <tr><td>15</td><td>Spec flow analyzer</td><td>P5b</td><td>Analyzes workflow state machine for unreachable states, missing error paths, disconnected edges.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D20b: The compound loop &mdash; each cycle makes the next one smarter</div>
+    <div class="hflow" style="gap: 2px; padding: 16px 0;">
+      <div class="n n-primary">Build N</div><span class="arr">&rarr;</span>
+      <div class="n n-auto">Ship</div><span class="arr">&rarr;</span>
+      <div class="n" style="border-color: var(--teal); color: var(--teal);">P10: Pulse<small>usage + errors + feedback</small></div><span class="arr">&rarr;</span>
+      <div class="n n-blue">.forge/LEARNINGS.md<small>decisions + patterns + gotchas</small></div><span class="arr">&rarr;</span>
+      <div class="n n-primary">Build N+1<small>reads learnings + pulse at P0</small></div>
+    </div>
+    <div class="implication" style="text-align: center;">Each build starts where the last one left off, not from scratch</div>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D20c: Tiered code review &mdash; 9 specialized reviewers (full track) with confidence-gated synthesis</div>
+    <div class="vflow" style="padding: 8px 0;">
+      <div class="n n-auto" style="min-width: 200px;">PR submitted (smoke test passed)</div>
+      <div class="vline"></div>
+      <div style="font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); padding: 4px 0;">Core 5 (always run)</div>
+      <div class="branch no-bar" style="gap: 8px;">
+        <div><div class="n n-guard" style="font-size: 0.58rem; padding: 3px 6px;">Correctness<small>logic, edges</small></div></div>
+        <div><div class="n n-guard" style="font-size: 0.58rem; padding: 3px 6px;">Spec<small>constitution</small></div></div>
+        <div><div class="n n-guard" style="font-size: 0.58rem; padding: 3px 6px;">Security<small>vulns, PII</small></div></div>
+        <div><div class="n n-guard" style="font-size: 0.58rem; padding: 3px 6px;">Performance<small>N+1, bundle</small></div></div>
+        <div><div class="n n-guard" style="font-size: 0.58rem; padding: 3px 6px;">Maintainability<small>coupling</small></div></div>
+      </div>
+      <div class="vline"></div>
+      <div style="font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); padding: 4px 0;">CE Extended 4 (full track only)</div>
+      <div class="branch no-bar" style="gap: 8px;">
+        <div><div class="n" style="font-size: 0.58rem; padding: 3px 6px; border-color: var(--teal); color: var(--teal);">API Contract<small>breaking changes</small></div></div>
+        <div><div class="n" style="font-size: 0.58rem; padding: 3px 6px; border-color: var(--teal); color: var(--teal);">Reliability<small>failure modes</small></div></div>
+        <div><div class="n" style="font-size: 0.58rem; padding: 3px 6px; border-color: var(--teal); color: var(--teal);">Patterns<small>anti-patterns</small></div></div>
+        <div><div class="n" style="font-size: 0.58rem; padding: 3px 6px; border-color: var(--teal); color: var(--teal);">Standards<small>CLAUDE.md</small></div></div>
+      </div>
+      <div class="vline"></div>
+      <div class="n n-primary" style="min-width: 260px;">Dedup + synthesis<small>merge overlaps, higher confidence wins</small></div>
+      <div class="vline"></div>
+      <div class="branch" style="gap: 40px;">
+        <div><div class="n n-auto">APPROVE<small>all pass or LOW-conf only</small></div></div>
+        <div><div class="n n-guard">REQUEST_CHANGES<small>any HIGH-conf objection</small></div></div>
+      </div>
+    </div>
+    <div class="source">Compound Engineering (Every Inc.) ce-code-review &mdash; tiered persona agents with confidence gating and dedup pipeline</div>
+  </div>
+
+  <div class="footnote">Fast track: 3 reviewers (Correctness + Spec + Security). Full track: all 9. Reviewer weights shift by domain &mdash; security heaviest for healthcare, reliability for infrastructure, API contract for SDK/platform, performance for real-time, correctness for financial. 15 CE capabilities total integrated from <a href="https://github.com/everyinc/compound-engineering-plugin">Compound Engineering</a> by Every Inc.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D21 — AGENT & SKILL CATALOG                                     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d21">
+  <div class="section-id">D21 &mdash; Agent &amp; Skill Catalog</div>
+  <div class="section-title">Every agent and skill in FORGE, with its source file, invocation point, inputs, outputs, and the pattern for creating new ones</div>
+  <div class="plain-english">
+    FORGE uses two types of reusable components: <strong>skills</strong> (slash commands with stable definitions that don&rsquo;t change between projects) and <strong>agents</strong> (spawned by skills during a build, configured per project). This catalog maps every component to its source file and shows when it&rsquo;s invoked, what it receives, and what it produces. The pattern for each type is stable &mdash; new panels, new reviewers, and new agent roles all follow the same template.
+  </div>
+  <div class="section-desc"><strong>D0 context:</strong> The Agents column in D0. Every agent listed here appears in at least one row of D0&rsquo;s architecture table. Skills are the stable definitions in <code>~/.claude/skills/</code>; agents are the runtime instances they spawn.</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D21a: Skill catalog &mdash; stable definitions that don&rsquo;t change between projects</div>
+    <table class="compare-table" style="font-size: 0.68rem;">
+      <thead><tr><th style="width:160px;">Skill</th><th style="width:80px;">Phase</th><th>Purpose</th><th style="width:120px;">Source</th></tr></thead>
+      <tbody>
+        <tr><td>/forge</td><td>All</td><td>Orchestrator &mdash; runs the 12-phase pipeline, spawns all agents</td><td>skills/forge/</td></tr>
+        <tr><td>/technical-expert-panel</td><td>P2</td><td>8-person technical review panel (frontend, iPad, test, a11y, perf, DevEx, security, skeptic)</td><td>skills/technical-expert-panel/</td></tr>
+        <tr><td>/business-expert-panel</td><td>P2</td><td>Business review panel (VC, growth, sales, pricing, unit economics, regulatory, moats)</td><td>skills/business-expert-panel/</td></tr>
+        <tr><td>/security-expert-panel</td><td>P2</td><td>Security-focused panel (red team, CISO, pentester, compliance, adversarial ML)</td><td>skills/security-expert-panel/</td></tr>
+        <tr><td>/user-panel</td><td>P2</td><td>End-user panel (kids, parents, teachers) &mdash; felt-sense validation</td><td>skills/user-panel/</td></tr>
+        <tr><td>/decision</td><td>All</td><td>McKinsey-style decision &amp; panel documentation with auto-generated decks</td><td>skills/decision/</td></tr>
+        <tr><td>/docs</td><td>P9</td><td>Universal documentation deck generator (per-folder Reveal.js decks + hub)</td><td>skills/docs/</td></tr>
+        <tr><td>/grill-me</td><td>P4</td><td>Stress-test a plan or spec through relentless questioning</td><td>skills/grill-me/</td></tr>
+        <tr><td>/usability-testing</td><td>P7</td><td>Agent-driven Playwright + Claude walkthrough of user scenarios</td><td>skills/usability-testing/</td></tr>
+        <tr><td>/eval</td><td>P7</td><td>Production-readiness evaluation against project standards</td><td>skills/eval/</td></tr>
+        <tr><td>/review</td><td>P6</td><td>Code review of current diff</td><td>skills/review/</td></tr>
+        <tr><td>/security-review</td><td>P6</td><td>Security-focused review of pending changes</td><td>skills/security-review/</td></tr>
+        <tr><td>/ai-lead-deck</td><td>Comm</td><td>McKinsey-storytelling deck construction for technical audiences</td><td>skills/ai-lead-deck/</td></tr>
+        <tr><td>/loop</td><td>P6, P10</td><td>Recurring task runner (watchdog timer, product pulse)</td><td>built-in</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D21b: Agent catalog &mdash; runtime instances spawned during builds</div>
+    <table class="compare-table" style="font-size: 0.68rem;">
+      <thead><tr><th style="width:140px;">Agent</th><th style="width:80px;">Primitive</th><th style="width:80px;">Phase</th><th>Receives</th><th>Produces</th></tr></thead>
+      <tbody>
+        <tr><td>Orchestrator</td><td>Skill</td><td>All</td><td>PRD, operator input</td><td>All .forge/ state, coordination</td></tr>
+        <tr><td>Supervisor</td><td>Terminal (tmux)</td><td>P6</td><td>TASKS.json, spec, prompts/supervisor.md</td><td>Task assignments, smoke tests, PR coordination</td></tr>
+        <tr><td>Watchdog</td><td>Terminal (tmux)</td><td>P6</td><td>spec.md, CONTRACTS.md, prompts/watchdog.md</td><td>AUDIT.json, DRIFT_RESULT messages</td></tr>
+        <tr><td>Implementor &times;1&ndash;4</td><td>Agent (worktree)</td><td>P6</td><td>Spec section, contracts, eval harness, Decision Router</td><td>Code, commits, PR</td></tr>
+        <tr><td>Reviewer (Correctness)</td><td>Subagent</td><td>P6</td><td>PR diff, spec</td><td>Verdict + confidence: logic, edges, state</td></tr>
+        <tr><td>Reviewer (Spec)</td><td>Subagent</td><td>P6</td><td>PR diff, CONSTITUTION.md, CONTRACTS.md</td><td>Verdict + confidence: compliance</td></tr>
+        <tr><td>Reviewer (Security)</td><td>Subagent</td><td>P6</td><td>PR diff, threat model</td><td>Verdict + confidence: vulnerabilities</td></tr>
+        <tr><td>Reviewer (Performance)</td><td>Subagent</td><td>P6</td><td>PR diff, perf budgets</td><td>Verdict + confidence: N+1, bundle, memory</td></tr>
+        <tr><td>Reviewer (Maintainability)</td><td>Subagent</td><td>P6</td><td>PR diff, codebase patterns</td><td>Verdict + confidence: coupling, naming</td></tr>
+        <tr><td>Reviewer (API Contract)</td><td>Subagent</td><td>P6</td><td>PR diff, CONTRACTS.md</td><td>Verdict + confidence: breaking changes</td></tr>
+        <tr><td>Reviewer (Reliability)</td><td>Subagent</td><td>P6</td><td>PR diff, error handling patterns</td><td>Verdict + confidence: failure modes, retry logic</td></tr>
+        <tr><td>Reviewer (Pattern Recognition)</td><td>Subagent</td><td>P6</td><td>PR diff, full codebase</td><td>Verdict + confidence: anti-patterns, smells</td></tr>
+        <tr><td>Reviewer (Standards)</td><td>Subagent</td><td>P6</td><td>PR diff, CLAUDE.md, Constitution</td><td>Verdict + confidence: project convention compliance</td></tr>
+        <tr><td>Simplification (Reuse)</td><td>Subagent</td><td>P7</td><td>Full codebase after tests pass</td><td>Duplicated logic to extract</td></tr>
+        <tr><td>Simplification (Quality)</td><td>Subagent</td><td>P7</td><td>Full codebase after tests pass</td><td>Overly complex code to simplify</td></tr>
+        <tr><td>Simplification (Efficiency)</td><td>Subagent</td><td>P7</td><td>Full codebase after tests pass</td><td>Performance anti-patterns</td></tr>
+        <tr><td>Spec Deepener (Flow)</td><td>Subagent</td><td>P5b</td><td>Workflow state machine</td><td>Unreachable states, missing error paths</td></tr>
+        <tr><td>Spec Deepener (Confidence)</td><td>Subagent</td><td>P5b</td><td>Spec sections + research</td><td>HIGH/MEDIUM/LOW per section</td></tr>
+        <tr><td>Spec Deepener (Deliverable)</td><td>Subagent</td><td>P5b</td><td>PRD → spec → tasks</td><td>Orphaned deliverables</td></tr>
+        <tr><td>Tester</td><td>Subagent</td><td>P7</td><td>Eval harness, app URL</td><td>TEST_RESULTS.md, screenshots, GAPS.json</td></tr>
+        <tr><td>Doc Review (Feasibility)</td><td>Subagent</td><td>G0, G2</td><td>Gate artifacts</td><td>Findings: can this be built?</td></tr>
+        <tr><td>Doc Review (Scope Guardian)</td><td>Subagent</td><td>G0, G2</td><td>Gate artifacts</td><td>Findings: scope creep, gold-plating</td></tr>
+        <tr><td>Doc Review (Coherence)</td><td>Subagent</td><td>G0</td><td>PRD-ENHANCED.md</td><td>Findings: contradictions, terminology drift</td></tr>
+        <tr><td>Doc Review (Adversarial)</td><td>Subagent</td><td>G1, G2</td><td>Gate artifacts</td><td>Findings: weakest assumptions, failure modes</td></tr>
+        <tr><td>Panelist &times;1&ndash;3</td><td>Skill or Subagent</td><td>P2</td><td>VISION.md, PILLARS.md, PRD-ENHANCED.md</td><td>Panel findings, synthesis</td></tr>
+        <tr><td>Researcher &times;N</td><td>Subagent</td><td>P3</td><td>Open question from panel synthesis</td><td>Options + evidence + recommendation</td></tr>
+        <tr><td>Spec Writer</td><td>Subagent</td><td>P4&ndash;P5</td><td>PRD-ENHANCED.md, panel synthesis, research</td><td>spec.md, workflow.md, architecture.md, TASKS.json, EVAL/</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D21c: Expert panel skill pattern &mdash; the template for creating new panels</div>
+    <div class="plain-english" style="margin-bottom: 16px;">
+      Every expert panel skill follows the same structure. The skill is stable &mdash; it doesn&rsquo;t change between projects. The panelists are named, opinionated, and each has a fixed lens. The synthesis is the skill&rsquo;s output, not any single panelist&rsquo;s opinion. Here is the pattern, using the technical-expert-panel as the worked example.
+    </div>
+
+    <div class="grid-2" style="gap: 16px;">
+      <div class="card" style="border-top: 2px solid var(--navy);">
+        <h3>Skill Structure (5 sections)</h3>
+        <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.7;">
+          <strong>1. Frontmatter</strong> &mdash; name, description (with trigger phrases), version<br>
+          <strong>2. Intro</strong> &mdash; &ldquo;When invoked, you convene an N-person panel&hellip;&rdquo; + anchor document paths + other load-bearing docs to read first<br>
+          <strong>3. How the panel works</strong> &mdash; frame in one sentence, each panelist 1&ndash;3 bullets in their own voice, synthesis at the end<br>
+          <strong>4. The panel</strong> &mdash; one subsection per panelist with fixed lens<br>
+          <strong>5. Output format</strong> &mdash; markdown template, then rules + when not to run
+        </div>
+      </div>
+      <div class="card" style="border-top: 2px solid var(--green);">
+        <h3>Panelist Definition (3 fields)</h3>
+        <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.7;">
+          <strong>Name + Title</strong> &mdash; e.g., &ldquo;Olivia Park &mdash; Senior Frontend Engineer (React / TypeScript)&rdquo;<br><br>
+          <strong>Owns:</strong> what this panelist is the authority on. Defines their lane.<br><br>
+          <strong>Reflexively pushes back on:</strong> their automatic red flags. What they object to before thinking.<br><br>
+          <strong>Reference frame:</strong> one litmus-test question they always ask. e.g., &ldquo;Could a second engineer add a new dialogue branch without touching component code?&rdquo;
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <h3>Worked Example: Technical Expert Panel (8 panelists)</h3>
+      <table class="compare-table" style="font-size: 0.68rem; margin-top: 8px;">
+        <thead><tr><th style="width:140px;">Panelist</th><th style="width:180px;">Owns</th><th style="width:200px;">Pushes Back On</th><th>Reference Frame</th></tr></thead>
+        <tbody>
+          <tr><td>Olivia Park<br><span style="color:var(--text-dim);">Frontend</span></td><td>Component boundaries, state shape, data vs code, Pages Router patterns</td><td>Dialogue branches as if-ladders; components owning parent state; useEffect for derived values</td><td>&ldquo;Could a second engineer add a dialogue branch without touching component code?&rdquo;</td></tr>
+          <tr><td>Hiro Tanaka<br><span style="color:var(--text-dim);">iPad/Mobile</span></td><td>Pointer Events, iPadOS Safari quirks, 100dvh, safe-area insets</td><td>mousedown handlers (fail on iPad); 100vh (broken under URL bar); Chrome DevTools testing</td><td>&ldquo;Did this get tested on the iPad Pro 11&Prime; simulator today?&rdquo;</td></tr>
+          <tr><td>Wes Carter<br><span style="color:var(--text-dim);">Test</span></td><td>Dialogue-branch coverage, touch-drag automation, React state batching gotchas</td><td>&ldquo;I tested it manually&rdquo;; E2E happy-path only; dispatching pointer events in a single evaluate()</td><td>&ldquo;Show me the test that proves a kid can drag-split-combine.&rdquo;</td></tr>
+          <tr><td>Lin Zhao<br><span style="color:var(--text-dim);">Accessibility</span></td><td>VoiceOver on iPad, color contrast for 9-year-olds, motor-impairment alternatives</td><td>Drag-only manipulatives; animations without reduced-motion branch; aria-labels that read like code</td><td>&ldquo;If a kid uses Switch Control, does the lesson still teach?&rdquo;</td></tr>
+          <tr><td>Raj Mehta<br><span style="color:var(--text-dim);">Performance</span></td><td>60fps drag, GPU layer promotion, bundle-size budget, font CLS</td><td>Animating layout properties; untracked re-renders during drag; importing all of framer-motion</td><td>&ldquo;What does Safari Web Inspector say about frame time?&rdquo;</td></tr>
+          <tr><td>Sam O&rsquo;Neill<br><span style="color:var(--text-dim);">DevEx/CI</span></td><td>Monorepo vs single-package, Vercel preview deploys, pre-commit hooks</td><td>GitHub Actions before the app runs locally; deploy flows that require a human step</td><td>&ldquo;Can Patrick open a preview URL from his phone in 10 seconds?&rdquo;</td></tr>
+          <tr><td>Elena Ross<br><span style="color:var(--text-dim);">Security</span></td><td>COPPA for under-13, no PII in localStorage, third-party script audit</td><td>Analytics that touch kid behavior; localStorage that could identify a child</td><td>&ldquo;If a parent reads the network tab, do they see anything that profiles their kid?&rdquo;</td></tr>
+          <tr><td>Jordan Blake<br><span style="color:var(--text-dim);">Skeptic</span></td><td>&ldquo;Do you actually need this layer?&rdquo; Champion of the cardboard prototype.</td><td>Framework setup time exceeding UX time; abstractions before the second use case</td><td>&ldquo;Show me the manipulative working in a CodePen first.&rdquo;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <h3>Output Format</h3>
+      <div class="code-block" style="font-size: 0.68rem;">## Panel review &mdash; [one-sentence framing]
+
+**Olivia (Frontend):** [1&ndash;3 bullets in her voice]
+**Hiro (iPad/Mobile):** [1&ndash;3 bullets]
+**Wes (Test):** ...
+**Lin (Accessibility):** ...
+**Raj (Performance):** ...
+**Sam (DevEx/CI):** ...
+**Elena (Security):** ...
+**Jordan (Skeptic):** ...
+
+### Synthesis
+- **Convergent:** [points the panel agrees on]
+- **Divergent:** [where they split, and the underlying disagreement]
+- **Recommended next action:** [one concrete step, not three]</div>
+    </div>
+
+    <div style="margin-top: 12px;">
+      <h3>Panel Skill Rules (apply to all panels)</h3>
+      <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.7;">
+        1. <strong>Read before you speak.</strong> If a panelist&rsquo;s lens touches the PRD or a code file, read it first. Do not comment on unseen artifacts.<br>
+        2. <strong>No diluted voices.</strong> If you&rsquo;re writing the same bullet for two panelists, one of them passes.<br>
+        3. <strong>Be specific.</strong> Cite a file path, a CSS token, a measured number. Generic bullets are worse than silence.<br>
+        4. <strong>Partial panels are fine.</strong> For narrow questions, run 3&ndash;5 voices and say which were skipped.<br>
+        5. <strong>No panelist is the boss.</strong> The synthesis is yours, not theirs. The panel surfaces tensions; you resolve them.<br>
+        6. <strong>No emojis.</strong> Match the workspace voice.
+      </div>
+    </div>
+
+    <div class="diagram-ref">This pattern applies to all panel skills: technical, business, security, ASL, user, and project-specific. To create a new panel: copy the template, define 6&ndash;10 named panelists with Owns / Pushes-back-on / Reference-frame, anchor to the project&rsquo;s PRD, and set trigger phrases in the frontmatter description.</div>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D21d: Prompt template structure &mdash; the contract for generated prompt files</div>
+    <div class="plain-english" style="margin-bottom: 12px;">
+      When FORGE spawns the supervisor and watchdog at P6a, it generates prompt files in <code>.forge/prompts/</code>. These are filled-in templates &mdash; the structure is constant, the content is project-specific. Here is what each prompt file must contain.
+    </div>
+    <div class="grid-2" style="gap: 12px;">
+      <div class="card" style="border-top: 2px solid var(--green);">
+        <h3>supervisor.md template</h3>
+        <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.7;">
+          &bull; Role definition<br>
+          &bull; TASKS.json path and format<br>
+          &bull; Spec section references per task<br>
+          &bull; CONTRACTS.md path<br>
+          &bull; Decision Router rules (D5)<br>
+          &bull; Observability: emit to observe/supervisor.jsonl<br>
+          &bull; Claude-peers message contract (12 types)<br>
+          &bull; Heartbeat: update HEARTBEAT.json every 5m<br>
+          &bull; Reference project protocol (if applicable)<br>
+          &bull; Tiered review configuration (which 5 reviewers, weights)<br>
+          &bull; Structured debug protocol (reproduce &rarr; trace &rarr; fix)
+        </div>
+      </div>
+      <div class="card" style="border-top: 2px solid var(--red);">
+        <h3>watchdog.md template</h3>
+        <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.7;">
+          &bull; Role definition<br>
+          &bull; Drift check protocol (D4): 7 categories<br>
+          &bull; Trigger conditions: PR_SUBMITTED, PR_MERGED, /loop 30m<br>
+          &bull; spec.md and CONTRACTS.md paths<br>
+          &bull; AUDIT.json format and schema<br>
+          &bull; Observability: emit to observe/watchdog.jsonl<br>
+          &bull; Claude-peers message contract<br>
+          &bull; DRIFT_CRITICAL &rarr; orchestrator emergency path<br>
+          &bull; Constitution Articles I&ndash;V check requirements
+        </div>
+      </div>
+    </div>
+    <div class="diagram-ref">These templates are constant across projects. The orchestrator fills in project-specific values (file paths, task IDs, spec section numbers) at P6a generation time.</div>
+  </div>
+
+  <div class="footnote">All skills live in <code>~/.claude/skills/</code>. Agent prompt templates are generated at runtime from the patterns above. To add a new skill: follow the frontmatter + 5-section pattern. To add a new agent role: define it in D2, add it to the prompt template, and wire it into the appropriate phase.</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1618,7 +2346,8 @@ claude-peers list_peers --scope repo
     <table class="compare-table">
       <thead><tr><th>Diagram</th><th>Subject</th><th>D1 Phase</th><th>References</th><th>Referenced By</th></tr></thead>
       <tbody>
-        <tr><td style="font-weight:700;">D1</td><td>Master pipeline</td><td>All</td><td>&mdash;</td><td>All others</td></tr>
+        <tr><td style="font-weight:700;">D0</td><td>Full system architecture (master map)</td><td>All</td><td>&mdash;</td><td>All others</td></tr>
+        <tr><td style="font-weight:700;">D1</td><td>Master pipeline (12 phases, 4 gates)</td><td>All</td><td>D0</td><td>All others</td></tr>
         <tr><td style="font-weight:700;">D2</td><td>Agent topology + primitive decision tree (D2c)</td><td>All</td><td>D1</td><td>D3, D4, D5, D7, D8, D10</td></tr>
         <tr><td style="font-weight:700;">D3</td><td>Human gates</td><td>G1, G2, G3</td><td>D1, D5</td><td>D6, D9, D12</td></tr>
         <tr><td style="font-weight:700;">D4</td><td>Drift detection</td><td>P6</td><td>D1, D2</td><td>D8, D10, D11</td></tr>
@@ -1637,6 +2366,9 @@ claude-peers list_peers --scope repo
         <tr><td style="font-weight:700;">D16</td><td>Methodology provenance (source &rarr; mechanism &rarr; location)</td><td>All</td><td>All</td><td>&mdash;</td></tr>
         <tr><td style="font-weight:700;">D17</td><td>Panel documentation corpus (per-expert + per-topic + asks tracker)</td><td>P2</td><td>D1, D5, D6</td><td>D9, D18</td></tr>
         <tr><td style="font-weight:700;">D18</td><td>Documentation deck system (per-folder decks + hub + change tracking)</td><td>All</td><td>D1, D5, D17</td><td>&mdash;</td></tr>
+        <tr><td style="font-weight:700;">D19</td><td>Dynamic composition (deterministic scaffold vs. runtime framework selection)</td><td>All</td><td>D1&ndash;D18</td><td>&mdash;</td></tr>
+        <tr><td style="font-weight:700;">D20</td><td>Compound Engineering (7 capabilities: tiered review, learning, doc review, pulse, session intel, debug, optimize)</td><td>P6, P8, P10, G0&ndash;G2</td><td>D1, D2, D4, D8, D9</td><td>D19</td></tr>
+        <tr><td style="font-weight:700;">D21</td><td>Agent &amp; Skill Catalog (skill inventory, agent inventory, panel pattern, prompt templates)</td><td>All</td><td>D0, D2, D3, D8</td><td>&mdash;</td></tr>
       </tbody>
     </table>
   </div>
@@ -1646,8 +2378,9 @@ claude-peers list_peers --scope repo
     &bull; <strong>Karpathy, A.</strong> autoresearch (2025) &mdash; eval-first, keep-or-revert ratchet, surgical changes, never-stop-never-ask loop. Source: ~/autoresearch/program.md<br>
     &bull; <strong>Beck, K.</strong> Test-Driven Development by Example (2002) &mdash; red-green-refactor, test surface owned by separate concern. Applied structurally via immutable eval harness (D7b).<br>
     &bull; <strong>Zaharia, M. et al.</strong> "The Shift from Models to Compound AI Systems" (Berkeley AI Research, 2024) &mdash; inter-stage assertions, pipeline-level optimization, programmatic routing between model calls. DSPy Assert/Suggest pattern.<br>
+    &bull; <strong>Every Inc.</strong> Compound Engineering plugin (2025) &mdash; tiered multi-agent review, compound learning capture, document review agents, product pulse, session intelligence, structured debug, optimization loops. Source: github.com/everyinc/compound-engineering-plugin<br>
     &bull; <strong>Karpathy Guidelines</strong> (~/.claude/plugins/karpathy-skills) &mdash; surgical changes, explicit assumptions, step-verify chains, verifiable success criteria per task.<br>
-    Known v1 gaps: academic KB ingestion, cross-project dependency awareness, few-shot example bank (DSPy BootstrapFewShot), prompt optimization across builds, multi-repo builds.
+    Known gaps: academic KB ingestion, cross-project dependency awareness, few-shot example bank (DSPy BootstrapFewShot), prompt optimization across builds, multi-repo builds.
   </div>
 </div>
 

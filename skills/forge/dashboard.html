@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge Dashboard</title>
+<style>
+  :root {
+    --bg: #0a0a0a; --surface: #141414; --border: #262626;
+    --text: #e5e5e5; --dim: #737373; --accent: #22c55e;
+    --warn: #f59e0b; --error: #ef4444; --info: #3b82f6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'SF Mono', 'Fira Code', monospace; background: var(--bg); color: var(--text); font-size: 13px; padding: 24px; }
+  h1 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--dim); font-size: 11px; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--dim); margin-bottom: 12px; }
+  .phase-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-done { background: var(--accent); }
+  .dot-active { background: var(--info); animation: pulse 1.5s infinite; }
+  .dot-pending { background: var(--border); }
+  .dot-skip { background: var(--dim); opacity: 0.4; }
+  .dot-warn { background: var(--warn); }
+  .dot-error { background: var(--error); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .task-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; font-size: 12px; }
+  .task-id { color: var(--dim); width: 60px; flex-shrink: 0; }
+  .task-name { flex: 1; }
+  .task-status { width: 70px; text-align: right; flex-shrink: 0; }
+  .status-done { color: var(--accent); }
+  .status-active { color: var(--info); }
+  .status-blocked { color: var(--error); }
+  .status-pending { color: var(--dim); }
+  .metric { text-align: center; padding: 8px; }
+  .metric-value { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .metric-label { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+  .alert { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 12px; color: var(--warn); }
+  .alert-error { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: var(--error); }
+  .safety-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; }
+  .safety-pass { color: var(--accent); }
+  .safety-fail { color: var(--error); }
+  .safety-missing { color: var(--warn); }
+  .progress-bar { background: var(--border); border-radius: 4px; height: 6px; margin-top: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.3s; }
+  .changelog { max-height: 300px; overflow-y: auto; font-size: 11px; line-height: 1.6; }
+  .changelog h3 { font-size: 12px; color: var(--accent); margin-top: 12px; margin-bottom: 4px; }
+  .changelog li { color: var(--dim); margin-left: 16px; }
+  .drop-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 40px; text-align: center; color: var(--dim); cursor: pointer; margin-bottom: 16px; transition: border-color 0.2s; }
+  .drop-zone:hover, .drop-zone.active { border-color: var(--accent); color: var(--text); }
+  .drop-zone input { display: none; }
+  .file-list { font-size: 11px; color: var(--dim); margin-top: 8px; }
+  .timestamp { font-size: 10px; color: var(--dim); text-align: right; margin-top: 16px; }
+  .full-width { grid-column: 1 / -1; }
+  .gap-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; border-bottom: 1px solid var(--border); }
+  .gap-severity { font-size: 10px; padding: 1px 6px; border-radius: 3px; }
+  .gap-blocker { background: rgba(239,68,68,0.2); color: var(--error); }
+  .gap-high { background: rgba(245,158,11,0.2); color: var(--warn); }
+  .gap-medium { background: rgba(59,130,246,0.2); color: var(--info); }
+  .gap-low { background: var(--border); color: var(--dim); }
+</style>
+</head>
+<body>
+
+<h1>FORGE DASHBOARD</h1>
+<div class="subtitle">Drop your .forge/ folder or individual JSON files to visualize build state</div>
+
+<div class="drop-zone" id="dropZone">
+  <div>Drop .forge/ files here or click to select</div>
+  <div class="file-list" id="fileList"></div>
+  <input type="file" id="fileInput" multiple accept=".json,.md">
+</div>
+
+<div id="dashboard" style="display:none;">
+
+<!-- Row 1: Phase + Metrics -->
+<div class="grid">
+  <div class="card">
+    <div class="card-title">Pipeline</div>
+    <div id="phases"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Metrics</div>
+    <div class="grid-3" id="metrics"></div>
+  </div>
+</div>
+
+<!-- Row 2: Tasks + Safety -->
+<div class="grid">
+  <div class="card">
+    <div class="card-title">Tasks</div>
+    <div id="tasks"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Safety Checks</div>
+    <div id="safety"></div>
+    <div style="margin-top: 12px;">
+      <div class="card-title">Alerts</div>
+      <div id="alerts"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Row 3: Gaps + Changelog -->
+<div class="grid">
+  <div class="card">
+    <div class="card-title">Gaps</div>
+    <div id="gaps"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Build Log (MEMORY.md)</div>
+    <div id="memory" class="changelog"></div>
+  </div>
+</div>
+
+<div class="timestamp" id="timestamp"></div>
+</div>
+
+<script>
+const state = { STATE: null, TASKS: null, AUDIT: null, COST: null, GAPS: null, MEMORY: null, P6_EXIT: null, TEST_RESULTS: null, HEARTBEAT: null };
+
+const PHASES = [
+  { id: 0, name: 'Vision', gate: false },
+  { id: 1, name: 'Structure', gate: false },
+  { id: 2, name: 'Panels', gate: false },
+  { id: 3, name: 'Research', gate: false },
+  { id: 'G1', name: 'Gate 1: Direction', gate: true },
+  { id: 4, name: 'Spec', gate: false },
+  { id: 5, name: 'Tasks + Eval', gate: false },
+  { id: 'G2', name: 'Gate 2: Architecture', gate: true },
+  { id: 6, name: 'Build', gate: false },
+  { id: 7, name: 'Test + QA', gate: false },
+  { id: 8, name: 'Gap Loop', gate: false },
+  { id: 'G3', name: 'Gate 3: Ship', gate: true },
+  { id: 9, name: 'Deploy + Doc', gate: false },
+];
+
+function render() {
+  document.getElementById('dashboard').style.display = 'block';
+  renderPhases();
+  renderMetrics();
+  renderTasks();
+  renderSafety();
+  renderGaps();
+  renderMemory();
+  document.getElementById('timestamp').textContent = `Last updated: ${new Date().toLocaleString()}`;
+}
+
+function renderPhases() {
+  const s = state.STATE || {};
+  const completed = s.phases_completed || [];
+  const skippedGates = s.phases_skipped_gates || [];
+  const skipped = s.phases_skipped || [];
+  const current = s.phase;
+
+  document.getElementById('phases').innerHTML = PHASES.map(p => {
+    const num = typeof p.id === 'number' ? p.id : p.id;
+    let dotClass = 'dot-pending';
+    let label = '';
+    if (completed.includes(typeof num === 'string' ? -1 : num)) { dotClass = 'dot-done'; label = ''; }
+    else if (p.gate && skippedGates.includes(parseInt(p.id.replace('G','')))) { dotClass = 'dot-skip'; label = ' (skipped)'; }
+    else if (skipped.includes(num)) { dotClass = 'dot-skip'; label = ' (skipped)'; }
+    else if (num === current) { dotClass = 'dot-active'; label = ` (${s.status || 'active'})`; }
+    return `<div class="phase-row"><div class="dot ${dotClass}"></div>${p.gate ? '▸ ' : ''}P${p.id} ${p.name}<span style="color:var(--dim)">${label}</span></div>`;
+  }).join('');
+}
+
+function renderMetrics() {
+  const s = state.STATE || {};
+  const r = s.build_results || {};
+  const tasks = (state.TASKS || {}).tasks || [];
+  const done = tasks.filter(t => t.status === 'done' || t.status === 'completed').length;
+
+  const metrics = [
+    { value: r.total_files || tasks.length || '—', label: 'Files' },
+    { value: r.total_lines ? (r.total_lines/1000).toFixed(1)+'k' : '—', label: 'Lines' },
+    { value: r.test_cases || '—', label: 'Tests' },
+    { value: `${done}/${tasks.length}`, label: 'Tasks Done' },
+    { value: r.invariants_enforced || '—', label: 'Invariants' },
+    { value: s.track || '—', label: 'Track' },
+  ];
+  document.getElementById('metrics').innerHTML = metrics.map(m =>
+    `<div class="metric"><div class="metric-value">${m.value}</div><div class="metric-label">${m.label}</div></div>`
+  ).join('');
+}
+
+function renderTasks() {
+  const tasks = (state.TASKS || {}).tasks || [];
+  if (!tasks.length) { document.getElementById('tasks').innerHTML = '<span style="color:var(--dim)">No tasks loaded</span>'; return; }
+
+  document.getElementById('tasks').innerHTML = tasks.map(t => {
+    const st = t.status || 'pending';
+    const cls = st === 'done' || st === 'completed' ? 'status-done' : st === 'in_progress' || st === 'coding' ? 'status-active' : st === 'blocked' ? 'status-blocked' : 'status-pending';
+    const icon = st === 'done' || st === 'completed' ? '✓' : st === 'in_progress' || st === 'coding' ? '◐' : st === 'blocked' ? '✗' : '·';
+    return `<div class="task-row"><span class="task-id">${t.id}</span><span class="task-name">${t.name}</span><span class="task-status ${cls}">${icon} ${st}</span></div>`;
+  }).join('');
+}
+
+function renderSafety() {
+  const audit = state.AUDIT || {};
+  const p6 = state.P6_EXIT || null;
+  const checks = [
+    { name: 'Anchor Build', status: audit.build_status?.anchor_build || 'unknown' },
+    { name: 'Next.js Build', status: audit.build_status?.next_build || 'unknown' },
+    { name: 'P6 Exit Assertions', status: p6 ? 'exists' : 'MISSING' },
+    { name: 'Test Results File', status: state.TEST_RESULTS ? 'exists' : 'MISSING' },
+    { name: 'Code Review', status: 'check AUDIT.json' },
+    { name: 'Secret Scan', status: 'check MEMORY.md' },
+  ];
+
+  document.getElementById('safety').innerHTML = checks.map(c => {
+    const cls = c.status === 'PASS' || c.status === 'exists' ? 'safety-pass' : c.status === 'MISSING' ? 'safety-missing' : 'safety-fail';
+    return `<div class="safety-row"><span>${c.name}</span><span class="${cls}">${c.status}</span></div>`;
+  }).join('');
+
+  // Alerts
+  const alerts = [];
+  if (!p6) alerts.push({ level: 'warn', msg: 'P6_EXIT.json missing — exit assertions not proven' });
+  if (!state.TEST_RESULTS) alerts.push({ level: 'warn', msg: 'TEST_RESULTS.md missing — tests not executed by orchestrator' });
+  if (!state.HEARTBEAT) alerts.push({ level: 'warn', msg: 'HEARTBEAT.json missing — agents never heartbeated' });
+  if (audit.build_status?.rust_warnings > 0) alerts.push({ level: 'info', msg: `${audit.build_status.rust_warnings} Rust compiler warnings` });
+
+  const gaps = (state.GAPS || {}).gaps || state.AUDIT?.gaps || [];
+  const blockers = gaps.filter(g => g.severity === 'BLOCKER');
+  if (blockers.length) alerts.push({ level: 'error', msg: `${blockers.length} BLOCKER gap(s) unresolved` });
+
+  document.getElementById('alerts').innerHTML = alerts.length
+    ? alerts.map(a => `<div class="alert ${a.level === 'error' ? 'alert-error' : ''}">${a.level === 'error' ? '🔴' : '⚠'} ${a.msg}</div>`).join('')
+    : '<span style="color:var(--accent)">No alerts</span>';
+}
+
+function renderGaps() {
+  const gaps = state.GAPS?.gaps || state.AUDIT?.gaps || [];
+  if (!gaps.length) { document.getElementById('gaps').innerHTML = '<span style="color:var(--accent)">No gaps</span>'; return; }
+
+  document.getElementById('gaps').innerHTML = gaps.map(g => {
+    const cls = g.severity === 'BLOCKER' ? 'gap-blocker' : g.severity === 'HIGH' ? 'gap-high' : g.severity === 'MEDIUM' ? 'gap-medium' : 'gap-low';
+    return `<div class="gap-row"><span>${g.description || g.spec_ref || 'unnamed'}</span><span class="gap-severity ${cls}">${g.severity}</span></div>`;
+  }).join('');
+}
+
+function renderMemory() {
+  if (state.MEMORY) {
+    const html = state.MEMORY.replace(/^## (.+)/gm, '<h3>$1</h3>').replace(/^- (.+)/gm, '<li>$1</li>').replace(/\n\n/g, '<br>');
+    document.getElementById('memory').innerHTML = html;
+  } else {
+    document.getElementById('memory').innerHTML = '<span style="color:var(--dim)">No MEMORY.md loaded</span>';
+  }
+}
+
+// File handling
+function processFile(file) {
+  const name = file.name.toUpperCase().replace('.JSON','').replace('.MD','');
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const content = e.target.result;
+    if (file.name.endsWith('.json')) {
+      try { state[name] = JSON.parse(content); } catch(e) { console.warn(`Failed to parse ${file.name}`, e); }
+    } else {
+      state[name] = content;
+    }
+    render();
+  };
+  reader.readAsText(file);
+}
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault(); dropZone.classList.remove('active');
+  const files = [...e.dataTransfer.files];
+  document.getElementById('fileList').textContent = files.map(f => f.name).join(', ');
+  files.forEach(processFile);
+});
+fileInput.addEventListener('change', (e) => {
+  const files = [...e.target.files];
+  document.getElementById('fileList').textContent = files.map(f => f.name).join(', ');
+  files.forEach(processFile);
+});
+
+// Auto-load if URL has ?dir= parameter
+const params = new URLSearchParams(window.location.search);
+if (params.has('demo')) {
+  // Load demo data for preview
+  state.STATE = { phase: 9, status: 'shipped', track: 'fast', phases_completed: [0,1,2,3,4,5,6,7,9], phases_skipped: [8], phases_skipped_gates: [1,2,3], build_results: { anchor_build: 'PASS', next_build: 'PASS', test_cases: 34, total_lines: 23500, total_files: 177, invariants_enforced: '7/7' }};
+  state.TASKS = { tasks: [
+    { id: 'task-01', name: 'anchor-program', status: 'done', spec_ref: 'S2,S3,S8' },
+    { id: 'task-02', name: 'frontend-app', status: 'done', spec_ref: 'S4,S5' },
+    { id: 'task-03', name: 'automation-service', status: 'done', spec_ref: 'S6,S7' },
+    { id: 'task-04', name: 'project-config', status: 'done', spec_ref: 'S10' },
+    { id: 'task-05', name: 'integration-tests', status: 'done', spec_ref: 'S9' },
+  ]};
+  state.AUDIT = { build_status: { anchor_build: 'PASS', next_build: 'PASS', rust_warnings: 23, rust_errors: 0, typescript_errors: 0 }, gaps: [] };
+  render();
+}
+</script>
+</body>
+</html>
