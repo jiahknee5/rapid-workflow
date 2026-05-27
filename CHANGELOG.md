@@ -2,6 +2,26 @@
 
 All notable changes to Johnny's AI Build Workflow are documented here.
 
+## [0.3.0] — 2026-05-27
+
+### Added
+- `/docs` skill (`~/.claude/skills/docs/SKILL.md`) — universal project documentation deck system
+  - `build` — generate per-folder Reveal.js decks + master hub from project artifacts
+  - `hub` — regenerate master navigation deck only
+  - `status` — folder inventory with completeness indicators
+  - `changelog` — show master CHANGES.md
+- `docs-deck-template.html` — universal CSS template extending decision-deck-template with slide types for every forge phase: hub navigation cards, metric callouts, SVG diagram frames, state machine nodes, requirement traceability, changelog entries, split layouts
+- D17 section in forge-autonomous-build.html — panel documentation corpus (per-expert + per-topic views + asks tracker)
+- D18 section in forge-autonomous-build.html — documentation deck system architecture, slide types per folder, change tracking flow
+- `/decision panel` subcommand — log expert panel findings with per-expert verdicts, auto-generate panels/deck.html with by-topic, by-expert, and asks tracker views
+- Documentation protocol added to forge skill — every phase updates folder CHANGELOG.md, appends to CHANGES.md, regenerates decks
+- `panels/`, `tests/`, `docs/` directories added to forge Phase 1 scaffold
+
+### Changed
+- `/decision` skill expanded from decision-only to decisions + panel corpus
+- Forge Decision Router (D5) now auto-invokes `/decision log` for architectural/strategic decisions
+- Cross-reference index updated for D17, D18
+
 ## [0.2.0] — 2026-05-26
 
 ### Added

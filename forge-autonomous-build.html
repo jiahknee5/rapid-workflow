@@ -1444,6 +1444,169 @@ claude-peers list_peers --scope repo
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D17 — PANEL DOCUMENTATION CORPUS                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d17">
+  <div class="section-id">D17 &mdash; Panel Documentation Corpus</div>
+  <div class="section-title">Every expert panel invocation produces a persistent, navigable record &mdash; organized by expert and by topic</div>
+  <div class="section-desc">References D1 P2, D6. When any expert panel skill runs (technical, business, SME, user, or project-specific), it writes a structured record to <code>panels/</code>. A navigation index auto-rebuilds on every addition. Two views: by-expert (what did Marcus say across all reviews?) and by-topic (all experts on the camera pipeline).</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D17a: Panel documentation flow</div>
+    <div class="vflow" style="padding: 8px 0;">
+      <div class="hflow" style="gap: 2px;">
+        <div class="n n-auto">Panel skill invoked</div><span class="arr">&rarr;</span>
+        <div class="n n-auto">Experts speak</div><span class="arr">&rarr;</span>
+        <div class="n n-auto">Synthesis produced</div><span class="arr">&rarr;</span>
+        <div class="n n-primary">Write panel record</div><span class="arr">&rarr;</span>
+        <div class="n n-blue">Rebuild navigation</div>
+      </div>
+      <div class="vline"></div>
+      <div class="branch" style="gap: 40px;">
+        <div>
+          <div class="n n-auto" style="min-width: 200px;">panels/P-{NN}.md<small>structured YAML frontmatter<br>+ per-expert sections</small></div>
+        </div>
+        <div>
+          <div class="n n-blue" style="min-width: 200px;">panels/deck.html<small>auto-generated Reveal.js<br>cover + expert slides + topic slides</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D17b: Panel record structure (one file per invocation)</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>YAML Frontmatter</h3>
+        <div class="code-block" style="margin-top: 6px; font-size: 0.68rem;"><span class="kw">id:</span> P-01
+<span class="kw">panel_type:</span> technical-expert-panel
+<span class="kw">topic:</span> <span class="str">"Camera pipeline architecture"</span>
+<span class="kw">phase:</span> <span class="num">2</span>
+<span class="kw">date:</span> 2026-05-26
+<span class="kw">pillars:</span> [Build Quality, Correctness]
+<span class="kw">experts:</span>
+  - <span class="kw">name:</span> Marcus
+    <span class="kw">lens:</span> iPad/Mobile
+    <span class="kw">verdict:</span> caution
+    <span class="kw">finding:</span> <span class="str">"Canvas touch events drop frames&hellip;"</span>
+    <span class="kw">asks:</span> [<span class="str">"Use CSS transforms"</span>, <span class="str">"Test real iPad"</span>]
+  - <span class="kw">name:</span> Alex
+    <span class="kw">lens:</span> SWE Skeptic
+    <span class="kw">verdict:</span> pass
+    <span class="kw">finding:</span> <span class="str">""</span>
+    <span class="kw">asks:</span> []
+<span class="kw">convergent:</span> [<span class="str">"Touch targets must be &ge;44px"</span>]
+<span class="kw">divergent:</span> [<span class="str">"Canvas vs CSS transforms"</span>]
+<span class="kw">recommended_action:</span> <span class="str">"Prototype both&hellip;"</span></div>
+      </div>
+      <div class="card">
+        <h3>Navigation Structure</h3>
+        <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.65;">
+          <strong>Cover slide:</strong> Index table of all panel runs (topic, type, date, expert count, open asks)<br><br>
+          <strong>By-topic slides:</strong> One slide per panel invocation. All experts for that topic, with verdicts color-coded (green = approve, amber = caution, red = block, gray = pass).<br><br>
+          <strong>By-expert slides:</strong> One slide per named expert across all invocations. Shows every finding and ask from that expert, grouped by topic. Answers: &ldquo;What has Marcus flagged across this entire build?&rdquo;<br><br>
+          <strong>Asks tracker:</strong> Final slide aggregating all open asks from all panels, sorted by severity. Links back to the originating panel slide.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D17c: Expert verdict classification</div>
+    <div class="grid-4" style="margin-top: 0;">
+      <div class="card-sm" style="border-top: 2px solid var(--green); text-align: center;"><strong style="color:var(--green);">APPROVE</strong><br><span style="font-size:0.68rem; color:var(--text-dim);">No objection on this topic.</span></div>
+      <div class="card-sm" style="border-top: 2px solid var(--amber); text-align: center;"><strong style="color:var(--amber);">CAUTION</strong><br><span style="font-size:0.68rem; color:var(--text-dim);">Flag raised. Has asks.</span></div>
+      <div class="card-sm" style="border-top: 2px solid var(--red); text-align: center;"><strong style="color:var(--red);">BLOCK</strong><br><span style="font-size:0.68rem; color:var(--text-dim);">Stops the build. Requires resolution.</span></div>
+      <div class="card-sm" style="border-top: 2px solid var(--text-dim); text-align: center;"><strong>PASS</strong><br><span style="font-size:0.68rem; color:var(--text-dim);">Nothing useful to add.</span></div>
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>Integration with D5 (Decision Router):</strong> When a panel finding triggers an architectural or strategic decision, the decision is logged via <code>/decision log</code> (D5) with a back-reference to the panel record. The panel corpus and decision deck are separate artifacts but cross-linked: panel records cite the decisions they spawned; decision slides cite the panel findings that informed them.
+  </div>
+  <div class="explain">
+    <strong>Why per-expert views matter:</strong> In a multi-panel build, the same named expert (e.g., Marcus the iPad engineer) speaks on 5&ndash;10 different topics. The by-expert view surfaces patterns: &ldquo;Marcus flagged touch targets in 4 of 6 reviews &mdash; this is a systemic issue, not a one-off.&rdquo; Without this view, systemic concerns are scattered across individual panel records and invisible.
+  </div>
+  <div class="footnote">Skill: <code>/decision panel</code> writes the record and regenerates the deck. Invoked automatically by every panel skill after producing findings. Manual invocation for ad-hoc panels or external expert input.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D18 — DOCUMENTATION DECK SYSTEM                                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d18">
+  <div class="section-id">D18 &mdash; Documentation Deck System</div>
+  <div class="section-title">Every numbered folder gets a navigable Reveal.js deck &mdash; one hub ties them all together with honest change tracking</div>
+  <div class="section-desc">References all phases. Generated by the <code>/docs</code> skill after every phase. Each deck uses McKinsey-style action titles, inline SVG diagrams, and the shared CSS vocabulary from <code>docs-deck-template.html</code>. Universal &mdash; works with any project structure.</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D18a: Documentation deck architecture</div>
+    <div class="vflow" style="padding: 8px 0;">
+      <div class="n n-primary" style="min-width: 280px;">docs/hub.html<small>master navigation &bull; entry point</small></div>
+      <div class="vline"></div>
+      <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+        <div class="n n-auto" style="font-size: 0.6rem;">00-vision/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">01-intake/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">02-grounding/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">03-panels/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">04-spec/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">05-build/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">06-walk/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">07-gaps/<br>deck.html</div>
+        <div class="n n-blue" style="font-size: 0.6rem;">decisions/<br>deck.html</div>
+        <div class="n n-blue" style="font-size: 0.6rem;">panels/<br>deck.html</div>
+        <div class="n n-auto" style="font-size: 0.6rem;">tests/<br>deck.html</div>
+      </div>
+    </div>
+    <div style="font-size: 0.62rem; color: var(--text-dim); margin-top: 8px; text-align: center;">
+      Blue = generated by <code>/decision</code> skill. Green = generated by <code>/docs</code> skill. All share same CSS template.
+    </div>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D18b: Slide types per folder (different shapes, shared vocabulary)</div>
+    <table class="compare-table" style="font-size: 0.68rem;">
+      <thead><tr><th style="width:120px;">Folder</th><th style="width:150px;">Slide Types</th><th>Key Visual</th><th>Content Source</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;">00-vision</td><td>Pillar cards, metric callout</td><td>Grid of .option.navy cards</td><td>VISION.md, PILLARS.md</td></tr>
+        <tr><td style="font-weight:700;">01-intake</td><td>Requirements table, constraint grid</td><td>MUST/SHOULD/MAY color-coded table</td><td>PRD.md</td></tr>
+        <tr><td style="font-weight:700;">02-grounding</td><td>Trade-off matrix, evidence cards</td><td>Options grid + VERIFIED badges</td><td>*.md per question</td></tr>
+        <tr><td style="font-weight:700;">03-panels</td><td>Synthesis overview, metrics</td><td>Convergent/divergent cascade</td><td>synthesis.md</td></tr>
+        <tr><td style="font-weight:700;">04-spec</td><td>Architecture SVG, state machine, interface table</td><td>Inline SVG component diagram</td><td>spec.md, architecture.md, workflow.md</td></tr>
+        <tr><td style="font-weight:700;">05-build</td><td>Task graph, agent map, timeline</td><td>SVG dependency DAG</td><td>TASKS.json, PLAN.md</td></tr>
+        <tr><td style="font-weight:700;">06-walkthrough</td><td>Scenario cards, inner voice</td><td>Persona card + click-by-click</td><td>scenarios.md, agent-runs/</td></tr>
+        <tr><td style="font-weight:700;">07-gaps</td><td>Gap cards, resolution history</td><td>Severity-colored option cards</td><td>GAPS.md, gaps/*.md</td></tr>
+        <tr><td style="font-weight:700;">tests</td><td>Coverage matrix, results dashboard</td><td>Spec &rarr; test traceability table</td><td>EVAL/, TEST_RESULTS.md</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D18c: Change tracking flow</div>
+    <div class="vflow" style="padding: 8px 0;">
+      <div class="hflow" style="gap: 2px;">
+        <div class="n n-auto">Agent produces artifact</div><span class="arr">&rarr;</span>
+        <div class="n n-auto">Updates folder CHANGELOG.md<small>semantic: what + why</small></div><span class="arr">&rarr;</span>
+        <div class="n n-auto">Appends to CHANGES.md<small>timestamp + phase + file</small></div><span class="arr">&rarr;</span>
+        <div class="n n-primary">Regenerates folder deck<small>/docs build &lt;folder&gt;</small></div><span class="arr">&rarr;</span>
+        <div class="n n-blue">Regenerates hub<small>/docs hub</small></div>
+      </div>
+    </div>
+    <div style="margin-top: 8px; font-size: 0.62rem; color: var(--text-dim); text-align: center;">
+      Hook on Write/Edit also appends to CHANGES.md mechanically (file + timestamp). Agents provide the &ldquo;what + why&rdquo; layer.<br>
+      Every deck&rsquo;s final slide shows that folder&rsquo;s last 10 changelog entries.
+    </div>
+  </div>
+
+  <div class="explain">
+    <strong>McKinsey action titles:</strong> Every slide title is a complete sentence stating the slide&rsquo;s conclusion, not a topic label. &ldquo;Architecture&rdquo; is wrong. &ldquo;Three components with strict contract boundaries eliminate cross-agent file conflicts&rdquo; is right. The title is the takeaway; the content is the evidence.
+  </div>
+  <div class="explain">
+    <strong>Universality:</strong> The /docs skill works with any project. It scans for numbered folders, reads whatever markdown is there, and generates decks. No hardcoded project references, no assumptions about folder names beyond the NN-* pattern. Partial structures produce partial documentation &mdash; empty folders get placeholder slides.
+  </div>
+  <div class="footnote">Skill: <code>/docs build</code> generates all decks. <code>/docs hub</code> regenerates navigation only. <code>/docs status</code> shows folder inventory. CSS source: <code>~/projects/workflow/docs-deck-template.html</code>.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- CROSS-REFERENCE INDEX                                           -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="index">
@@ -1472,6 +1635,8 @@ claude-peers list_peers --scope repo
         <tr><td style="font-weight:700;">D14</td><td>Configuration cascade</td><td>All</td><td>D1, D2</td><td>D13</td></tr>
         <tr><td style="font-weight:700;">D15</td><td>Trust model (what replaces human, what catches failure)</td><td>All</td><td>D1&ndash;D14</td><td>&mdash;</td></tr>
         <tr><td style="font-weight:700;">D16</td><td>Methodology provenance (source &rarr; mechanism &rarr; location)</td><td>All</td><td>All</td><td>&mdash;</td></tr>
+        <tr><td style="font-weight:700;">D17</td><td>Panel documentation corpus (per-expert + per-topic + asks tracker)</td><td>P2</td><td>D1, D5, D6</td><td>D9, D18</td></tr>
+        <tr><td style="font-weight:700;">D18</td><td>Documentation deck system (per-folder decks + hub + change tracking)</td><td>All</td><td>D1, D5, D17</td><td>&mdash;</td></tr>
       </tbody>
     </table>
   </div>
