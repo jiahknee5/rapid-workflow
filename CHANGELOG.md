@@ -2,6 +2,17 @@
 
 All notable changes to Johnny's AI Build Workflow are documented here.
 
+## [0.2.0] — 2026-05-26
+
+### Added
+- `/decision` skill (`~/.claude/skills/decision/SKILL.md`) — log architectural and strategic decisions as McKinsey-style Reveal.js slides with auto-regenerating index
+  - `log` — add a new decision (structured YAML frontmatter + options grid + pro/con + rationale + cascade)
+  - `rebuild` — regenerate `decisions/deck.html` from all `D-*.md` files, sorted by phase then date
+  - `status` — print summary table of all decisions
+- Decision file format: individual `decisions/D-{NN}.md` files with YAML frontmatter (id, question, phase, pillars, status, options with pros/cons, rationale, panel input, cascade impacts)
+- Forge integration: Decision Router (D5) now invokes `/decision log` after resolving architectural or strategic decisions
+- `decisions/` directory added to forge Phase 1 scaffold
+
 ## [0.1.0] — 2026-05-26
 
 ### Added
