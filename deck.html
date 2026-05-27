@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Johnny's AI Build Workflow v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.min.css">
+<style>
+:root{
+  --ink:#0a1929;
+  --ink-2:#374151;
+  --ink-3:#6b7280;
+  --ink-4:#9ca3af;
+  --paper:#fff;
+  --hairline:#eef0f3;
+  --rule:#d1d5db;
+  --navy:#0d2340;
+  --teal:#1f8a8a;
+  --teal-tint:#f3f8f8;
+  --accent:#b8400a;
+  --amber-tint:#fdf6ec;
+  --amber-rule:#f0c89e;
+  --spec-tint:#f3f6fc;
+  --ui-sans:'Inter',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --ui-serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --ui-mono:'IBM Plex Mono',Menlo,Consolas,monospace;
+}
+html,body{background:var(--paper);}
+.reveal{font-family:var(--ui-sans);color:var(--ink);font-feature-settings:'ss01','cv01','cv11';-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+.reveal .slides{text-align:left;}
+.slide{position:relative;width:1280px;height:720px;padding:24px 28px 24px 28px;box-sizing:border-box;background:var(--paper);display:flex;flex-direction:column;}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:0.22em;color:var(--teal);text-transform:uppercase;margin-bottom:4px;}
+.title{font-family:var(--ui-serif);font-size:19px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:8px;letter-spacing:-0.015em;line-height:1.3;}
+.canvas{flex:1;display:flex;align-items:stretch;justify-content:center;min-height:0;}
+.canvas svg{width:100%;height:100%;}
+.footer{position:absolute;left:28px;right:28px;bottom:8px;display:flex;justify-content:space-between;font-size:10px;color:var(--ink-4);border-top:1px solid var(--hairline);padding-top:5px;letter-spacing:0.05em;}
+
+/* Page 2 — tree */
+.tree-page{display:grid;grid-template-columns:560px 1fr;gap:32px;flex:1;min-height:0;}
+.tree-box{background:#0d2340;color:#e3eaf5;border-radius:4px;padding:18px 22px;font-family:var(--ui-mono);font-size:11.5px;line-height:1.65;overflow:auto;font-weight:400;}
+.tree-box .dim{color:#6b89b3;}
+.tree-box .acc{color:#fbbf91;font-weight:500;}
+.tree-box .tealc{color:#7dd3d3;}
+.tree-box .navyc{color:#a5bfe3;font-weight:500;}
+.tree-box .label{color:#9bb3d6;font-style:italic;font-family:var(--ui-sans);font-size:10.5px;}
+.tree-box .root{color:#fff;font-weight:500;}
+.notes{display:flex;flex-direction:column;gap:9px;font-size:12px;color:var(--ink-2);}
+.note{border-left:2px solid var(--navy);padding:7px 13px;background:#fafafa;}
+.note.accent{border-left-color:var(--accent);background:var(--amber-tint);}
+.note.teal{border-left-color:var(--teal);background:var(--teal-tint);}
+.note .h{font-weight:600;color:var(--ink);font-size:11px;letter-spacing:0.06em;margin-bottom:3px;text-transform:uppercase;}
+.note.accent .h{color:var(--accent);}
+.note.teal .h{color:var(--teal);}
+.note .b{font-size:11.5px;color:var(--ink-2);line-height:1.5;}
+.note code{font-family:var(--ui-mono);font-size:10.5px;background:rgba(0,0,0,0.04);padding:1px 4px;border-radius:2px;}
+
+/* Pipeline nav breadcrumb */
+.pnav{display:flex;align-items:center;gap:2px;padding:3px 0 7px;border-bottom:1px solid var(--hairline);margin-bottom:6px;}
+.pnav .p{font-family:var(--ui-mono);font-size:7.5px;padding:2px 5px;border-radius:2px;background:#eef0f3;color:var(--ink-3);}
+.pnav .p.on{background:var(--navy);color:#fff;font-weight:500;}
+.pnav .p.on-spike{background:#6d28d9;color:#fff;font-weight:500;}
+.pnav .p.on-gaps{background:var(--accent);color:#fff;font-weight:500;}
+.pnav .s{color:var(--ink-4);font-size:8px;margin:0 1px;}
+.pnav .d{width:1px;height:12px;background:var(--teal);margin:0 4px;opacity:0.6;}
+.pnav .lp{font-size:6.5px;color:var(--teal);font-weight:600;letter-spacing:0.5px;margin-right:2px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- ============== PAGE 1 ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Methodology · v2</div>
+  <div class="title">An AI Build Workflow — eight phases, two loops; convergence before spec, human before agent</div>
+  <div class="canvas">
+    <svg viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0a1929"/></marker>
+        <marker id="arr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b8400a"/></marker>
+        <marker id="arr-t" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f8a8a"/></marker>
+        <style>
+          .ttl-serif{font-family:'Source Serif 4',Georgia,serif;}
+          .ui{font-family:'Inter',sans-serif;}
+          .mono{font-family:'IBM Plex Mono',monospace;}
+          .lbl{font-family:'Inter',sans-serif;font-size:7px;font-weight:600;letter-spacing:1.2px;fill:#9ca3af;}
+          .lbl-amber{font-family:'Inter',sans-serif;font-size:7px;font-weight:600;letter-spacing:1.2px;fill:#b8400a;}
+          .lbl-navy{font-family:'Inter',sans-serif;font-size:7px;font-weight:600;letter-spacing:1.2px;fill:#0d2340;}
+          .lbl-spike{font-family:'Inter',sans-serif;font-size:7px;font-weight:600;letter-spacing:1.2px;fill:#6d28d9;}
+          .val{font-family:'IBM Plex Mono',monospace;font-size:8.5px;fill:#374151;}
+          .val-amber{font-family:'IBM Plex Mono',monospace;font-size:8.5px;fill:#5a3010;}
+          .val-spike{font-family:'IBM Plex Mono',monospace;font-size:8.5px;fill:#4c1d95;}
+          .val-it{font-family:'Inter',sans-serif;font-size:8.5px;font-style:italic;fill:#6b7280;}
+          .val-em{font-family:'Inter',sans-serif;font-size:10px;fill:#0a1929;}
+          .val-em-it{font-family:'Inter',sans-serif;font-size:10px;font-style:italic;fill:#9ca3af;}
+          .topo{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;fill:#0a1929;}
+          .topo-em{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;fill:#0a1929;}
+          .topo-amber{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;fill:#b8400a;}
+          .topo-navy{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;fill:#0d2340;}
+          .topo-spike{font-family:'Inter',sans-serif;font-size:9.5px;font-weight:600;fill:#6d28d9;}
+          .rw{font-family:'Inter',sans-serif;font-size:8.5px;font-weight:700;}
+          .ph-eyebrow{font-family:'Inter',sans-serif;font-size:7px;font-weight:600;letter-spacing:1.6px;fill:#9ca3af;}
+          .ph-name{font-family:'Source Serif 4',Georgia,serif;font-size:14px;font-weight:700;fill:#0a1929;}
+        </style>
+      </defs>
+
+      <!-- ===== VISION banner ===== -->
+      <line x1="280" y1="22" x2="430" y2="22" stroke="#b8400a" stroke-width="0.6"/>
+      <line x1="770" y1="22" x2="920" y2="22" stroke="#b8400a" stroke-width="0.6"/>
+      <text x="600" y="26" text-anchor="middle" class="ui" font-size="10" font-weight="600" fill="#b8400a" letter-spacing="3">VISION · THE LENS APPLIED TO EVERY PHASE</text>
+      <text x="600" y="42" text-anchor="middle" class="mono" font-size="9.5" fill="#b8400a">VISION.md · CONSTITUTION.md · PILLARS.md</text>
+
+      <!-- ===== Inner-loop zone tint — phases 1-4 ===== -->
+      <rect x="10" y="60" width="590" height="402" fill="#f3f8f8" stroke="none"/>
+      <rect x="10" y="60" width="180" height="18" fill="#1f8a8a"/>
+      <text x="100" y="73" text-anchor="middle" class="ui" font-size="8" font-weight="600" fill="#fff" letter-spacing="1.6">INNER LOOP · CONVERGE</text>
+
+      <!-- 8 cols × 136w × 10 gap, start x=21 -->
+
+      <!-- Inter-phase connectors at y=103 -->
+      <line x1="157" y1="103" x2="167" y2="103" stroke="#0a1929" stroke-width="1.3" marker-end="url(#arr)"/>
+      <line x1="303" y1="103" x2="313" y2="103" stroke="#0a1929" stroke-width="1.3" marker-end="url(#arr)"/>
+      <line x1="449" y1="103" x2="459" y2="103" stroke="#0a1929" stroke-width="1.3" marker-end="url(#arr)"/>
+      <line x1="595" y1="103" x2="605" y2="103" stroke="#0a1929" stroke-width="1.3" marker-end="url(#arr)"/>
+      <line x1="741" y1="103" x2="751" y2="103" stroke="#0a1929" stroke-width="1.3" marker-end="url(#arr)"/>
+      <line x1="887" y1="103" x2="897" y2="103" stroke="#0a1929" stroke-width="1.3" marker-end="url(#arr)"/>
+      <line x1="1033" y1="103" x2="1043" y2="103" stroke="#0a1929" stroke-width="1.3" marker-end="url(#arr)"/>
+
+      <!-- ============ PHASE 1 — BRIEF ============ -->
+      <g>
+        <rect x="21" y="84" width="136" height="374" fill="#fff" stroke="#9ca3af" stroke-width="1"/>
+        <text x="89" y="101" text-anchor="middle" class="ph-eyebrow">PHASE 1 · INTAKE</text>
+        <text x="89" y="118" text-anchor="middle" class="ph-name">BRIEF</text>
+        <line x1="21" y1="126" x2="157" y2="126" stroke="#eef0f3"/>
+        <foreignObject x="29" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#374151;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Stakeholder snapshot</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Evolves via DIFF.md</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Not frozen — tracked</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Baseline for all phases</li>
+          </ul>
+        </foreignObject>
+        <line x1="21" y1="202" x2="157" y2="202" stroke="#eef0f3"/>
+        <text x="29" y="216" class="lbl">DOCS</text>
+        <text x="29" y="228" class="val">BRIEF · STAKEHOLDERS</text>
+        <text x="29" y="242" class="lbl">SKILLS</text>
+        <text x="29" y="254" class="val-it">— intake only</text>
+        <line x1="21" y1="258" x2="157" y2="258" stroke="#eef0f3"/>
+        <text x="29" y="272" class="lbl">AGENT</text>
+        <text x="89" y="288" text-anchor="middle" class="topo">single · sequential</text>
+        <line x1="29" y1="296" x2="149" y2="296" stroke="#eef0f3"/>
+        <text x="29" y="306" class="lbl">WHO</text>
+        <text x="29" y="318" class="val-it">— manual artifact</text>
+        <text x="29" y="344" class="lbl">TOOLS</text>
+        <text x="29" y="356" class="val">file ingest</text>
+        <line x1="29" y1="366" x2="149" y2="366" stroke="#eef0f3"/>
+        <text x="29" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="42" y="380" class="val">stakeholder doc</text>
+        <text x="29" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="42" y="394" class="val">BRIEF.md</text>
+        <text x="29" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="42" y="408" class="val-it">user invokes</text>
+        <line x1="21" y1="422" x2="157" y2="422" stroke="#eef0f3"/>
+        <text x="29" y="436" class="lbl">MODEL</text>
+        <text x="89" y="452" text-anchor="middle" class="val-em-it">—</text>
+      </g>
+
+      <!-- ============ PHASE 2 — PANELS ============ -->
+      <g>
+        <rect x="167" y="84" width="136" height="374" fill="#fff" stroke="#9ca3af" stroke-width="1"/>
+        <text x="235" y="101" text-anchor="middle" class="ph-eyebrow">PHASE 2 · REVIEW</text>
+        <text x="235" y="118" text-anchor="middle" class="ph-name">PANELS</text>
+        <line x1="167" y1="126" x2="303" y2="126" stroke="#eef0f3"/>
+        <foreignObject x="175" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#374151;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Business · technical</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> SME · audience</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> <strong style="color:#0a1929;">Questions raised</strong></li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Not findings — hypotheses</li>
+          </ul>
+        </foreignObject>
+        <line x1="167" y1="202" x2="303" y2="202" stroke="#eef0f3"/>
+        <text x="175" y="216" class="lbl">DOCS</text>
+        <text x="175" y="228" class="val">panels/*.md · synthesis</text>
+        <text x="175" y="242" class="lbl">SKILLS</text>
+        <text x="175" y="254" class="val">biz · tech · sme · user</text>
+        <line x1="167" y1="258" x2="303" y2="258" stroke="#eef0f3"/>
+        <text x="175" y="272" class="lbl">AGENT</text>
+        <text x="235" y="288" text-anchor="middle" class="topo">parallel · 4 panels</text>
+        <line x1="175" y1="296" x2="295" y2="296" stroke="#eef0f3"/>
+        <text x="175" y="306" class="lbl">WHO</text>
+        <text x="175" y="318" class="val">business · technical</text>
+        <text x="175" y="330" class="val">SME · audience</text>
+        <text x="175" y="344" class="lbl">TOOLS</text>
+        <text x="175" y="356" class="val">Claude skills</text>
+        <line x1="175" y1="366" x2="295" y2="366" stroke="#eef0f3"/>
+        <text x="175" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="188" y="380" class="val">BRIEF · VISION</text>
+        <text x="175" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="188" y="394" class="val">panels/*.md</text>
+        <text x="175" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="188" y="408" class="val-it">post-brief</text>
+        <line x1="167" y1="422" x2="303" y2="422" stroke="#eef0f3"/>
+        <text x="175" y="436" class="lbl">MODEL</text>
+        <text x="235" y="452" text-anchor="middle" class="val-em">Opus 4.7</text>
+      </g>
+
+      <!-- ============ PHASE 3 — SPIKE (new in v2) ============ -->
+      <g>
+        <rect x="313" y="84" width="136" height="374" fill="#faf5ff" stroke="#6d28d9" stroke-width="1.4"/>
+        <text x="381" y="101" text-anchor="middle" class="ph-eyebrow" fill="#6d28d9">PHASE 3 · VALIDATE</text>
+        <text x="381" y="118" text-anchor="middle" class="ph-name" fill="#6d28d9">SPIKE</text>
+        <line x1="313" y1="126" x2="449" y2="126" stroke="#ddd6fe"/>
+        <foreignObject x="321" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#4c1d95;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#6d28d9;font-weight:600;">›</span> Time-boxed (½ day max)</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#6d28d9;font-weight:600;">›</span> <strong>One</strong> load-bearing question</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#6d28d9;font-weight:600;">›</span> Build to learn, not ship</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#6d28d9;font-weight:600;">›</span> Feeds workflow confidence</li>
+          </ul>
+        </foreignObject>
+        <line x1="313" y1="202" x2="449" y2="202" stroke="#ddd6fe"/>
+        <text x="321" y="216" class="lbl-spike">DOCS</text>
+        <text x="321" y="228" class="val-spike">SPIKE.md · results/</text>
+        <text x="321" y="242" class="lbl-spike">SKILLS</text>
+        <text x="321" y="254" class="val-it">— direct investigation</text>
+        <line x1="313" y1="258" x2="449" y2="258" stroke="#ddd6fe"/>
+        <text x="321" y="272" class="lbl-spike">AGENT</text>
+        <text x="381" y="288" text-anchor="middle" class="topo-spike">single · investigator</text>
+        <line x1="321" y1="296" x2="441" y2="296" stroke="#ddd6fe"/>
+        <text x="321" y="306" class="lbl-spike">WHO</text>
+        <text x="321" y="318" class="val">spike-runner</text>
+        <text x="321" y="344" class="lbl-spike">TOOLS</text>
+        <text x="321" y="356" class="val">prototype · measure</text>
+        <line x1="321" y1="366" x2="441" y2="366" stroke="#ddd6fe"/>
+        <text x="321" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="334" y="380" class="val">panels/* · BRIEF</text>
+        <text x="321" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="334" y="394" class="val">SPIKE.md</text>
+        <text x="321" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="334" y="408" class="val-it">load-bearing Q raised</text>
+        <line x1="313" y1="422" x2="449" y2="422" stroke="#ddd6fe"/>
+        <text x="321" y="436" class="lbl-spike">MODEL</text>
+        <text x="381" y="452" text-anchor="middle" class="val-em">mixed</text>
+      </g>
+
+      <!-- ============ PHASE 4 — WORKFLOW ============ -->
+      <g>
+        <rect x="459" y="84" width="136" height="374" fill="#fff" stroke="#9ca3af" stroke-width="1"/>
+        <text x="527" y="101" text-anchor="middle" class="ph-eyebrow">PHASE 4 · BEHAVIOR</text>
+        <text x="527" y="118" text-anchor="middle" class="ph-name">WORKFLOW</text>
+        <line x1="459" y1="126" x2="595" y2="126" stroke="#eef0f3"/>
+        <foreignObject x="467" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#374151;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> User journey states</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Per node: in / proc / out</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Defines <em>what</em> it does</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Seeds the test suite</li>
+          </ul>
+        </foreignObject>
+        <line x1="459" y1="202" x2="595" y2="202" stroke="#eef0f3"/>
+        <text x="467" y="216" class="lbl">DOCS</text>
+        <text x="467" y="228" class="val">WORKFLOW · STATES</text>
+        <text x="467" y="242" class="lbl">SKILLS</text>
+        <text x="467" y="254" class="val">grill-me · blueprint</text>
+        <line x1="459" y1="258" x2="595" y2="258" stroke="#eef0f3"/>
+        <text x="467" y="272" class="lbl">AGENT</text>
+        <text x="527" y="288" text-anchor="middle" class="topo">single · iterative</text>
+        <line x1="467" y1="296" x2="587" y2="296" stroke="#eef0f3"/>
+        <text x="467" y="306" class="lbl">WHO</text>
+        <text x="467" y="318" class="val">workflow-author</text>
+        <text x="467" y="344" class="lbl">TOOLS</text>
+        <text x="467" y="356" class="val">state-machine draft</text>
+        <line x1="467" y1="366" x2="587" y2="366" stroke="#eef0f3"/>
+        <text x="467" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="480" y="380" class="val">BRIEF · panels/*</text>
+        <text x="467" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="480" y="394" class="val">WORKFLOW.md</text>
+        <text x="467" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="480" y="408" class="val-it">spike confirms bet</text>
+        <line x1="459" y1="422" x2="595" y2="422" stroke="#eef0f3"/>
+        <text x="467" y="436" class="lbl">MODEL</text>
+        <text x="527" y="452" text-anchor="middle" class="val-em">Opus 4.7</text>
+      </g>
+
+      <!-- ============ PHASE 5 — SPEC (highlighted) ============ -->
+      <g>
+        <rect x="605" y="84" width="136" height="374" fill="#f3f6fc" stroke="#0d2340" stroke-width="1.4"/>
+        <text x="673" y="101" text-anchor="middle" class="ph-eyebrow" fill="#0d2340">PHASE 5 · DESIGN</text>
+        <text x="673" y="118" text-anchor="middle" class="ph-name" fill="#0d2340">SPEC</text>
+        <line x1="605" y1="126" x2="741" y2="126" stroke="#d1d5db"/>
+        <foreignObject x="613" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#374151;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0d2340;font-weight:600;">›</span> <strong style="color:#0d2340;">Source of truth</strong></li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0d2340;font-weight:600;">›</span> Derived from BRIEF</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0d2340;font-weight:600;">›</span> Maintained DIFF.md</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0d2340;font-weight:600;">›</span> Arch · interfaces</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0d2340;font-weight:700;">›</span> <strong style="color:#0d2340;">+ swarm topology</strong></li>
+          </ul>
+        </foreignObject>
+        <line x1="605" y1="202" x2="741" y2="202" stroke="#d1d5db"/>
+        <text x="613" y="216" class="lbl-navy">DOCS</text>
+        <text x="613" y="228" class="val">SPEC · DIFF · agents/*</text>
+        <text x="613" y="242" class="lbl-navy">SKILLS</text>
+        <text x="613" y="254" class="val">blueprint · ai-lead-deck</text>
+        <line x1="605" y1="258" x2="741" y2="258" stroke="#d1d5db"/>
+        <text x="613" y="272" class="lbl-navy">AGENT</text>
+        <text x="673" y="288" text-anchor="middle" class="topo-navy">single · synthesizer</text>
+        <line x1="613" y1="296" x2="733" y2="296" stroke="#d1d5db"/>
+        <text x="613" y="306" class="lbl-navy">WHO</text>
+        <text x="613" y="318" class="val">spec-author</text>
+        <text x="613" y="344" class="lbl-navy">TOOLS</text>
+        <text x="613" y="356" class="val">derive · diff</text>
+        <line x1="613" y1="366" x2="733" y2="366" stroke="#d1d5db"/>
+        <text x="613" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="626" y="380" class="val">BRIEF · WORKFLOW</text>
+        <text x="613" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="626" y="394" class="val">SPEC · DIFF</text>
+        <text x="613" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="626" y="408" class="val-it">inner loop converged</text>
+        <line x1="605" y1="422" x2="741" y2="422" stroke="#d1d5db"/>
+        <text x="613" y="436" class="lbl-navy">MODEL</text>
+        <text x="673" y="452" text-anchor="middle" class="val-em">Opus 4.7</text>
+      </g>
+
+      <!-- ============ PHASE 6 — SWARM ============ -->
+      <g>
+        <rect x="751" y="84" width="136" height="374" fill="#fff" stroke="#9ca3af" stroke-width="1"/>
+        <text x="819" y="101" text-anchor="middle" class="ph-eyebrow">PHASE 6 · BUILD</text>
+        <text x="819" y="118" text-anchor="middle" class="ph-name">SWARM</text>
+        <line x1="751" y1="126" x2="887" y2="126" stroke="#eef0f3"/>
+        <foreignObject x="759" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#374151;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> <strong>Sizing gate first</strong></li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> ≤3 modules → 1-2 agents</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> 4+ → full swarm (≤4)</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Watchdog blocks merge</li>
+          </ul>
+        </foreignObject>
+        <line x1="751" y1="202" x2="887" y2="202" stroke="#eef0f3"/>
+        <text x="759" y="216" class="lbl">DOCS</text>
+        <text x="759" y="228" class="val">PLAN · TASKS · src/</text>
+        <text x="759" y="242" class="lbl">SKILLS</text>
+        <text x="759" y="254" class="val">review · eval</text>
+        <line x1="751" y1="258" x2="887" y2="258" stroke="#eef0f3"/>
+        <text x="759" y="272" class="lbl">AGENT</text>
+        <text x="819" y="288" text-anchor="middle" class="topo-em">SIZED · ≤4 parallel</text>
+        <line x1="759" y1="296" x2="879" y2="296" stroke="#eef0f3"/>
+        <text x="759" y="306" class="lbl">WHO</text>
+        <text x="759" y="318" class="val">orch · sup · N×impl</text>
+        <text x="759" y="330" class="val">watchdog · tester</text>
+        <text x="759" y="344" class="lbl">TOOLS</text>
+        <text x="759" y="356" class="val">CI hook · diff audit</text>
+        <line x1="759" y1="366" x2="879" y2="366" stroke="#eef0f3"/>
+        <text x="759" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="772" y="380" class="val">SPEC · TASKS</text>
+        <text x="759" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="772" y="394" class="val">src/ · tests/</text>
+        <text x="759" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="772" y="408" class="val-it">post-spec-derived</text>
+        <line x1="751" y1="422" x2="887" y2="422" stroke="#eef0f3"/>
+        <text x="759" y="436" class="lbl">MODEL</text>
+        <text x="819" y="452" text-anchor="middle" class="val-em">mixed (per agent)</text>
+      </g>
+
+      <!-- ============ PHASE 7 — WALKTHROUGH (flipped in v2) ============ -->
+      <g>
+        <rect x="897" y="84" width="136" height="374" fill="#fff" stroke="#9ca3af" stroke-width="1"/>
+        <text x="965" y="101" text-anchor="middle" class="ph-eyebrow">PHASE 7 · EVALUATE</text>
+        <text x="965" y="118" text-anchor="middle" class="ph-name">WALKTHROUGH</text>
+        <line x1="897" y1="126" x2="1033" y2="126" stroke="#eef0f3"/>
+        <foreignObject x="905" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#374151;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> <strong>Human evaluates first</strong></li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Agent runs regressions</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Not the other way around</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#0a1929;font-weight:600;">›</span> Tests from workflow map</li>
+          </ul>
+        </foreignObject>
+        <line x1="897" y1="202" x2="1033" y2="202" stroke="#eef0f3"/>
+        <text x="905" y="216" class="lbl">DOCS</text>
+        <text x="905" y="228" class="val">EVAL · tests/</text>
+        <text x="905" y="242" class="lbl">SKILLS</text>
+        <text x="905" y="254" class="val">usability-testing</text>
+        <line x1="897" y1="258" x2="1033" y2="258" stroke="#eef0f3"/>
+        <text x="905" y="272" class="lbl">AGENT</text>
+        <text x="965" y="288" text-anchor="middle" class="topo">human → agent</text>
+        <line x1="905" y1="296" x2="1025" y2="296" stroke="#eef0f3"/>
+        <text x="905" y="306" class="lbl">WHO</text>
+        <text x="905" y="318" class="val">human reviewer</text>
+        <text x="905" y="330" class="val">scenario-runner</text>
+        <text x="905" y="344" class="lbl">TOOLS</text>
+        <text x="905" y="356" class="val">eyes first · Playwright</text>
+        <line x1="905" y1="366" x2="1025" y2="366" stroke="#eef0f3"/>
+        <text x="905" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="918" y="380" class="val">app · SCENARIOS</text>
+        <text x="905" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="918" y="394" class="val">EVAL · agent-runs/</text>
+        <text x="905" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="918" y="408" class="val-it">post-build</text>
+        <line x1="897" y1="422" x2="1033" y2="422" stroke="#eef0f3"/>
+        <text x="905" y="436" class="lbl">MODEL</text>
+        <text x="965" y="452" text-anchor="middle" class="val-em">Sonnet 4.6</text>
+      </g>
+
+      <!-- ============ PHASE 8 — GAPS (highlighted) ============ -->
+      <g>
+        <rect x="1043" y="84" width="136" height="374" fill="#fdf6ec" stroke="#b8400a" stroke-width="1"/>
+        <text x="1111" y="101" text-anchor="middle" class="ph-eyebrow" fill="#b8400a">PHASE 8 · LOOP</text>
+        <text x="1111" y="118" text-anchor="middle" class="ph-name" fill="#b8400a">GAPS</text>
+        <line x1="1043" y1="126" x2="1179" y2="126" stroke="#f0c89e"/>
+        <foreignObject x="1051" y="130" width="120" height="68">
+          <ul xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;list-style:none;font-family:Inter,sans-serif;font-size:9px;line-height:1.55;color:#5a3010;">
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#b8400a;font-weight:600;">›</span> Classified spec / brief</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#b8400a;font-weight:600;">›</span> Spec gap → re-derive</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#b8400a;font-weight:600;">›</span> Brief gap → stakeholder</li>
+            <li style="padding-left:10px;text-indent:-10px;"><span style="color:#b8400a;font-weight:600;">›</span> <strong>Loop is the product</strong></li>
+          </ul>
+        </foreignObject>
+        <line x1="1043" y1="202" x2="1179" y2="202" stroke="#f0c89e"/>
+        <text x="1051" y="216" class="lbl-amber">DOCS</text>
+        <text x="1051" y="228" class="val-amber">GAPS · HISTORY</text>
+        <text x="1051" y="242" class="lbl-amber">SKILLS</text>
+        <text x="1051" y="254" class="val-amber">loop · schedule</text>
+        <line x1="1043" y1="258" x2="1179" y2="258" stroke="#f0c89e"/>
+        <text x="1051" y="272" class="lbl-amber">AGENT</text>
+        <text x="1111" y="288" text-anchor="middle" class="topo-amber">single classifier</text>
+        <line x1="1051" y1="296" x2="1171" y2="296" stroke="#f0c89e"/>
+        <text x="1051" y="306" class="lbl-amber">WHO</text>
+        <text x="1051" y="318" class="val">gap-classifier</text>
+        <text x="1051" y="344" class="lbl-amber">TOOLS</text>
+        <text x="1051" y="356" class="val">route to BRIEF / SPEC</text>
+        <line x1="1051" y1="366" x2="1171" y2="366" stroke="#f0c89e"/>
+        <text x="1051" y="380" class="rw" fill="#1f8a8a">R</text>
+        <text x="1064" y="380" class="val">EVAL · human-pass</text>
+        <text x="1051" y="394" class="rw" fill="#b8400a">W</text>
+        <text x="1064" y="394" class="val">GAPS · HISTORY</text>
+        <text x="1051" y="408" class="rw" fill="#6b7280">T</text>
+        <text x="1064" y="408" class="val-it">post-walkthrough</text>
+        <line x1="1043" y1="422" x2="1179" y2="422" stroke="#f0c89e"/>
+        <text x="1051" y="436" class="lbl-amber">MODEL</text>
+        <text x="1111" y="452" text-anchor="middle" class="val-em">Sonnet 4.6</text>
+      </g>
+
+      <!-- ===== Inner-loop feedback arc — phases 4→1 with convergence criteria ===== -->
+      <path d="M 527 462 C 527 510, 89 510, 89 462"
+            stroke="#1f8a8a" stroke-width="1.4" stroke-dasharray="4,3" fill="none" marker-end="url(#arr-t)"/>
+      <text x="308" y="520" text-anchor="middle" class="ui" font-size="9" font-weight="600" fill="#1f8a8a">CONVERGE</text>
+      <text x="308" y="534" text-anchor="middle" class="ui" font-size="8" fill="#1f8a8a">no new blockers · all states defined · no open load-bearing questions</text>
+
+      <!-- ===== Gap-loop feedback arc ===== -->
+      <path d="M 1111 462 C 1111 590, 60 590, 60 462"
+            stroke="#b8400a" stroke-width="1.6" stroke-dasharray="6,3" fill="none" marker-end="url(#arr-a)"/>
+      <text x="600" y="568" text-anchor="middle" class="ui" font-size="11" font-weight="600" fill="#b8400a" letter-spacing="1.5">GAP LOOP</text>
+      <text x="600" y="586" text-anchor="middle" class="ui" font-size="10" font-style="italic" fill="#b8400a">gaps re-derive SPEC or escalate BRIEF — the actual product</text>
+
+    </svg>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>1 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 2 ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Repository Structure</div>
+  <div class="title">Numbered folders mirror the phase order — the directory itself reads as the workflow</div>
+  <div class="canvas">
+    <div class="tree-page">
+      <div class="tree-box"><pre style="margin:0;font-family:inherit;color:inherit;background:none;"><span class="root">project-root/</span>
+├── <span class="navyc">CLAUDE.md</span>              <span class="label">project instructions for Claude Code</span>
+├── <span class="navyc">CONSTITUTION.md</span>        <span class="label">non-negotiable guardrails</span>
+├── <span class="navyc">AGENTS.md</span>              <span class="label">topology + protocols</span>
+├── <span class="navyc">MEMORY.md</span>              <span class="label">persistent state</span>
+├── <span class="dim">README.md</span>
+│
+<span class="acc">├── 00-vision/</span>
+│   ├── VISION.md
+│   ├── PILLARS.md
+│   └── VALUES.md
+│
+├── 01-brief/
+│   ├── BRIEF.md           <span class="label">snapshot, not frozen</span>
+│   ├── STAKEHOLDERS.md
+│   └── DIFF.md            <span class="label">tracks evolution</span>
+│
+├── 02-panels/
+│   ├── business.md
+│   ├── technical.md
+│   ├── sme.md
+│   └── synthesis.md       <span class="label">questions raised</span>
+│
+<span style="color:#c4b5fd;font-weight:500;">├── 03-spike/</span>             <span class="label">time-boxed tech validation</span>
+│   ├── SPIKE.md
+│   └── results/
+│
+<span class="tealc">├── 04-workflow/</span>          <span class="label">behavior spec — first</span>
+│   ├── WORKFLOW.md
+│   ├── STATES.md
+│   └── SCENARIOS.md
+│
+<span class="navyc">├── 05-spec/</span>              <span class="label">design spec — source of truth</span>
+│   ├── SPEC.md
+│   ├── DIFF.md
+│   ├── ARCHITECTURE.md
+│   ├── INTERFACES.md
+│   ├── DATA_MODEL.md
+│   ├── OPEN_QUESTIONS.md
+│   ├── REQUIREMENTS.md
+│   └── agents/            <span class="label">swarm contracts — spec'd here</span>
+│       ├── orchestrator.md
+│       ├── supervisor.md
+│       ├── implementor.md
+│       ├── watchdog.md
+│       └── tester.md
+│
+├── 06-build/
+│   ├── PLAN.md
+│   ├── TASKS.md
+│   ├── DECISIONS.md       <span class="label">ADRs</span>
+│   ├── RISKS.md
+│   ├── BUILD_LOG.md
+│   └── src/
+│
+<span class="tealc">├── 07-walkthrough/</span>
+│   ├── scenarios.md
+│   ├── agent-runs/
+│   ├── human-pass.md
+│   ├── EVAL.md
+│   └── tests/
+│
+<span class="acc">├── 08-gaps/</span>
+│   ├── GAPS.md
+│   ├── HISTORY.md
+│   ├── RETROSPECTIVE.md
+│   └── gaps/&lt;id&gt;.md
+│
+└── 09-output/
+    ├── deck.md
+    └── handoff/</pre>
+      </div>
+
+      <div class="notes">
+        <div class="note">
+          <div class="h">Root — Cross-cutting</div>
+          <div class="b"><code>CLAUDE.md</code> auto-loads for every conversation. <code>CONSTITUTION.md</code>, <code>AGENTS.md</code>, <code>MEMORY.md</code> alongside so every agent picks them up automatically.</div>
+        </div>
+        <div class="note accent">
+          <div class="h">00 — Vision · The Lens</div>
+          <div class="b">One page company pillars, one paragraph project objective. Referenced by name in every panel prompt and every spec section.</div>
+        </div>
+        <div class="note teal">
+          <div class="h">01–04 — Inner Loop · Converge</div>
+          <div class="b">Brief → Panels → Spike → Workflow. Iterate until converged: no new blockers, all states defined, no open load-bearing questions. <em>Then</em> derive spec.</div>
+        </div>
+        <div class="note" style="border-left-color:#6d28d9;background:#faf5ff;">
+          <div class="h" style="color:#6d28d9;">03 — Spike (new in v2)</div>
+          <div class="b">Time-boxed (½ day) technical validation. Answers one load-bearing question the panels raised — e.g. "can a from-scratch model hit 70%?" Build to learn, not to ship.</div>
+        </div>
+        <div class="note">
+          <div class="h">05 — Spec (incl. Swarm)</div>
+          <div class="b"><code>SPEC.md</code> derived from BRIEF + workflow. The swarm topology lives under <code>05-spec/agents/</code>. Sizing gate decides 1-2 agents vs full swarm.</div>
+        </div>
+        <div class="note">
+          <div class="h">06–07 — Build &amp; Walkthrough</div>
+          <div class="b">Swarm executes against the spec. Watchdog audits. <strong>Human evaluates first</strong>; agent runner codifies regressions underneath.</div>
+        </div>
+        <div class="note accent">
+          <div class="h">08 — Gaps · Outer Loop</div>
+          <div class="b">Each gap classified spec-level (re-derive <code>SPEC.md</code>) or brief-level (back to stakeholder). <code>HISTORY.md</code> is the audit trail of the loop itself.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>2 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 3 — EXPERT LENSES ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Thinking Framework</div>
+  <div class="title">Four expert lenses raise questions, not findings — skipping any one produces a predictable failure</div>
+  <div class="pnav"><span class="p">1 BRIEF</span><span class="s">›</span><span class="p on">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span><span style="margin-left:auto;font-size:8px;color:var(--ink-4);font-style:italic;">expands Phase 2 · lenses run in parallel</span></div>
+  <div class="canvas">
+    <div style="display:flex;gap:14px;flex:1;min-height:0;">
+
+      <!-- Lens 1: Business / Functional -->
+      <div style="flex:1;display:flex;flex-direction:column;border:1px solid var(--rule);">
+        <div style="background:var(--navy);padding:10px 14px;">
+          <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Lens 1</div>
+          <div style="font-family:var(--ui-serif);font-size:16px;font-weight:700;color:#fff;margin-top:2px;">Business / Functional</div>
+        </div>
+        <div style="padding:12px 14px;flex:1;display:flex;flex-direction:column;font-size:10px;">
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin-bottom:5px;">Who</div>
+          <div style="color:var(--ink-2);line-height:1.75;">
+            <div>· C-suite / founder</div>
+            <div>· Product manager</div>
+            <div>· Investor / board</div>
+            <div>· GTM / growth lead</div>
+          </div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">Skill</div>
+          <div><span style="font-family:var(--ui-mono);font-size:9px;background:var(--navy);color:#fff;padding:2px 7px;border-radius:2px;font-weight:500;">business-expert-panel</span></div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">They ask</div>
+          <div style="font-size:9px;color:var(--ink-2);line-height:1.55;">
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"What's the unit economics at 10K users?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"Who's the buyer vs. the user — and which one pays?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;font-style:italic;">"Is this a feature or a product?"</div>
+          </div>
+          <div style="margin-top:auto;padding-top:10px;border-top:1px solid var(--hairline);">
+            <div style="font-size:7.5px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:3px;">If you skip this</div>
+            <div style="font-size:9px;color:var(--ink-3);line-height:1.5;">You build something <strong style="color:var(--accent);">technically sound that nobody funds, buys, or ships</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lens 2: Technical -->
+      <div style="flex:1;display:flex;flex-direction:column;border:1px solid var(--rule);">
+        <div style="background:var(--navy);padding:10px 14px;">
+          <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Lens 2</div>
+          <div style="font-family:var(--ui-serif);font-size:16px;font-weight:700;color:#fff;margin-top:2px;">Technical</div>
+        </div>
+        <div style="padding:12px 14px;flex:1;display:flex;flex-direction:column;font-size:10px;">
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin-bottom:5px;">Who</div>
+          <div style="color:var(--ink-2);line-height:1.75;">
+            <div>· Frontend / full-stack engineer</div>
+            <div>· Database / backend</div>
+            <div>· DevOps / CI/CD</div>
+            <div>· Security engineer</div>
+          </div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">Skill</div>
+          <div><span style="font-family:var(--ui-mono);font-size:9px;background:var(--navy);color:#fff;padding:2px 7px;border-radius:2px;font-weight:500;">technical-expert-panel</span></div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">They ask</div>
+          <div style="font-size:9px;color:var(--ink-2);line-height:1.55;">
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"What's the latency budget for real-time inference?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"Where does the data leave the device?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;font-style:italic;">"Can this scale without re-architecting?"</div>
+          </div>
+          <div style="margin-top:auto;padding-top:10px;border-top:1px solid var(--hairline);">
+            <div style="font-size:7.5px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:3px;">If you skip this</div>
+            <div style="font-size:9px;color:var(--ink-3);line-height:1.5;">You commit to an <strong style="color:var(--accent);">architecture that can't deliver</strong> the requirements.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lens 3: SME -->
+      <div style="flex:1;display:flex;flex-direction:column;border:1px solid var(--rule);">
+        <div style="background:var(--navy);padding:10px 14px;">
+          <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Lens 3</div>
+          <div style="font-family:var(--ui-serif);font-size:16px;font-weight:700;color:#fff;margin-top:2px;">SME</div>
+        </div>
+        <div style="padding:12px 14px;flex:1;display:flex;flex-direction:column;font-size:10px;">
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin-bottom:5px;">Who</div>
+          <div style="color:var(--ink-2);line-height:1.75;">
+            <div>· Educator / teacher</div>
+            <div>· Domain specialist</div>
+            <div>· Curriculum designer</div>
+            <div>· Community advocate</div>
+          </div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">Skills</div>
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <div><span style="font-family:var(--ui-mono);font-size:9px;background:var(--navy);color:#fff;padding:2px 7px;border-radius:2px;font-weight:500;">domain-expert-panel</span></div>
+            <div><span style="font-family:var(--ui-mono);font-size:9px;background:var(--navy);color:#fff;padding:2px 7px;border-radius:2px;font-weight:500;">educator-panel</span></div>
+          </div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">They ask</div>
+          <div style="font-size:9px;color:var(--ink-2);line-height:1.55;">
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"Is the content sequenced in the right pedagogical order?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"Does this respect the community it serves?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;font-style:italic;">"Would a real instructor actually assign this?"</div>
+          </div>
+          <div style="margin-top:auto;padding-top:10px;border-top:1px solid var(--hairline);">
+            <div style="font-size:7.5px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:3px;">If you skip this</div>
+            <div style="font-size:9px;color:var(--ink-3);line-height:1.5;">You build something <strong style="color:var(--accent);">the domain rejects as naive or harmful</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lens 4: Users -->
+      <div style="flex:1;display:flex;flex-direction:column;border:1.5px solid var(--teal);">
+        <div style="background:var(--navy);padding:10px 14px;">
+          <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Lens 4</div>
+          <div style="font-family:var(--ui-serif);font-size:16px;font-weight:700;color:#fff;margin-top:2px;">Users</div>
+        </div>
+        <div style="padding:12px 14px;flex:1;display:flex;flex-direction:column;font-size:10px;">
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin-bottom:5px;">Who</div>
+          <div style="color:var(--ink-2);line-height:1.75;">
+            <div>· Student / learner</div>
+            <div>· Parent</div>
+            <div>· Classroom teacher</div>
+            <div>· First-time user</div>
+          </div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">Skill</div>
+          <div><span style="font-family:var(--ui-mono);font-size:9px;background:var(--navy);color:#fff;padding:2px 7px;border-radius:2px;font-weight:500;">user-panel</span></div>
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin:10px 0 4px;">They ask</div>
+          <div style="font-size:9px;color:var(--ink-2);line-height:1.55;">
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"Does this feel like exploration or like homework?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;margin-bottom:3px;font-style:italic;">"Would my kid come back to this tomorrow?"</div>
+            <div style="border-left:2px solid var(--hairline);padding:2px 0 2px 8px;font-style:italic;">"I got it wrong — do I feel helped or judged?"</div>
+          </div>
+          <div style="margin-top:auto;padding-top:10px;border-top:1px solid var(--hairline);">
+            <div style="font-size:7.5px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:3px;">If you skip this</div>
+            <div style="font-size:9px;color:var(--ink-3);line-height:1.5;">You build something that <strong style="color:var(--accent);">impresses reviewers but fails the person holding the device</strong>.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>3 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 4 — SPEC PIPELINE ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Spec Pipeline</div>
+  <div class="title">Three artifacts iterate in a loop under expert review — the detailed spec synthesizes all three</div>
+  <div class="pnav"><span class="lp">inner loop</span><span class="p">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p on">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span><span style="margin-left:auto;font-size:8px;color:var(--ink-4);font-style:italic;">expands Phase 5 · how spec is derived</span></div>
+  <div class="canvas">
+    <div style="display:flex;gap:0;flex:1;min-height:0;">
+
+      <!-- Left: circular loop diagram -->
+      <div style="flex:0 0 680px;position:relative;border-right:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;top:6px;left:8px;font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;">Iterative Loop</div>
+
+        <svg viewBox="0 0 490 390" xmlns="http://www.w3.org/2000/svg" style="width:620px;height:auto;">
+          <defs>
+            <marker id="sp-ah" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0 0, 7 2.5, 0 5" fill="var(--navy)"/></marker>
+            <marker id="sp-ahd" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--ink)"/></marker>
+          </defs>
+
+          <ellipse cx="240" cy="195" rx="195" ry="148" stroke="#7B61FF" stroke-width="1.5" stroke-dasharray="6,4" fill="rgba(123,97,255,0.012)"/>
+          <rect x="171" y="36" width="138" height="20" rx="3" fill="#7B61FF"/>
+          <text x="240" y="50" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="Inter,sans-serif" letter-spacing="1.2">EXPERT PANELS</text>
+
+          <text x="195" y="193" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">Business</text>
+          <text x="250" y="193" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">Technical</text>
+          <text x="308" y="193" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">SME</text>
+          <text x="200" y="207" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">UX</text>
+          <text x="225" y="207" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">CV / ML</text>
+          <text x="278" y="207" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">Compliance</text>
+          <text x="210" y="221" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">Linguist</text>
+          <text x="268" y="221" font-size="7.5" fill="#7B61FF" font-weight="600" font-family="Inter,sans-serif">Skeptic</text>
+
+          <path d="M 188 130 C 155 155, 115 190, 100 228" stroke="var(--navy)" stroke-width="1.8" fill="none" marker-end="url(#sp-ah)"/>
+          <path d="M 168 325 C 220 350, 305 350, 355 325" stroke="var(--navy)" stroke-width="1.8" fill="none" marker-end="url(#sp-ah)"/>
+          <path d="M 385 228 C 370 190, 335 155, 300 130" stroke="var(--navy)" stroke-width="1.8" fill="none" marker-end="url(#sp-ah)"/>
+
+          <!-- PRD -->
+          <rect x="145" y="60" width="190" height="72" rx="1" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+          <rect x="145" y="60" width="190" height="25" fill="var(--navy)"/>
+          <text x="240" y="78" text-anchor="middle" class="ttl-serif" font-size="13" font-weight="700" fill="#fff">Detailed PRD</text>
+          <text x="157" y="100" class="ui" font-size="8" fill="var(--ink-2)">Requirements &amp; constraints</text>
+          <text x="157" y="112" class="ui" font-size="8" fill="var(--ink-2)">Success criteria</text>
+          <line x1="157" y1="118" x2="324" y2="118" stroke="var(--hairline)" stroke-width="0.5"/>
+          <text x="157" y="128" class="ui" font-size="7" fill="var(--navy)" font-weight="700">e.g.</text>
+          <text x="174" y="128" class="ui" font-size="7" fill="var(--ink-4)" font-style="italic">"From scratch" shaped the entire architecture</text>
+
+          <!-- Architecture -->
+          <rect x="22" y="243" width="185" height="72" rx="1" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+          <rect x="22" y="243" width="185" height="25" fill="var(--navy)"/>
+          <text x="114" y="261" text-anchor="middle" class="ttl-serif" font-size="13" font-weight="700" fill="#fff">Architecture</text>
+          <text x="34" y="283" class="ui" font-size="8" fill="var(--ink-2)">Components &amp; data flow</text>
+          <text x="34" y="295" class="ui" font-size="8" fill="var(--ink-2)">Technology decisions</text>
+          <line x1="34" y1="300" x2="196" y2="300" stroke="var(--hairline)" stroke-width="0.5"/>
+          <text x="34" y="310" class="ui" font-size="7" fill="var(--navy)" font-weight="700">e.g.</text>
+          <text x="51" y="310" class="ui" font-size="7" fill="var(--ink-4)" font-style="italic">Browser inference forced model &lt;5MB</text>
+
+          <!-- Workflows -->
+          <rect x="271" y="243" width="185" height="72" rx="1" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+          <rect x="271" y="243" width="185" height="25" fill="var(--navy)"/>
+          <text x="363" y="261" text-anchor="middle" class="ttl-serif" font-size="13" font-weight="700" fill="#fff">Workflows</text>
+          <text x="283" y="283" class="ui" font-size="8" fill="var(--ink-2)">User journey state machines</text>
+          <text x="283" y="295" class="ui" font-size="8" fill="var(--ink-2)">Data-in / processing / data-out</text>
+          <line x1="283" y1="300" x2="445" y2="300" stroke="var(--hairline)" stroke-width="0.5"/>
+          <text x="283" y="310" class="ui" font-size="7" fill="var(--navy)" font-weight="700">e.g.</text>
+          <text x="300" y="310" class="ui" font-size="7" fill="var(--ink-4)" font-style="italic">Camera-denial had no fallback path</text>
+
+          <line x1="456" y1="195" x2="486" y2="195" stroke="var(--ink)" stroke-width="1.5" marker-end="url(#sp-ahd)"/>
+          <text x="240" y="378" text-anchor="middle" class="ui" font-size="7" fill="var(--ink-4)">Each artifact informs the others — the loop runs until the panels converge</text>
+        </svg>
+      </div>
+
+      <!-- Right: Detailed Spec -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 28px;background:var(--spec-tint);">
+        <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;margin-bottom:10px;">Synthesis</div>
+        <div style="border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:14px;">
+          <div style="font-family:var(--ui-serif);font-size:19px;font-weight:700;color:var(--ink);">Detailed Spec</div>
+          <div style="font-size:9.5px;color:var(--ink-4);margin-top:3px;line-height:1.4;">Derived from all three artifacts<br>Diffed against the PRD</div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--navy);text-transform:uppercase;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--hairline);">From the PRD</div>
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.8;padding-left:12px;"><strong style="color:var(--ink);">Traceability</strong> — every section maps to a requirement</div>
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.8;padding-left:12px;"><strong style="color:var(--ink);">Diff log</strong> — decisions tracked as they diverge</div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--navy);text-transform:uppercase;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--hairline);">From the Architecture</div>
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.8;padding-left:12px;"><strong style="color:var(--ink);">Interfaces</strong> — component boundaries become sections</div>
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.8;padding-left:12px;"><strong style="color:var(--ink);">Constraints</strong> — tech limits become acceptance criteria</div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--navy);text-transform:uppercase;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--hairline);">From the Workflows</div>
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.8;padding-left:12px;"><strong style="color:var(--ink);">Test cases</strong> — each node generates arrange / act / assert</div>
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.8;padding-left:12px;"><strong style="color:var(--ink);">Edge cases</strong> — error paths become explicit sections</div>
+        </div>
+        <div style="margin-top:auto;background:#fff;border-left:3px solid var(--navy);padding:10px 14px;font-size:9px;color:var(--ink-3);line-height:1.6;">
+          <strong style="color:var(--navy);">The spec evolves; the PRD doesn't.</strong> When the gap loop fires, gaps re-derive the spec. The diff back to the PRD is the audit trail.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>4 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 5 — PHASE 1: INTAKE ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 1 · Brief</div>
+  <div class="title">The brief is a stakeholder snapshot — not frozen, but tracked; the prompt pattern determines its quality</div>
+  <div class="pnav"><span class="lp">inner loop</span><span class="p on">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--ink-3);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">prompt pattern</span>
+          <span style="font-size:9.5px;color:var(--ink-3);">not a persistent skill — a one-shot structured prompt</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt to Build</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">Read this stakeholder brief. Structure it as
+a structured brief with these sections:
+
+<span style="color:#fbbf91;">- Problem statement</span> (one paragraph)
+<span style="color:#fbbf91;">- Target user</span> (specific, not generic)
+<span style="color:#fbbf91;">- Requirements</span> (MUST / SHOULD / MAY)
+<span style="color:#fbbf91;">- Constraints</span> (the kind that eliminate
+  architecture options — "from scratch",
+  "runs offline", "iPad-first")
+<span style="color:#fbbf91;">- Success criteria</span> (measurable, not aspirational)
+<span style="color:#fbbf91;">- Out of scope</span> (explicit — saves weeks)
+
+<span style="color:#7dd3d3;">Track it.</span> The brief evolves — DIFF.md
+logs every divergence honestly.</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid var(--accent);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--accent);">Constraints first</strong> — they eliminate 90% of options before you design</div>
+          <div style="border-left:2px solid var(--accent);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--accent);">Snapshot, not contract</strong> — the spec is the contract; the brief is initial understanding</div>
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">DIFF.md is the audit trail</strong> — tracks every divergence from the original brief honestly</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Invocation</div>
+        <div style="background:var(--teal-tint);border:1px solid var(--teal);border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:var(--ink-3);">&gt;</span> Here's the SuperBuilders brief. Our partner
+<span style="color:var(--ink-3);">&gt;</span> wants a browser-based ASL vocabulary app
+<span style="color:var(--ink-3);">&gt;</span> with <span style="font-weight:600;color:var(--ink);">from-scratch computer vision</span>. Target:
+<span style="color:var(--ink-3);">&gt;</span> elementary students. Deadline: one week.</pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">Example Output</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--navy);">## Constraints</span>
+<span style="color:var(--accent);font-weight:600;">MUST:</span> From-scratch model (no pre-trained ASL)
+<span style="color:var(--accent);font-weight:600;">MUST:</span> Browser inference (&lt;5MB model, no server)
+<span style="color:var(--accent);font-weight:600;">MUST:</span> Works on iPad Safari
+<span style="color:var(--ink-3);font-weight:500;">SHOULD:</span> Under 3s inference latency
+<span style="color:var(--ink-4);">MAY:</span>  Support left-handed signers
+
+<span style="font-weight:600;color:var(--navy);">## Out of Scope</span>
+- Sentence-level ASL (vocabulary only)
+- Offline mode (requires camera + model)
+- Android (iPad Safari only for v1)
+
+<span style="color:var(--ink-3);font-style:italic;">These three constraints — from-scratch, browser,
+iPad — eliminate 90% of architecture options.
+The PRD surfaced them; the spec will honor them.</span></pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid var(--navy);padding:8px 12px;background:var(--spec-tint);font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:var(--navy);">Why this works:</strong> The constraint "from scratch" shaped the entire architecture — model size, training pipeline, browser inference. Without surfacing it here, the spec would assume a pre-trained model and the build would fail at week's end.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>5 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 6 — PHASE 2: EXPERT PANELS ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 2 · Review</div>
+  <div class="title">Named panelists raise questions, not findings — the build prompt defines their voice and limits</div>
+  <div class="pnav"><span class="lp">inner loop</span><span class="p">1 BRIEF</span><span class="s">›</span><span class="p on">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--navy);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">technical-expert-panel</span>
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--navy);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">business-expert-panel</span>
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--navy);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">user-panel</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt to Build</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">Create a Claude Code skill called
+<span style="color:#fbbf91;font-weight:500;">`technical-expert-panel`</span>.
+
+Convene <span style="color:#7dd3d3;">8 named experts</span>, each with a fixed lens:
+1. <span style="color:#fbbf91;">Sarah</span> — Senior Frontend (React, state, renders)
+2. <span style="color:#fbbf91;">Marcus</span> — iPad/Mobile (touch, viewport, Safari)
+3. <span style="color:#fbbf91;">Priya</span> — Test Engineer (coverage, flaky, CI)
+4. <span style="color:#fbbf91;">James</span> — Accessibility (WCAG, screen readers)
+5. <span style="color:#fbbf91;">Lin</span> — Performance (bundle, LCP, memory)
+6. <span style="color:#fbbf91;">Derek</span> — DevEx/CI (builds, deploys, DX)
+7. <span style="color:#fbbf91;">Elena</span> — Security (XSS, CSRF, data exposure)
+8. <span style="color:#fbbf91;">Alex</span> — SWE Skeptic (over-engineering, yak shaving)
+
+Rules:
+- Each speaks <span style="color:#7dd3d3;">1–3 bullets, first person, own voice</span>
+- No filler. <span style="color:#7dd3d3;">"Pass"</span> if nothing useful to add
+- Anchor to the project PRD — <span style="color:#7dd3d3;">read before speaking</span>
+- End: convergent / divergent / recommended action
+- Budget: 600–900 words</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">Named, not generic</strong> — "Marcus" has an opinion; "the mobile engineer" hedges</div>
+          <div style="border-left:2px solid var(--accent);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--accent);">Questions, not findings</strong> — panels are hypothesis generators, not oracles. Require real expert validation for domains you don't own.</div>
+          <div style="border-left:2px solid var(--teal);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--teal);">"Pass" is better than filler</strong> — forces honest signal, not noise</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Invocation</div>
+        <div style="background:var(--teal-tint);border:1px solid var(--teal);border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:var(--teal);font-weight:600;">/technical-expert-panel</span>
+Review the fraction manipulative component.
+It uses client-side Canvas on iPad.</pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">Example Output</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--navy);">Marcus (iPad):</span> "Canvas touch events on iPad
+Safari drop frames above 4 objects. Use CSS
+transforms with will-change instead — I've
+shipped this pattern on three production apps."
+
+<span style="font-weight:600;color:var(--navy);">Lin (Perf):</span> "The Canvas repaints on every drag.
+That's 60fps of full-canvas clears. Measure actual
+FPS on a real iPad Air, not just the simulator."
+
+<span style="font-weight:600;color:var(--navy);">Alex (Skeptic):</span> "Pass. Canvas is fine for 4
+fraction pieces. Don't over-engineer this."
+
+<span style="font-weight:500;color:var(--accent);">DIVERGENT:</span> Marcus and Lin disagree on Canvas
+vs CSS transforms for the manipulative.
+<span style="font-weight:500;color:var(--teal);">RECOMMENDED:</span> Prototype both approaches.
+FPS test on a real iPad Air before committing.</pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid var(--navy);padding:8px 12px;background:var(--spec-tint);font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:var(--navy);">Why this works:</strong> The skeptic said "pass" — that's signal. A generic review would have all 8 voices saying something, diluting the two voices (Marcus, Lin) that actually had the relevant expertise.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>6 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 7 — PHASE 3: SPIKE (new in v2) ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 3 · Spike</div>
+  <div class="title">Time-boxed technical validation — answer one load-bearing question before you commit to a spec</div>
+  <div class="pnav"><span class="lp">inner loop</span><span class="p">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p on-spike">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:#6d28d9;color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">spike</span>
+          <span style="font-size:9.5px;color:var(--ink-3);">half-day max — build to learn, not to ship</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt Pattern</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">The panels raised a <span style="color:#fbbf91;font-weight:500;">load-bearing question</span>:
+"Can a from-scratch CNN hit 70% top-1 on
+26 fingerspelling classes with &lt;5MB model?"
+
+<span style="color:#7dd3d3;">Time box: half a day.</span>
+Build the smallest thing that answers this.
+
+Not a prototype to ship. Not a POC to demo.
+A <span style="color:#fbbf91;">measurement</span>:
+- Train a minimal model on Sign MNIST
+- Measure accuracy on a held-out split
+- Measure model size after int8 quantization
+- If &lt;70% or &gt;5MB: the bet fails.
+  <span style="color:#7dd3d3;">Change the spec before writing it, not after.</span>
+
+Write results to <span style="color:#fbbf91;">SPIKE.md</span> with:
+- Question asked (one sentence)
+- Method (what you built)
+- Result (pass/fail + numbers)
+- Implication for spec</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid #6d28d9;padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:#6d28d9;">One question</strong> — not a prototype. If the spike needs two days, the question is too big.</div>
+          <div style="border-left:2px solid #6d28d9;padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:#6d28d9;">Fail early</strong> — a failed spike saves a week of building the wrong thing</div>
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">Feeds workflow</strong> — spike results let the workflow include real constraints, not assumptions</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Example: ASL Project Spike</div>
+        <div style="background:#faf5ff;border:1px solid #ddd6fe;border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:#6d28d9;font-weight:600;">Question:</span> Can a from-scratch model hit 70%
+accuracy on fingerspelling in the browser?
+
+<span style="color:#6d28d9;font-weight:600;">Time box:</span> 4 hours</pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">SPIKE.md Output</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--navy);">## Spike: From-scratch model feasibility</span>
+
+<span style="font-weight:500;">Question:</span> Can a from-scratch CNN achieve ≥70%
+top-1 on 26 ASL fingerspelling classes with a
+model under 5MB (int8 quantized)?
+
+<span style="font-weight:500;">Method:</span> Trained lightweight CNN on Sign MNIST
+(24K images, 24 static classes). 80/20 split.
+100 epochs, Adam, lr=1e-3.
+
+<span style="font-weight:500;">Result:</span> <span style="color:var(--teal);font-weight:600;">PASS</span>
+  Accuracy: 82.3% top-1 on held-out set
+  Model size: 2.1MB (int8 ONNX)
+  Inference: 18ms on iPad Safari (WASM SIMD)
+
+<span style="font-weight:500;">Implication for spec:</span>
+  ✓ From-scratch path is viable for static signs
+  <span style="color:var(--accent);">✗ Motion signs (J, Z) untested — need TCN</span>
+  <span style="color:var(--accent);">✗ Only 24 of 26 classes tested (no motion)</span>
+  → Spec should treat motion signs as a separate
+    risk. Consider a 2-head architecture.</pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid #6d28d9;padding:8px 12px;background:#faf5ff;font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:#6d28d9;">Why this works:</strong> Without the spike, the spec would have assumed a unified model for all 26 classes. The spike revealed that motion signs need a different architecture — surfacing a spec-shaping constraint in 4 hours instead of discovering it during build.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>7 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 8 — PHASE 4: WORKFLOW ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 4 · Behavior</div>
+  <div class="title">Grill-me forces every assumption into the open before you write a line of spec</div>
+  <div class="pnav"><span class="lp">inner loop</span><span class="p">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p on">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--teal);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">grill-me</span>
+          <span style="font-size:9.5px;color:var(--ink-3);">interview relentlessly until shared understanding</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt to Build</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">Create a skill called <span style="color:#fbbf91;font-weight:500;">`grill-me`</span>.
+
+Interview me relentlessly about every aspect
+of this plan until we reach <span style="color:#7dd3d3;">shared understanding</span>.
+Walk down each branch of the decision tree,
+resolving dependencies one by one.
+
+For each question:
+<span style="color:#fbbf91;">- Provide your recommended answer</span>
+<span style="color:#fbbf91;">- Explain why</span>
+<span style="color:#fbbf91;">- Ask one at a time</span>
+
+If a question can be answered by <span style="color:#7dd3d3;">exploring
+the codebase</span>, explore the codebase instead
+of asking me.
+
+Don't move to the next branch until the
+current one is resolved.</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid var(--teal);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--teal);">One at a time</strong> — batched questions get shallow answers</div>
+          <div style="border-left:2px solid var(--teal);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--teal);">Recommended answers</strong> — the skill proposes, not just interrogates</div>
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">Codebase-first</strong> — don't ask what you can read</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Invocation</div>
+        <div style="background:var(--teal-tint);border:1px solid var(--teal);border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:var(--teal);font-weight:600;">/grill-me</span>
+Walk me through the user flow when
+camera permission is denied.</pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">Example Output</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--navy);">Q1:</span> When the user denies camera access, what do
+they see? A static fallback, or is the feature
+completely unavailable?
+
+<span style="font-weight:500;color:var(--teal);">Recommended:</span> Static fallback with a "try again"
+prompt. Blocking the entire feature for a single
+permission denial loses 15–20% of first-time users.
+
+<span style="font-weight:600;color:var(--navy);">Q2:</span> If they grant camera later (via Settings),
+does the app detect the change without a page reload?
+
+<span style="font-weight:500;color:var(--teal);">Recommended:</span> Use the Permissions API change event.
+Let me check if Safari supports it...
+<span style="color:var(--ink-4);font-style:italic;">[reads MDN docs]</span>
+Safari 16.4+. Your PRD says "latest Safari" — this
+works. <span style="color:var(--accent);font-weight:500;">But define "latest" as a version number.</span>
+
+<span style="font-weight:600;color:var(--navy);">Q3:</span> The fallback shows a static image. Which sign
+does it show? The one the user was about to practice,
+or a generic placeholder?
+<span style="color:var(--ink-4);font-style:italic;">[exploring codebase: no fallback component exists yet]</span></pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid var(--teal);padding:8px 12px;background:var(--teal-tint);font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:var(--teal);">Why this works:</strong> Q2 checked Safari docs instead of asking. Q3 read the codebase and found the fallback component didn't exist yet — surfacing a gap before spec, not after build.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>8 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 8 — PHASE 4: SPEC ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 5 · Design</div>
+  <div class="title">Blueprint orchestrates a one-week build — three human gates, everything else autonomous</div>
+  <div class="pnav"><span class="p">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p on">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--navy);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">blueprint</span>
+          <span style="font-size:9.5px;color:var(--ink-3);">ticket in, deployed app out, one week</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt to Build</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">Create a skill called <span style="color:#fbbf91;font-weight:500;">`blueprint`</span>.
+
+Ticket in. Deployed app out. <span style="color:#7dd3d3;">One week.</span>
+
+The <span style="color:#fbbf91;">11 primitives</span> every factory needs:
+ 1. <span style="color:#fbbf91;">Record</span> — BLUEPRINT.md (locked spec)
+ 2. <span style="color:#fbbf91;">Memory</span> — append-only, one file per project
+ 3. <span style="color:#fbbf91;">Orchestrator</span> — manual gates + /loop
+ 4. <span style="color:#fbbf91;">Execution</span> — git worktrees (branch per task)
+ 5. <span style="color:#fbbf91;">Runtime</span> — Claude Code CLI sessions
+ 6. <span style="color:#fbbf91;">Integration</span> — MCP gateway + project MCPs
+ 7. <span style="color:#fbbf91;">Quality</span> — gate-1, gate-2, gate-3 checklists
+ 8. <span style="color:#fbbf91;">Delivery</span> — Vercel / Railway / custom
+ 9. <span style="color:#fbbf91;">Observability</span> — /eval + session-logger
+10. <span style="color:#fbbf91;">Skills</span> — skill files for each agent role
+11. <span style="color:#fbbf91;">Secrets</span> — .env.example + verification
+
+<span style="color:#7dd3d3;">Three human gates. ~3 hours total human time.</span>
+The rest is autonomous.</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">Fixed appetite</strong> — Shape Up rule: cut scope, never extend time</div>
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">Gates, not reviews</strong> — human says go/no-go, doesn't rewrite</div>
+          <div style="border-left:2px solid var(--accent);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--accent);">Primitives checklist</strong> — verify all 11 exist before starting the pipeline</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Invocation</div>
+        <div style="background:var(--teal-tint);border:1px solid var(--teal);border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:var(--teal);font-weight:600;">/blueprint</span> init
+Project: ASL vocabulary practice app
+PRD: docs/01-intake/PRD.md
+Stack: Next.js 16, React 19, TailwindCSS v4
+Deploy target: Vercel</pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">Example Output</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--navy);">BLUEPRINT.md locked.</span> Reading PRD...
+
+Subtask decomposition (<span style="color:var(--teal);font-weight:500;">4 parallel agents</span>):
+  <span style="color:var(--navy);font-weight:500;">Agent 1:</span> Camera + video pipeline
+  <span style="color:var(--navy);font-weight:500;">Agent 2:</span> Model inference + gesture matching
+  <span style="color:var(--navy);font-weight:500;">Agent 3:</span> Lesson UI + progress tracking
+  <span style="color:var(--navy);font-weight:500;">Agent 4:</span> Auth + database + API routes
+
+<span style="font-weight:500;color:var(--ink);">Watchdog:</span> monitors all 4 branches for spec drift.
+<span style="font-weight:500;color:var(--ink);">CONTRACTS.md:</span> interface boundaries defined.
+
+File ownership (no overlap):
+  Agent 1 owns: src/camera/, src/video/
+  Agent 2 owns: src/model/, src/inference/
+  Agent 3 owns: src/lesson/, src/components/
+  Agent 4 owns: src/auth/, src/api/, prisma/
+
+<span style="color:var(--accent);font-weight:600;">Awaiting GATE 1 approval before fan-out.</span></pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid var(--navy);padding:8px 12px;background:var(--spec-tint);font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:var(--navy);">Why this works:</strong> File ownership eliminates merge conflicts. The watchdog can't fix code — only block merges. This separation keeps the review honest: builders build, reviewers review.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>9 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 9 — PHASE 5: SWARM ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 6 · Build</div>
+  <div class="title">The swarm topology is spec'd in 05-spec/agents/ — each agent has a contract before it runs</div>
+  <div class="pnav"><span class="p">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p on">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--ink);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">agent contract</span>
+          <span style="font-size:9.5px;color:var(--ink-3);">orchestration pattern — each agent gets a brief</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt to Build</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">You are the <span style="color:#fbbf91;font-weight:500;">orchestrator</span> for this build.
+
+Read SPEC.md and CONTRACTS.md. Decompose into
+<span style="color:#7dd3d3;">≤4 parallel</span> implementation tasks. For each:
+
+1. Create a <span style="color:#fbbf91;">git worktree</span> branch
+2. Write a task brief (what to build, interfaces)
+3. Assign to an implementor agent
+4. The <span style="color:#fbbf91;">watchdog</span> audits every PR against:
+   <span style="color:#7dd3d3;">- Does it match the spec?</span>
+   <span style="color:#7dd3d3;">- Does it break a contract?</span>
+   <span style="color:#7dd3d3;">- Does it introduce scope creep?</span>
+
+Fan-out rules:
+- Never more than <span style="color:#7dd3d3;">4 parallel</span> implementors
+- Each owns <span style="color:#7dd3d3;">non-overlapping files</span>
+- Contracts define the interface, not the impl
+- <span style="color:#fbbf91;">Watchdog can block merge, not fix code</span>
+
+Supervisor resolves conflicts between agents.</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid var(--ink);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--ink);">≤4 cap</strong> — more than 4 parallel agents and review quality collapses</div>
+          <div style="border-left:2px solid var(--ink);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--ink);">Non-overlapping files</strong> — eliminates merge conflicts by design</div>
+          <div style="border-left:2px solid var(--accent);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--accent);">Watchdog ≠ fixer</strong> — separation of powers keeps review honest</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Dispatch</div>
+        <div style="background:var(--teal-tint);border:1px solid var(--teal);border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:var(--ink-3);font-style:italic;"># Orchestrator dispatches after Gate 1 approval</span>
+Task 1 → worktree: <span style="color:var(--teal);font-weight:500;">feat/camera-pipeline</span>
+Task 2 → worktree: <span style="color:var(--teal);font-weight:500;">feat/model-inference</span>
+Task 3 → worktree: <span style="color:var(--teal);font-weight:500;">feat/lesson-ui</span>
+Task 4 → worktree: <span style="color:var(--teal);font-weight:500;">feat/auth-api</span></pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">Watchdog Report</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--navy);">Watchdog — feat/model-inference PR #3:</span>
+  <span style="color:var(--teal);">✓</span> Matches SPEC §4.2 (inference pipeline)
+  <span style="color:var(--teal);">✓</span> Respects contract: ModelResult interface
+  <span style="color:var(--accent);">✗</span> Adds <span style="font-weight:500;">sharp</span> dependency — not in approved stack
+  <span style="color:var(--accent);font-weight:600;">BLOCKED:</span> Remove sharp. Use canvas for image resize.
+
+<span style="font-weight:600;color:var(--navy);">Supervisor — conflict resolution:</span>
+  Agent 2 and Agent 3 both import /lib/gestures.ts
+  Contract says Agent 2 owns it.
+  <span style="color:var(--teal);">→</span> Agent 3: consume the exported interface only.
+
+<span style="font-weight:600;color:var(--navy);">Watchdog — feat/lesson-ui PR #5:</span>
+  <span style="color:var(--teal);">✓</span> Matches SPEC §5.1 (lesson flow)
+  <span style="color:var(--teal);">✓</span> Touch targets ≥44px (Apple HIG)
+  <span style="color:var(--teal);">✓</span> No scope creep detected
+  <span style="color:var(--teal);font-weight:600;">APPROVED</span></pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid var(--ink);padding:8px 12px;background:#f8f8f8;font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:var(--ink);">Why this works:</strong> The watchdog caught an unapproved dependency (sharp) before it hit main. The supervisor resolved a file-ownership conflict using the contract, not opinion. Neither rewrote the agents' code.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>10 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 10 — PHASE 6: WALKTHROUGH ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 7 · Evaluate</div>
+  <div class="title">Human evaluates first, agent codifies regressions — not the other way around</div>
+  <div class="pnav"><span class="p">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p on">7 WALK</span><span class="s">›</span><span class="p">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--teal);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">usability-testing</span>
+          <span style="font-size:9.5px;color:var(--ink-3);">UX self-audit from named user personas</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt to Build</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">Create a skill called <span style="color:#fbbf91;font-weight:500;">`usability-testing`</span>.
+
+Run an honest UX self-audit from <span style="color:#7dd3d3;">named user
+personas</span>, click-by-click against the live app.
+
+Protocol:
+1. <span style="color:#fbbf91;">Push back on terminology</span> — "usability test"
+   means human + observer. Offer instead:
+   task scenarios, agent-driven sim, or both.
+
+2. Identify <span style="color:#7dd3d3;">5–7 personas</span> with distinct goals.
+   Each has: name, role, goal, starting state,
+   time budget.
+
+3. Write each scenario <span style="color:#fbbf91;">click-by-click</span> with the
+   user's <span style="color:#7dd3d3;">inner voice</span> — what they expect vs.
+   what actually happens at each step.
+
+4. Optionally build a <span style="color:#fbbf91;">Playwright + Claude</span> agent
+   that executes scenarios automatically and
+   catches regressions on every push.</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid var(--teal);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--teal);">Human first</strong> — the human catches design problems; the agent catches regressions. Not the other way around.</div>
+          <div style="border-left:2px solid var(--teal);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--teal);">Inner voice</strong> — "Is it broken?" catches what "user may be confused" misses</div>
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">Agent as regression net</strong> — Playwright codifies what the human found, then runs on every deploy</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Invocation</div>
+        <div style="background:var(--teal-tint);border:1px solid var(--teal);border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:var(--teal);font-weight:600;">/usability-testing</span>
+Run the kid and parent personas against the
+deployed fraction lesson at tutor.vercel.app</pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">Example Output</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--navy);">Persona: Eli, 9, iPad, first time</span>
+
+<span style="font-weight:500;">Step 1:</span> Lands on /lesson. Sees "Let's explore!"
+  <span style="color:var(--teal);">✓</span> Taps without reading — button is obvious.
+
+<span style="font-weight:500;">Step 2:</span> Fraction display shows 1/2.
+  <span style="color:var(--accent);">✗</span> Eli tries to tap the fraction itself.
+  Nothing happens.
+  <span style="color:var(--ink-3);font-style:italic;">Inner voice: "Is it broken?"</span>
+  → <span style="color:var(--accent);font-weight:500;">ADD: tap feedback on fraction display</span>
+
+<span style="font-weight:500;">Step 3:</span> Drag to split the bar.
+  <span style="color:var(--accent);">✗</span> Drag handle is 24px. Eli's finger is ~40px.
+  Misses on first try.
+  <span style="color:var(--ink-3);font-style:italic;">Inner voice: "I can't grab it"</span>
+  → <span style="color:var(--accent);font-weight:500;">FIX: min touch target 44px (Apple HIG)</span>
+
+<span style="font-weight:500;">Step 4:</span> Splits bar into 2/4. Tutor says "Nice!"
+  <span style="color:var(--teal);">✓</span> Eli grins. Tries splitting again.
+  <span style="color:var(--ink-3);font-style:italic;">Inner voice: "What else can I break?"</span></pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid var(--teal);padding:8px 12px;background:var(--teal-tint);font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:var(--teal);">Why this works:</strong> "Inner voice: I can't grab it" is a finding. "Users may experience difficulty with touch targets" is a report. The first one gets fixed; the second one gets filed.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>11 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 11 — PHASE 7: GAPS ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Phase 8 · Loop</div>
+  <div class="title">The gap loop classifies and routes — spec-level re-derives, brief-level escalates to stakeholder</div>
+  <div class="pnav"><span class="p">1 BRIEF</span><span class="s">›</span><span class="p">2 PANELS</span><span class="s">›</span><span class="p">3 SPIKE</span><span class="s">›</span><span class="p">4 WORKFLOW</span><span class="d"></span><span class="p">5 SPEC</span><span class="s">›</span><span class="p">6 SWARM</span><span class="s">›</span><span class="p">7 WALK</span><span class="s">›</span><span class="p on-gaps">8 GAPS</span></div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:56% 1fr;gap:24px;flex:1;min-height:0;">
+
+      <!-- Left: Build -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--accent);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">loop-recipes</span>
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--accent);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">loop</span>
+          <span style="font-family:var(--ui-mono);font-size:11px;background:var(--accent);color:#fff;padding:3px 10px;border-radius:2px;font-weight:500;">schedule</span>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Prompt to Build</div>
+        <div style="background:#0d2340;color:#e3eaf5;border-radius:4px;padding:14px 18px;font-family:var(--ui-mono);font-size:10px;line-height:1.65;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;">Create a skill called <span style="color:#fbbf91;font-weight:500;">`loop-recipes`</span>.
+
+Design patterns for <span style="color:#7dd3d3;">/loop</span> invocations. Instead of
+one-shot tasks, give Claude a <span style="color:#fbbf91;">repeating job</span> with:
+- <span style="color:#fbbf91;">Check function</span> (what to look for)
+- <span style="color:#fbbf91;">Action function</span> (what to do about it)
+- <span style="color:#fbbf91;">Pacing</span> (dynamic vs fixed cron)
+- <span style="color:#fbbf91;">Stop condition</span>
+
+Core recipes:
+1. <span style="color:#7dd3d3;">Babysit a PR</span> — fix CI, answer reviews, rebase
+2. <span style="color:#7dd3d3;">Monitor flaky tests</span> — detect, re-run, report
+3. <span style="color:#7dd3d3;">Gap loop</span> — classify each gap as:
+   • Spec-level → <span style="color:#fbbf91;">re-derive SPEC</span> from PRD
+   • PRD-level → <span style="color:#fbbf91;">route to stakeholder</span>
+   Track in GAPS.md with severity + pillar.
+
+The gap loop recipe is the most important.
+It turns a one-shot build into a <span style="color:#7dd3d3;">continuous
+improvement cycle</span>.</pre>
+        </div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;">
+          <div style="border-left:2px solid var(--accent);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--accent);">Classify, don't just log</strong> — spec gap and PRD gap have different owners</div>
+          <div style="border-left:2px solid var(--accent);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--accent);">The loop is the product</strong> — the build is just the artifact it produces</div>
+          <div style="border-left:2px solid var(--navy);padding:4px 10px;font-size:10px;color:var(--ink-2);line-height:1.5;"><strong style="color:var(--navy);">HISTORY.md</strong> — the audit trail of the loop itself, not just the gaps</div>
+        </div>
+      </div>
+
+      <!-- Right: Use -->
+      <div style="display:flex;flex-direction:column;">
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin-bottom:6px;">Invocation</div>
+        <div style="background:var(--amber-tint);border:1px solid var(--amber-rule);border-radius:4px;padding:10px 14px;font-family:var(--ui-mono);font-size:10px;line-height:1.55;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="color:var(--accent);font-weight:600;">/loop</span>
+Run the gap loop. Read agent-runs/ from the
+walkthrough. Classify each finding.
+Update GAPS.md.</pre>
+        </div>
+        <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:var(--ink-4);text-transform:uppercase;margin:14px 0 6px;">Example Output</div>
+        <div style="background:#fafafa;border:1px solid var(--hairline);border-radius:4px;padding:12px 14px;font-family:var(--ui-mono);font-size:9.5px;line-height:1.6;flex:1;overflow:auto;"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;color:inherit;background:none;"><span style="font-weight:600;color:var(--accent);">Gap #1:</span> Camera fallback shows blank screen
+  <span style="font-weight:500;">Classification:</span> <span style="color:var(--navy);font-weight:600;">SPEC-level</span> (missing error state)
+  <span style="font-weight:500;">Pillar:</span> Accessibility
+  <span style="font-weight:500;">Severity:</span> P1
+  <span style="font-weight:500;">Action:</span> Re-derive SPEC §3.4 — add fallback UI
+  → Updated GAPS.md, routed to <span style="color:var(--navy);">spec-author</span>
+
+<span style="font-weight:600;color:var(--accent);">Gap #2:</span> Lesson assumes left-to-right reading
+  <span style="font-weight:500;">Classification:</span> <span style="color:var(--accent);font-weight:600;">PRD-level</span> (locale missing)
+  <span style="font-weight:500;">Pillar:</span> Inclusivity
+  <span style="font-weight:500;">Severity:</span> P2
+  <span style="font-weight:500;">Action:</span> Route to stakeholder — is RTL in scope?
+  → Added to GAPS.md, <span style="color:var(--accent);">flagged for stakeholder</span>
+
+<span style="font-weight:600;color:var(--accent);">Gap #3:</span> Touch target 24px on fraction handle
+  <span style="font-weight:500;">Classification:</span> <span style="color:var(--navy);font-weight:600;">SPEC-level</span> (below Apple HIG)
+  <span style="font-weight:500;">Pillar:</span> Usability
+  <span style="font-weight:500;">Severity:</span> P1
+  <span style="font-weight:500;">Action:</span> Update SPEC §5.1 — min 44px targets
+  → <span style="color:var(--navy);">Spec re-derived. Build agent notified.</span></pre>
+        </div>
+        <div style="margin-top:10px;border-left:3px solid var(--accent);padding:8px 12px;background:var(--amber-tint);font-size:9.5px;color:var(--ink-2);line-height:1.5;">
+          <strong style="color:var(--accent);">Why this works:</strong> Gap #2 didn't get fixed — it got routed to the stakeholder because "is RTL in scope?" is a PRD-level question. The classifier doesn't guess; it escalates what it can't resolve.
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>12 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 12 — SKILLS → DECISIONS ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Skills in Practice</div>
+  <div class="title">Each skill invocation produced a finding that became a real architectural or design decision</div>
+  <div class="canvas">
+    <div style="display:flex;flex-direction:column;gap:7px;flex:1;min-height:0;">
+
+      <!-- Row 1: technical-expert-panel -->
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:0;border-left:3px solid var(--navy);background:#f8f9fb;border-radius:0 3px 3px 0;flex:1;min-height:0;">
+        <div style="padding:9px 12px;border-right:1px solid var(--hairline);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--ui-mono);font-size:9.5px;color:var(--navy);font-weight:600;line-height:1.3;">technical-expert-panel</div>
+          <div style="font-size:8px;color:var(--ink-4);margin-top:3px;">ASL Project · Phase 2</div>
+        </div>
+        <div style="padding:9px 14px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.45;font-style:italic;">"Requirement 7 is the hard trifecta — no pretrained models + browser inference + from-scratch dataset. This single line is what makes the project hard."</div>
+          <div style="font-size:10px;color:var(--ink);line-height:1.45;font-weight:600;margin-top:4px;">→ Constitution Article V. Blocked 92.9% MediaPipe model. Shipped honest 74.2% from-scratch.</div>
+          <div style="font-family:var(--ui-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;">audit_no_pretrained.py · CONSTITUTION.md Article V · model/checkpoints/exp13/</div>
+        </div>
+      </div>
+
+      <!-- Row 2: superbuilders-patrick-panel (SME) -->
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:0;border-left:3px solid var(--teal);background:#f8f9fb;border-radius:0 3px 3px 0;flex:1;min-height:0;">
+        <div style="padding:9px 12px;border-right:1px solid var(--hairline);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--ui-mono);font-size:9.5px;color:var(--teal);font-weight:600;line-height:1.3;">superbuilders-patrick-panel</div>
+          <div style="font-size:8px;color:var(--ink-4);margin-top:3px;">ASL Project · Phase 2</div>
+        </div>
+        <div style="padding:9px 14px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.45;font-style:italic;">"Signs are phonological parameter tuples, not categorical labels. Score the parameters — handshape, location, movement, orientation. This is the cursive-engine analog for ASL."</div>
+          <div style="font-size:10px;color:var(--ink);line-height:1.45;font-weight:600;margin-top:4px;">→ 4-head model architecture. Targeted hints ("your handshape was correct, movement was an arc") came free.</div>
+          <div style="font-family:var(--ui-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;">model/architecture/heads.py · web/lib/hints/lookup.ts (41 templates)</div>
+        </div>
+      </div>
+
+      <!-- Row 3: user-panel -->
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:0;border-left:3px solid #7B61FF;background:#f8f9fb;border-radius:0 3px 3px 0;flex:1;min-height:0;">
+        <div style="padding:9px 12px;border-right:1px solid var(--hairline);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--ui-mono);font-size:9.5px;color:#7B61FF;font-weight:600;line-height:1.3;">user-panel</div>
+          <div style="font-size:8px;color:var(--ink-4);margin-top:3px;">Synthesis · Phase 2</div>
+        </div>
+        <div style="padding:9px 14px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.45;font-style:italic;">"Does this feel like exploration, or like homework?" — the acceptance question asked at the end of every panel run.</div>
+          <div style="font-size:10px;color:var(--ink);line-height:1.45;font-weight:600;margin-top:4px;">→ Tutor never gives the answer. Three-strike escalation: demonstrate one piece, hand the rest to the kid.</div>
+          <div style="font-family:var(--ui-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;">Forbidden patterns grep-checked before merge · socratic-discovery-method.md</div>
+        </div>
+      </div>
+
+      <!-- Row 4: business-expert-panel -->
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:0;border-left:3px solid var(--accent);background:#f8f9fb;border-radius:0 3px 3px 0;flex:1;min-height:0;">
+        <div style="padding:9px 12px;border-right:1px solid var(--hairline);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--ui-mono);font-size:9.5px;color:var(--accent);font-weight:600;line-height:1.3;">business-expert-panel</div>
+          <div style="font-size:8px;color:var(--ink-4);margin-top:3px;">ASL Project · Phase 2</div>
+        </div>
+        <div style="padding:9px 14px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.45;font-style:italic;">"Tangible rewards undermine intrinsic motivation (Deci-Ryan d = −0.34). Patrick will reject badges on sight. Hanus &amp; Fox 2015: gamified course produced lower exam scores."</div>
+          <div style="font-size:10px;color:var(--ink);line-height:1.45;font-weight:600;margin-top:4px;">→ No points, no badges, no streaks. Progress shows "what you can sign," not a gem count.</div>
+          <div style="font-family:var(--ui-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;">web/app/progress/page.tsx (mastery buckets) · PRD-v2.md §3</div>
+        </div>
+      </div>
+
+      <!-- Row 5: grill-me -->
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:0;border-left:3px solid var(--ink);background:#f8f9fb;border-radius:0 3px 3px 0;flex:1;min-height:0;">
+        <div style="padding:9px 12px;border-right:1px solid var(--hairline);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--ui-mono);font-size:9.5px;color:var(--ink);font-weight:600;line-height:1.3;">grill-me</div>
+          <div style="font-size:8px;color:var(--ink-4);margin-top:3px;">ASL Project · Phase 3</div>
+        </div>
+        <div style="padding:9px 14px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.45;font-style:italic;">"Camera denied → blank screen. No fallback component exists yet." Found by reading codebase instead of asking.</div>
+          <div style="font-size:10px;color:var(--ink);line-height:1.45;font-weight:600;margin-top:4px;">→ Static fallback with "try again" + Permissions API change event. Camera-denial became a first-class workflow state.</div>
+          <div style="font-family:var(--ui-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;">Gap surfaced pre-spec — saved a build-phase discovery · WORKFLOW.md camera-denial node</div>
+        </div>
+      </div>
+
+      <!-- Row 6: loop (gap loop) -->
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:0;border-left:3px solid var(--accent);background:var(--amber-tint);border-radius:0 3px 3px 0;flex:1;min-height:0;">
+        <div style="padding:9px 12px;border-right:1px solid var(--amber-rule);display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--ui-mono);font-size:9.5px;color:var(--accent);font-weight:600;line-height:1.3;">loop</div>
+          <div style="font-size:8px;color:var(--ink-4);margin-top:3px;">ASL Project · Phase 7</div>
+        </div>
+        <div style="padding:9px 14px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:9.5px;color:var(--ink-2);line-height:1.45;font-style:italic;">"Model accuracy plateaued at 27.5% (exp1–5). Spec-level gaps: architecture, data, rejection class. Each classified and routed."</div>
+          <div style="font-size:10px;color:var(--ink);line-height:1.45;font-weight:600;margin-top:4px;">→ Gap loop drove 22 experiments. 27.5% → 74.2% top-1. Each gap classified spec-level or PRD-level and routed.</div>
+          <div style="font-family:var(--ui-mono);font-size:8.5px;color:var(--ink-4);margin-top:2px;">docs/07-gaps/GAPS.md (11 open, 5 closed) · 22 checkpoints in model/checkpoints/</div>
+        </div>
+      </div>
+
+      <!-- Bottom insight -->
+      <div style="border-left:3px solid var(--navy);padding:8px 14px;background:var(--spec-tint);font-size:10px;color:var(--ink-2);line-height:1.5;margin-top:2px;">
+        <strong style="color:var(--navy);">These aren't hypothetical.</strong> Each finding above is quoted from actual skill output, and each decision is traceable to code that shipped. The phonological-parameter finding reshaped the ML model architecture. The Deci-Ryan citation killed a gamification feature. The grill-me session found a missing state machine path by reading the codebase, not by asking.
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>13 / 14</span></div>
+</div></section>
+
+<!-- ============== PAGE 13 — CASE STUDY: ASL PROJECT ============== -->
+<section><div class="slide">
+  <div class="eyebrow">Case Study</div>
+  <div class="title">ASL Learning App — from-scratch computer vision in the browser, built in 3 days with the workflow</div>
+  <div class="canvas">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;flex:1;min-height:0;">
+
+      <!-- Left: Metrics panel -->
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div style="background:var(--navy);border-radius:4px 4px 0 0;padding:14px 18px;">
+          <div style="font-size:8px;font-weight:600;letter-spacing:1.8px;color:rgba(255,255,255,0.4);text-transform:uppercase;">Project</div>
+          <div style="font-family:var(--ui-serif);font-size:15px;font-weight:700;color:#fff;margin-top:3px;line-height:1.3;">SuperBuilders ASL<br>Vocabulary Practice</div>
+          <div style="font-size:9px;color:#a5bfe3;margin-top:6px;line-height:1.5;">Browser-based sign language app<br>with from-scratch CV model.<br>Partner project · one-week appetite.</div>
+        </div>
+        <div style="background:#f8f9fb;border:1px solid var(--rule);border-top:none;border-radius:0 0 4px 4px;padding:14px 18px;flex:1;display:flex;flex-direction:column;gap:12px;">
+
+          <div>
+            <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;">Build Time</div>
+            <div style="font-family:var(--ui-serif);font-size:22px;font-weight:700;color:var(--ink);margin-top:2px;">3 days, 20h</div>
+            <div style="font-size:8.5px;color:var(--ink-3);">May 19–22 · 38 commits</div>
+          </div>
+
+          <div style="border-top:1px solid var(--hairline);padding-top:10px;">
+            <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;">Model Accuracy</div>
+            <div style="font-family:var(--ui-serif);font-size:22px;font-weight:700;color:var(--teal);margin-top:2px;">74.2% <span style="font-size:13px;color:var(--ink-3);font-weight:500;">top-1</span></div>
+            <div style="font-size:8.5px;color:var(--ink-3);">87.1% top-3 · honest signer-independent eval</div>
+          </div>
+
+          <div style="border-top:1px solid var(--hairline);padding-top:10px;">
+            <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;">Codebase</div>
+            <div style="font-family:var(--ui-mono);font-size:12px;font-weight:500;color:var(--ink);margin-top:2px;">14,935 <span style="font-size:9px;color:var(--ink-3);font-family:var(--ui-sans);">Python</span> · 7,210 <span style="font-size:9px;color:var(--ink-3);font-family:var(--ui-sans);">TS</span></div>
+          </div>
+
+          <div style="border-top:1px solid var(--hairline);padding-top:10px;">
+            <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;">Quality</div>
+            <div style="font-family:var(--ui-mono);font-size:11px;font-weight:500;color:var(--ink);margin-top:2px;">16 e2e tests · all passing</div>
+            <div style="font-size:8.5px;color:var(--ink-3);">76 vocab items · 22 training experiments</div>
+          </div>
+
+          <div style="border-top:1px solid var(--hairline);padding-top:10px;">
+            <div style="font-size:7.5px;font-weight:600;letter-spacing:1.4px;color:var(--ink-4);text-transform:uppercase;">Gaps Tracked</div>
+            <div style="font-family:var(--ui-mono);font-size:11px;font-weight:500;color:var(--ink);margin-top:2px;"><span style="color:var(--accent);">11 open</span> · <span style="color:var(--teal);">5 closed</span> · classified by pillar</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: Phase stories -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <!-- Story 1: PRD constraint -->
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:0;border:1px solid var(--rule);border-radius:4px;overflow:hidden;">
+          <div style="background:var(--navy);color:#fff;padding:8px 12px;writing-mode:vertical-lr;text-orientation:mixed;transform:rotate(180deg);font-size:8px;font-weight:600;letter-spacing:1.8px;display:flex;align-items:center;justify-content:center;">PHASE 1</div>
+          <div style="padding:10px 14px;">
+            <div style="font-size:11px;font-weight:600;color:var(--ink);margin-bottom:4px;">PRD constraint "from scratch" shaped the entire build</div>
+            <div style="font-size:9.5px;color:var(--ink-2);line-height:1.55;">The partner required from-scratch computer vision — no pre-trained ASL models. Surfacing this as a <strong style="color:var(--navy);">MUST constraint</strong> in Phase 1 eliminated 90% of architecture options before spec. Without it, the team would have built on a pre-trained model and discovered the requirement at demo day.</div>
+          </div>
+        </div>
+
+        <!-- Story 2: Panel catch -->
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:0;border:1px solid var(--rule);border-radius:4px;overflow:hidden;">
+          <div style="background:var(--navy);color:#fff;padding:8px 12px;writing-mode:vertical-lr;text-orientation:mixed;transform:rotate(180deg);font-size:8px;font-weight:600;letter-spacing:1.8px;display:flex;align-items:center;justify-content:center;">PHASE 2</div>
+          <div style="padding:10px 14px;">
+            <div style="font-size:11px;font-weight:600;color:var(--ink);margin-bottom:4px;">Expert panels caught the MediaPipe violation before a single line shipped</div>
+            <div style="font-size:9.5px;color:var(--ink-2);line-height:1.55;">Technical panel flagged that using MediaPipe at inference — a pre-trained Google model — <strong style="color:var(--accent);">violates PRD R7</strong> (no pre-trained components). This became a constitutional article. The best-accuracy model (92.9%) was disqualified; the honest from-scratch model (74.2%) shipped instead. The panel saved the project from a false result.</div>
+          </div>
+        </div>
+
+        <!-- Story 3: Gap loop -->
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:0;border:1.5px solid var(--accent);border-radius:4px;overflow:hidden;">
+          <div style="background:var(--accent);color:#fff;padding:8px 12px;writing-mode:vertical-lr;text-orientation:mixed;transform:rotate(180deg);font-size:8px;font-weight:600;letter-spacing:1.8px;display:flex;align-items:center;justify-content:center;">PHASE 7</div>
+          <div style="padding:10px 14px;background:var(--amber-tint);">
+            <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:4px;">The gap loop drove model accuracy from 27.5% to 74.2% across 22 experiments</div>
+            <div style="font-size:9.5px;color:var(--ink-2);line-height:1.55;">Each training run produced gaps classified by pillar and severity. <strong style="color:var(--navy);">Spec-level gaps</strong> (architecture fixes, data augmentation, rejection class) were re-derived automatically. <strong style="color:var(--accent);">PRD-level gaps</strong> (locale support, motion-sign scope) were routed to the partner. The gap loop wasn't a post-build retro — it <em>was</em> the 22-experiment training loop.</div>
+          </div>
+        </div>
+
+        <!-- Story 4: Constitution -->
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:0;border:1px solid var(--rule);border-radius:4px;overflow:hidden;">
+          <div style="background:var(--navy);color:#fff;padding:8px 12px;writing-mode:vertical-lr;text-orientation:mixed;transform:rotate(180deg);font-size:8px;font-weight:600;letter-spacing:1.8px;display:flex;align-items:center;justify-content:center;">CROSS</div>
+          <div style="padding:10px 14px;">
+            <div style="font-size:11px;font-weight:600;color:var(--ink);margin-bottom:4px;">10-article Constitution enforced at every merge — including against the best model</div>
+            <div style="font-size:9.5px;color:var(--ink-2);line-height:1.55;">Article V (no pre-trained models) blocked the 92.9%-accuracy MediaPipe model. The framework forced the team to <strong style="color:var(--navy);">ship the honest result</strong>, not the impressive one. The Constitution didn't slow the build — it prevented a false demo that would have been caught by the partner.</div>
+          </div>
+        </div>
+
+        <!-- Bottom takeaway -->
+        <div style="margin-top:auto;background:var(--spec-tint);border-left:3px solid var(--navy);padding:10px 14px;font-size:10px;color:var(--ink-2);line-height:1.55;">
+          <strong style="color:var(--navy);">The workflow's value isn't speed — it's honest signal.</strong> The gap loop found 16 issues. The Constitution blocked the best-looking model. The panels caught a requirement violation before build. Every phase added a filter that prevented a predictable failure from reaching the demo.
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Johnny Chung · AI Engineering Lead</span><span>14 / 14</span></div>
+</div></section>
+
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+  width:1280,height:720,margin:0,
+  controls:true,progress:true,slideNumber:false,
+  transition:'fade',hash:true,center:false
+});
+</script>
+</body>
+</html>
