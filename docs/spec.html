@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FORGE — System Specification</title>
+<title>RAPID — System Specification</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -19,10 +19,11 @@
   --radius: 4px; --radius-sm: 3px;
 }
 html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-body { margin: 0; display: flex; min-height: 100vh; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
 
 /* Sidebar nav */
-.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
 .sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
 .sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
 .sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
@@ -144,15 +145,30 @@ body { margin: 0; display: flex; min-height: 100vh; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .agent-card .agent-rw { grid-template-columns: 1fr; }
 }
+.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.forge-nav a:hover { color: rgba(255,255,255,0.85); }
+.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-
-<!-- ══════════════════════════════════════════════════════ -->
-<!-- SIDEBAR NAVIGATION                                    -->
-<!-- ══════════════════════════════════════════════════════ -->
+<nav class="forge-nav">
+  <span class="forge-nav-brand">RAPID<span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <a href="prd.html">PRD</a>
+  <a href="prd-enhanced.html">Enhanced PRD</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="workflow.html">Workflow</a>
+  <a href="users.html">Users</a>
+  <a href="spec.html" class="active">Spec</a>
+  <a href="observatory.html">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="documentation.html">Documentation</a>
+</nav>
+<div class="spec-layout">
 <nav class="sidebar">
-  <div class="sidebar-brand">FORGE</div>
+  <div class="sidebar-brand">RAPID</div>
   <div class="sidebar-sub">System Specification v2.0</div>
 
   <div class="sidebar-section">1. Architecture</div>
@@ -220,7 +236,7 @@ body { margin: 0; display: flex; min-height: 100vh; }
 
 <!-- FORGE Document Suite Nav -->
 <nav style="display: flex; align-items: center; gap: 6px; padding: 10px 0; margin-bottom: 24px; border-bottom: 1px solid var(--border-light, var(--border)); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;">
-  <span style="color: var(--navy); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.58rem; margin-right: 8px;">FORGE</span>
+  <span style="color: var(--navy); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.58rem; margin-right: 8px;">RAPID</span>
   <a href="../docs/forge-architecture.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Architecture</a>
   <a href="dashboard.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Observatory</a>
   <a href="forge-spec.html" style="color: var(--navy); background: var(--surface); padding: 4px 10px; border-radius: 3px; text-decoration: none; border: 1px solid var(--border);">Spec</a>
@@ -228,9 +244,9 @@ body { margin: 0; display: flex; min-height: 100vh; }
 
 <!-- ═══════ HEADER ═══════ -->
 <header style="margin-bottom: 48px;">
-  <div style="font-size: 2rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em;">FORGE &mdash; System Specification</div>
+  <div style="font-size: 2rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em;">RAPID FORGE &mdash; System Specificationmdash; System Specification</div>
   <div style="font-size: 0.84rem; color: var(--text-muted); margin-top: 8px; max-width: 700px;">
-    The complete specification for the FORGE autonomous build system: architecture, requirements, observability with realistic build data, documentation protocol, agent prompts, schemas, and configuration. Derived from <code>forge-architecture.html</code> (D0&ndash;D21), <code>SKILL.md</code> (v2.4), <code>FORGE.md</code>, <code>deck.md</code>, <code>CONSTITUTION.md</code>, <code>forge-observe.py</code>, <code>forge-observatory.html</code>, and <code>forge-phase-gate.sh</code>.
+    The complete specification for the RAPID autonomous build system: architecture, requirements, observability with realistic build data, documentation protocol, agent prompts, schemas, and configuration. Derived from <code>forge-architecture.html</code> (D0&ndash;D21), <code>SKILL.md</code> (v2.4), <code>FORGE.md</code>, <code>deck.md</code>, <code>CONSTITUTION.md</code>, <code>forge-observe.py</code>, <code>forge-observatory.html</code>, and <code>forge-phase-gate.sh</code>.
   </div>
   <div style="font-size: 0.68rem; color: var(--text-dim); margin-top: 8px;">
     Version 2.0 &mdash; 2026-05-27 &mdash; Author: Johnny Chung + Claude
@@ -2092,7 +2108,7 @@ judge-severity → judge-synthesizer (all scored findings collected)
 <!-- FOOTER                                                             -->
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="footnote" style="margin-top: 64px; padding-top: 24px; border-top: 2px solid var(--navy);">
-  FORGE System Specification v2.1 &mdash; 2026-05-27 &mdash; Derived from forge-architecture.html (D0&ndash;D21), SKILL.md (v2.4), FORGE.md, deck.md, CONSTITUTION.md, forge-observe.py, forge-observatory.html, and forge-phase-gate.sh. 65 requirements across 11 categories. 8 sections: architecture, requirements, observability, documentation (with dynamic generation prompt), agent prompts, schemas, configuration, and agent system evaluation (with per-graph eval directories).
+  RAPID System Specification v2.1 &mdash; 2026-05-27 &mdash; Derived from forge-architecture.html (D0&ndash;D21), SKILL.md (v2.4), FORGE.md, deck.md, CONSTITUTION.md, forge-observe.py, forge-observatory.html, and forge-phase-gate.sh. 65 requirements across 11 categories. 8 sections: architecture, requirements, observability, documentation (with dynamic generation prompt), agent prompts, schemas, configuration, and agent system evaluation (with per-graph eval directories).
 </div>
 
 </div><!-- /main -->

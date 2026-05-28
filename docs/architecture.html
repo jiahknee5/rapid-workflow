@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FORGE — System Reference</title>
+<title>RAPID — System Reference</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -19,7 +19,8 @@
   --radius: 4px; --radius-sm: 3px;
 }
 html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-body { margin: 0; max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
+body { margin: 0; }
+.page-body { max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
 
 /* Section system — McKinsey action-title convention */
 .section { margin-bottom: 64px; padding-top: 24px; border-top: 2.5px solid var(--navy); }
@@ -115,24 +116,34 @@ h3 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 6p
 .dot-g { background: var(--green); } .dot-a { background: var(--amber); } .dot-r { background: var(--red); } .dot-t { background: var(--teal); }
 .legend { display: flex; gap: 16px; font-size: 0.6rem; color: var(--text-dim); margin-top: 8px; justify-content: center; }
 @media (max-width: 768px) { body { padding: 28px 20px; } .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr; } .branch { flex-direction: column; align-items: center; } .metric-row { gap: 16px; } }
+.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.forge-nav a:hover { color: rgba(255,255,255,0.85); }
+.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-
-<!-- FORGE Document Suite Nav -->
-<nav style="display: flex; align-items: center; gap: 6px; padding: 10px 0; margin-bottom: 24px; border-bottom: 1px solid var(--border-light); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;">
-  <span style="color: var(--navy); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.58rem; margin-right: 8px;">FORGE</span>
-  <a href="forge-architecture.html" style="color: var(--navy); background: var(--surface); padding: 4px 10px; border-radius: 3px; text-decoration: none; border: 1px solid var(--border);">Architecture</a>
-  <a href="../tools/dashboard.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Observatory</a>
-  <a href="../tools/forge-spec.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Spec</a>
-  <a href="forge-comparison.html" style="color: var(--text-muted); padding: 4px 10px; border-radius: 3px; text-decoration: none;">Comparison</a>
+<nav class="forge-nav">
+  <span class="forge-nav-brand">RAPID<span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <a href="prd.html">PRD</a>
+  <a href="prd-enhanced.html">Enhanced PRD</a>
+  <a href="architecture.html" class="active">Architecture</a>
+  <a href="workflow.html">Workflow</a>
+  <a href="users.html">Users</a>
+  <a href="spec.html">Spec</a>
+  <a href="observatory.html">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="documentation.html">Documentation</a>
 </nav>
+<div class="page-body">
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <header style="margin-bottom: 48px;">
-  <div style="font-size: 2.2rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em;">FORGE</div>
+  <div style="font-size: 2.2rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em;">RAPID</div>
   <div class="plain-english" style="margin-top: 12px;">
-    FORGE is a <strong>dynamic workflow template that generates a project-specific build system</strong> every time it runs. You give it a product idea, and it assembles the right team of AI agents, the right expert panels, the right safety checks, and the right test strategy for that specific project. No two FORGE builds produce the same architecture. The pipeline structure is fixed &mdash; 12 phases, 4 human checkpoints &mdash; but everything inside is composed dynamically from a library of thinking frameworks. It stops at four checkpoints for your approval, and each build makes the next one smarter through compound learning.
+    RAPID is a <strong>dynamic workflow template that generates a project-specific build system</strong> every time it runs. You give it a product idea, and it assembles the right team of AI agents, the right expert panels, the right safety checks, and the right test strategy for that specific project. No two RAPID builds produce the same architecture. The pipeline structure is fixed &mdash; 12 phases, 4 human checkpoints &mdash; but everything inside is composed dynamically from a library of thinking frameworks. It stops at four checkpoints for your approval, and each build makes the next one smarter through compound learning.
   </div>
   <div style="font-size: 0.84rem; color: var(--text-muted); max-width: 700px; margin-top: 8px;">
     <strong>Technically:</strong> a 12-phase pipeline with 4 safety mechanisms, a 3-terminal architecture during build (orchestrator + supervisor + watchdog via tmux/claude-peers), tiered multi-agent code review (5 specialized reviewers), document review agents at every gate, compound learning capture, and a post-ship product pulse loop. Start with D0 (full architecture), then drill into D1&ndash;D20 for detail.
@@ -192,7 +203,7 @@ h3 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 6p
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="principle">
   <div class="section-id">Core Principle</div>
-  <div class="section-title">Separate the builder from the auditor &mdash; the single design decision that shapes every mechanism in FORGE</div>
+  <div class="section-title">Separate the builder from the auditor &mdash; the single design decision that shapes every mechanism in RAPID</div>
   <div class="plain-english">
     When the same agent implements code and audits it, <strong>the implementor always wins</strong>. It produces visible progress &mdash; a working app, screenshots, a deploy. The auditor produces invisible safety &mdash; tests, assertions, coverage checks. Under time pressure or context pressure, invisible work gets skipped. Every time. This isn&rsquo;t a discipline problem. It&rsquo;s an incentive misalignment that no amount of prose instruction can fix.
   </div>
@@ -2028,7 +2039,7 @@ claude-peers list_peers --scope repo
   <div class="plain-english">
     FORGE doesn&rsquo;t run the same way twice. Each project gets a <strong>custom-built system</strong> assembled from reusable frameworks. A healthcare security project gets security-weighted reviewers, a children&rsquo;s ed-tech project gets accessibility-weighted reviewers. The pipeline order never changes, but the agents, panels, pillars, tests, and review criteria are all selected at runtime based on what the project needs. The orchestrator&rsquo;s job is to pick the right frameworks for this specific build.
   </div>
-  <div class="section-desc">No two FORGE builds produce the same architecture. The pipeline (D1) is the deterministic scaffold. The content is composed from a framework library. When a project needs a capability that doesn&rsquo;t map to an existing framework, the orchestrator logs it as a gap and uses the closest available framework with documented adaptations.</div>
+  <div class="section-desc">No two RAPID builds produce the same architecture. The pipeline (D1) is the deterministic scaffold. The content is composed from a framework library. When a project needs a capability that doesn&rsquo;t map to an existing framework, the orchestrator logs it as a gap and uses the closest available framework with documented adaptations.</div>
 
   <div class="diagram">
     <div class="diagram-label">D19: Deterministic scaffold vs. dynamic composition</div>
@@ -2147,7 +2158,7 @@ claude-peers list_peers --scope repo
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d21">
   <div class="section-id">D21 &mdash; Agent &amp; Skill Catalog</div>
-  <div class="section-title">Every agent and skill in FORGE, with its source file, invocation point, inputs, outputs, and the pattern for creating new ones</div>
+  <div class="section-title">Every agent and skill in RAPID, with its source file, invocation point, inputs, outputs, and the pattern for creating new ones</div>
   <div class="plain-english">
     FORGE uses two types of reusable components: <strong>skills</strong> (slash commands with stable definitions that don&rsquo;t change between projects) and <strong>agents</strong> (spawned by skills during a build, configured per project). This catalog maps every component to its source file and shows when it&rsquo;s invoked, what it receives, and what it produces. The pattern for each type is stable &mdash; new panels, new reviewers, and new agent roles all follow the same template.
   </div>

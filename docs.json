@@ -1,0 +1,124 @@
+{
+  "version": 2,
+  "updated": "2026-05-27",
+  "categories": {
+    "forge": {
+      "label": "FORGE System",
+      "description": "How the FORGE autonomous build system works"
+    },
+    "workflow": {
+      "label": "AI Build Workflow",
+      "description": "Johnny's methodology for AI-assisted software builds"
+    },
+    "template": {
+      "label": "Templates",
+      "description": "Reusable templates for projects built with the workflow"
+    }
+  },
+  "docs": [
+    {
+      "file": "docs/forge-architecture.html",
+      "title": "FORGE Architecture",
+      "category": "forge",
+      "description": "Full system reference (D0–D21): 12-phase pipeline, agent topology, safety mechanisms, trust model",
+      "status": "current"
+    },
+    {
+      "file": "tools/dashboard.html",
+      "title": "FORGE Observatory",
+      "category": "forge",
+      "description": "Live build dashboard: agent health, event timeline, phase tracking, context estimates",
+      "status": "current"
+    },
+    {
+      "file": "tools/forge-spec.html",
+      "title": "FORGE System Specification",
+      "category": "forge",
+      "description": "Complete spec: 65 requirements across 11 categories, agent prompts, schemas, configuration",
+      "status": "current"
+    },
+    {
+      "file": "docs/forge-reference.md",
+      "title": "FORGE Reference",
+      "category": "forge",
+      "description": "Markdown reference: core principle, dynamic composition, phase summary",
+      "status": "current"
+    },
+    {
+      "file": "tools/observe-server.py",
+      "title": "FORGE Observer Script",
+      "category": "forge",
+      "description": "Python script that feeds live build data to the observatory dashboard",
+      "status": "current"
+    },
+    {
+      "file": "tools/phase-gate-hook.sh",
+      "title": "FORGE Phase Gate Script",
+      "category": "forge",
+      "description": "Shell script enforcing phase gate approvals during autonomous builds",
+      "status": "current"
+    },
+    {
+      "file": "docs/methodology-deck.html",
+      "title": "AI Build Workflow Deck",
+      "category": "workflow",
+      "description": "Presentation deck: vision → panels → spec → bounded agent swarm → gap loop",
+      "status": "current"
+    },
+    {
+      "file": "docs/methodology-deck.md",
+      "title": "AI Build Workflow Reference",
+      "category": "workflow",
+      "description": "Markdown source for the workflow methodology",
+      "status": "current"
+    },
+    {
+      "file": "docs/CONSTITUTION.md",
+      "title": "Constitution",
+      "category": "workflow",
+      "description": "Inviolable guardrails (Articles I–X) checked before merge in every project",
+      "status": "current"
+    },
+    {
+      "file": "templates/template-docs-deck.html",
+      "title": "Documentation Deck Template",
+      "category": "template",
+      "description": "Blank HTML template for generating project documentation decks via /docs",
+      "status": "current"
+    },
+    {
+      "file": "templates/template-docs-deck-showcase.html",
+      "title": "Documentation Deck Showcase",
+      "category": "template",
+      "description": "Filled example of the docs deck template showing all slide types",
+      "status": "current"
+    },
+    {
+      "file": "templates/template-decision-deck.html",
+      "title": "Decision Deck Template",
+      "category": "template",
+      "description": "Blank HTML template for McKinsey-style decision logs via /decision",
+      "status": "current"
+    }
+  ],
+  "archive": [
+    {
+      "file": "archive/deck-v1.html",
+      "title": "AI Build Workflow Deck v1",
+      "category": "workflow",
+      "superseded_by": "docs/methodology-deck.html"
+    },
+    {
+      "file": "archive/forge-dashboard.html",
+      "title": "FORGE Observatory v1",
+      "category": "forge",
+      "superseded_by": "tools/dashboard.html"
+    },
+    {
+      "file": "archive/forge-comparison.html",
+      "title": "FORGE vs TDD Scaffold",
+      "category": "forge",
+      "superseded_by": null
+    }
+  ]
+}

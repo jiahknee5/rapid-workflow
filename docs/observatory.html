@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FORGE — Build Observatory</title>
+<title>RAPID — Build Observatory</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -162,12 +162,29 @@ body { margin: 0; height: 100vh; display: flex; flex-direction: column; overflow
   .columns { flex-direction: column; }
   .col-left { width: 100%; max-height: 40vh; border-right: none; border-bottom: 1px solid var(--border); }
 }
+.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.forge-nav a:hover { color: rgba(255,255,255,0.85); }
+.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-
+<nav class="forge-nav">
+  <span class="forge-nav-brand">RAPID<span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <a href="prd.html">PRD</a>
+  <a href="prd-enhanced.html">Enhanced PRD</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="workflow.html">Workflow</a>
+  <a href="users.html">Users</a>
+  <a href="spec.html">Spec</a>
+  <a href="observatory.html" class="active">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="documentation.html">Documentation</a>
+</nav>
 <div class="topbar">
-  <div class="topbar-brand">FORGE Observatory</div>
+  <div class="topbar-brand">RAPID Observatory</div>
   <div class="topbar-phase" id="t-phase">P6 — Build</div>
   <div class="topbar-stats">
     <div class="topbar-stat"><div class="v" id="t-tasks">5/9</div><div class="l">Tasks</div></div>
@@ -219,7 +236,7 @@ body { margin: 0; height: 100vh; display: flex; flex-direction: column; overflow
   <span id="sb-last">Last: —</span>
   <span class="sep"></span>
   <span id="sb-filter">Filter: All agents</span>
-  <span style="margin-left:auto">FORGE Observatory v3.0</span>
+  <span style="margin-left:auto">RAPID Observatory v3.0</span>
 </div>
 
 <script>

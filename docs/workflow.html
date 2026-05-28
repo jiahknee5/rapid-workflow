@@ -63,9 +63,27 @@ html,body{background:var(--paper);}
 .pnav .s{color:var(--ink-4);font-size:8px;margin:0 1px;}
 .pnav .d{width:1px;height:12px;background:var(--teal);margin:0 4px;opacity:0.6;}
 .pnav .lp{font-size:6.5px;color:var(--teal);font-weight:600;letter-spacing:0.5px;margin-right:2px;text-transform:uppercase;}
+.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.forge-nav a:hover { color: rgba(255,255,255,0.85); }
+.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
+<nav class="forge-nav">
+  <span class="forge-nav-brand">RAPID<span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <a href="prd.html">PRD</a>
+  <a href="prd-enhanced.html">Enhanced PRD</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="workflow.html" class="active">Workflow</a>
+  <a href="users.html">Users</a>
+  <a href="spec.html">Spec</a>
+  <a href="observatory.html">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="documentation.html">Documentation</a>
+</nav>
 <div class="reveal"><div class="slides">
 
 <!-- ============== PAGE 1 ============== -->
