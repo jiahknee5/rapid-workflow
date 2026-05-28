@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RAPID — documentation</title>
+<title>RAPID — Documentation</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -17,24 +17,61 @@
   --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
   --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
   --radius: 4px; --radius-sm: 3px;
+  --mono: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
-html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+html { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 body { margin: 0; }
-.main { max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
-.stub { padding: 40px; text-align: center; color: var(--text-dim); }
-.stub h1 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-.stub p { font-size: 0.88rem; max-width: 500px; margin: 0 auto; }
 .forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
 .forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
 .forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
 .forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
 .forge-nav a:hover { color: rgba(255,255,255,0.85); }
 .forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+
+.main { max-width: 980px; margin: 0 auto; padding: 32px 40px 96px; }
+
+.header { margin-bottom: 32px; }
+.header h1 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+.header-meta { display: flex; gap: 16px; font-size: 0.72rem; color: var(--text-dim); }
+.header-meta .badge { font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.badge-ok { background: var(--green-dim); color: var(--green); }
+.badge-stale { background: var(--amber-dim); color: var(--amber); }
+.badge-error { background: var(--red-dim); color: var(--red); }
+
+.category { margin-bottom: 32px; }
+.category-header { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; }
+.category-count { font-size: 0.56rem; font-family: var(--mono); background: var(--surface-alt); padding: 1px 6px; border-radius: 8px; }
+
+.doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.doc-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; transition: border-color 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; }
+.doc-card:hover { border-color: var(--blue); box-shadow: 0 2px 8px rgba(43,108,176,0.08); }
+.doc-card a { text-decoration: none; color: inherit; }
+.doc-title { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.doc-title .status { font-size: 0.48rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
+.status-current { background: var(--green-dim); color: var(--green); }
+.status-new { background: var(--blue-dim); color: var(--blue); }
+.status-missing { background: var(--red-dim); color: var(--red); }
+.doc-desc { font-size: 0.72rem; color: var(--text-muted); flex: 1; margin-bottom: 6px; }
+.doc-path { font-size: 0.58rem; font-family: var(--mono); color: var(--text-dim); }
+
+.archive-toggle { font-size: 0.68rem; color: var(--text-dim); cursor: pointer; padding: 8px 0; border: none; background: none; font-family: inherit; }
+.archive-toggle:hover { color: var(--text); }
+.archive-list { display: none; margin-top: 8px; }
+.archive-list.open { display: block; }
+.archive-item { font-size: 0.72rem; color: var(--text-dim); padding: 4px 0; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; }
+.archive-item .superseded { font-size: 0.6rem; font-family: var(--mono); }
+
+.loading { padding: 60px; text-align: center; color: var(--text-dim); font-size: 0.82rem; }
+.error { padding: 40px; text-align: center; }
+.error h2 { font-size: 1rem; color: var(--red); margin-bottom: 8px; }
+.error p { font-size: 0.78rem; color: var(--text-muted); }
+.error code { font-size: 0.68rem; display: block; margin-top: 12px; padding: 10px; background: var(--surface); border-radius: 4px; }
 </style>
 </head>
 <body>
 <nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID<span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
   <a href="prd.html">PRD</a>
   <a href="prd-enhanced.html">Enhanced PRD</a>
   <a href="architecture.html">Architecture</a>
@@ -45,9 +82,118 @@ body { margin: 0; }
   <a href="eval.html">Eval</a>
   <a href="documentation.html" class="active">Documentation</a>
 </nav>
-<div class="stub">
-  <h1>documentation</h1>
-  <p>This page will be dynamically generated during the RAPID pipeline. Content is populated when the corresponding phase completes.</p>
+<div class="main">
+  <div id="content"><div class="loading">Loading documentation registry...</div></div>
 </div>
+
+<script>
+const DOCS_JSON_PATH = '../docs.json';
+
+async function loadRegistry() {
+  const container = document.getElementById('content');
+  try {
+    const res = await fetch(DOCS_JSON_PATH);
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    const registry = await res.json();
+    renderRegistry(registry);
+  } catch (e) {
+    container.innerHTML = `<div class="error">
+      <h2>Registry not found</h2>
+      <p>Could not load docs.json. Run the registry builder to generate it:</p>
+      <code>bash ~/projects/workflow/tools/build-docs-registry.sh</code>
+    </div>`;
+  }
+}
+
+function renderRegistry(reg) {
+  const container = document.getElementById('content');
+  const daysSince = Math.floor((Date.now() - new Date(reg.updated).getTime()) / 86400000);
+  const freshBadge = daysSince > 7
+    ? `<span class="badge badge-stale">Stale (${daysSince}d ago)</span>`
+    : `<span class="badge badge-ok">Current</span>`;
+
+  let html = `
+    <div class="header">
+      <h1>Documentation Registry</h1>
+      <div class="header-meta">
+        <span>v${reg.version}</span>
+        <span>Updated ${reg.updated}</span>
+        <span>${reg.docs.length} documents</span>
+        ${freshBadge}
+        ${reg.generated_by ? `<span style="font-family:var(--mono);font-size:0.6rem;">via ${reg.generated_by}</span>` : ''}
+      </div>
+    </div>`;
+
+  const categories = reg.categories || {};
+  const grouped = {};
+  for (const doc of reg.docs) {
+    const cat = doc.category || 'other';
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(doc);
+  }
+
+  for (const [catId, catMeta] of Object.entries(categories)) {
+    const docs = grouped[catId] || [];
+    if (!docs.length) continue;
+    html += `
+      <div class="category">
+        <div class="category-header">
+          <span>${catMeta.label || catId}</span>
+          <span class="category-count">${docs.length}</span>
+        </div>
+        <div class="doc-grid">
+          ${docs.map(d => docCard(d)).join('')}
+        </div>
+      </div>`;
+  }
+
+  // Uncategorized
+  const knownCats = new Set(Object.keys(categories));
+  const uncategorized = reg.docs.filter(d => !knownCats.has(d.category));
+  if (uncategorized.length) {
+    html += `
+      <div class="category">
+        <div class="category-header"><span>Other</span><span class="category-count">${uncategorized.length}</span></div>
+        <div class="doc-grid">${uncategorized.map(d => docCard(d)).join('')}</div>
+      </div>`;
+  }
+
+  // Archive
+  if (reg.archive && reg.archive.length) {
+    html += `
+      <div class="category">
+        <button class="archive-toggle" onclick="this.nextElementSibling.classList.toggle('open'); this.textContent = this.textContent.includes('Show') ? 'Hide archive (${reg.archive.length})' : 'Show archive (${reg.archive.length})'">
+          Show archive (${reg.archive.length})
+        </button>
+        <div class="archive-list">
+          ${reg.archive.map(a => `<div class="archive-item">
+            <span>${a.title || a.file}</span>
+            <span class="superseded">${a.superseded_by ? '→ ' + a.superseded_by : a.status || 'archived'}</span>
+          </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function docCard(d) {
+  const statusClass = d.status === 'current' ? 'status-current' : d.status === 'new' ? 'status-new' : d.status === 'missing' ? 'status-missing' : 'status-current';
+  const href = d.file.startsWith('docs/') ? d.file.replace('docs/', '') : '../' + d.file;
+  return `<div class="doc-card">
+    <a href="${href}">
+      <div class="doc-title">
+        ${d.title}
+        <span class="status ${statusClass}">${d.status || 'current'}</span>
+        ${d.generated ? '<span class="status" style="background:var(--purple-dim);color:var(--purple)">auto</span>' : ''}
+      </div>
+      <div class="doc-desc">${d.description || 'No description'}</div>
+      <div class="doc-path">${d.file}</div>
+    </a>
+  </div>`;
+}
+
+loadRegistry();
+</script>
 </body>
 </html>

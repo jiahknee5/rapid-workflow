@@ -22,7 +22,7 @@ from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 from datetime import datetime
 
-DASHBOARD_PATH = Path(__file__).parent / "dashboard.html"
+DASHBOARD_PATH = Path(__file__).parent.parent / "docs" / "observatory.html"
 OBSERVE_DIR = ".forge/observe"
 
 
