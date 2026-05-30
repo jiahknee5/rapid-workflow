@@ -21,11 +21,12 @@
 # per-terminal hook install needed.
 set -uo pipefail
 
-PROJECT="$PWD"; MODE="tmux"; TRACK="full"
+PROJECT="$PWD"; MODE="tmux"; TRACK="full"; DEMO=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) MODE="dry" ;;
     --cursor)  MODE="cursor" ;;
+    --demo)    DEMO=1 ;;   # create the named role terminals but run a placeholder, not claude
     --track)   shift; TRACK="${1:-full}" ;;
     -*)        echo "forge-team: unknown flag $1" >&2; exit 2 ;;
     *)         PROJECT="$1" ;;
@@ -97,7 +98,11 @@ PY
       ensure_brief "$r"
       if [ $first -eq 1 ]; then tmux new-session -d -s "$S" -n "$r" -c "$PROJECT"; first=0
       else tmux new-window -t "$S" -n "$r" -c "$PROJECT"; fi
-      tmux send-keys -t "$S:$r" "export FORGE_ROLE=$r && claude $(printf '%q' "$(kickoff "$r")")" Enter
+      if [ "$DEMO" -eq 1 ]; then
+        tmux send-keys -t "$S:$r" "export FORGE_ROLE=$r && clear && printf 'FORGE role: %s\n  FORGE_ROLE=%s  cwd=%s\n  contract: 04-spec/agents/%s.md\n  (demo — no claude launched; drop --demo to start the real agent here)\n' \"$r\" \"\$FORGE_ROLE\" \"\$(pwd)\" \"$r\"" Enter
+      else
+        tmux send-keys -t "$S:$r" "export FORGE_ROLE=$r && claude $(printf '%q' "$(kickoff "$r")")" Enter
+      fi
     done
     echo "FORGE team launched in tmux session '$S' (roles: $ROLES). Attach: tmux attach -t $S  (or run 'tmux attach -t $S' inside a Cursor terminal)."
     ;;
