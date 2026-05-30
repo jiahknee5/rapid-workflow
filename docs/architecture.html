@@ -158,6 +158,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <a href="#d0">D0 &mdash; Full System Architecture</a>
   <a href="#d1">D1 &mdash; Master Pipeline</a>
   <a href="#d2">D2 &mdash; Agent Topology</a>
+  <a href="#d2b">D2b &mdash; Terminal Team Topology</a>
   <a href="#d3">D3 &mdash; Human Gates</a>
   <a href="#d4">D4 &mdash; Drift Detection</a>
   <a href="#d5">D5 &mdash; Decision Router</a>
@@ -748,9 +749,9 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D2 &mdash; Agent Topology</div>
   <div class="section-title">10 agents mapped to pipeline phases, each selected for isolation and cost</div>
   <div class="plain-english">
-    FORGE uses <strong>10 specialized AI agents, each with a specific job</strong>. One orchestrates the whole process. Others run expert panels, do research, write the spec, build the code, review it, test it, and watch for problems. They&rsquo;re organized like a small company: there&rsquo;s a manager (supervisor), a team of up to 4 builders working in parallel, a quality inspector (watchdog), and a tester. Each agent only sees and touches what it needs to &mdash; this prevents one agent&rsquo;s mistake from cascading into everything else.
+    FORGE uses <strong>10 specialized AI agents, each with a specific job</strong>. One orchestrates the whole process. Others run expert panels, do research, write the spec, build the code, review it, test it, and watch for problems. They&rsquo;re organized like a small company: there&rsquo;s a manager (supervisor), a team of up to 4 builders working in parallel, a quality inspector (watchdog), and a tester. Each agent only sees and touches what it needs to &mdash; this prevents one agent&rsquo;s mistake from cascading into everything else. <strong>In the Phase&nbsp;6 build (Opus&nbsp;4.8 era), every persistent agent runs in its OWN terminal</strong> &mdash; one tmux window per agent inside a single <code>forge-build</code> session &mdash; replacing the old fixed 3-terminal setup. The terminals form one <strong>agent team</strong> wired together over the claude-peers MCP bus, so each agent can be watched, message its peers, and build continuously rather than being a fire-and-forget subagent. See D2b for the live team topology.
   </div>
-  <div class="section-desc">References D1 phases. Three primitives: skill (orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). See D7 for fan-out sizing.</div>
+  <div class="section-desc">References D1 phases. Three primitives: skill (orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). At P6 the persistent roles (orchestrator = team lead, supervisor = build lead, watchdog = R2 auditor, impl-1..impl-N) each occupy their own long-lived terminal keyed by <code>FORGE_ROLE</code>, coordinate over claude-peers, and carry per-terminal status / monitoring / continuous-build hooks. See D2b for terminal team topology and D7 for fan-out sizing.</div>
 
   <div class="diagram">
     <div class="diagram-label">D2: Agent Topology (references D1 phases)</div>
@@ -902,6 +903,114 @@ body{min-height:100vh;display:flex;flex-direction:column}
       <strong>Cost implications:</strong> Prompt injection = free (part of existing prompt). Skill = orchestrator's context (no duplication). Subagent = own context window (input must be copied in, ~1x duplication per agent). Agent (worktree) = own context + git branch overhead. Separate terminal = fully independent session, highest cost, hardest to coordinate.
       <br><strong>Parallelism:</strong> Skills are sequential (one at a time in the orchestrator). Subagents and worktree agents can run in parallel. Separate terminals are fully independent.
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D2b — TERMINAL-PER-AGENT TEAM TOPOLOGY                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d2b">
+  <div class="section-id">D2b &mdash; Terminal Team Topology</div>
+  <div class="section-title">Each persistent agent runs in its own terminal, wired into one team over the claude-peers bus, with per-terminal hooks</div>
+  <div class="plain-english">
+    In the Phase&nbsp;6 build, the old fixed 3-terminal layout is replaced by <strong>one terminal per agent</strong> &mdash; a single tmux session (<code>forge-build</code>) with one window each for the orchestrator (team lead), supervisor (build lead), watchdog (R2 auditor), and every implementor (impl-1..impl-N, fan-out &le; 4). The terminals form a single <strong>agent team</strong> over the claude-peers MCP bus: each agent announces itself (<code>set_summary</code> + <code>list_peers</code>) and coordinates by shoulder-tap messaging. Each terminal carries three per-role hooks &mdash; <strong>status</strong> (statusline + HEARTBEAT), <strong>monitoring</strong> (observe events + stall flag), and <strong>continuous build</strong> (the R7 Stop hook that won&rsquo;t let a terminal quit while phase work remains).
+  </div>
+  <div class="section-desc">Spawned at P6a, torn down at P6 end. Addressing and hook behavior derive from <code>FORGE_ROLE</code> per terminal. Implementors still build in their own git worktree for isolation; the terminal is long-lived so it can be monitored, message peers, and build continuously. References D2 (roles), D4 (watchdog), D5 (shoulder-tap / nudge), D8 (fan-out + heartbeat), D13 (observability), R7 (Stop hook).</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D2b: tmux session &lsquo;forge-build&rsquo; &mdash; one window per agent, all on the claude-peers team bus</div>
+    <div class="vflow" style="padding: 8px 0;">
+
+      <!-- The shared team bus -->
+      <div class="n n-blue" style="min-width: 380px;">claude-peers MCP &mdash; team bus<small>set_summary + list_peers on start &bull; shoulder-tap send_message / check_messages &bull; answer peers immediately</small></div>
+      <div class="vline"></div>
+      <div style="font-size: 0.58rem; color: var(--text-dim); margin-bottom: 6px;">One tmux session <code>forge-build</code> &bull; one window per agent &bull; addressing derives from <code>FORGE_ROLE</code></div>
+
+      <!-- Team lead row -->
+      <div class="branch no-bar" style="gap: 18px;">
+        <div>
+          <div class="n n-primary" style="min-width: 220px;">Terminal: orchestrator<small>FORGE_ROLE=orchestrator &bull; TEAM LEAD</small></div>
+          <div class="vline"></div>
+          <div class="branch no-bar" style="gap: 5px;">
+            <div class="n n-auto" style="font-size: 0.55rem;">status: statusline + HEARTBEAT</div>
+            <div class="n" style="font-size: 0.55rem; border-color: var(--teal); color: var(--teal);">monitor: observe/orchestrator.jsonl</div>
+            <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.55rem;">continuous: R7 Stop hook</div>
+          </div>
+          <div style="font-size: 0.56rem; color: var(--text-dim); margin-top: 4px; max-width: 240px;">Opus&nbsp;4.8 1M context holds full spec + TASKS.json. Watchdog reports here.</div>
+        </div>
+      </div>
+
+      <div class="vline"></div>
+
+      <!-- Build lead + watchdog row -->
+      <div class="branch" style="gap: 28px;">
+
+        <!-- Supervisor = build lead -->
+        <div>
+          <div class="n n-auto" style="min-width: 200px; font-weight: 800;">Terminal: supervisor<small>FORGE_ROLE=supervisor &bull; BUILD LEAD</small></div>
+          <div class="vline"></div>
+          <div class="branch no-bar" style="gap: 5px;">
+            <div class="n n-auto" style="font-size: 0.55rem;">status</div>
+            <div class="n" style="font-size: 0.55rem; border-color: var(--teal); color: var(--teal);">monitor</div>
+            <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.55rem;">continuous</div>
+          </div>
+          <div style="font-size: 0.56rem; color: var(--text-dim); margin-top: 4px; max-width: 200px;">Task assignment + smoke tests. Owns the implementors below.</div>
+          <div class="vline"></div>
+
+          <!-- Implementors, each own terminal + worktree -->
+          <div class="phase-label">impl terminals (fan-out &le; 4)</div>
+          <div class="branch no-bar" style="gap: 8px;">
+            <div>
+              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-1<small>FORGE_ROLE=impl-1 &bull; worktree</small></div>
+              <div class="vline"></div>
+              <div class="branch no-bar" style="gap: 3px;">
+                <div class="n n-auto" style="font-size: 0.52rem;">status</div>
+                <div class="n" style="font-size: 0.52rem; border-color: var(--teal); color: var(--teal);">monitor</div>
+                <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.52rem;">continuous</div>
+              </div>
+            </div>
+            <div>
+              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-2<small>FORGE_ROLE=impl-2 &bull; worktree</small></div>
+              <div class="vline"></div>
+              <div class="branch no-bar" style="gap: 3px;">
+                <div class="n n-auto" style="font-size: 0.52rem;">status</div>
+                <div class="n" style="font-size: 0.52rem; border-color: var(--teal); color: var(--teal);">monitor</div>
+                <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.52rem;">continuous</div>
+              </div>
+            </div>
+            <div>
+              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-N<small>FORGE_ROLE=impl-N &bull; worktree</small></div>
+              <div class="vline"></div>
+              <div class="branch no-bar" style="gap: 3px;">
+                <div class="n n-auto" style="font-size: 0.52rem;">status</div>
+                <div class="n" style="font-size: 0.52rem; border-color: var(--teal); color: var(--teal);">monitor</div>
+                <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.52rem;">continuous</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Watchdog = R2 auditor -->
+        <div>
+          <div class="n n-guard" style="min-width: 190px; font-weight: 800;">Terminal: watchdog<small>FORGE_ROLE=watchdog &bull; R2 AUDITOR</small></div>
+          <div class="vline"></div>
+          <div class="branch no-bar" style="gap: 5px;">
+            <div class="n n-auto" style="font-size: 0.55rem;">status</div>
+            <div class="n" style="font-size: 0.55rem; border-color: var(--teal); color: var(--teal);">monitor</div>
+            <div class="n" style="border-color: var(--amber); color: var(--amber); font-size: 0.55rem;">continuous</div>
+          </div>
+          <div style="font-size: 0.56rem; color: var(--text-dim); margin-top: 4px; max-width: 190px;">Audits on PR + merge + 30m (D4). Writer is never the auditor. Reports to orchestrator.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 14px; font-size: 0.64rem; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 8px;">
+      <strong>Per-terminal hooks (keyed by <code>FORGE_ROLE</code>):</strong>
+      &bull; <span style="color: var(--green);">STATUS</span> &mdash; a statusline / SessionStart hook stamps the terminal&rsquo;s role + summary; each agent refreshes <code>.forge/HEARTBEAT.json</code> (per role) every &le;5&nbsp;min.
+      &bull; <span style="color: var(--teal);">MONITORING</span> &mdash; events stream to <code>.forge/observe/&lt;role&gt;.jsonl</code> (SPAWN / PROGRESS / &hellip;); <code>/forge status</code> and the observatory read every terminal, and a monitor flags a stalled terminal (heartbeat past threshold) for restart.
+      &bull; <span style="color: var(--amber);">CONTINUOUS BUILD</span> &mdash; the R7 Stop / SubagentStop hook (<code>tools/stop-hook.sh</code>) blocks a terminal from halting while phase work remains; <code>FORGE_ROLE</code> attributes continuation + observe; after 5 same-phase nudges it escalates to the operator.
+    </div>
+    <div class="diagram-ref">Lifecycle: session created at P6a, torn down at P6 end. Coordination: orchestrator = team lead, supervisor = build lead (owns impl-1..impl-N), watchdog = R2 auditor reporting to orchestrator. Deterministic fan-out (implementors, tiered reviewers, doc-review agents) is orchestrated via the Workflow tool / parallel subagents under Opus&nbsp;4.8&rsquo;s 1M context. Cross-refs: D2 (roles + primitives), D4 (watchdog loop), D5 (shoulder-tap / nudge protocol), D8 (fan-out + heartbeat), D13 (observability layers), D20 (tiered review + learning), R7 (Stop hook).</div>
   </div>
 </div>
 
@@ -1414,9 +1523,9 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D13 &mdash; Observability</div>
   <div class="section-title">Every agent writes structured events to a shared state layer, visible in a live dashboard with 4 visual themes</div>
   <div class="plain-english">
-    Every action every agent takes &mdash; every file read, every write, every message sent, every decision made &mdash; gets <strong>logged as a structured event</strong> to a JSONL file. A live dashboard at <code>localhost:4040</code> merges all agent logs and shows them in real time: a health summary (&ldquo;should I be worried?&rdquo;), an agent topology graph, a Gantt timeline aligned to the pipeline arcs, and a filterable event stream. The dashboard has a <strong>Basic mode</strong> (health view only, human-readable descriptions) and an <strong>Expert mode</strong> (all views, raw data, context numbers). Four visual themes: Linear (clean white), Grafana (dark panels), Bloomberg Terminal (maximum density), Raycast (glass effects).
+    Every action every agent takes &mdash; every file read, every write, every message sent, every decision made &mdash; gets <strong>logged as a structured event</strong> to a JSONL file. A live dashboard at <code>localhost:4040</code> merges all agent logs and shows them in real time: a health summary (&ldquo;should I be worried?&rdquo;), an agent topology graph, a Gantt timeline aligned to the pipeline arcs, and a filterable event stream. The dashboard has a <strong>Basic mode</strong> (health view only, human-readable descriptions) and an <strong>Expert mode</strong> (all views, raw data, context numbers). Four visual themes: Linear (clean white), Grafana (dark panels), Bloomberg Terminal (maximum density), Raycast (glass effects). Because every agent now runs in <strong>its own terminal</strong> (see D2b), observability is per-terminal: each agent stamps its role via a status hook, refreshes <code>.forge/HEARTBEAT.json</code> every &le;5&nbsp;min, and streams events to its own <code>.forge/observe/&lt;role&gt;.jsonl</code> &mdash; so the dashboard, <code>/forge status</code>, and the observatory all read across the full team and a monitor can flag any terminal whose heartbeat goes stale.
   </div>
-  <div class="section-desc">References all diagrams. Three data layers: .forge/ state files (persistent), .forge/observe/*.jsonl (event stream), claude-peers MCP (real-time inter-terminal). The operator queries state via the dashboard or from any terminal at any time.</div>
+  <div class="section-desc">References all diagrams. Three data layers: .forge/ state files (persistent), .forge/observe/*.jsonl (per-terminal event stream, one file per FORGE_ROLE), claude-peers MCP (real-time team bus across terminals). Per-terminal hooks (D2b) drive the signals: status (statusline + HEARTBEAT), monitoring (observe + stall flag), continuous build (R7 Stop hook). The operator queries state via the dashboard or from any terminal at any time.</div>
 
   <div class="diagram">
     <div class="diagram-label">D13a: Data flow — who writes what, who reads what</div>

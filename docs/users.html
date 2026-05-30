@@ -94,6 +94,32 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 /* Code blocks */
 .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
 
+/* Diagrams & process flows (fit-for-purpose) */
+.diagram { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+.diagram-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.n { display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 0.72rem; font-weight: 600; text-align: center; background: var(--bg); white-space: nowrap; }
+.n small { display: block; font-size: 0.58rem; font-weight: 400; color: var(--text-dim); margin-top: 1px; }
+.n-auto { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.n-gate { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); font-weight: 800; }
+.n-guard { border-color: var(--red); color: var(--red); }
+.n-primary { border-color: var(--navy); background: var(--navy); color: #fff; }
+.n-blue { border-color: var(--blue); color: var(--blue); } .n-purple { border-color: var(--purple); color: var(--purple); } .n-teal { border-color: var(--teal); color: var(--teal); }
+.arr { color: var(--text-dim); font-size: 0.9rem; padding: 0 3px; } .arr-loop { color: var(--amber); font-weight: 800; }
+.hflow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; justify-content: center; }
+.vflow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.vline { width: 1.5px; height: 16px; background: var(--border); }
+.branch { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+/* Swimlane process flow (data-in / processing / data-out per node) */
+.swimlane { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.swimlane .lane { display:grid; grid-template-columns:130px 1fr; border-bottom:1px solid var(--border-light); }
+.swimlane .lane:last-child { border-bottom:none; }
+.swimlane .lane-label { background:var(--surface); padding:10px 12px; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); border-right:1px solid var(--border); display:flex; align-items:center; }
+.swimlane .lane-body { padding:10px 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.78rem; color:var(--text-muted); }
+.step-table { width:100%; border-collapse:collapse; font-size:0.74rem; margin:12px 0; }
+.step-table th { text-align:left; padding:7px 9px; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.07em; color:#fff; background:var(--navy); }
+.step-table td { padding:7px 9px; border-bottom:1px solid var(--border-light); vertical-align:top; }
+.step-table td:first-child { font-weight:700; color:var(--navy); font-family:"SF Mono",monospace; white-space:nowrap; }
+
 @media (max-width: 900px) {
   body { flex-direction: column; }
   .spec-layout { flex-direction: column; }
@@ -112,215 +138,371 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
-  <a href="prd.html">PRD</a>
-  <a href="prd-enhanced.html">Enhanced PRD</a>
-  <a href="architecture.html">Architecture</a>
-  <a href="workflow.html">Workflow</a>
-  <a href="users.html" class="active">Users</a>
-  <a href="spec.html">Spec</a>
-  <a href="observatory.html">Observatory</a>
-  <a href="eval.html">Eval</a>
-  <a href="cost.html">Cost</a>
-  <a href="documentation.html">Documentation</a>
-</nav>
+<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html" class="active">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
 <div class="spec-layout">
 <nav class="sidebar">
   <div class="sidebar-brand">RAPID</div>
-  <div class="sidebar-sub">Users</div>
-  <div class="sidebar-section">On this page</div>
-  <a href="#overview">Who this is for</a>
-  <a href="#primary-user">Primary user — the AI engineering lead</a>
-  <a href="#decision-points">Decision points — the operator at four gates</a>
-  <a href="#secondary-readers">Secondary readers</a>
+  <div class="sidebar-sub">Users &amp; Workflows</div>
+  <div class="sidebar-section">Users</div>
+  <a href="#overview">Overview — all users</a>
+  <a href="#user-operator" class="sub">AI Engineering Lead / Operator</a>
+  <a href="#user-stakeholder" class="sub">Stakeholder / Requirements Owner</a>
+  <a href="#user-reviewer" class="sub">Gate Reviewer</a>
+  <a href="#user-enduser" class="sub">End User of the Built Product</a>
+  <div class="sidebar-section">Workflows</div>
+  <a href="#wf-idea-to-app">WF-1 — Idea to shipped app</a>
+  <a href="#wf-prd-gated">WF-2 — PRD to gated build &amp; gap loop</a>
+  <a href="#wf-stakeholder-docs">WF-3 — Stakeholder navigates the docs</a>
+  <a href="#wf-monitor">WF-4 — Operator monitors a live build</a>
+  <div class="sidebar-section">Tests</div>
+  <a href="#golden-tests">From workflows to golden tests</a>
 </nav>
 <div class="docpage-content"><div class="main">
 
-  <div class="section" id="overview">
-    <div class="section-id">Audience</div>
-    <div class="section-title">Who this is for</div>
-    <div class="section-desc">
-      RAPID takes a product idea or requirements document and builds the entire application — planning, coding, testing, and deploying — with minimal human input. The whole pipeline runs autonomously except at four decision points, where a human checks in. This page describes the people on the other side of those check-ins.
-    </div>
-    <div class="strategy">
-      <h3>The promise</h3>
-      <p>One person hands over a requirements document and walks away. They come back to a deployed application, a complete documentation site, a test report, and a timeline of everything that happened during the build.</p>
-      <p>Between the handoff and the result, they are asked to make exactly four decisions. Everything else is run by AI agents.</p>
-    </div>
-    <div class="key-insight">
-      <strong>The user is not babysitting the build.</strong> The system is designed so the human reviews and decides, rather than supervises every step. The dashboard and the integrated gate views exist to make those four decisions fast and well-informed.
-    </div>
+<!-- ============================== OVERVIEW ============================== -->
+<section class="section" id="overview">
+  <div class="section-id">Users · 00</div>
+  <h2 class="section-title">Every user of RAPID/FORGE at a glance</h2>
+  <p class="section-desc">FORGE turns a product idea or PRD into a shipped, tested, documented application using a team of AI agents, with the human checking in at four decision points. The people below are the humans in that loop. The agents that do the building are not in this table — see the system-actor note at the end of this section.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr><th>User</th><th>Role</th><th>What they touch</th><th>What they get</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AI Engineering Lead / Operator</td>
+        <td>Primary — starts and runs the build</td>
+        <td><code>/forge "&lt;idea&gt;"</code> or a PRD; the live dashboard; the four decision points</td>
+        <td>A deployed app, a documentation site, a test report, and a timeline of the build</td>
+      </tr>
+      <tr>
+        <td>Stakeholder / Requirements Owner</td>
+        <td>Supplies requirements, receives the result</td>
+        <td>The intake PRD; the final handoff documentation site</td>
+        <td>A clean, navigable doc site they can read without manual cleanup</td>
+      </tr>
+      <tr>
+        <td>Gate Reviewer</td>
+        <td>Approves or rejects at the four decision points</td>
+        <td>The combined gate view: working app, tests, doc completeness, cost, remaining gaps</td>
+        <td>One screen to decide go / no-go, instead of four artifacts to cross-reference</td>
+      </tr>
+      <tr>
+        <td>End User of the built product</td>
+        <td>Downstream — uses whatever FORGE built</td>
+        <td>The shipped application itself (project-specific)</td>
+        <td>The working product (e.g. a math tutor) — placeholder, defined per project</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="key-insight">
+    <strong>System actors, not human users.</strong> The orchestrator (team lead), supervisor (task assignment + smoke tests), watchdog (R2 auditor), and the implementors (impl-1..impl-N, fan-out ≤ 4) are internal SYSTEM ACTORS. They run inside the build and coordinate over the claude-peers bus. They are not in the user list above; they appear in WF-4 only because the operator monitors them.
   </div>
+</section>
 
-  <div class="section" id="primary-user">
-    <div class="section-id">Persona</div>
-    <div class="section-title">Primary user — the AI engineering lead</div>
-    <div class="section-desc">
-      From the PRD: an AI engineering lead who wants to turn a stakeholder's requirements into a shipped, tested, documented application using AI agents — without babysitting every step.
-    </div>
+<!-- ============================== OPERATOR ============================== -->
+<section class="section" id="user-operator">
+  <div class="section-id">Users · Persona 1 (primary)</div>
+  <h2 class="section-title">AI Engineering Lead / Operator</h2>
+  <p class="section-desc">The primary user. Turns a stakeholder's requirements into a shipped, tested, documented application using AI agents — without babysitting every step.</p>
+  <div class="card">
+    <h4>Goals</h4>
+    <p>Start a build from one line or a PRD, walk away, and come back to a deployed app plus a complete doc site, test report, and build timeline. Stay in control at the four decision points without micromanaging every task.</p>
+    <h4 style="margin-top:14px;">Context</h4>
+    <p>Runs <code>/forge "build a math tutor for kids"</code> from Claude Code, with the live dashboard open in a browser. The build runs autonomously across its phases; the operator checks in at the four gates.</p>
+    <h4 style="margin-top:14px;">Needs</h4>
+    <p>A prepopulated dashboard (the full plan visible from the start, not an empty screen). Real-time phase, agent, and test status. Documentation that updates as each phase completes. One combined view at each decision point.</p>
+    <h4 style="margin-top:14px;">Frustrations</h4>
+    <p>Four systems — build, docs, tests, dashboard — that work independently but don't talk to each other. Test results buried in a log file. Having to cross-reference four artifacts at a gate. Docs that have to be cleaned up by hand at the end.</p>
+  </div>
+</section>
 
-    <div class="grid-3">
-      <div class="card">
-        <h4>Goals</h4>
-        <div>
-          - Turn a stakeholder's PRD into a shipped, tested, documented app<br>
-          - Use AI agents to do the building, in parallel<br>
-          - Stay in control at the moments that matter, not every moment<br>
-          - Hand a clean documentation site to a stakeholder with no manual cleanup
+<!-- ============================== STAKEHOLDER ============================== -->
+<section class="section" id="user-stakeholder">
+  <div class="section-id">Users · Persona 2</div>
+  <h2 class="section-title">Stakeholder / Requirements Owner</h2>
+  <p class="section-desc">Owns what needs to be built and receives the finished result. The reason the build exists.</p>
+  <div class="card">
+    <h4>Goals</h4>
+    <p>Hand over a product idea or PRD and, at the end, receive a deployed application backed by a clean, navigable documentation site they can read and trust.</p>
+    <h4 style="margin-top:14px;">Context</h4>
+    <p>Supplies the intake PRD that seeds the build. Typically not present during the build itself; engages at the start (requirements) and at handoff (the doc site).</p>
+    <h4 style="margin-top:14px;">Needs</h4>
+    <p>Their requirements understood and reflected in the plan. A documentation site they can navigate without help, reorganized into a clean deck at the end. Test status they can see plainly, not in a log.</p>
+    <h4 style="margin-top:14px;">Frustrations</h4>
+    <p>Documentation that needs manual cleanup before it can be handed over. Not being able to tell what was actually built versus what was promised. Having to ask the operator to interpret raw logs.</p>
+  </div>
+</section>
+
+<!-- ============================== REVIEWER ============================== -->
+<section class="section" id="user-reviewer">
+  <div class="section-id">Users · Persona 3</div>
+  <h2 class="section-title">Gate Reviewer</h2>
+  <p class="section-desc">The human who approves or rejects at the four decision points. Often the same person as the operator, but a distinct role: the deciding hat.</p>
+  <div class="card">
+    <h4>Goals</h4>
+    <p>Make a confident go / no-go call at each decision point — especially the ship gate — without digging through four separate systems.</p>
+    <h4 style="margin-top:14px;">Context</h4>
+    <p>Engages only at the four decision points. At the ship gate they expect one screen with: the working app, test results, doc completeness, cost, and the remaining gaps.</p>
+    <h4 style="margin-top:14px;">Needs</h4>
+    <p>One combined gate view, not four things to cross-reference. Test pass/fail visible at the decision point itself. A clear read on remaining gaps before approving.</p>
+    <h4 style="margin-top:14px;">Frustrations</h4>
+    <p>Cross-referencing the dashboard, the docs, the test output, and the cost separately. Approving without knowing what's still broken. Decision points that surface less than the dashboard already knows.</p>
+  </div>
+</section>
+
+<!-- ============================== END USER ============================== -->
+<section class="section" id="user-enduser">
+  <div class="section-id">Users · Persona 4 (template placeholder)</div>
+  <h2 class="section-title">End User of the Built Product</h2>
+  <p class="section-desc">The downstream person who uses whatever FORGE shipped. This persona is project-specific and is a template placeholder — for the example build <code>/forge "build a math tutor for kids"</code>, this would be a child (and their parent or teacher) using the math tutor.</p>
+  <div class="card">
+    <h4>Goals</h4>
+    <p>Use a working, deployed product that does what the original idea promised. (Defined per project — fill in for the specific app being built.)</p>
+    <h4 style="margin-top:14px;">Context</h4>
+    <p>Never touches FORGE itself. Touches only the shipped application after deploy. The build's golden assertions are ultimately about this person's experience working.</p>
+    <h4 style="margin-top:14px;">Needs</h4>
+    <p>An app that behaves as specified, with the features the PRD described actually present and functioning. (Project-specific.)</p>
+    <h4 style="margin-top:14px;">Frustrations</h4>
+    <p>Features that were planned but never shipped; behavior that doesn't match the promise. These should surface as failing golden assertions before the end user ever sees them.</p>
+  </div>
+  <div class="key-insight">
+    <strong>Reminder.</strong> This persona is a placeholder. Each concrete FORGE build replaces it with the real downstream user(s) of that specific product.
+  </div>
+</section>
+
+<!-- ============================== WF-1 ============================== -->
+<section class="section" id="wf-idea-to-app">
+  <div class="section-id">Workflow · WF-1</div>
+  <h2 class="section-title">One-line idea → shipped app (operator happy path)</h2>
+  <p class="section-desc">The operator types one line, walks away, checks in at four decision points, and comes back to a deployed app, a doc site, a test report, and a build timeline. This is the happy path through the phases and gates.</p>
+
+  <div class="diagram">
+    <div class="diagram-label">Process flow — actor / system</div>
+    <div class="swimlane">
+      <div class="lane">
+        <div class="lane-label">Actor</div>
+        <div class="lane-body">
+          <span class="n n-primary">Types <code>/forge "&lt;idea&gt;"</code></span>
+          <span class="arr">→</span>
+          <span class="n n-gate">Approve plan (gate 1)</span>
+          <span class="arr">→</span>
+          <span class="n n-gate">Gate 2</span>
+          <span class="arr">→</span>
+          <span class="n n-gate">Gate 3</span>
+          <span class="arr">→</span>
+          <span class="n n-gate">Ship gate</span>
         </div>
       </div>
-      <div class="card">
-        <h4>Frustrations</h4>
-        <div>
-          - Having to babysit every step of an agent build<br>
-          - Test results buried in a log file instead of surfaced in views they already look at<br>
-          - Documentation bolted on at the end instead of created as the build goes<br>
-          - Four systems (build, dashboard, docs, tests) that work but do not talk to each other, forcing cross-referencing
-        </div>
-      </div>
-      <div class="card">
-        <h4>What they need</h4>
-        <div>
-          - A dashboard that is prepopulated with the full plan when the build starts — not an empty screen<br>
-          - Documentation that updates whenever a phase completes<br>
-          - Pass/fail test status visible in every view<br>
-          - One combined view at each decision point<br>
-          - Everything explainable in plain English
+      <div class="lane">
+        <div class="lane-label">System</div>
+        <div class="lane-body">
+          <span class="n n-auto">Understand: panels + research</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Plan + tests-first</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Agents build in parallel</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Multi-lens review</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Test vs criteria</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Deploy + doc site</span>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="subsection">
-      <div class="subsection-title">A day in their workflow</div>
-      <div class="subsection-desc">The PRD's "what does done look like" reads as a walkthrough of this user's experience.</div>
-      <div class="strategy">
-        <h3>Start</h3>
-        <p>They run <code>/forge "build a math tutor for kids"</code> and immediately see the full build plan laid out in the dashboard — phases, agents, and a timeline, prepopulated rather than filling in from blank.</p>
+  <table class="step-table">
+    <thead><tr><th>Step</th><th>Data in</th><th>Processing</th><th>Data out</th></tr></thead>
+    <tbody>
+      <tr><td>1. Start</td><td>One-line idea (<code>/forge "build a math tutor for kids"</code>)</td><td>Consult expert panels, do research, understand what to build</td><td>Understanding of scope + full build plan, prepopulated in the dashboard</td></tr>
+      <tr><td>2. Plan (gate 1)</td><td>Build plan + tests generated from the plan</td><td>Operator reviews and approves the plan before any code is written</td><td>Approved plan; "done" defined up front via tests-first</td></tr>
+      <tr><td>3. Build</td><td>Approved plan, task assignments</td><td>Team of AI agents builds in parallel; docs update as each phase completes</td><td>Code merged after multi-lens review; docs current through the latest completed phase</td></tr>
+      <tr><td>4. Test</td><td>Built code + criteria from the plan</td><td>Run everything against the generated criteria; auto-fix when possible, flag when not</td><td>Test pass/fail visible in dashboard, docs, and at decision points</td></tr>
+      <tr><td>5. Ship gate</td><td>Working app, tests, doc completeness, cost, remaining gaps</td><td>Operator reviews one combined screen and approves ship</td><td>Deployed app + clean doc site + test report + build timeline</td></tr>
+    </tbody>
+  </table>
+
+  <div class="key-insight">
+    <strong>Expected outcome (golden assertion):</strong> after <code>/forge "build a math tutor for kids"</code> and approval at the four decision points, the operator has a deployed application, a documentation site handoff-ready with no manual cleanup, a test report, and a timeline of the entire build.
+  </div>
+</section>
+
+<!-- ============================== WF-2 ============================== -->
+<section class="section" id="wf-prd-gated">
+  <div class="section-id">Workflow · WF-2</div>
+  <h2 class="section-title">PRD → gated build that hits a failing gate, runs the gap loop, re-converges</h2>
+  <p class="section-desc">A build does not always pass a decision point on the first try. When a gate fails — for example, 3 of 50 tests failing — the system runs the gap loop, fixes what it can, flags what it can't, and re-converges on the gate. The gap loop is the feedback mechanism, not an error path.</p>
+
+  <div class="diagram">
+    <div class="diagram-label">Process flow — gap loop</div>
+    <div class="hflow">
+      <span class="n n-primary">PRD intake</span>
+      <span class="arr">→</span>
+      <span class="n n-auto">Plan + tests-first<small>criteria locked</small></span>
+      <span class="arr">→</span>
+      <span class="n n-auto">Build + review</span>
+      <span class="arr">→</span>
+      <span class="n n-gate">Gate<small>3/50 tests fail</small></span>
+      <span class="arr arr-loop">↺</span>
+      <span class="n n-blue">Gap loop<small>fix or flag</small></span>
+    </div>
+    <div class="vflow"><div class="vline"></div></div>
+    <div class="hflow">
+      <span class="n n-blue">Re-build the gaps</span>
+      <span class="arr">→</span>
+      <span class="n n-auto">Re-test</span>
+      <span class="arr">→</span>
+      <span class="n n-gate">Gate re-converges<small>50/50 pass</small></span>
+      <span class="arr">→</span>
+      <span class="n n-auto">Proceed</span>
+    </div>
+  </div>
+
+  <table class="step-table">
+    <thead><tr><th>Step</th><th>Data in</th><th>Processing</th><th>Data out</th></tr></thead>
+    <tbody>
+      <tr><td>1. Intake</td><td>Stakeholder PRD document</td><td>Derive plan + generate tests from the plan before code</td><td>Build plan with locked acceptance criteria</td></tr>
+      <tr><td>2. Build</td><td>Plan, task assignments</td><td>Agents build in parallel; every piece reviewed through multiple lenses before merge</td><td>Merged code; docs updated per phase</td></tr>
+      <tr><td>3. Gate hit</td><td>Built code + generated criteria</td><td>Run tests; 3 of 50 fail — gate does not pass</td><td>Failing-gate signal; the 3 failures surfaced in dashboard, docs, and at the decision point</td></tr>
+      <tr><td>4. Gap loop</td><td>The failing assertions (the gaps)</td><td>Fix automatically when possible; flag for the human when not</td><td>Patched code, or a flagged gap escalated to the operator</td></tr>
+      <tr><td>5. Re-converge</td><td>Patched code</td><td>Re-test against the same locked criteria</td><td>Gate passes (50/50); build proceeds to the next phase</td></tr>
+    </tbody>
+  </table>
+
+  <div class="key-insight">
+    <strong>Expected outcome (golden assertion):</strong> a build that hits a failing gate (e.g. 3/50 tests failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail and fix visible in the dashboard, the docs, and at the decision point — never buried in a log.
+  </div>
+</section>
+
+<!-- ============================== WF-3 ============================== -->
+<section class="section" id="wf-stakeholder-docs">
+  <div class="section-id">Workflow · WF-3</div>
+  <h2 class="section-title">Stakeholder receives the shipped project and navigates the docs</h2>
+  <p class="section-desc">After deploy, the stakeholder receives a documentation site reorganized into a clean, navigable deck — readable without any manual cleanup by the operator.</p>
+
+  <div class="diagram">
+    <div class="diagram-label">Process flow — actor / system</div>
+    <div class="swimlane">
+      <div class="lane">
+        <div class="lane-label">Actor</div>
+        <div class="lane-body">
+          <span class="n n-primary">Opens doc site</span>
+          <span class="arr">→</span>
+          <span class="n n-purple">Navigates by phase</span>
+          <span class="arr">→</span>
+          <span class="n n-purple">Reads test coverage</span>
+          <span class="arr">→</span>
+          <span class="n n-primary">Accepts handoff</span>
+        </div>
       </div>
-      <div class="strategy">
-        <h3>Walk away</h3>
-        <p>They leave and come back an hour later. The dashboard tells them, in one glance: "Phase 6, 5 of 8 tasks done, 2 tests failing, docs current through Phase 5."</p>
-      </div>
-      <div class="strategy">
-        <h3>Decide to ship</h3>
-        <p>At the ship decision point they see one screen with the working app, test results, doc completeness, cost, and remaining gaps — not four things to cross-reference.</p>
-      </div>
-      <div class="strategy">
-        <h3>Hand off</h3>
-        <p>After deploy, they have a documentation site they can send to a stakeholder without any manual cleanup.</p>
+      <div class="lane">
+        <div class="lane-label">System</div>
+        <div class="lane-body">
+          <span class="n n-auto">Docs built per phase during build</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Reorganized into clean site at end</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Serves navigable deck</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="section" id="decision-points">
-    <div class="section-id">Operator role</div>
-    <div class="section-title">Decision points — the operator at four gates</div>
-    <div class="section-desc">
-      The pipeline runs autonomously except at four human decision points. At each one, the same person — the AI engineering lead, now acting as operator — looks at what the system has produced so far and decides whether to proceed. The PRD asks that each gate present one combined view rather than four separate things to cross-reference.
-    </div>
+  <table class="step-table">
+    <thead><tr><th>Step</th><th>Data in</th><th>Processing</th><th>Data out</th></tr></thead>
+    <tbody>
+      <tr><td>1. During build</td><td>Each completed phase</td><td>Documentation generated automatically per phase, in the background (does not block the build)</td><td>Docs current through the latest completed phase, mid-build</td></tr>
+      <tr><td>2. At end</td><td>All per-phase documentation</td><td>Reorganize into a clean, navigable site</td><td>A handoff-ready documentation site, no manual cleanup</td></tr>
+      <tr><td>3. Handoff</td><td>The deployed app + doc site link</td><td>Stakeholder opens the site and navigates it on their own</td><td>Stakeholder reads phases + test coverage without operator help</td></tr>
+      <tr><td>4. Accept</td><td>Doc site + visible test status</td><td>Stakeholder confirms what was built matches the requirements</td><td>Accepted handoff</td></tr>
+    </tbody>
+  </table>
 
-    <div class="key-insight">
-      The PRD names four check-ins as the only points where the human is required. The labels below (G0–G3) describe each gate by what the operator is deciding at that moment. The integration work in the PRD is what makes each gate a single, informed view.
-    </div>
+  <div class="key-insight">
+    <strong>Expected outcome (golden assertion):</strong> after deploy, the stakeholder can open the documentation site and navigate it — phases and test coverage included — with no manual cleanup required from the operator.
+  </div>
+</section>
 
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">G0</span>
-        <span class="req-title">Vision lock — is this the right thing to build?</span>
-        <span class="req-pri must">Gate</span>
-      </div>
-      <div class="req-body">
-        <strong>What they see:</strong> the system's understanding of what needs to be built, informed by expert panels and research. <strong>What they decide:</strong> whether that understanding matches the intent before any planning hardens around it.
-      </div>
-      <div class="req-meta">
-        <span><span class="label">Operator</span> AI engineering lead</span>
-        <span><span class="label">Source</span> "Understand what needs to be built by consulting expert panels and doing research"</span>
-      </div>
-    </div>
+<!-- ============================== WF-4 ============================== -->
+<section class="section" id="wf-monitor">
+  <div class="section-id">Workflow · WF-4</div>
+  <h2 class="section-title">Operator monitors a live build and handles a drift/stall alert</h2>
+  <p class="section-desc">The operator watches a running build through the dashboard and handles a stalled terminal. Under the terminal-per-agent model, every persistent agent runs in its own tmux window inside one <code>forge-build</code> session, so a stall is localized to a single terminal and visible by role.</p>
 
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">G1</span>
-        <span class="req-title">PRD / plan lock — is the plan approved?</span>
-        <span class="req-pri must">Gate</span>
-      </div>
-      <div class="req-body">
-        <strong>What they see:</strong> a detailed plan written by the system. <strong>What they decide:</strong> whether to approve it. The PRD is explicit that the system must "write a detailed plan and get human approval before starting." Nothing is built until this gate is passed.
-      </div>
-      <div class="req-meta">
-        <span><span class="label">Operator</span> AI engineering lead</span>
-        <span><span class="label">Source</span> "Write a detailed plan and get human approval before starting"</span>
-      </div>
-    </div>
-
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">G2</span>
-        <span class="req-title">Spec + tests — are the acceptance criteria right?</span>
-        <span class="req-pri must">Gate</span>
-      </div>
-      <div class="req-body">
-        <strong>What they see:</strong> the criteria the build will be tested against, generated from the plan — so "done" is defined before anyone starts building. <strong>What they decide:</strong> whether those criteria capture what success means. Test pass/fail status is meant to be visible here, not buried in a log.
-      </div>
-      <div class="req-meta">
-        <span><span class="label">Operator</span> AI engineering lead</span>
-        <span><span class="label">Source</span> "Tests are generated before code is written, so you know what done looks like before anyone starts building"</span>
-      </div>
-    </div>
-
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">G3</span>
-        <span class="req-title">Ship — deploy, or send back?</span>
-        <span class="req-pri must">Gate</span>
-      </div>
-      <div class="req-body">
-        <strong>What they see:</strong> one screen with the working app, test results, doc completeness, cost, and remaining gaps. <strong>What they decide:</strong> whether to deploy. This is the gate the PRD describes most concretely — a single integrated view rather than four artifacts to reconcile.
-      </div>
-      <div class="req-meta">
-        <span><span class="label">Operator</span> AI engineering lead</span>
-        <span><span class="label">Source</span> "At the ship decision point, I see one screen with: working app, test results, doc completeness, cost, and remaining gaps"</span>
-      </div>
-    </div>
-
-    <div class="metric-row">
-      <div class="metric"><span class="metric-value">4</span><span class="metric-label">Human decision points</span></div>
-      <div class="metric"><span class="metric-value">13</span><span class="metric-label">Pipeline phases</span></div>
-      <div class="metric"><span class="metric-value">3</span><span class="metric-label">Agent terminals</span></div>
-    </div>
-    <div class="footnote">Phase, decision-point, and terminal counts are taken from the PRD's "what already exists" section. Gate labels (G0–G3) summarize the four check-ins the PRD describes; the PRD does not itself number them.</div>
+  <div class="strategy">
+    <h3>Build execution model — terminal-per-agent</h3>
+    <p>Every persistent agent runs in its OWN terminal (tmux window/pane) inside one <code>forge-build</code> session, created at P6a and torn down at P6 end — replacing the old fixed 3-terminal setup. Agents: <strong>orchestrator</strong> (team lead), <strong>supervisor</strong> (task assignment + smoke tests, owns the implementors), <strong>watchdog</strong> (R2 auditor, reports to orchestrator), and each <strong>implementor</strong> impl-1..impl-N (fan-out ≤ 4). Each implementor uses its own git worktree for isolation; the terminal is long-lived so it can be monitored, message peers, and build continuously — not a fire-and-forget subagent.</p>
+    <p>The terminals form ONE agent team over the claude-peers MCP bus. On start each agent calls <code>set_summary(role + task)</code> and <code>list_peers</code> to discover teammates; coordination is structured <code>send_message</code>/<code>check_messages</code> (shoulder-tap protocol — answer peer messages immediately). Addressing derives from <code>FORGE_ROLE</code> per terminal.</p>
   </div>
 
-  <div class="section" id="secondary-readers">
-    <div class="section-id">Other readers</div>
-    <div class="section-title">Secondary readers</div>
-    <div class="section-desc">
-      The primary user makes the decisions. But the artifacts the system produces are aimed at others too — chiefly the stakeholder the documentation is handed to.
-    </div>
-
-    <div class="grid-2">
-      <div class="card">
-        <h4>The stakeholder</h4>
-        <p>The person whose requirements started the build. They are the audience for the final documentation site — which the PRD says must be clean, navigable, and handed over "without any manual cleanup." They do not run the build; they receive its output.</p>
+  <div class="diagram">
+    <div class="diagram-label">Process flow — actor / system (per-role terminals)</div>
+    <div class="swimlane">
+      <div class="lane">
+        <div class="lane-label">Actor</div>
+        <div class="lane-body">
+          <span class="n n-primary">Opens dashboard / <code>/forge status</code></span>
+          <span class="arr">→</span>
+          <span class="n n-guard">Sees stall alert (impl-2)</span>
+          <span class="arr">→</span>
+          <span class="n n-primary">Restarts the terminal</span>
+        </div>
       </div>
-      <div class="card">
-        <h4>Anyone reviewing the build</h4>
-        <p>The dashboard and documentation are meant to make the build legible to someone who was not watching it live. Test status, phase progress, and a timeline like a Gantt chart let a reader reconstruct what happened and where it stands.</p>
+      <div class="lane">
+        <div class="lane-label">System</div>
+        <div class="lane-body">
+          <span class="n n-auto">Each role → <code>.forge/observe/&lt;role&gt;.jsonl</code></span>
+          <span class="arr">→</span>
+          <span class="n n-auto">HEARTBEAT.json per role ≤5 min</span>
+          <span class="arr">→</span>
+          <span class="n n-guard">Monitor flags stale heartbeat</span>
+          <span class="arr">→</span>
+          <span class="n n-auto">Stop-hook keeps live terminals building</span>
+        </div>
       </div>
     </div>
-
-    <div class="strategy">
-      <h3>What every reader gets at the end</h3>
-      <p>A deployed application, a complete documentation site, a test report, and a timeline of everything that happened during the build. Documentation is created as the build goes — not bolted on afterward — so a reader who opens the docs mid-build sees everything completed so far.</p>
-    </div>
-
-    <div class="key-insight">
-      A constraint that shapes every reader's experience: <strong>everything the system produces must be explainable in plain English.</strong> The audience is not assumed to be the engineer who launched the build.
-    </div>
-
-    <div class="footnote">Synthesized from the PRD's "Who is this for?", "What should it do?", and "What does done look like?" sections. No personas, metrics, or test results beyond those stated in the PRD have been added.</div>
   </div>
+
+  <table class="step-table">
+    <thead><tr><th>Step</th><th>Data in</th><th>Processing</th><th>Data out</th></tr></thead>
+    <tbody>
+      <tr><td>1. Observe</td><td>Live build; per-role terminals emitting SPAWN/PROGRESS events</td><td>Each agent writes <code>.forge/observe/&lt;role&gt;.jsonl</code> keyed by <code>FORGE_ROLE</code>; status hook stamps role + summary on the terminal</td><td><code>/forge status</code> and the observatory read all terminals at once</td></tr>
+      <tr><td>2. Heartbeat</td><td>Each agent's current task</td><td>Every agent updates <code>.forge/HEARTBEAT.json</code> (per role) every ≤5 min</td><td>A live per-role liveness signal on the dashboard</td></tr>
+      <tr><td>3. Stall detect</td><td>Heartbeat timestamps per role</td><td>Monitor compares each heartbeat to the threshold; impl-2's is older than the threshold</td><td>A stall alert flagging the impl-2 terminal for restart</td></tr>
+      <tr><td>4. Continuous build</td><td>A terminal trying to halt while phase work remains</td><td>R7 Stop/SubagentStop hook (<code>tools/stop-hook.sh</code>) blocks the halt, attributes continuation + observe by <code>FORGE_ROLE</code>; after 5 same-phase nudges escalates to the operator</td><td>Live terminals keep building; persistent stalls reach the operator</td></tr>
+      <tr><td>5. Handle</td><td>The stall alert + escalation</td><td>Operator restarts the flagged terminal (its worktree is isolated, so peers continue)</td><td>impl-2 resumes; the team re-converges over the peers bus</td></tr>
+    </tbody>
+  </table>
+
+  <div class="key-insight">
+    <strong>Expected outcome (golden assertion):</strong> when a per-role terminal's heartbeat goes older than the threshold, the monitor flags that exact terminal (e.g. impl-2) for restart in <code>/forge status</code> and the observatory, the Stop-hook keeps the other live terminals building, and after 5 same-phase nudges the operator is escalated to — so a stall is localized and surfaced, never silent.
+  </div>
+</section>
+
+<!-- ============================== GOLDEN TESTS ============================== -->
+<section class="section" id="golden-tests">
+  <div class="section-id">Tests · From workflows to golden tests</div>
+  <h2 class="section-title">From workflows to golden tests</h2>
+  <p class="section-desc">Each workflow above declares an expected data-out. That expected data-out is exactly what becomes an acceptance assertion. The workflow map is the source; the test stubs in <code>08-tests</code> and the immutable suite in <code>.forge/EVAL</code> are derived from it. The expected outcome of a workflow IS its golden assertion.</p>
+
+  <table class="compare-table">
+    <thead><tr><th>Workflow</th><th>Golden assertion (expected data-out)</th></tr></thead>
+    <tbody>
+      <tr><td>WF-1 — idea → app</td><td>After <code>/forge "&lt;idea&gt;"</code> and four approvals, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.</td></tr>
+      <tr><td>WF-2 — gated build + gap loop</td><td>A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point.</td></tr>
+      <tr><td>WF-3 — stakeholder docs</td><td>After deploy, the stakeholder can open and navigate the documentation site — phases and test coverage included — with no manual cleanup required.</td></tr>
+      <tr><td>WF-4 — live monitoring</td><td>A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in <code>/forge status</code> and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="key-insight">
+    <strong>Why this matters.</strong> Because "done" is defined by tests generated from the plan before any code is written, every workflow's expected data-out is locked as an assertion up front. The gap loop (WF-2) is what closes any distance between the current build and these assertions.
+  </div>
+</section>
 
 </div></div>
 </div>
