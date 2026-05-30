@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RAPID — Documentation</title>
+<title>Documentation — RAPID</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -17,68 +17,124 @@
   --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
   --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
   --radius: 4px; --radius-sm: 3px;
-  --mono: "SF Mono", "Fira Code", "JetBrains Mono", monospace;
-  --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
-html { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
-body { margin: 0; }
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+
+/* Sidebar nav (left menu) */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub:hover { color: var(--text-muted); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
+
+/* Main content */
+.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+
+/* Section system */
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+
+/* Subsection */
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* Strategy / callout block */
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+
+/* Requirement card */
+.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
+.req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
+.req-pri.must { background: var(--red-dim); color: var(--red); }
+.req-pri.should { background: var(--amber-dim); color: var(--amber); }
+.req-pri.could { background: var(--blue-dim); color: var(--blue); }
+.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body strong { color: var(--text); }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta span { display: flex; align-items: center; gap: 4px; }
+.req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tables */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout */
+.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+
+/* Code blocks */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+
+/* Diagrams & process flows (fit-for-purpose) */
+.diagram { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+.diagram-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.n { display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 0.72rem; font-weight: 600; text-align: center; background: var(--bg); white-space: nowrap; }
+.n small { display: block; font-size: 0.58rem; font-weight: 400; color: var(--text-dim); margin-top: 1px; }
+.n-auto { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.n-gate { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); font-weight: 800; }
+.n-guard { border-color: var(--red); color: var(--red); }
+.n-primary { border-color: var(--navy); background: var(--navy); color: #fff; }
+.n-blue { border-color: var(--blue); color: var(--blue); } .n-purple { border-color: var(--purple); color: var(--purple); } .n-teal { border-color: var(--teal); color: var(--teal); }
+.arr { color: var(--text-dim); font-size: 0.9rem; padding: 0 3px; } .arr-loop { color: var(--amber); font-weight: 800; }
+.hflow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; justify-content: center; }
+.vflow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.vline { width: 1.5px; height: 16px; background: var(--border); }
+.branch { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+/* Swimlane process flow (data-in / processing / data-out per node) */
+.swimlane { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.swimlane .lane { display:grid; grid-template-columns:130px 1fr; border-bottom:1px solid var(--border-light); }
+.swimlane .lane:last-child { border-bottom:none; }
+.swimlane .lane-label { background:var(--surface); padding:10px 12px; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); border-right:1px solid var(--border); display:flex; align-items:center; }
+.swimlane .lane-body { padding:10px 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.78rem; color:var(--text-muted); }
+.step-table { width:100%; border-collapse:collapse; font-size:0.74rem; margin:12px 0; }
+.step-table th { text-align:left; padding:7px 9px; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.07em; color:#fff; background:var(--navy); }
+.step-table td { padding:7px 9px; border-bottom:1px solid var(--border-light); vertical-align:top; }
+.step-table td:first-child { font-weight:700; color:var(--navy); font-family:"SF Mono",monospace; white-space:nowrap; }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .main { padding: 28px 20px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Top cross-page nav */
 .forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
 .forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
 .forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
 .forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
 .forge-nav a:hover { color: rgba(255,255,255,0.85); }
 .forge-nav a.active { color: #fff; border-bottom-color: #fff; }
-
-.main { max-width: 980px; margin: 0 auto; padding: 32px 40px 96px; }
-
-.header { margin-bottom: 32px; }
-.header h1 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
-.header-meta { display: flex; gap: 16px; font-size: 0.72rem; color: var(--text-dim); }
-.header-meta .badge { font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
-.badge-ok { background: var(--green-dim); color: var(--green); }
-.badge-stale { background: var(--amber-dim); color: var(--amber); }
-.badge-error { background: var(--red-dim); color: var(--red); }
-
-.category { margin-bottom: 32px; }
-.category-header { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; }
-.category-count { font-size: 0.56rem; font-family: var(--mono); background: var(--surface-alt); padding: 1px 6px; border-radius: 8px; }
-
-.doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-.doc-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; transition: border-color 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; }
-.doc-card:hover { border-color: var(--blue); box-shadow: 0 2px 8px rgba(43,108,176,0.08); }
-.doc-card a { text-decoration: none; color: inherit; }
-.doc-title { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-.doc-title .status { font-size: 0.48rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
-.status-current { background: var(--green-dim); color: var(--green); }
-.status-new { background: var(--blue-dim); color: var(--blue); }
-.status-missing { background: var(--red-dim); color: var(--red); }
-.doc-desc { font-size: 0.72rem; color: var(--text-muted); flex: 1; margin-bottom: 6px; }
-.doc-path { font-size: 0.58rem; font-family: var(--mono); color: var(--text-dim); }
-
-.archive-toggle { font-size: 0.68rem; color: var(--text-dim); cursor: pointer; padding: 8px 0; border: none; background: none; font-family: inherit; }
-.archive-toggle:hover { color: var(--text); }
-.archive-list { display: none; margin-top: 8px; }
-.archive-list.open { display: block; }
-.archive-item { font-size: 0.72rem; color: var(--text-dim); padding: 4px 0; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; }
-.archive-item .superseded { font-size: 0.6rem; font-family: var(--mono); }
-
-.loading { padding: 60px; text-align: center; color: var(--text-dim); font-size: 0.82rem; }
-.error { padding: 40px; text-align: center; }
-.error h2 { font-size: 1rem; color: var(--red); margin-bottom: 8px; }
-.error p { font-size: 0.78rem; color: var(--text-muted); }
-.error code { font-size: 0.68rem; display: block; margin-top: 12px; padding: 10px; background: var(--surface); border-radius: 4px; }
-
-/* --- standard sidebar layout (templates/template-docs-page.html) --- */
-body{min-height:100vh;display:flex;flex-direction:column}
-.spec-layout{display:flex;flex:1}
-.docpage-content{flex:1;min-width:0}
-.sidebar{width:280px;flex-shrink:0;background:var(--surface,#F7F8FA);border-right:1px solid var(--border,#D4D8DE);padding:32px 20px;position:sticky;top:38px;height:calc(100vh - 38px);overflow-y:auto}
-.sidebar-brand{font-size:1.1rem;font-weight:800;color:var(--navy,#1A2744);letter-spacing:-0.02em;margin-bottom:4px}
-.sidebar-sub{font-size:0.7rem;color:var(--text-dim,#8896A6);margin-bottom:24px;font-weight:500}
-.sidebar-section{font-size:0.55rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim,#8896A6);margin:20px 0 8px}
-.sidebar a{display:block;font-size:0.78rem;color:var(--text-muted,#4A5568);text-decoration:none;padding:3px 8px;border-radius:3px;margin:1px 0;line-height:1.4}
-.sidebar a:hover{background:var(--surface-alt,#F0F2F5);color:var(--text,#1A2744)}
-.section{scroll-margin-top:48px}
 </style>
 </head>
 <body>
@@ -92,140 +148,400 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
   <a href="eval.html">Eval</a>
-  <a href="cost.html">Cost</a>  <a href="documentation.html" class="active">Documentation</a>
+  <a href="cost.html">Cost</a>
+  <a href="documentation.html" class="active">Documentation</a>
 </nav>
 <div class="spec-layout">
 <nav class="sidebar">
   <div class="sidebar-brand">RAPID</div>
   <div class="sidebar-sub">Documentation</div>
-  <div class="sidebar-section">Documents</div>
-  <a href="prd.html">PRD</a>
-  <a href="prd-enhanced.html">Enhanced PRD</a>
-  <a href="architecture.html">Architecture</a>
-  <a href="workflow.html">Workflow</a>
-  <a href="users.html">Users</a>
-  <a href="spec.html">Spec</a>
-  <a href="observatory.html">Observatory</a>
-  <a href="eval.html">Eval</a>
-  <a href="cost.html">Cost</a>
+
+  <div class="sidebar-section">The Product</div>
+  <a href="#overview">Overview</a>
+  <a href="#capabilities">Core Capabilities</a>
+
+  <div class="sidebar-section">How It Works</div>
+  <a href="#pipeline">The Build Pipeline</a>
+  <a href="#agent-model">The Agent Team</a>
+  <a href="#enforcement">Quality Guarantees</a>
+
+  <div class="sidebar-section">What You See &amp; Get</div>
+  <a href="#observability">Observability</a>
+  <a href="#outputs">What You Get</a>
+  <a href="#constraints">Constraints</a>
 </nav>
-<div class="docpage-content">
+<div class="docpage-content"><div class="main">
 
-<div class="main">
-  <div id="content"><div class="loading">Loading documentation registry...</div></div>
+  <div class="section" id="overview">
+    <div class="section-id">The Product</div>
+    <div class="section-title">RAPID turns a product idea into a shipped, tested, documented app — with four human check-ins</div>
+    <div class="section-desc">
+      RAPID (Rapid Autonomous Pipeline for Iterative Development), driven by the <strong>FORGE</strong> build skill,
+      takes a product idea or a requirements document and builds the entire application — planning, coding, testing,
+      and deploying — with minimal human input. The operator checks in at four decision points; everything else runs autonomously.
+    </div>
+    <div class="strategy">
+      <h3>One-paragraph description</h3>
+      <p>
+        Give RAPID an idea or a PRD. It understands what to build by consulting expert panels and doing research,
+        writes a plan and gets your approval, assigns the work to a team of AI agents that build in parallel, reviews
+        every piece of code through multiple specialized lenses before merging, tests everything against criteria
+        derived from the plan, fixes problems automatically when it can and flags them when it can't, and deploys the result.
+        While it builds you watch everything live; documentation is written as it goes, not bolted on at the end; and tests are
+        generated before any code is written, so "done" is defined before anyone starts.
+      </p>
+    </div>
+    <div class="subsection">
+      <div class="subsection-title">Who it's for</div>
+      <div class="subsection-desc">
+        An AI engineering lead who wants to turn a stakeholder's requirements into a shipped, tested, documented application
+        using AI agents — without babysitting every step.
+      </div>
+    </div>
+    <div class="strategy">
+      <h3>Founding pillars</h3>
+      <p><strong>Enforcement over prose.</strong> Every safety-critical step is mechanically enforced — a hook, a dependency, or a separate agent — so nothing load-bearing rests on a prose reminder that fails under pressure.</p>
+      <p><strong>The writer is never the auditor.</strong> Implementation and review are structurally split, so the operator can walk away between gates because safety is structural, not dependent on vigilance.</p>
+      <p><strong>The gap loop is the product.</strong> The build is the artifact; surfacing and closing gaps is the value. Failures become tracked, classified gaps that converge to resolution and feed learning, so each build starts smarter than the last.</p>
+    </div>
+  </div>
+
+  <div class="section" id="capabilities">
+    <div class="section-id">Capabilities</div>
+    <div class="section-title">Six core capabilities define what RAPID does</div>
+    <div class="section-desc">
+      Each capability maps to a function the operator can rely on, in plain English. Together they cover the whole
+      arc from idea to a deployable, observable, documented result.
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">1. Build the application</div>
+      <div class="subsection-desc">
+        Given an idea or PRD, the system understands what needs to be built (expert panels + research), writes a detailed
+        plan and gets human approval before starting, assigns work to a team of AI agents that build in parallel, reviews
+        every piece of code through multiple specialized lenses before merging, tests everything against criteria generated
+        from the plan, fixes problems automatically when possible and flags them for humans when not, then deploys the result.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">2. Live dashboard while it builds</div>
+      <div class="subsection-desc">
+        Open a dashboard and immediately see what phase the build is in, which agents are working on what, whether anything
+        is blocked or broken, how much of the plan is complete, and a timeline of the entire build like a Gantt chart. The
+        dashboard is <strong>prepopulated</strong> the moment the build starts — the full plan is laid out up front, not an
+        empty screen that fills in. As the build progresses, bars fill and status updates in real time.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">3. Documentation as it builds, not after</div>
+      <div class="subsection-desc">
+        Every phase produces documentation automatically — no separate command. Docs update whenever a phase completes, so a
+        mid-build look at the documentation reflects everything completed so far. At the end, all documentation is reorganized
+        into a clean, navigable site that can be handed to a stakeholder.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">4. Test results visible everywhere</div>
+      <div class="subsection-desc">
+        Test pass/fail status appears in the dashboard, in the documentation, and at every decision point — not buried in a log
+        file. If 3 of 50 tests are failing, that shows up from any view: the dashboard health screen, the phase status, and the
+        documentation coverage page.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">5. Combined gate view</div>
+      <div class="subsection-desc">
+        Build status, documentation, test results, and the dashboard all know about each other. When a phase completes, all four
+        update together. At a decision point the operator sees one combined view — the working app, test results, doc completeness,
+        cost, and remaining gaps — instead of four separate things to cross-reference.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">6. Cost &amp; token visibility</div>
+      <div class="subsection-desc">
+        Token and cost burn is tracked and shown per step, per phase/section, and per project, surfaced in the developer view so
+        the operator always knows what the build is costing.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="pipeline">
+    <div class="section-id">How It Works</div>
+    <div class="section-title">A 12-phase pipeline with four human gates, grouped into three arcs</div>
+    <div class="section-desc">
+      The build runs as a sequence of phases. The operator approves at four decision points (gates); every other step runs
+      autonomously. Phases group into three arcs — <strong>Understand</strong>, <strong>Build</strong>, and <strong>Ship</strong>.
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-label">Understand arc · plan and define before any code</div>
+      <div class="hflow">
+        <span class="n n-blue">Intake<small>idea / PRD</small></span><span class="arr">&rarr;</span>
+        <span class="n n-blue">Panels<small>expert review</small></span><span class="arr">&rarr;</span>
+        <span class="n n-blue">Research<small>understand</small></span><span class="arr">&rarr;</span>
+        <span class="n n-blue">Spec<small>derived</small></span><span class="arr">&rarr;</span>
+        <span class="n n-gate">GATE 1<small>plan approval</small></span>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-label">Build arc · eval-first, parallel agents, review before merge</div>
+      <div class="hflow">
+        <span class="n n-auto">Eval + Tasks<small>tests first (task-00)</small></span><span class="arr">&rarr;</span>
+        <span class="n n-gate">GATE 2<small>build kickoff</small></span><span class="arr">&rarr;</span>
+        <span class="n n-auto">Parallel build<small>agent team</small></span><span class="arr">&rarr;</span>
+        <span class="n n-guard">Watchdog<small>independent audit</small></span><span class="arr">&rarr;</span>
+        <span class="n n-gate">GATE 3<small>P6 exit / ship</small></span>
+      </div>
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-label">Ship arc · walk through, deploy, organize docs</div>
+      <div class="hflow">
+        <span class="n n-auto">Walkthrough<small>every surface</small></span><span class="arr">&rarr;</span>
+        <span class="n n-gate">GATE 4<small>release approval</small></span><span class="arr">&rarr;</span>
+        <span class="n n-auto">Deploy<small>live app</small></span><span class="arr">&rarr;</span>
+        <span class="n n-primary">Docs site<small>navigable, handoff-ready</small></span>
+      </div>
+    </div>
+
+    <div class="key-insight">
+      <strong>Eval-first.</strong> The immutable eval harness (<code>task-00</code>) is the dependency root everything else depends on —
+      tests that define "done" are generated before code is written, so the standard exists before the build starts.
+    </div>
+  </div>
+
+  <div class="section" id="agent-model">
+    <div class="section-id">How It Works</div>
+    <div class="section-title">A terminal-per-agent team, with the writer structurally separated from the auditor</div>
+    <div class="section-desc">
+      RAPID builds with a small team of AI agents. Each persistent agent runs in its own terminal and the team is connected
+      as one unit over the claude-peers message bus, with per-terminal status, monitoring, and continuous-build hooks keyed by role.
+    </div>
+
+    <div class="diagram">
+      <div class="diagram-label">Agent team · one terminal per agent, connected over the peers bus</div>
+      <div class="hflow">
+        <span class="n n-primary">Orchestrator<small>runs the pipeline</small></span>
+        <span class="arr">&rarr;</span>
+        <span class="n">Implementor<small>builds</small></span>
+        <span class="n">Implementor<small>builds</small></span>
+        <span class="n">Implementor<small>builds</small></span>
+        <span class="arr">&rarr;</span>
+        <span class="n n-guard">Watchdog<small>independent audit</small></span>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>Why the split matters</h3>
+      <p>
+        The agents who write the code are never the ones who sign off on it. An independent watchdog agent — with no incentive
+        to declare its own work done — is spawned automatically during the build and records its findings to an audit trail. The
+        build cannot exit its critical phase without those audit entries present.
+      </p>
+    </div>
+  </div>
+
+  <div class="section" id="enforcement">
+    <div class="section-id">How It Works</div>
+    <div class="section-title">Quality is guaranteed by mechanism, not by reminders</div>
+    <div class="section-desc">
+      Each guarantee below is enforced structurally — through a gate, a dependency, or a separate agent — so the operator can
+      trust the build between check-ins. These are product-level promises, not optional best practices.
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G1</span>
+        <span class="req-title">Phase gate — no skipping ahead</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        The build cannot advance into a phase whose required artifacts don't yet exist. The progression of prerequisites is
+        enforced — locked PRD before research synthesis, synthesis before spec, spec before tests and tasks, and so on. A phase
+        with missing inputs is blocked, not waved through.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G2</span>
+        <span class="req-title">Independent watchdog — the writer is never the auditor</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        A separate auditing agent with no implementation incentive is spawned automatically during the build and records its audit.
+        The build's critical phase cannot exit until that audit exists.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G3</span>
+        <span class="req-title">Module conformance — every module traces back to a requirement</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        As each module completes, its references to the spec, PRD, and architecture must resolve to real anchors. Orphaned work —
+        code that doesn't trace to a requirement — is filed as a conformance gap rather than silently accepted. Every MUST deliverable
+        in the PRD must map to at least one task; an unmapped deliverable is a blocking gap.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G4</span>
+        <span class="req-title">Stub gate — placeholder code can't ship</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Placeholder code is detected as it's written, and the ship gate blocks release on any open stub gap in a MUST module.
+        "Compiles" is not allowed to masquerade as "works."
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G5</span>
+        <span class="req-title">Continuation — the build doesn't quietly stop early</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        A synchronous stop hook prevents stopping while the current phase's artifact is still missing. Every halt is logged, and the
+        system escalates after repeated nudges, so the build either makes progress or surfaces why it can't.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G6</span>
+        <span class="req-title">Concrete walkthrough — every surface is exercised before release</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Before the release gate, an explicit step-by-step walkthrough runs across every surface of the live app and records what was checked.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="observability">
+    <div class="section-id">What You See</div>
+    <div class="section-title">One developer view: dashboard, docs, tests, and cost, wired together</div>
+    <div class="section-desc">
+      Everything the build produces is observable in one place. The four systems — build status, documentation, test results,
+      and the dashboard — update together on phase completion, and at each decision point they roll up into one combined gate view.
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h4>Live dashboard</h4>
+        <p>Phase, working agents, blockers, plan completion, and a Gantt-style timeline — prepopulated from the plan the moment
+        the build starts, then updating in real time.</p>
+      </div>
+      <div class="card">
+        <h4>Test status</h4>
+        <p>Eval pass/fail surfaced into the dashboard health screen, the phase status, and the documentation coverage page — visible
+        from any view, never buried in a log.</p>
+      </div>
+      <div class="card">
+        <h4>Cost &amp; tokens</h4>
+        <p>Token and cost burn shown per step, per phase/section, and per project, so the operator always knows what the build is costing.</p>
+      </div>
+    </div>
+
+    <div class="key-insight">
+      <strong>The combined gate.</strong> At a decision point the operator sees one screen — the working app, test results, doc completeness,
+      cost, and remaining gaps — instead of cross-referencing four separate tools.
+    </div>
+  </div>
+
+  <div class="section" id="outputs">
+    <div class="section-id">What You Get</div>
+    <div class="section-title">Four artifacts at the end of every build</div>
+    <div class="section-desc">
+      When the pipeline finishes, the operator is left with a deployed application and the materials to hand it off — no manual cleanup required.
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>Deployed application</h4>
+        <p>The built app, reviewed, tested against criteria derived from the plan, and deployed.</p>
+      </div>
+      <div class="card">
+        <h4>Documentation site</h4>
+        <p>A clean, navigable documentation site reorganized from the docs written during the build — ready to send to a stakeholder
+        without manual cleanup.</p>
+      </div>
+      <div class="card">
+        <h4>Test report</h4>
+        <p>The eval results from the tests generated before code was written, surfaced into the docs and the gate view.</p>
+      </div>
+      <div class="card">
+        <h4>Build timeline</h4>
+        <p>A timeline of everything that happened during the build — the phases, the agents, and the events, viewable as a Gantt chart.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="constraints">
+    <div class="section-id">Constraints</div>
+    <div class="section-title">Self-contained, dependency-light, and explainable</div>
+    <div class="section-desc">
+      RAPID is built to run anywhere with minimal setup and to keep its outputs understandable.
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">C1</span>
+        <span class="req-title">No dependencies beyond Python 3 and Claude Code</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        The system requires no external dependencies beyond Python 3 and Claude Code.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">C2</span>
+        <span class="req-title">Works offline — self-contained HTML</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        The dashboard and the documentation work offline as self-contained HTML.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">C3</span>
+        <span class="req-title">Documentation never blocks the build</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Documentation generation runs in the background so it does not block the build.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">C4</span>
+        <span class="req-title">Plain-English explainability</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Everything the system produces is explainable in plain English.
+      </div>
+    </div>
+  </div>
+
+</div></div>
 </div>
-
-<script>
-const DOCS_JSON_PATH = '../docs.json';
-
-async function loadRegistry() {
-  const container = document.getElementById('content');
-  try {
-    const res = await fetch(DOCS_JSON_PATH);
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    const registry = await res.json();
-    renderRegistry(registry);
-  } catch (e) {
-    container.innerHTML = `<div class="error">
-      <h2>Registry not found</h2>
-      <p>Could not load docs.json. Run the registry builder to generate it:</p>
-      <code>bash ~/projects/workflow/tools/build-docs-registry.sh</code>
-    </div>`;
-  }
-}
-
-function renderRegistry(reg) {
-  const container = document.getElementById('content');
-  const daysSince = Math.floor((Date.now() - new Date(reg.updated).getTime()) / 86400000);
-  const freshBadge = daysSince > 7
-    ? `<span class="badge badge-stale">Stale (${daysSince}d ago)</span>`
-    : `<span class="badge badge-ok">Current</span>`;
-
-  let html = `
-    <div class="header">
-      <h1>Documentation Registry</h1>
-      <div class="header-meta">
-        <span>v${reg.version}</span>
-        <span>Updated ${reg.updated}</span>
-        <span>${reg.docs.length} documents</span>
-        ${freshBadge}
-        ${reg.generated_by ? `<span style="font-family:var(--mono);font-size:0.6rem;">via ${reg.generated_by}</span>` : ''}
-      </div>
-    </div>`;
-
-  const categories = reg.categories || {};
-  const grouped = {};
-  for (const doc of reg.docs) {
-    const cat = doc.category || 'other';
-    if (!grouped[cat]) grouped[cat] = [];
-    grouped[cat].push(doc);
-  }
-
-  for (const [catId, catMeta] of Object.entries(categories)) {
-    const docs = grouped[catId] || [];
-    if (!docs.length) continue;
-    html += `
-      <div class="category">
-        <div class="category-header">
-          <span>${catMeta.label || catId}</span>
-          <span class="category-count">${docs.length}</span>
-        </div>
-        <div class="doc-grid">
-          ${docs.map(d => docCard(d)).join('')}
-        </div>
-      </div>`;
-  }
-
-  // Uncategorized
-  const knownCats = new Set(Object.keys(categories));
-  const uncategorized = reg.docs.filter(d => !knownCats.has(d.category));
-  if (uncategorized.length) {
-    html += `
-      <div class="category">
-        <div class="category-header"><span>Other</span><span class="category-count">${uncategorized.length}</span></div>
-        <div class="doc-grid">${uncategorized.map(d => docCard(d)).join('')}</div>
-      </div>`;
-  }
-
-  // Archive
-  if (reg.archive && reg.archive.length) {
-    html += `
-      <div class="category">
-        <button class="archive-toggle" onclick="this.nextElementSibling.classList.toggle('open'); this.textContent = this.textContent.includes('Show') ? 'Hide archive (${reg.archive.length})' : 'Show archive (${reg.archive.length})'">
-          Show archive (${reg.archive.length})
-        </button>
-        <div class="archive-list">
-          ${reg.archive.map(a => `<div class="archive-item">
-            <span>${a.title || a.file}</span>
-            <span class="superseded">${a.superseded_by ? '→ ' + a.superseded_by : a.status || 'archived'}</span>
-          </div>`).join('')}
-        </div>
-      </div>`;
-  }
-
-  container.innerHTML = html;
-}
-
-function docCard(d) {
-  const statusClass = d.status === 'current' ? 'status-current' : d.status === 'new' ? 'status-new' : d.status === 'missing' ? 'status-missing' : 'status-current';
-  const href = d.file.startsWith('docs/') ? d.file.replace('docs/', '') : '../' + d.file;
-  return `<div class="doc-card">
-    <a href="${href}">
-      <div class="doc-title">
-        ${d.title}
-        <span class="status ${statusClass}">${d.status || 'current'}</span>
-        ${d.generated ? '<span class="status" style="background:var(--purple-dim);color:var(--purple)">auto</span>' : ''}
-      </div>
-      <div class="doc-desc">${d.description || 'No description'}</div>
-      <div class="doc-path">${d.file}</div>
-    </a>
-  </div>`;
-}
-
-loadRegistry();
-</script>
-</div><!-- /docpage-content -->
-</div><!-- /spec-layout -->
-  <script src="env-links.js" defer></script>
+<script src="env-links.js" defer></script>
 </body>
 </html>

@@ -94,6 +94,32 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 /* Code blocks */
 .code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
 
+/* Diagrams & process flows (fit-for-purpose) */
+.diagram { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+.diagram-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.n { display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 0.72rem; font-weight: 600; text-align: center; background: var(--bg); white-space: nowrap; }
+.n small { display: block; font-size: 0.58rem; font-weight: 400; color: var(--text-dim); margin-top: 1px; }
+.n-auto { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.n-gate { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); font-weight: 800; }
+.n-guard { border-color: var(--red); color: var(--red); }
+.n-primary { border-color: var(--navy); background: var(--navy); color: #fff; }
+.n-blue { border-color: var(--blue); color: var(--blue); } .n-purple { border-color: var(--purple); color: var(--purple); } .n-teal { border-color: var(--teal); color: var(--teal); }
+.arr { color: var(--text-dim); font-size: 0.9rem; padding: 0 3px; } .arr-loop { color: var(--amber); font-weight: 800; }
+.hflow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; justify-content: center; }
+.vflow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.vline { width: 1.5px; height: 16px; background: var(--border); }
+.branch { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+/* Swimlane process flow (data-in / processing / data-out per node) */
+.swimlane { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.swimlane .lane { display:grid; grid-template-columns:130px 1fr; border-bottom:1px solid var(--border-light); }
+.swimlane .lane:last-child { border-bottom:none; }
+.swimlane .lane-label { background:var(--surface); padding:10px 12px; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); border-right:1px solid var(--border); display:flex; align-items:center; }
+.swimlane .lane-body { padding:10px 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.78rem; color:var(--text-muted); }
+.step-table { width:100%; border-collapse:collapse; font-size:0.74rem; margin:12px 0; }
+.step-table th { text-align:left; padding:7px 9px; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.07em; color:#fff; background:var(--navy); }
+.step-table td { padding:7px 9px; border-bottom:1px solid var(--border-light); vertical-align:top; }
+.step-table td:first-child { font-weight:700; color:var(--navy); font-family:"SF Mono",monospace; white-space:nowrap; }
+
 @media (max-width: 900px) {
   body { flex-direction: column; }
   .spec-layout { flex-direction: column; }
@@ -112,277 +138,490 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
-  <a href="prd.html">PRD</a>
-  <a href="prd-enhanced.html" class="active">Enhanced PRD</a>
-  <a href="architecture.html">Architecture</a>
-  <a href="workflow.html">Workflow</a>
-  <a href="users.html">Users</a>
-  <a href="spec.html">Spec</a>
-  <a href="observatory.html">Observatory</a>
-  <a href="eval.html">Eval</a>
-  <a href="cost.html">Cost</a>
-  <a href="documentation.html">Documentation</a>
-</nav>
+<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html" class="active">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
 <div class="spec-layout">
 <nav class="sidebar">
   <div class="sidebar-brand">RAPID</div>
   <div class="sidebar-sub">Enhanced PRD</div>
-  <div class="sidebar-section">On this page</div>
-  <a href="#overview">Overview</a>
-  <a href="#pillars">Pillars</a>
-  <a href="#must">MUST requirements <span class="req-count">11</span></a>
-  <a href="#should">SHOULD requirements <span class="req-count">1</span></a>
-  <a href="#could">COULD requirements <span class="req-count">1</span></a>
-  <a href="#deliverables">Deliverables</a>
+
+  <div class="sidebar-section">Overview</div>
+  <a href="#overview">Pillars &amp; reading guide</a>
+
+  <div class="sidebar-section">Business</div>
+  <a href="#business">Business Requirements (BR)<span class="req-count">5</span></a>
+
+  <div class="sidebar-section">Functional</div>
+  <a href="#functional">Functional Requirements (FR)<span class="req-count">8</span></a>
+
+  <div class="sidebar-section">Technical</div>
+  <a href="#technical">Technical / NFR (TR)<span class="req-count">14</span></a>
+
+  <div class="sidebar-section">Traceability</div>
+  <a href="#traceability">BR &#8594; FR &#8594; TR &#8594; test</a>
+
+  <div class="sidebar-section">Change Log</div>
+  <a href="#change-log">Issue-aligned change log</a>
 </nav>
 <div class="docpage-content"><div class="main">
 
+  <!-- ============================ OVERVIEW ============================ -->
   <div class="section" id="overview">
-    <div class="section-id">Requirements Register</div>
-    <div class="section-title">Enhanced PRD — FORGE requirements register</div>
+    <div class="section-id">Enhanced PRD &middot; Requirements Register</div>
+    <div class="section-title">A machine-traceable requirements register with change tracking</div>
     <div class="section-desc">
-      Derived from <strong>docs/PRD.md</strong> and <strong>skills/forge/SKILL.md</strong>. This is the
-      machine-traceable requirements document that <strong>04-spec/spec.md</strong> and
-      <strong>.forge/TASKS.json</strong> reference. The HTML decks under <strong>docs/</strong> are the
-      human-facing presentation of the same content.
+      Derived from <strong>docs/PRD.md</strong> + <strong>skills/forge/SKILL.md</strong>. This is the requirements doc
+      that <code>04-spec/spec.md</code> and <code>.forge/TASKS.json</code> reference; the HTML deck is its developer-view presentation.
     </div>
-    <div class="key-insight">
-      <strong>rapid-workflow dogfoods FORGE.</strong> It tracks its own requirements, conformance, and
-      gaps with the exact mechanisms FORGE applies to the projects it builds.
-    </div>
-  </div>
 
-  <div class="section" id="pillars">
-    <div class="section-id">Foundations</div>
-    <div class="section-title">Pillars</div>
-    <div class="section-desc">The three principles every requirement below is measured against.</div>
     <div class="grid-3">
       <div class="card">
-        <h4>1. Enforcement over prose</h4>
-        <p>Every safety step is a hook, a dependency, or a separate agent. A step described only in words will eventually be skipped under pressure.</p>
+        <h4>1 &middot; Enforcement over prose</h4>
+        <p>Every safety step is a hook, a dependency, or a separate agent.</p>
       </div>
       <div class="card">
-        <h4>2. The writer is never the auditor</h4>
+        <h4>2 &middot; The writer is never the auditor</h4>
         <p>Implementation and review are structurally split.</p>
       </div>
       <div class="card">
-        <h4>3. The gap loop is the product</h4>
+        <h4>3 &middot; The gap loop is the product</h4>
         <p>The build is the artifact; surfacing and closing gaps is the value.</p>
       </div>
     </div>
+
+    <div class="key-insight">
+      <strong>How to read this register.</strong> Requirements live at one of three altitudes — a pyramid:
+      <strong>Business (BR)</strong> = why / outcomes &#8594; <strong>Functional (FR)</strong> = what the system does &#8594;
+      <strong>Technical / NFR (TR)</strong> = how + constraints. Each lower requirement traces <strong>&#8593; up</strong> to its parent
+      and (for TR) <strong>&#8595; down</strong> to spec / architecture. Priority (MUST / SHOULD / COULD) is a <strong>badge</strong> on
+      each requirement, not the grouping. Every requirement carries a change history; all changes are consolidated in the
+      <a href="#change-log">Change Log</a>, logged when <em>requested</em> (requested &#8594; accepted &#8594; implemented) so the PRD is an auditable diff, never silently edited.
+    </div>
   </div>
 
-  <div class="section" id="must">
-    <div class="section-id">Priority</div>
-    <div class="section-title">MUST requirements</div>
-    <div class="section-desc">Requirements that must ship. The build does not pass its gates without all of these.</div>
+  <!-- ============================ BUSINESS ============================ -->
+  <div class="section" id="business">
+    <div class="section-id">&sect;1 &middot; Business Requirements (BR)</div>
+    <div class="section-title">The outcomes and value &mdash; the "why" everything below serves</div>
+    <div class="section-desc">Business requirements are outcomes, not implementation. They carry no priority badge.</div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-01</span>
-        <span class="req-title">Phase-gate enforcement</span>
+        <span class="req-id">BR-1</span>
+        <span class="req-title">Idea/PRD &#8594; shipped, tested, documented app, minimal human input</span>
+      </div>
+      <div class="req-body">Turn a stakeholder's requirements into a deployed, tested, documented application with the operator checking in at only four decision points. <em>(north star, docs/PRD.md)</em></div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created (genesis)</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">BR-2</span>
+        <span class="req-title">Trustworthy autonomy</span>
+      </div>
+      <div class="req-body">The operator can walk away between gates because safety is <strong>structural</strong> (the writer is never the auditor), not dependent on vigilance. <em>(pillar 2)</em></div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created (genesis)</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">BR-3</span>
+        <span class="req-title">Enforcement over prose</span>
+      </div>
+      <div class="req-body">Every safety-critical step is mechanically enforced (hook / dependency / separate agent), so nothing load-bearing rests on a prose reminder that fails under pressure. <em>(pillar 1)</em></div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created (genesis)</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">BR-4</span>
+        <span class="req-title">Live visibility &amp; honest progress</span>
+      </div>
+      <div class="req-body">At any moment the operator can see phase, agents, blockers, plan completion, test status, docs currency, and cost &mdash; in one place, prepopulated, not buried in logs. <em>(docs/PRD.md)</em></div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created (genesis)</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">BR-5</span>
+        <span class="req-title">Compounding gap loop</span>
+      </div>
+      <div class="req-body">Failures become tracked, classified gaps that converge to resolution and feed learning, so each build starts smarter than the last. <em>(pillar 3)</em></div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created (genesis)</span></div>
+    </div>
+  </div>
+
+  <!-- ============================ FUNCTIONAL ============================ -->
+  <div class="section" id="functional">
+    <div class="section-id">&sect;2 &middot; Functional Requirements (FR)</div>
+    <div class="section-title">What the system does &mdash; each traces up to a Business Requirement</div>
+    <div class="section-desc">Priority badge per requirement. The &#8593; trace line names the parent BR.</div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">FR-1</span>
+        <span class="req-title">Build pipeline</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">
-        STATE.json cannot advance to a phase whose required artifacts are missing. Enforced by a
-        PreToolUse hook that blocks on exit 2, not by prose.
+      <div class="req-body">Given an idea or PRD, the system understands (panels + research), plans for approval, builds with a parallel agent team, reviews, tests, fixes or flags, and deploys.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-1</span>
+        <span><span class="label">Changed</span> 2026-05-30 created</span>
       </div>
     </div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-02</span>
-        <span class="req-title">Independent watchdog</span>
-        <span class="req-pri must">Must</span>
-      </div>
-      <div class="req-body">
-        A separate auditing agent (no implementation incentive) is spawned automatically at P6a and
-        writes <strong>.forge/AUDIT.json</strong>. P6 cannot exit without watchdog entries.
-      </div>
-    </div>
-
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">R-03</span>
+        <span class="req-id">FR-2</span>
         <span class="req-title">Deliverable coverage</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">
-        After task decomposition, every MUST deliverable in the PRD maps to at least one task. An
-        unmapped deliverable is a blocking gap.
+      <div class="req-body">Every MUST deliverable in the PRD maps to at least one task; an unmapped deliverable is a blocking gap.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-1, BR-3</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-03)</span>
       </div>
     </div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-04</span>
-        <span class="req-title">Blocking dependency graph</span>
-        <span class="req-pri must">Must</span>
-      </div>
-      <div class="req-body">
-        Safety steps are nodes in the dependency graph, not reminders. The eval harness
-        (<strong>task-00</strong>) is the root; everything depends on it.
-      </div>
-    </div>
-
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">R-06</span>
+        <span class="req-id">FR-3</span>
         <span class="req-title">Concrete walkthrough</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">
-        P7 runs an explicit, step-by-step walkthrough across every surface and writes
-        <strong>.forge/WALKTHROUGH.md</strong>. The phase gate blocks P8 without it.
+      <div class="req-body">P7 runs an explicit step-by-step walkthrough across every surface and records <code>.forge/WALKTHROUGH.md</code>.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-2</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-06)</span>
       </div>
     </div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-07</span>
-        <span class="req-title">Continuation enforcement</span>
-        <span class="req-pri must">Must</span>
-      </div>
-      <div class="req-body">
-        A synchronous Stop/SubagentStop hook makes it mechanically impossible to stop early while the
-        current phase's completion artifact is missing. Every halt is logged to
-        <strong>.forge/observe/&lt;role&gt;.jsonl</strong>; escalates to the operator after 5 same-phase nudges.
-      </div>
-    </div>
-
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">R-08</span>
-        <span class="req-title">Module conformance tracing</span>
-        <span class="req-pri must">Must</span>
-      </div>
-      <div class="req-body">
-        As each module completes, its <strong>spec_ref</strong> / <strong>prd_ref</strong> /
-        <strong>arch_ref</strong> must resolve to real anchors in the spec/PRD/architecture. Orphans are
-        filed as conformance gaps and recorded in <strong>.forge/CONFORMANCE.md</strong>.
-      </div>
-    </div>
-
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">R-09</span>
-        <span class="req-title">Stub detection and ship gate</span>
-        <span class="req-pri must">Must</span>
-      </div>
-      <div class="req-body">
-        Placeholder code is detected at write time (non-blocking) and the ship gate blocks release on
-        any open stub gap mapped to a MUST module.
-      </div>
-    </div>
-
-    <div class="req">
-      <div class="req-header">
-        <span class="req-id">R-10</span>
+        <span class="req-id">FR-4</span>
         <span class="req-title">Prepopulated live dashboard</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">
-        The observability dashboard shows the full build plan the moment a build starts — phase,
-        agents, blockers, plan completion, and a Gantt-style timeline — not an empty screen.
+      <div class="req-body">The observability dashboard shows the full build plan the moment a build starts (phase, agents, blockers, plan completion, timeline) and updates in real time.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-4</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-10); 2026-05-30 prepopulation + cross-system integration (issues #1, #2)</span>
       </div>
     </div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-11</span>
+        <span class="req-id">FR-5</span>
         <span class="req-title">Documentation generated as the build runs</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">
-        Each phase produces documentation automatically; mid-build docs reflect everything completed
-        so far. No separate command. At the end, docs reorganize into a navigable site.
+      <div class="req-body">Each phase produces documentation automatically; mid-build docs reflect everything completed so far; at the end they reorganize into a navigable developer-view site.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-4</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-11); 2026-05-30 per-phase docs auto-refresh wired (issue #3)</span>
       </div>
     </div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-12</span>
-        <span class="req-title">Test results visible in every view</span>
+        <span class="req-id">FR-6</span>
+        <span class="req-title">Test results visible everywhere</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">
-        Eval pass/fail status surfaces in the dashboard, the documentation, and at every decision
-        point — never buried in a log.
+      <div class="req-body">Eval pass/fail status surfaces in the dashboard, the documentation, and at every decision point.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-4</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-12)</span>
       </div>
     </div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-13</span>
+        <span class="req-id">FR-7</span>
         <span class="req-title">Cross-system integration / combined gate view</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">
-        Build status, documentation, test results, and dashboard know about each other; a phase
-        completion updates all four, and each decision point shows one combined gate view.
+      <div class="req-body">Build status, docs, test results, and dashboard update together on phase completion; each decision point shows one combined gate view.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-4</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-13); 2026-05-30 cross-system integration (issues #1, #2)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">FR-8</span>
+        <span class="req-title">Cost &amp; token visibility</span>
+        <span class="req-pri should">Should</span>
+      </div>
+      <div class="req-body">Token/cost burn is tracked and shown per step, per phase/section, and per project; the developer view surfaces it.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-4</span>
+        <span><span class="label">Changed</span> 2026-05-30 added (cost-summary + dashboard cards, operator)</span>
       </div>
     </div>
   </div>
 
-  <div class="section" id="should">
-    <div class="section-id">Priority</div>
-    <div class="section-title">SHOULD requirements</div>
-    <div class="section-desc">Strongly desired, but not gating for the first ship.</div>
+  <!-- ============================ TECHNICAL ============================ -->
+  <div class="section" id="technical">
+    <div class="section-id">&sect;3 &middot; Technical Requirements &amp; NFRs (TR)</div>
+    <div class="section-title">How it works + constraints &mdash; traces up to FR and down to spec/architecture</div>
+    <div class="section-desc">Priority badge per requirement. The &#8593; / &#8595; trace line names the parent and the spec anchor.</div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-05</span>
+        <span class="req-id">TR-1</span>
+        <span class="req-title">Phase-gate enforcement</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">STATE.json cannot advance to a phase whose required artifacts are missing &mdash; a PreToolUse hook blocks on exit 2.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-3 &middot; &#8595; S-01</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-01)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">TR-2</span>
+        <span class="req-title">Independent watchdog</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">A separate auditing agent (no implementation incentive) is spawned automatically at P6a and writes <code>.forge/AUDIT.json</code>; P6 cannot exit without it.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-2 &middot; &#8595; S-02</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-02)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">TR-3</span>
+        <span class="req-title">Blocking dependency graph (eval-first)</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">Safety steps are nodes in the dependency graph; the immutable eval harness (<code>task-00</code>) is the root everything depends on.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; FR-1 &middot; &#8595; S-04</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-04)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">TR-4</span>
+        <span class="req-title">Continuation enforcement</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">A synchronous Stop/SubagentStop hook prevents stopping early while the current phase's artifact is missing; logs every halt; escalates after 5 nudges.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-3 &middot; &#8595; S-07</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-07)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">TR-5</span>
+        <span class="req-title">Module conformance tracing</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">As each module completes, its <code>spec_ref</code>/<code>prd_ref</code>/<code>arch_ref</code> must resolve to real anchors; orphans are filed as conformance gaps.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; FR-2 &middot; &#8595; S-08</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-08)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">TR-6</span>
+        <span class="req-title">Stub detection + ship gate</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">Placeholder code is detected at write time; the ship gate blocks release on any open stub gap in a MUST module.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; FR-6 &middot; &#8595; S-09</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-09); 2026-05-30 placeholder false-positive fixed, gap-id path stabilized (issues #4, #5)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">TR-7</span>
+        <span class="req-title">Terminal-per-agent + agent teams</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">Each persistent agent runs in its own terminal, connected as one team over the claude-peers bus, with per-terminal status/monitoring/continuous-build hooks keyed by FORGE_ROLE.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; FR-1 &middot; &#8595; S-02</span>
+        <span><span class="label">Changed</span> 2026-05-30 added (terminal-per-agent + agent teams + per-terminal hooks, operator)</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">TR-8</span>
         <span class="req-title">Context-checkpoint protocol</span>
         <span class="req-pri should">Should</span>
       </div>
-      <div class="req-body">
-        Above ~200k tokens the skill checkpoints all state to <strong>.forge/</strong> and runs a
-        phase-completion checklist before continuing, to counter urgency bias.
+      <div class="req-body">Above ~200k tokens the skill checkpoints all state to <code>.forge/</code> and runs a phase-completion checklist before continuing.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; BR-2</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-05)</span>
       </div>
     </div>
-  </div>
-
-  <div class="section" id="could">
-    <div class="section-id">Priority</div>
-    <div class="section-title">COULD requirements</div>
-    <div class="section-desc">Optional enhancements for later consideration.</div>
 
     <div class="req">
       <div class="req-header">
-        <span class="req-id">R-14</span>
+        <span class="req-id">TR-9</span>
         <span class="req-title">Configurable artifact paths</span>
         <span class="req-pri could">Could</span>
       </div>
-      <div class="req-body">
-        The enforcement hooks currently hardcode <strong>01-intake/</strong>, <strong>03-panels/</strong>,
-        <strong>04-spec/</strong>. Making these configurable would let a repo dogfood FORGE without
-        root-level numbered folders.
+      <div class="req-body">The enforcement hooks' artifact paths (<code>01-intake/</code>, <code>03-panels/</code>, <code>04-spec/</code>) should be configurable so a repo can dogfood FORGE without root-level numbered folders.</div>
+      <div class="req-meta">
+        <span><span class="label">Trace</span> &#8593; FR-5</span>
+        <span><span class="label">Changed</span> 2026-05-30 created (was R-14)</span>
       </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Constraints (NFR)</div>
+      <div class="subsection-desc">Cross-cutting non-functional requirements that bind every TR above.</div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">NFR-1</span>
+        <span class="req-title">No external dependencies beyond Python 3 and Claude Code</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">NFR-2</span>
+        <span class="req-title">The dashboard/docs work offline &mdash; self-contained HTML</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">NFR-3</span>
+        <span class="req-title">Integration over redesign &mdash; must work with the existing pipeline</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">NFR-4</span>
+        <span class="req-title">Documentation generation must not block the build (runs in background)</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created</span></div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">NFR-5</span>
+        <span class="req-title">Everything the system produces is explainable in plain English</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-meta"><span><span class="label">Changed</span> 2026-05-30 created</span></div>
     </div>
   </div>
 
-  <div class="section" id="deliverables">
-    <div class="section-id">Mapping</div>
-    <div class="section-title">Deliverables (MUST)</div>
-    <div class="section-desc">Each deliverable groups the requirements it satisfies.</div>
+  <!-- ============================ TRACEABILITY ============================ -->
+  <div class="section" id="traceability">
+    <div class="section-id">Traceability</div>
+    <div class="section-title">BR &#8594; FR &#8594; TR &#8594; test &mdash; every outcome traces to a verifier</div>
+    <div class="section-desc">Each business requirement decomposes into functional and technical requirements, each verified by a concrete test or artifact.</div>
+
     <table class="compare-table">
       <thead>
-        <tr><th>Deliverable</th><th>Description</th><th>Requirements</th></tr>
+        <tr><th>Business</th><th>Functional</th><th>Technical / NFR</th><th>Verified by</th></tr>
       </thead>
       <tbody>
-        <tr><td>D1</td><td>Enforcement hook suite</td><td>R-01, R-07, R-08, R-09</td></tr>
-        <tr><td>D2</td><td>FORGE skill orchestration</td><td>R-02, R-03, R-04, R-05, R-06</td></tr>
-        <tr><td>D3</td><td>Observatory dashboard</td><td>R-10, R-12</td></tr>
-        <tr><td>D4</td><td>Documentation system</td><td>R-11</td></tr>
-        <tr><td>D5</td><td>Integration layer + combined gate</td><td>R-13</td></tr>
+        <tr><td>BR-1</td><td>FR-1, FR-2</td><td>TR-3, TR-7</td><td>task-00 eval; ship-gate</td></tr>
+        <tr><td>BR-2</td><td>FR-3</td><td>TR-2, TR-4, TR-8</td><td>AUDIT.json; stop-hook smoke</td></tr>
+        <tr><td>BR-3</td><td>FR-2</td><td>TR-1, TR-5</td><td>phase-gate smoke; CONFORMANCE.md</td></tr>
+        <tr><td>BR-4</td><td>FR-4, FR-5, FR-6, FR-7, FR-8</td><td>TR-6</td><td>observatory; P6_EXIT.json; cost-summary</td></tr>
+        <tr><td>BR-5</td><td>&mdash;</td><td>TR-5, TR-6</td><td>GAPS.json &#8594; issues; gap-loop</td></tr>
+      </tbody>
+    </table>
+
+    <div class="subsection">
+      <div class="subsection-title">Deliverables (MUST)</div>
+    </div>
+    <table class="compare-table">
+      <thead><tr><th>ID</th><th>Deliverable</th><th>Requirements</th></tr></thead>
+      <tbody>
+        <tr><td>D1</td><td>Enforcement hook suite</td><td>TR-1, TR-4, TR-5, TR-6</td></tr>
+        <tr><td>D2</td><td>FORGE skill orchestration + agent-team build</td><td>FR-1, TR-2, TR-3, TR-7, TR-8</td></tr>
+        <tr><td>D3</td><td>Observatory dashboard</td><td>FR-4, FR-6</td></tr>
+        <tr><td>D4</td><td>Documentation system / developer view</td><td>FR-5</td></tr>
+        <tr><td>D5</td><td>Integration layer + combined gate; cost visibility</td><td>FR-7, FR-8</td></tr>
       </tbody>
     </table>
   </div>
 
-</div></div>
-</div>
-  <script src="env-links.js" defer></script>
+  <!-- ============================ CHANGE LOG ============================ -->
+  <div class="section" id="change-log">
+    <div class="section-id">Change Log</div>
+    <div class="section-title">Append-only audit of requirement changes, aligned with the GitHub issue tracker</div>
+    <div class="section-desc">
+      A requirement change originates from the gap loop: <code>.forge/GAPS.json</code> &#8594; <code>tools/gaps-to-issues.sh</code> &#8594; GitHub issues.
+      Each entry records the source/issue that drove it and the requirement(s) it updated, so any GitHub issue traces to exactly where the PRD changed &mdash; and back.
+      A change is logged when <strong>requested</strong> (status: requested &#8594; accepted &#8594; implemented).
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>Date</th><th>Req(s)</th><th>Change</th><th>Source / Issue</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2026-05-30</td><td>ALL</td><td>Genesis &mdash; derived from docs/PRD.md + SKILL.md as R-01..R-14 (flat, grouped by MUST/SHOULD/COULD).</td><td>derivation</td><td>implemented</td></tr>
+        <tr><td>2026-05-30</td><td>FR-4, FR-7</td><td>Dashboard prepopulation + cross-system integration.</td><td>issues <a href="https://github.com/jiahknee5/rapid-workflow/issues/1">#1</a>, <a href="https://github.com/jiahknee5/rapid-workflow/issues/2">#2</a> (GAP-INT-01, GAP-DASH-01)</td><td>implemented</td></tr>
+        <tr><td>2026-05-30</td><td>FR-5</td><td>Per-phase docs auto-refresh wired.</td><td>issue <a href="https://github.com/jiahknee5/rapid-workflow/issues/3">#3</a> (GAP-DOCS-01)</td><td>implemented</td></tr>
+        <tr><td>2026-05-30</td><td>TR-6</td><td>Stub-scan placeholder false-positive fixed; stub gap-id path stabilized.</td><td>issues <a href="https://github.com/jiahknee5/rapid-workflow/issues/4">#4</a>, <a href="https://github.com/jiahknee5/rapid-workflow/issues/5">#5</a> (GAP-R9-REGEX, GAP-R9-PATH)</td><td>implemented</td></tr>
+        <tr><td>2026-05-30</td><td>TR-7</td><td>Added &mdash; terminal-per-agent + agent teams + per-terminal hooks.</td><td>operator (GAP-BUILD-TERMINALS, GAP-BUILD-HOOKS)</td><td>implemented</td></tr>
+        <tr><td>2026-05-30</td><td>FR-8</td><td>Added &mdash; cost &amp; token visibility (cost-summary + dashboard cards).</td><td>operator</td><td>implemented</td></tr>
+        <tr><td>2026-05-30</td><td>ALL</td><td>Reorganized into the Business&#8594;Functional&#8594;Technical pyramid; priority moved from grouping to a per-requirement badge; added BR-1..BR-5, FR-1, NFR-1..5; renumbered per the old&#8594;new map.</td><td>operator</td><td>implemented</td></tr>
+        <tr><td>2026-05-30</td><td>(doc)</td><td>Per-requirement change history + this issue-aligned Change Log made first-class.</td><td>operator</td><td>implemented</td></tr>
+      </tbody>
+    </table>
+
+    <div class="key-insight">
+      <strong>Change-request protocol.</strong> When a requirement is <em>requested</em> to change: (1) file/identify the GitHub issue (gap loop),
+      (2) add a row here with <code>requested</code> status naming the issue and the affected BR/FR/TR, (3) update the requirement + its
+      per-requirement change history, (4) flip the row to <code>implemented</code> when shipped (and <code>gaps-to-issues.sh</code> closes the issue).
+      This is the single place "where the PRD gets updated" is recorded.
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Old &#8594; new id map</div>
+      <div class="subsection-desc">The pre-pyramid register used <code>R-01..R-14</code>. Mapping (no requirement lost).</div>
+    </div>
+    <table class="compare-table">
+      <thead><tr><th>Old</th><th>New</th><th>Old</th><th>New</th></tr></thead>
+      <tbody>
+        <tr><td>R-01</td><td>TR-1</td><td>R-08</td><td>TR-5</td></tr>
+        <tr><td>R-02</td><td>TR-2</td><td>R-09</td><td>TR-6</td></tr>
+        <tr><td>R-03</td><td>FR-2</td><td>R-10</td><td>FR-4</td></tr>
+        <tr><td>R-04</td><td>TR-3</td><td>R-11</td><td>FR-5</td></tr>
+        <tr><td>R-05</td><td>TR-8</td><td>R-12</td><td>FR-6</td></tr>
+        <tr><td>R-06</td><td>FR-3</td><td>R-13</td><td>FR-7</td></tr>
+        <tr><td>R-07</td><td>TR-4</td><td>R-14</td><td>TR-9</td></tr>
+        <tr><td>(new)</td><td>FR-1, FR-8, TR-7, BR-1..5, NFR-1..5</td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div></div></div>
+<script src="env-links.js" defer></script>
 </body>
 </html>
