@@ -1,5 +1,20 @@
 # Forge Changelog
 
+## v2.6.0 — 2026-05-30 (Build-run lessons — run-to-completion autonomy + e2e-required)
+
+### Added — 5 build-run hardenings
+- **Standing authorization (BUILD-AUTONOMY.md)** — new section after "Deterministic vs. Dynamic"; written at P1 (step 5), signed by the operator at Gate 1. With CONSTITUTION.md + locked PRD + BUILD-AUTONOMY.md present, the build runs to completion without per-step gates. Stops ONLY for a fixed, non-overridable set: destructive/irreversible, outward-facing (push/deploy/publish), spends-money, or genuinely-undecidable high-stakes. Mirrors the operator's CLAUDE.md carve-out. Added to the Deterministic-vs-Dynamic safety row.
+- **Decision logging (D5)** — PRD-silent items are LOGGED to `.forge/DECISIONS.json` via `tools/log-decision.sh "<decision>" spec|interpretation` (basis = PRD-fact vs interpretation), not mid-build interrupts. Only genuinely-undecidable high-stakes items are batched to the human at Gate 1, before the build starts. Wired into the Gate-1 present/collect lists.
+- **Preflight (P1 step 6)** — `tools/preflight.sh` probes the declared stack's runtimes, installs missing ones within the declared stack, hard-fails if it can't; writes `.forge/PREFLIGHT.json`; blocks the build until green. Never code around a missing runtime.
+- **Seam-contract pinning gate (P6a-gate)** — before any parallel fan-out, the planner enumerates EVERY shared seam (API / DOM / events / data schema / e2e-test contract) and pins each in `04-spec/contracts/`. A GATE blocks P6 fan-out until every shared seam is pinned. e2e tests derive from the seam contracts; R8 conformance traces modules to them. Closes the "agreed the API but never the DOM/test contract → 100% e2e failed" failure.
+- **Real verification (P7 step 1 + ship gate)** — the tester runs `tools/verify.sh` (build/lint/unit/e2e as separate layers, genuine exit codes via `-o pipefail` + redirect-not-pipe), writes `.forge/VERIFY.json`; e2e is REQUIRED. P7 reporting is per-layer run-vs-inspected, with unverified items surfaced as gaps. `tools/ship-gate.sh` reads VERIFY.json and adds a `verification_real` assertion to P6_EXIT.json — blocks release unless every required layer (incl. e2e) is green and none left unverified.
+
+### State files added
+- `VERIFY.json` (tester / verify.sh), `DECISIONS.json` (log-decision.sh), `PREFLIGHT.json` (preflight.sh)
+
+### Preserved
+- R1/R7/R8/R9 definitions unchanged; five-lead P6 team model (planner/coder/tester/reviewer/watchdog) unchanged; gap loop + GitHub/issue tracking intact. Plain-English-then-"**Technically:**" voice maintained in all new prose.
+
 ## v2.5.0 — 2026-05-27 (Full Compound Engineering Integration)
 
 ### Added — 8 additional CE capabilities (CE #8–15)
