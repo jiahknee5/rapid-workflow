@@ -4,6 +4,7 @@ Generate navigable Reveal.js documentation decks from project artifacts. One dec
 
 > CSS template (slide decks): `~/projects/rapid-workflow/templates/template-docs-deck.html`
 > CSS template (web doc site): `~/projects/rapid-workflow/templates/template-docs-page.html` — the **standard** spec-style layout (top forge-nav + left sidebar menu + main) for every project's documentation **web pages**. Convert existing pages in place with `tools/apply-docs-sidebar.py <file> --title <T>`.
+> Harness identity & product links: the doc site is the **developer view** (navigate + develop the product). Every page includes `<script src="env-links.js" defer></script>` (`docs/env-links.js`), which tags the harness "Developer View" and renders a **Product** cluster linking to the *finished product* per environment — Local / Dev / Production — from `docs/env.json` (`{local:{url,launch}, dev:{url}, prod:{url}}`). Local exposes a copyable launch command. A built application project fills `env.json` from its deploy targets (local dev server + dev/prod deployments).
 > System reference: `~/projects/rapid-workflow/docs/forge-architecture.html` (D17, D18)
 > Shares CSS vocabulary with `/decision` decks (decisions + panels).
 
