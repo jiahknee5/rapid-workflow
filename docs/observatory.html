@@ -564,10 +564,24 @@ function renderStatusCards() {
   const utilPct = totalActive + totalIdle > 0 ? Math.round(totalActive / (totalActive + totalIdle) * 100) : 0;
   const utilColor = utilPct > 70 ? 'var(--green)' : utilPct > 40 ? 'var(--amber)' : 'var(--red)';
 
+  // Cross-system widgets (R-12/R-13): test gate + docs currency from /api/meta
+  const ev = META.eval || {};
+  const evFail = ev.fail || 0, evPass = ev.pass || 0;
+  const evColor = !ev.present ? 'var(--text-dim)' : (evFail > 0 ? 'var(--red)' : 'var(--green)');
+  const evVal = ev.present ? `${evPass}/${evPass + evFail}` : '—';
+  const evSub = !ev.present ? 'no P6 exit gate yet' : (evFail > 0 ? `${evFail} assertion${evFail !== 1 ? 's' : ''} failing` : 'ship gate green');
+  const dc = META.docs || {};
+  const dcVal = dc.present ? ('v' + dc.version) : '—';
+  const dcSub = dc.present ? `${dc.count} docs · ${dc.updated}` : 'no registry';
+
   document.getElementById('status-cards').innerHTML = `
     <div class="s-row">
       <div class="s-card"><h4>Events</h4><div class="s-val">${totalEvents}</div><div class="s-sub">${activeCount} agent${activeCount!==1?'s':''} active</div></div>
       <div class="s-card"><h4>Context</h4><div class="s-val">${ctxTotal ? Math.round(ctxTotal/1000)+'K' : '—'}</div><div class="s-sub">Total estimated tokens</div></div>
+    </div>
+    <div class="s-row">
+      <div class="s-card"><h4>Tests</h4><div class="s-val" style="color:${evColor}">${evVal}</div><div class="s-sub">${evSub}</div></div>
+      <div class="s-card"><h4>Docs</h4><div class="s-val">${dcVal}</div><div class="s-sub">${dcSub}</div></div>
     </div>
     <div class="s-row">
       <div class="s-card"><h4>Utilization</h4><div class="s-val" style="color:${utilColor}">${AGENTS.length ? utilPct+'%' : '—'}</div><div class="s-sub">${totalActive}m active / ${totalIdle}m idle${staleCount ? ' · ' + staleCount + ' stale' : ''}</div></div>

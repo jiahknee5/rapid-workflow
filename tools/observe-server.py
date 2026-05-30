@@ -103,11 +103,44 @@ def get_meta(events, observe_dir):
                 ctx = int(ctx.replace("~", "").replace("K", "000").replace("k", "000"))
             total_ctx = max(total_ctx, ctx)
         agent_count.add(evt.get("agent", ""))
+    # Cross-system status (R-12/R-13): eval test gate + docs currency, so the
+    # dashboard surfaces test pass/fail and doc freshness alongside the build.
+    forge_dir = os.path.dirname(observe_dir) or "."
+    root = os.path.dirname(forge_dir) or "."
+
+    def _load(p):
+        try:
+            with open(p) as f:
+                return json.load(f)
+        except Exception:
+            return None
+
+    exitj = _load(os.path.join(forge_dir, "P6_EXIT.json"))
+    eval_status = {"present": exitj is not None, "pass": 0, "fail": 0}
+    if exitj is not None:
+        asserts = exitj if isinstance(exitj, list) else exitj.get("assertions", [])
+        for a in asserts:
+            if isinstance(a, dict):
+                if a.get("pass") is True:
+                    eval_status["pass"] += 1
+                elif a.get("pass") is False:
+                    eval_status["fail"] += 1
+
+    docsj = _load(os.path.join(root, "docs.json")) or {}
+    docs_status = {
+        "present": bool(docsj),
+        "version": docsj.get("version"),
+        "updated": docsj.get("updated"),
+        "count": len(docsj.get("docs", [])),
+    }
+
     return {
         "phase": phase,
         "total_events": len(events),
         "active_agents": len(agent_count),
         "ctx_total_est": total_ctx,
+        "eval": eval_status,
+        "docs": docs_status,
         "observe_dir": observe_dir,
         "server_time": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     }
