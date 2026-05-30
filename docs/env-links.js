@@ -122,6 +122,21 @@
     right.className = 'harness-right';
     right.appendChild(buildRegenButton(regen));
     if (env) right.appendChild(buildEnvCluster(env));
+    if (env && env.source) {
+      var src = document.createElement('div');
+      src.className = 'env-links';
+      src.appendChild(Object.assign(document.createElement('span'), { className: 'env-lbl', textContent: 'Source' }));
+      [['github', 'GitHub', '#8b949e'], ['gitlab', 'GitLab', '#FC6D26']].forEach(function (row) {
+        var url = env.source[row[0]] || '';
+        var a = document.createElement('a');
+        if (url) { a.href = url; a.target = '_blank'; a.rel = 'noopener'; }
+        else { a.className = 'off'; a.href = 'javascript:void 0'; }
+        a.title = url || (row[1] + ' not set');
+        a.innerHTML = '<span class="dot" style="background:' + (url ? row[2] : '#666') + '"></span>' + row[1];
+        src.appendChild(a);
+      });
+      right.appendChild(src);
+    }
     nav.appendChild(right);
   });
 })();

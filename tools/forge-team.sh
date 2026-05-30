@@ -82,7 +82,8 @@ tasks=[{"label":f"FORGE: {r}","type":"shell","command":cmd(r),
         "presentation":{"panel":"dedicated","group":"forge-team","reveal":"always","focus":False},
         "problemMatcher":[]} for r in roles]
 tasks.append({"label":"FORGE: launch team","dependsOrder":"parallel",
-              "dependsOn":[f"FORGE: {r}" for r in roles],"problemMatcher":[]})
+              "dependsOn":[f"FORGE: {r}" for r in roles],"problemMatcher":[],
+              "runOptions":{"runOn":"folderOpen"}})  # auto-launch when the project opens in Cursor (after one-time 'allow automatic tasks')
 os.makedirs(os.path.join(project,".vscode"),exist_ok=True)
 json.dump({"version":"2.0.0","tasks":tasks}, open(os.path.join(project,".vscode","tasks.json"),"w"), indent=2)
 print("wrote .vscode/tasks.json")
