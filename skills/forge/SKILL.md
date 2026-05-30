@@ -40,7 +40,7 @@ The orchestrator must understand which parts of the system are fixed and which a
 | **Pipeline** | 12 phases in fixed order, 4 gates at fixed positions | — |
 | **Message contract** | 12 message types, JSON envelope format | — |
 | **Safety mechanisms** | Keep-or-revert, immutable eval harness, cost breaker, shutdown handshake | — |
-| **Terminal architecture** | Terminal-per-agent during P6: one long-lived tmux window per persistent agent (orchestrator, supervisor, watchdog, + one terminal per implementor impl-1..impl-N), forming one agent team connected via claude-peers | Window count: scales with implementor fan-out (≤4) decided at P5; addressing derives from `FORGE_ROLE` per terminal |
+| **Terminal architecture** | Five-lead build team during P6: one long-lived terminal per lead (planner, coder, tester, reviewer, watchdog), connected via claude-peers; the writer is never the auditor (coder ≠ tester/reviewer/watchdog) | Track: full = all 5 leads, fast = planner+coder+reviewer+watchdog (tester folds into coder), tiny = whole loop as subagents under the planner. Coder may run 1–4 coder terminals only for long, interdependent tasks; otherwise fans out coding subagents. Addressing derives from `FORGE_ROLE` per terminal |
 | **Pillars** | 3–5 pillars derived at P0 | Content: from project risks + goals. Framework: pillar derivation protocol. |
 | **Constitution** | Articles I–V inviolable | Articles VI–X: tailored to project's specific safety domain |
 | **Panels** | 1–3 panels, synthesis protocol | Which panels: selected from skill library by domain. Which panelists: named per project. |
@@ -489,112 +489,140 @@ Each returns findings with severity. Merge into pre-screen report.
 
 ---
 
-### Phase 6 — Parallel Build [AUTO] — Terminal-per-Agent + Agent Teams
+### Phase 6 — Parallel Build [AUTO] — The Five-Lead FORGE Build Team
 
-Phase 6 runs as an **agent team**: every persistent agent gets its OWN long-lived terminal (one tmux window each), replacing the old fixed 3-terminal setup. The team is the orchestrator (team lead), the supervisor (build lead — task assignment + smoke tests, owns the implementors), the watchdog (R2 auditor, reports to orchestrator), and EACH implementor impl-1..impl-N (fan-out ≤4, count decided at P5). Each implementor still uses its own git worktree for isolation; the terminal is long-lived so it can be monitored, message peers, and build continuously — it is not a fire-and-forget subagent. The orchestrator creates the team at P6a, monitors it during the build, and tears it down at P6 end.
+Phase 6 runs as the **FORGE build team**: five named **lead agents**, each in its OWN long-lived terminal, connected as a team over the claude-peers bus. The five leads are **planner**, **coder**, **tester**, **reviewer**, and **watchdog**. Each is a persistent terminal that *fans out subagents* — it is the coordination spine for its concern, not a solo worker. The five leads map onto the prior naming as follows: **planner = orchestrator** (team lead), **coder + tester = supervisor/implementors** (build + test leads), **reviewer = the tiered CE reviewer**, **watchdog = R2 auditor** (unchanged).
 
-**R2: Watchdog spawn is automatic, not discretionary.** The watchdog MUST be spawned at P6a as its own tmux terminal. It is not something the orchestrator "may" do — it is a required step. The phase gate hook (R1) cannot be fooled because the watchdog writes to `.forge/AUDIT.json`, and P6 exit assertions check that AUDIT.json exists with watchdog entries. If the watchdog was never spawned, P6 cannot exit.
+The five lead roles:
 
-In plain terms: the orchestrator is the project manager who delegates the build to a build lead (supervisor) and a quality inspector (watchdog). The build lead owns a row of builders (the implementors), each at its own workbench (terminal + worktree), assigns them tasks, and collects their work. The quality inspector checks every delivery against the plan. Everyone sits in the same room (the claude-peers team bus) and answers a shoulder-tap immediately, while the project manager monitors from above.
+- **planner** = team lead: owns the plan, task decomposition, the 4 human gates, and the operator relationship. Creates the team at P6a, monitors it during the build, and tears it down at P6 end.
+- **coder** = build lead: implements tasks; **fans out coding subagents** for independent tasks (or runs 1–4 coder terminals only when tasks are long AND interdependent); keep-or-revert ratchet; never self-approves.
+- **tester** = test lead: owns the immutable eval harness (task-00); runs and extends behavior tests, **fanning out per-surface test subagents**.
+- **reviewer** = review lead: tiered code review of every diff via **per-dimension subagents** (correctness / security / performance); returns APPROVE / REJECT.
+- **watchdog** = R2 auditor: independently audits completed work against spec/architecture for drift; writes `.forge/AUDIT.json`; **NEVER implements**.
 
-**Technically:** one tmux session `forge-build` with one window per agent (orchestrator, supervisor, watchdog, impl-1..impl-N), created at P6a and torn down at P6 end. Each implementor terminal owns a git worktree. All terminals form one agent team on the claude-peers MCP bus — on start each calls `set_summary(role + current task)` and `list_peers` to discover teammates, then coordinates via structured `send_message`/`check_messages` (shoulder-tap protocol). Addressing derives from `FORGE_ROLE` per terminal. Subagents are still used for review/test fan-out. All state in `.forge/` files.
+**CORE PRINCIPLE — the writer is never the auditor.** The **coder** is a different agent from the **tester**, the **reviewer**, and the **watchdog**. The reviewer checks the *diff*; the watchdog independently checks *drift against spec*. These are not merged — they catch different failures.
+
+**Subagents are the parallel muscle; terminals are the coordination spine.** The leads dispatch **ephemeral subagents** (via the Workflow/Agent tools) for the bounded, parallel, independent work: coding tasks, per-surface tests, per-dimension reviews, plus expert panels, grounding research, doc-review, and deepening passes.
+
+**Subagent vs. agent-team — the decision rule.** Own terminal IF the role is singular, long-lived, and coordinates continuously (the 5 leads). Subagent IF the work is bounded, parallel, and independent (everything the leads dispatch).
+
+| Concern | Own terminal (lead) | Subagent (muscle) |
+|---|---|---|
+| Plan / decomposition / gates / operator | **planner** | — |
+| Implementation | **coder** (build lead) | coding subagents (per independent task) |
+| Behavior tests / eval harness | **tester** | per-surface test subagents |
+| Code review of diffs | **reviewer** | per-dimension review subagents (correctness/security/perf) |
+| Drift audit vs. spec | **watchdog** | — |
+| Expert panels / research / doc-review / deepening | — | dispatched by whichever lead needs them |
+
+**Scale to track.** Don't pay for 5 live sessions on a 2-file change:
+- **Full track** = all 5 lead terminals (planner + coder + tester + reviewer + watchdog).
+- **Fast track** = planner + coder + reviewer + watchdog (tester folds into the coder's keep-or-revert ratchet).
+- **Tiny change** = run the whole loop as subagents under the planner/orchestrator — no live lead terminals.
+
+**Topology.** planner ⟷ coder ⟷ tester ⟷ reviewer form the build loop over claude-peers (plan → build → test → review → re-plan). **watchdog observes all** and reports drift to the planner. The **planner owns the human gates**.
+
+**R2: Watchdog spawn is automatic, not discretionary.** The watchdog MUST be spawned at P6a as its own terminal. It is not something the planner "may" do — it is a required step. The phase gate hook (R1) cannot be fooled because the watchdog writes to `.forge/AUDIT.json`, and P6 exit assertions check that AUDIT.json exists with watchdog entries. If the watchdog was never spawned, P6 cannot exit.
+
+In plain terms: the planner is the project manager who owns the plan and the operator's gates. The coder is the build lead with a bench of builder-subagents; the tester is the QA lead with a bench of test-subagents; the reviewer inspects every delivery with a panel of specialist reviewer-subagents; the watchdog independently checks every delivery against the original plan for drift. Everyone sits in the same room (the claude-peers team bus) and answers a shoulder-tap immediately.
+
+**Launch.** `tools/forge-team.sh` (tmux) brings up one terminal per lead; `tools/forge-team.sh --cursor` writes `.vscode/tasks.json` so **Run Task → "FORGE: launch team"** opens each role in its own Cursor terminal. Each role reads its contract at `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`).
+
+**Technically:** one tmux session `forge-build` with one window per lead (planner, coder, tester, reviewer, watchdog), created at P6a and torn down at P6 end. Each lead exports `FORGE_ROLE` so the global hooks attribute themselves per role. All terminals form one agent team on the claude-peers MCP bus — on start each calls `set_summary(role + current task)` and `list_peers` to discover teammates, then coordinates via structured `send_message`/`check_messages` (shoulder-tap protocol). The leads dispatch subagents for review/test/coding fan-out. All state in `.forge/` files.
 
 **Output:** Working code, merged PRs, passing tests
 
 ---
 
-#### P6a — Team Setup (terminal-per-agent) [Orchestrator]
+#### P6a — Team Setup (the five-lead team) [planner]
 
-The orchestrator stands up the agent team: one tmux session, one long-lived window per agent — supervisor, watchdog, and one terminal per implementor impl-1..impl-N (N = implementor count decided at P5, capped at 4). Each window exports `FORGE_ROLE` so hooks, observe events, and claude-peers addressing are attributed per terminal. Each implementor terminal is bound to its own git worktree.
+The planner stands up the build team via `tools/forge-team.sh`: one tmux session, one long-lived window per lead — planner, coder, tester, reviewer, watchdog (full track) or the fast-track subset. Each window exports `FORGE_ROLE` so the global hooks, observe events, and claude-peers addressing are attributed per role. When the coder runs as 1–4 coder terminals (long, interdependent tasks only), each coder terminal is bound to its own git worktree; otherwise the coder fans out coding subagents that carry their own isolation. `tools/forge-team.sh --cursor` instead writes `.vscode/tasks.json` so the operator can **Run Task → "FORGE: launch team"** to open each role in its own Cursor terminal. Each role reads its contract from `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`).
 
 1. **Check tmux:** `which tmux || { log "FORGE P6 requires tmux. Install: brew install tmux"; halt; }`
 
-2. **Generate prompt files** — the orchestrator writes one brief per agent for this specific build. Supervisor and watchdog as before, plus one `impl-N.md` per implementor:
+2. **Generate prompt files** — the planner writes one brief per lead for this specific build. Each lead's brief points at its contract `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`) and adds the build-specific paths:
 
-   `.forge/prompts/supervisor.md` — contains:
-   - Role: "You are the FORGE supervisor for this build."
+   `.forge/prompts/coder.md` — contains:
+   - Role: "You are the FORGE coder (build lead) for this build. Read your contract at 04-spec/agents/coder.md."
    - TASKS.json path and format
    - Spec section references for each task
-   - CONTRACTS.md path
+   - CONTRACTS.md / architecture.md / eval-harness paths
    - Decision Router rules (D5)
-   - Observability protocol: emit events to `.forge/observe/supervisor.jsonl`
+   - Observability protocol: emit events to `.forge/observe/coder.jsonl`
    - Claude-peers message format contract (see below)
    - Heartbeat: update `.forge/HEARTBEAT.json` every 5 minutes
    - Reference project protocol (if applicable)
-   - Instructions: "Read TASKS.json. Assign tasks in dependency order. For each: spawn a worktree agent, run smoke test on return, spawn reviewer, coordinate with watchdog. Send P6_COMPLETE when all tasks have APPROVE verdicts."
+   - Instructions: "Read TASKS.json. For each ready task in dependency order, FAN OUT a coding subagent (worktree-isolated); only run sibling coder terminals when tasks are long AND interdependent. Apply keep-or-revert; never self-approve. On a task's completion send PR_SUBMITTED to the reviewer and watchdog. Send P6_COMPLETE to the planner when all tasks have APPROVE verdicts."
+
+   `.forge/prompts/tester.md` — contains:
+   - Role: "You are the FORGE tester (test lead) for this build. Read your contract at 04-spec/agents/tester.md."
+   - Eval-harness (task-00) path — the harness is immutable; tester extends behavior tests, never weakens them
+   - workflow.md / spec section references (one test per node, one per spec section)
+   - Observability protocol: emit events to `.forge/observe/tester.jsonl`
+   - Claude-peers message format contract; heartbeat every ≤5 minutes
+   - Instructions: "Own the immutable eval harness. On each PR_SUBMITTED, FAN OUT per-surface test subagents to run + extend behavior tests against the diff. Report PASS/FAIL to the coder and planner. Never alter the harness to make a test pass (R4)."
+
+   `.forge/prompts/reviewer.md` — contains:
+   - Role: "You are the FORGE reviewer (review lead) for this build. Read your contract at 04-spec/agents/reviewer.md."
+   - CONTRACTS.md / spec section paths; review-dimension list (correctness / security / performance / …)
+   - Observability protocol: emit events to `.forge/observe/reviewer.jsonl`
+   - Claude-peers message format contract; heartbeat every ≤5 minutes
+   - Instructions: "On each PR_SUBMITTED, FAN OUT one review subagent per dimension over the diff. Aggregate to a single APPROVE/REJECT verdict and send it to the coder and planner. You review the DIFF only — drift-vs-spec is the watchdog's job, do not duplicate it."
 
    `.forge/prompts/watchdog.md` — contains:
-   - Role: "You are the FORGE watchdog for this build."
+   - Role: "You are the FORGE watchdog (R2 auditor) for this build. Read your contract at 04-spec/agents/watchdog.md. You NEVER implement."
    - Drift check protocol (D4): 7 categories, 3 trigger points
    - AUDIT.json format
    - Spec.md and CONTRACTS.md paths
    - Observability protocol: emit events to `.forge/observe/watchdog.jsonl`
    - Claude-peers message format contract
-   - Instructions: "On PR_SUBMITTED message: drift-check the PR diff. On PR_MERGED: check integrated repo state. Run /loop 30m for periodic full-repo audit. Send results to supervisor. On CRITICAL: send DRIFT_CRITICAL to orchestrator immediately."
+   - Instructions: "On PR_SUBMITTED message: drift-check the PR diff against the spec/architecture (this is drift, NOT the reviewer's per-dimension diff review). On PR_MERGED: check integrated repo state. Run /loop 30m for periodic full-repo audit. Write findings to `.forge/AUDIT.json`. On CRITICAL: send DRIFT_CRITICAL to the planner immediately."
 
-   `.forge/prompts/impl-N.md` (one per implementor, N = 1..implementor-count) — contains:
-   - Role: "You are FORGE implementor impl-N for this build."
-   - Worktree path this terminal is bound to (its isolation boundary; this terminal never leaves it)
-   - Spec section / CONTRACTS.md / architecture.md / eval-harness paths, Decision Router rules (D5)
-   - Branch naming `forge/phase-6/{task-slug}`, commit messages reference `[SPEC §X.Y]`
-   - Observability protocol: emit events to `.forge/observe/impl-N.jsonl`
-   - Claude-peers message format contract; on start call `set_summary` (role + current task) and `list_peers` to discover teammates
-   - Heartbeat: update `.forge/HEARTBEAT.json` (its `impl-N` slot) every ≤5 minutes
-   - Reference project protocol (if applicable)
-   - Instructions: "Wait for TASK_ASSIGNED from the supervisor. Build the task in your worktree following the structured debug protocol and keep-or-revert ratchet. Answer peer messages immediately (shoulder-tap). Send TASK_COMPLETE to the supervisor when done; do not halt while phase work remains (R7 will block you)."
+   The `planner` runs in the first window and needs no separate prompt file beyond its contract `04-spec/agents/planner.md`. When the coder is run as 1–4 coder terminals (long, interdependent tasks only), the planner writes a `.forge/prompts/coder-N.md` per coder terminal carrying its bound worktree path, branch naming `forge/phase-6/{task-slug}`, `[SPEC §X.Y]` commit convention, and its `.forge/observe/coder-N.jsonl` stream. Otherwise the single coder lead fans out coding subagents that carry their own worktree isolation.
 
-3. **Spawn the team via tmux — one window per agent (supervisor, watchdog, each implementor):**
+3. **Spawn the team — one window per lead, via `tools/forge-team.sh` (tmux):**
 
    ```bash
-   # Create the team session (orchestrator runs in the first window)
-   tmux new-session -d -s forge-build -n orchestrator
+   # forge-team.sh creates the session and one window per lead, exporting FORGE_ROLE in each.
+   # planner runs in the first window; coder/tester/reviewer/watchdog each get their own.
 
-   # Spawn supervisor (build lead)
-   tmux new-window -t forge-build -n supervisor
-   tmux send-keys -t forge-build:supervisor \
-     "FORGE_ROLE=supervisor claude --name 'forge-supervisor' --dangerously-skip-permissions \
-       --append-system-prompt-file .forge/prompts/supervisor.md \
-       'Begin FORGE P6 supervisor. Set your summary, list_peers to find the team, then read .forge/TASKS.json and start assigning tasks to the implementor terminals.'" ENTER
+   tmux new-session -d -s forge-build -n planner
 
-   # Spawn watchdog (R2 auditor)
-   tmux new-window -t forge-build -n watchdog
-   tmux send-keys -t forge-build:watchdog \
-     "FORGE_ROLE=watchdog claude --name 'forge-watchdog' --dangerously-skip-permissions \
-       --append-system-prompt-file .forge/prompts/watchdog.md \
-       'Begin FORGE P6 watchdog. Set your summary, list_peers, then start /loop 30m for periodic audit.'" ENTER
-
-   # Spawn one terminal per implementor (N = implementor count from P5, ≤4), each on its own worktree
-   IMPL_COUNT=$(jq '[.[] | select(.agent_slot > 0)] | map(.agent_slot) | max' .forge/TASKS.json)
-   for i in $(seq 1 "$IMPL_COUNT"); do
-     WT=".forge/worktrees/impl-$i"
-     git worktree add -b "forge/impl-$i" "$WT" >/dev/null 2>&1 || true
-     tmux new-window -t forge-build -n "impl-$i"
-     tmux send-keys -t "forge-build:impl-$i" \
-       "cd '$WT' && FORGE_ROLE=impl-$i claude --name 'forge-impl-$i' --dangerously-skip-permissions \
-         --append-system-prompt-file ../../prompts/impl-$i.md \
-         'Begin FORGE P6 implementor impl-$i. Set your summary, list_peers to find the team, then wait for TASK_ASSIGNED from the supervisor.'" ENTER
+   for role in coder tester reviewer watchdog; do
+     tmux new-window -t forge-build -n "$role"
+     tmux send-keys -t "forge-build:$role" \
+       "FORGE_ROLE=$role claude --name \"forge-$role\" --dangerously-skip-permissions \
+         --append-system-prompt-file .forge/prompts/$role.md \
+         'Begin FORGE P6 $role. Read your contract at 04-spec/agents/$role.md, set your summary, list_peers to find the team, then start your loop.'" ENTER
    done
+
+   # Fast track: omit the tester window (tester folds into the coder's keep-or-revert ratchet).
+   # Long, interdependent tasks only: replace the single coder window with coder-1..coder-N (N ≤ 4),
+   # each cd'd into its own `.forge/worktrees/coder-$i` git worktree.
    ```
 
-   **Permission model:** `--dangerously-skip-permissions` is used because the operator approved the build at Gate 2 (point of no return). Every agent — supervisor, watchdog, and the implementors — operates within the scope approved at G2.
+   `tools/forge-team.sh --cursor` instead writes `.vscode/tasks.json` with a "FORGE: launch team" task that opens each role in its own Cursor terminal (same `FORGE_ROLE` + contract wiring).
 
-4. **Verify spawn:** Wait 15 seconds, then call `list_peers(scope: "repo")`. Assert that `forge-supervisor`, `forge-watchdog`, and `forge-impl-1`..`forge-impl-N` all appear. If any is missing after 30 seconds, retry the tmux spawn for that window once. If still missing after 60 seconds, halt P6 and alert operator.
+   **Permission model:** `--dangerously-skip-permissions` is used because the operator approved the build at Gate 2 (point of no return). Every lead — planner, coder, tester, reviewer, watchdog — operates within the scope approved at G2.
 
-5. **Log:** Emit `SPAWN` observe events for the supervisor, watchdog, and each implementor. Write to MEMORY.md: `[timestamp] P6a complete — agent team spawned (supervisor + watchdog + {N} implementor terminals)`
+4. **Verify spawn:** Wait 15 seconds, then call `list_peers(scope: "repo")`. Assert that the launched leads (`forge-coder`, `forge-tester`, `forge-reviewer`, `forge-watchdog` on full track; the fast-track subset otherwise) all appear. If any is missing after 30 seconds, retry the spawn for that window once. If still missing after 60 seconds, halt P6 and alert operator.
+
+5. **Log:** Emit `SPAWN` observe events for each launched lead. Write to MEMORY.md: `[timestamp] P6a complete — build team spawned (planner + {leads on this track})`
 
 ---
 
 #### Per-terminal hooks (status / monitoring / continuous build)
 
-Because each agent now lives in its own terminal, the orchestrator wires the same three hook families into every window, keyed by `FORGE_ROLE`. The hooks make terminal-per-agent observable and self-healing without changing what R1/R7/R8/R9 already do — they attribute the existing machinery per role.
+Because each lead lives in its own terminal, the planner wires the same three hook families into every window, keyed by `FORGE_ROLE`. The hooks make the lead team observable and self-healing without changing what R1/R7/R8/R9 already do — they attribute the existing machinery per role.
 
 In plain terms: each terminal wears a name tag, raises its hand when it's working, and isn't allowed to walk out while the room still has work to do. If a terminal goes quiet, the monitor notices and gets it restarted.
 
 **Technically:**
 
-- **STATUS (who is this terminal + what is it doing).** A statusline / `SessionStart` hook stamps the terminal's `FORGE_ROLE` and its current claude-peers summary into the prompt line, so a glance at any window says which agent it is. Each agent updates its slot in `.forge/HEARTBEAT.json` (per role) every ≤5 minutes — the liveness signal the orchestrator (P6d) and the monitor read.
+- **STATUS (who is this terminal + what is it doing).** A statusline / `SessionStart` hook stamps the terminal's `FORGE_ROLE` (planner/coder/tester/reviewer/watchdog) and its current claude-peers summary into the prompt line, so a glance at any window says which lead it is. Each lead updates its slot in `.forge/HEARTBEAT.json` (per role) every ≤5 minutes — the liveness signal the planner (P6d) and the monitor read.
 
-- **MONITORING (observe + /forge status + stalled-terminal detection).** Every terminal emits observe events (`SPAWN`/`PROGRESS`/…) to `.forge/observe/<role>.jsonl`. `/forge status` and the observatory dashboard read all terminals' observe + heartbeat streams to render the whole team. A monitor flags any terminal whose heartbeat is older than the threshold as stalled and surfaces it for restart (the same re-spawn path the orchestrator uses in P6d).
+- **MONITORING (observe + /forge status + stalled-terminal detection).** Every terminal emits observe events (`SPAWN`/`PROGRESS`/…) to `.forge/observe/<role>.jsonl`. `/forge status` and the observatory dashboard read all leads' observe + heartbeat streams to render the whole team. A monitor flags any lead whose heartbeat is older than the threshold as stalled and surfaces it for restart (the same re-spawn path the planner uses in P6d).
 
 - **CONTINUOUS BUILD (R7 stop-hook, per role).** The R7 `Stop`/`SubagentStop` hook (`tools/stop-hook.sh`) runs in every terminal and blocks that terminal from halting while phase work remains; `FORGE_ROLE` attributes both the continuation decision and the observe `STOP` event to the right agent. After 5 consecutive same-phase nudges it escalates to the operator instead of looping. (Behavior is exactly the R7 contract described in The Pipeline — terminal-per-agent only changes *which* role the nudge is attributed to.)
 
@@ -604,9 +632,9 @@ In plain terms: each terminal wears a name tag, raises its hand when it's workin
 
 The agent team is tuned for the Opus 4.8 era:
 
-- **Opus 4.8 (point 4).** The orchestrator uses the 1M context window to hold the full spec + `TASKS.json` resident, so it can route work without re-reading. Deterministic fan-out (implementors, tiered reviewers, doc-review agents) is orchestrated with the Workflow tool / parallel subagents rather than ad-hoc spawning; every agent returns a **structured output**; **fast mode** is used for mechanical, high-throughput steps (mass file edits, scans).
+- **Opus 4.8 (point 4).** The planner uses the 1M context window to hold the full spec + `TASKS.json` resident, so it can route work without re-reading. Each lead's deterministic fan-out (coding subagents, per-surface test subagents, per-dimension reviewers, doc-review agents) is dispatched with the Workflow tool / parallel subagents rather than ad-hoc spawning; every subagent returns a **structured output**; **fast mode** is used for mechanical, high-throughput steps (mass file edits, scans).
 
-- **Compound Engineering (point 5).** Tiered reviewers run as separate subagents per dimension (correctness / security / performance / …); the writer is never the auditor. Learning is captured (`RETRO.md` + `MEMORY.md`) so each build starts smarter, document-review agents pre-screen the gates, and optimization loops run post-build. (This is the same tiered-review / learning-capture machinery described in P6b, G0–G2, and P8 — restated here as the team-level optimization posture.)
+- **Compound Engineering (point 5).** Tiered reviewers run as separate subagents per dimension (correctness / security / performance / …) under the reviewer lead; the writer is never the auditor (coder ≠ tester/reviewer/watchdog). Learning is captured (`RETRO.md` + `MEMORY.md`) so each build starts smarter, document-review agents pre-screen the gates, and optimization loops run post-build. (This is the same tiered-review / learning-capture machinery described in P6b, G0–G2, and P8 — restated here as the team-level optimization posture.)
 
 ---
 
