@@ -162,7 +162,7 @@ class ObserveHandler(SimpleHTTPRequestHandler):
         elif path == "/api/meta":
             self.serve_json(self.get_meta())
         else:
-            self.send_error(404)
+            self.serve_static(path)
 
     def serve_dashboard(self):
         if not DASHBOARD_PATH.exists():
@@ -175,6 +175,40 @@ class ObserveHandler(SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-cache")
         self.end_headers()
         self.wfile.write(content)
+
+    def serve_static(self, path):
+        # The dashboard (observatory.html) is served at "/" but lives in docs/,
+        # and its nav links to sibling deck pages (prd.html, spec.html, ...) plus
+        # documentation.html fetches ../docs.json. Serve ONLY the docs/ tree and
+        # the docs.json registry — nothing else in the project is exposed.
+        import posixpath
+        import mimetypes
+        rel = posixpath.normpath(path).lstrip("/")
+        if not rel or ".." in rel.split("/"):
+            self.send_error(404)
+            return
+        cwd = os.path.realpath(os.getcwd())
+        docs_dir = os.path.realpath(os.path.join(cwd, "docs"))
+        if rel == "docs.json":
+            fp = os.path.realpath(os.path.join(cwd, "docs.json"))
+            allowed = fp == os.path.realpath(os.path.join(cwd, "docs.json"))
+        else:
+            fp = os.path.realpath(os.path.join(docs_dir, rel))
+            allowed = fp == docs_dir or fp.startswith(docs_dir + os.sep)
+        if not (allowed and os.path.isfile(fp)):
+            self.send_error(404)
+            return
+        ctype = mimetypes.guess_type(fp)[0] or "application/octet-stream"
+        if ctype.startswith("text/") or ctype.endswith(("json", "javascript")):
+            ctype += "; charset=utf-8"
+        data = open(fp, "rb").read()
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", len(data))
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(data)
 
     def serve_json(self, data):
         body = json.dumps(data).encode()
