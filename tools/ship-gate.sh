@@ -37,7 +37,20 @@ open_conf = [g for g in gaps if g.get("type") == "conformance" and is_open(g) an
 # live tree scan (independent of the gap ledger — catches stubs never hooked)
 tree_stubs = [l for l in os.environ.get("STUB_FINDINGS", "").splitlines() if l.strip()]
 
+# real verification (.forge/VERIFY.json from tools/verify.sh): required layers must
+# be green with genuine exit codes. Absent VERIFY.json = verification not run = block.
+verify = load(".forge/VERIFY.json", None)
+if verify is None:
+    verify_pass = False
+    verify_detail = "no .forge/VERIFY.json — run tools/verify.sh (build/lint/unit/e2e)"
+else:
+    bad = [l.get("name") for l in verify.get("layers", []) if l.get("required") and l.get("status") != "pass"]
+    verify_pass = bool(verify.get("ok")) and not bad
+    verify_detail = ("all required layers green with genuine exit codes"
+                     if verify_pass else f"required layer(s) not green: {', '.join(bad) or 'unknown'}")
+
 assertions = [
+    {"name": "verification_real", "pass": verify_pass, "detail": verify_detail},
     {"name": "no_open_stub_gaps",
      "pass": len(open_stub) == 0,
      "detail": f"{len(open_stub)} open MAJOR+ stub gap(s)"
