@@ -227,6 +227,9 @@ This counters urgency bias by forcing a deliberate pause at the moment when shor
 5. Write `BUILD-AUTONOMY.md` at project root, seeded from `templates/BUILD-AUTONOMY.md`. This is the standing-authorization charter (see "Standing Authorization — Run to Completion" above): it states that with CONSTITUTION.md + the locked PRD present the build runs to completion without per-step gates, and it carries the fixed stop-condition set (destructive/irreversible, outward-facing, spends-money, undecidable high-stakes). Leave the operator-signed fields (deploy target, spend ceiling, undecidable-batch answers) blank — they are filled at Gate 1.
 6. **Preflight — probe and provision the declared stack.** Run `tools/preflight.sh`. It probes every runtime the declared stack needs (node/npm version, python, the package manager, anchor/cargo, browsers for Playwright, etc.), **installs any that are missing within the declared stack**, and **hard-fails if it cannot** install or detect one. The build is **blocked until preflight is green** — `tools/preflight.sh` writes `.forge/PREFLIGHT.json` and STATE.json cannot leave Phase 1 until it shows all required runtimes present. **Never write code that routes around a missing runtime** (a shim, a mock-because-it-won't-install, a "skip if unavailable" branch) — that produces code that can't be verified, which defeats the point of the loop. If a runtime genuinely cannot be installed, that is a Gate-1 blocker, not a thing to code around.
 7. Initialize `.forge/STATE.json`: `{ "phase": 1, "status": "complete", "track": "fast|full" }`
+8. **Scaffold Atlas (R-10).** Every project gets its own Atlas — the developer-view harness — generated and live from the very first phase, not bolted on at the end. Run `tools/atlas-init.sh`. It scaffolds the deck shell (the 10-page nav: prd, prd-enhanced, architecture, workflow, users, spec, observatory, eval, cost, documentation), writes the single wiring file `docs/env.json` (with `product{local,dev,prod}`, `source{github,gitlab}`, and `atlas{url}`) plus `docs/regen.json`, copies `env-links.js` and `home.html`, and drops a `.vscode` config. Atlas is then prepopulated and live from day one.
+
+   **Technically:** `tools/atlas-init.sh` lays down the static deck shell and the live-view scaffolding so the developer view exists before any content does. The pages **self-populate as phases complete** — P1b fills prd/prd-enhanced, P4 fills architecture/workflow/spec, P5 fills eval, P6+ fill observatory/cost/users — each phase writing its artifacts back into the matching page. The **static deck** half (the PRD/spec/arch/… pages) is deployable; the **live view** half (Observatory, Cost, regen) is served locally by `observe-server` (the same observe server at localhost:4040). `env-links.js`, already wired on every page, renders the "Atlas" tag, the Product and Source clusters, and the ↻ Regenerate button — all driven by `docs/env.json`.
 
 ---
 
@@ -959,7 +962,10 @@ This is optional on fast track (skip optimization gaps, log them as WONTFIX with
 4. Write `.forge/RETRO.md`: what worked, what drifted, what the gap loop caught, token spend, time breakdown
 5. **Generate all documentation decks:** Run `/docs build` to produce per-folder Reveal.js decks and the master hub at `docs/hub.html`. This is the final documentation pass — every folder gets a navigable deck with diagrams, change tracking, and cross-links.
    - **Documentation web site (standard layout):** the sectioned doc web pages (PRD, spec, architecture, eval, …) use the standard spec-style layout — top `forge-nav` + left `.sidebar` in-page menu + `.main` — defined in `templates/template-docs-page.html`. Apply it to a page with `python3 tools/apply-docs-sidebar.py docs/<page>.html --title <Title>`. This is the standard for every project's doc web site (slide-deck output above is unchanged). Page types that aren't sectioned docs (a Reveal slide deck, a live dashboard) keep the top-nav only.
-6. Final STATE.json: `{ "phase": 9, "status": "shipped" }`
+6. **Deploy Atlas alongside the product.** Atlas ships with the product so the developer view is reachable next to the thing it documents. Run `tools/atlas-deploy.sh --out <deploy_dir> --url <product_url>` — it folds the static deck into the product deploy under `/_atlas`, then records `atlas.url` (and the matching `dev`/`prod` entries) back into `docs/env.json`. Commit `docs/env.json`.
+
+   **Technically:** `tools/atlas-deploy.sh` copies the static deck half into `<deploy_dir>/_atlas` so it deploys as part of the product, and writes the resolved `atlas.url`/`dev`/`prod` into `docs/env.json` (the single wiring file `env-links.js` reads to render the Atlas/Product/Source clusters). The **two-halves rule**: only the **static deck** (PRD/spec/arch/… pages) deploys with the product under `/_atlas`; the **live view** half — the Observatory, Cost, and regen surfaces — stays **local**, served by `observe-server`, and is never folded into the public deploy.
+7. Final STATE.json: `{ "phase": 9, "status": "shipped" }`
 
 ---
 
@@ -997,6 +1003,8 @@ After **every phase** produces artifacts, the agent must:
 3. Run `/docs build <folder>` to regenerate that folder's deck + `/docs hub` to update navigation
 
 This ensures documentation stays current throughout the build, not just at the end. At gates (G1, G2, G3), the operator sees `docs/hub.html` as the entry point to the full corpus.
+
+Atlas is **per-project** — generated by `atlas-init` at Phase 1 and named the **developer view** — with its Product, Source, and Atlas links all wired through the single `docs/env.json` file.
 
 ---
 

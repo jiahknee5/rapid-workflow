@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atlas — Home</title>
+<!-- ============================================================
+     ATLAS HOME — the per-project hub / landing page.
+     Part of the Atlas kit: tools/atlas-init.sh copies this file
+     (and env-links.js) into every project's docs/. It renders the
+     CURRENT project's links at RUNTIME from docs/env.json (+ optional
+     docs/docs.json) — nothing project-specific is hardcoded.
+     Styled with the standard docs-page "spec" layout (style block
+     copied verbatim from templates/template-docs-page.html).
+     ============================================================ -->
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FFFFFF; --surface: #F7F8FA; --surface-alt: #F0F2F5;
+  --border: #D4D8DE; --border-light: #E2E5EA;
+  --text: #1A2744; --text-muted: #4A5568; --text-dim: #8896A6;
+  --navy: #1A2744; --blue: #2B6CB0; --blue-dim: rgba(43,108,176,0.08);
+  --green: #276749; --green-dim: rgba(39,103,73,0.08);
+  --red: #C53030; --red-dim: rgba(197,48,48,0.06);
+  --amber: #B7791F; --amber-dim: rgba(183,121,31,0.08);
+  --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
+  --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
+  --radius: 4px; --radius-sm: 3px;
+}
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+
+/* Sidebar nav (left menu) */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub:hover { color: var(--text-muted); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
+
+/* Main content */
+.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+
+/* Section system */
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+
+/* Subsection */
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* Strategy / callout block */
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+
+/* Requirement card */
+.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
+.req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
+.req-pri.must { background: var(--red-dim); color: var(--red); }
+.req-pri.should { background: var(--amber-dim); color: var(--amber); }
+.req-pri.could { background: var(--blue-dim); color: var(--blue); }
+.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body strong { color: var(--text); }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta span { display: flex; align-items: center; gap: 4px; }
+.req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tables */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout */
+.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+
+/* Code blocks */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+
+/* Diagrams & process flows (fit-for-purpose) */
+.diagram { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+.diagram-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.n { display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 0.72rem; font-weight: 600; text-align: center; background: var(--bg); white-space: nowrap; }
+.n small { display: block; font-size: 0.58rem; font-weight: 400; color: var(--text-dim); margin-top: 1px; }
+.n-auto { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.n-gate { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); font-weight: 800; }
+.n-guard { border-color: var(--red); color: var(--red); }
+.n-primary { border-color: var(--navy); background: var(--navy); color: #fff; }
+.n-blue { border-color: var(--blue); color: var(--blue); } .n-purple { border-color: var(--purple); color: var(--purple); } .n-teal { border-color: var(--teal); color: var(--teal); }
+.arr { color: var(--text-dim); font-size: 0.9rem; padding: 0 3px; } .arr-loop { color: var(--amber); font-weight: 800; }
+.hflow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; justify-content: center; }
+.vflow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.vline { width: 1.5px; height: 16px; background: var(--border); }
+.branch { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+/* Swimlane process flow (data-in / processing / data-out per node) */
+.swimlane { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.swimlane .lane { display:grid; grid-template-columns:130px 1fr; border-bottom:1px solid var(--border-light); }
+.swimlane .lane:last-child { border-bottom:none; }
+.swimlane .lane-label { background:var(--surface); padding:10px 12px; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); border-right:1px solid var(--border); display:flex; align-items:center; }
+.swimlane .lane-body { padding:10px 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.78rem; color:var(--text-muted); }
+.step-table { width:100%; border-collapse:collapse; font-size:0.74rem; margin:12px 0; }
+.step-table th { text-align:left; padding:7px 9px; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.07em; color:#fff; background:var(--navy); }
+.step-table td { padding:7px 9px; border-bottom:1px solid var(--border-light); vertical-align:top; }
+.step-table td:first-child { font-weight:700; color:var(--navy); font-family:"SF Mono",monospace; white-space:nowrap; }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .main { padding: 28px 20px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Top cross-page nav */
+.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.forge-nav a:hover { color: rgba(255,255,255,0.85); }
+.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+</style>
+</head>
+<body>
+<nav class="forge-nav">
+  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <a href="prd.html">PRD</a>
+  <a href="prd-enhanced.html">Enhanced PRD</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="workflow.html">Workflow</a>
+  <a href="users.html">Users</a>
+  <a href="spec.html">Spec</a>
+  <a href="observatory.html">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="cost.html">Cost</a>
+  <a href="documentation.html">Documentation</a>
+</nav>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">Atlas</div>
+  <div class="sidebar-sub">Home — project hub</div>
+  <div class="sidebar-section">Hub</div>
+  <a href="#product">Product</a>
+  <a href="#source">Source</a>
+  <a href="#docs">Docs</a>
+  <a href="#ops">Ops</a>
+</nav>
+<div class="main">
+
+  <p class="section-desc" id="atlas-intro" style="margin-bottom:32px;">Atlas — the developer view for <strong>this project</strong>. Product is the finished app; this deck is how you navigate and develop it.</p>
+
+  <!-- PRODUCT -->
+  <section class="section" id="product">
+    <div class="section-id">Product</div>
+    <h2 class="section-title">The finished app</h2>
+    <p class="section-desc">Where the product runs per environment, from <code>docs/env.json</code>. Greyed entries are not set yet.</p>
+    <div class="grid-3" id="product-cards">
+      <div class="card"><h4>Local</h4><div class="muted">loading…</div></div>
+      <div class="card"><h4>Dev</h4><div class="muted">loading…</div></div>
+      <div class="card"><h4>Production</h4><div class="muted">loading…</div></div>
+    </div>
+  </section>
+
+  <!-- SOURCE -->
+  <section class="section" id="source">
+    <div class="section-id">Source</div>
+    <h2 class="section-title">Code repositories</h2>
+    <p class="section-desc">Source repos from <code>docs/env.json → source</code>.</p>
+    <div class="grid-2" id="source-cards">
+      <div class="card"><h4>GitHub</h4><div class="muted">loading…</div></div>
+      <div class="card"><h4>GitLab</h4><div class="muted">loading…</div></div>
+    </div>
+  </section>
+
+  <!-- DOCS -->
+  <section class="section" id="docs">
+    <div class="section-id">Docs</div>
+    <h2 class="section-title">The deck</h2>
+    <p class="section-desc">The static deck pages. Rendered from <code>docs/docs.json</code> when present, otherwise the standard 10-page nav.</p>
+    <div class="grid-3" id="docs-cards">
+      <div class="card"><div class="muted">loading…</div></div>
+    </div>
+  </section>
+
+  <!-- OPS -->
+  <section class="section" id="ops">
+    <div class="section-id">Ops</div>
+    <h2 class="section-title">Operate &amp; observe</h2>
+    <p class="section-desc">Issues, the live Observatory, cost, and CI for this project.</p>
+    <div class="grid-2" id="ops-cards">
+      <div class="card"><div class="muted">loading…</div></div>
+    </div>
+  </section>
+
+</div>
+</div>
+<!-- Runtime population from docs/env.json (+ optional docs/docs.json).
+     Degrades gracefully to greyed "not set" cards on missing links or
+     a failed fetch (e.g. a static deploy with no JSON alongside). -->
+<script>
+(function () {
+  // Mute styling + a couple of helpers reused across sections.
+  var st = document.createElement('style');
+  st.textContent =
+    '.card .muted{color:var(--text-dim);font-style:italic;}' +
+    '.card a{color:var(--blue);text-decoration:none;font-weight:600;word-break:break-all;}' +
+    '.card a:hover{text-decoration:underline;}' +
+    '.card.off{opacity:.55;}' +
+    '.card-url{font-family:"SF Mono","Fira Code",monospace;font-size:0.68rem;color:var(--text-dim);word-break:break-all;margin-top:4px;}' +
+    '.card-cmd{font-family:"SF Mono","Fira Code",monospace;font-size:0.66rem;color:var(--text-muted);background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:6px 8px;margin-top:8px;word-break:break-all;}';
+  document.head.appendChild(st);
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  function getJSON(u) { return fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+
+  // A link card. live=false → greyed "not set".
+  function linkCard(title, url, opts) {
+    opts = opts || {};
+    var live = !!url;
+    var html = '<h4>' + esc(title) + '</h4>';
+    if (live) {
+      html += '<div><a href="' + esc(url) + '"' + (opts.sameTab ? '' : ' target="_blank" rel="noopener"') + '>' + esc(opts.linkText || 'Open →') + '</a></div>';
+      if (opts.showUrl !== false && !opts.sameTab) html += '<div class="card-url">' + esc(url) + '</div>';
+    } else {
+      html += '<div class="muted">' + esc(opts.emptyText || 'not set') + '</div>';
+    }
+    if (opts.cmd) html += '<div class="card-cmd">' + esc(opts.cmd) + '</div>';
+    var div = document.createElement('div');
+    div.className = 'card' + (live ? '' : ' off');
+    div.innerHTML = html;
+    return div;
+  }
+
+  function fill(id, cards) {
+    var box = document.getElementById(id);
+    if (!box) return;
+    box.innerHTML = '';
+    cards.forEach(function (c) { box.appendChild(c); });
+  }
+
+  // The standard 10 deck pages — fallback when docs.json is absent.
+  var DECK = [
+    ['PRD', 'prd.html'], ['Enhanced PRD', 'prd-enhanced.html'],
+    ['Architecture', 'architecture.html'], ['Workflow', 'workflow.html'],
+    ['Users', 'users.html'], ['Spec', 'spec.html'],
+    ['Observatory', 'observatory.html'], ['Eval', 'eval.html'],
+    ['Cost', 'cost.html'], ['Documentation', 'documentation.html']
+  ];
+
+  Promise.all([getJSON('env.json'), getJSON('docs.json')]).then(function (res) {
+    var env = res[0] || {};
+    var docs = res[1];
+
+    // env-links.js reads product keys at top level (env.local/.dev/.prod);
+    // the kit spec also allows env.product{...}. Support both.
+    var prod = env.product || env;
+    var source = env.source || {};
+
+    // Intro line — name the project from the GitHub/GitLab repo when we can.
+    var repo = source.github || source.gitlab || '';
+    var name = repo ? (repo.replace(/\/+$/, '').split('/').pop() || 'this project') : 'this project';
+    var introEl = document.getElementById('atlas-intro');
+    if (introEl) introEl.innerHTML = 'Atlas — the developer view for <strong>' + esc(name) +
+      '</strong>. Product is the finished app; this deck is how you navigate and develop it.';
+
+    // PRODUCT
+    fill('product-cards', [
+      linkCard('Local', (prod.local || {}).url, { linkText: 'Open local →', cmd: (prod.local || {}).launch ? ('▶ ' + (prod.local || {}).launch) : null }),
+      linkCard('Dev', (prod.dev || {}).url, { linkText: 'Open dev →' }),
+      linkCard('Production', (prod.prod || {}).url, { linkText: 'Open production →' })
+    ]);
+
+    // SOURCE
+    fill('source-cards', [
+      linkCard('GitHub', source.github, { linkText: 'Open repo →' }),
+      linkCard('GitLab', source.gitlab, { linkText: 'Open repo →' })
+    ]);
+
+    // DOCS — from docs.json (title + file) if present, else the static nav.
+    var pages;
+    if (Array.isArray(docs) && docs.length) {
+      pages = docs.map(function (d) { return [d.title || d.file, d.file]; });
+    } else if (docs && Array.isArray(docs.pages) && docs.pages.length) {
+      pages = docs.pages.map(function (d) { return [d.title || d.file, d.file]; });
+    } else {
+      pages = DECK;
+    }
+    fill('docs-cards', pages.filter(function (p) { return p[1]; }).map(function (p) {
+      return linkCard(p[0], p[1], { sameTab: true, linkText: 'View →' });
+    }));
+
+    // OPS — issues derived from repo, live views, CI placeholder.
+    var issuesBase = source.github || source.gitlab || '';
+    var issuesUrl = issuesBase ? (issuesBase.replace(/\/+$/, '') + '/issues') : '';
+    fill('ops-cards', [
+      linkCard('Issues', issuesUrl, { linkText: 'Open issues →', emptyText: 'no source repo set' }),
+      linkCard('Observatory', 'observatory.html', { sameTab: true, linkText: 'Open Observatory →' }),
+      linkCard('Cost', 'cost.html', { sameTab: true, linkText: 'Open Cost →' }),
+      linkCard('CI', '', { emptyText: 'not configured' })
+    ]);
+  });
+})();
+</script>
+<!-- Project harness = developer view. env-links.js renders the Local/Dev/Production
+     links to the finished PRODUCT (from env.json) and tags this deck as the dev view. -->
+<script src="env-links.js" defer></script>
+</body>
+</html>

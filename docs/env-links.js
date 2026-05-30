@@ -18,7 +18,8 @@
 
   var st = document.createElement('style');
   st.textContent =
-    '.dev-view-tag{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.22);border-radius:3px;padding:2px 6px;margin-right:10px;white-space:nowrap;align-self:center}' +
+    '.dev-view-tag{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.22);border-radius:3px;padding:2px 6px;margin-right:10px;white-space:nowrap;align-self:center;text-decoration:none;cursor:pointer}' +
+    '.dev-view-tag:hover{color:#fff;border-color:rgba(255,255,255,.45)}' +
     '.harness-right{margin-left:auto;display:flex;align-items:center;gap:8px;padding-left:14px;flex-shrink:0}' +
     '.regen-btn{font:inherit;font-size:9.5px;font-weight:600;color:rgba(255,255,255,.7);background:transparent;border:1px solid rgba(255,255,255,.25);border-radius:3px;padding:4px 9px;white-space:nowrap;cursor:pointer;transition:all .1s}' +
     '.regen-btn:hover{color:#fff;border-color:rgba(255,255,255,.5)}' +
@@ -37,10 +38,11 @@
   // 1) Tag the harness as the developer view (once).
   var brand = nav.querySelector('.forge-nav-brand');
   if (brand && !nav.querySelector('.dev-view-tag')) {
-    var tag = document.createElement('span');
+    var tag = document.createElement('a');
     tag.className = 'dev-view-tag';
     tag.textContent = 'Atlas';
-    tag.title = 'Atlas — the developer view: navigate & develop the product. The product (Local/Dev/Production) is under "Product →".';
+    tag.href = 'home.html';
+    tag.title = 'Atlas home — the developer-view hub. Navigate & develop the product; the product (Local/Dev/Production) is under "Product →".';
     brand.insertAdjacentElement('afterend', tag);
   }
 
