@@ -39,8 +39,8 @@
   if (brand && !nav.querySelector('.dev-view-tag')) {
     var tag = document.createElement('span');
     tag.className = 'dev-view-tag';
-    tag.textContent = 'Developer View';
-    tag.title = 'This deck is the developer view — navigate & develop the product. The product itself is under "Product →".';
+    tag.textContent = 'Atlas';
+    tag.title = 'Atlas — the developer view: navigate & develop the product. The product (Local/Dev/Production) is under "Product →".';
     brand.insertAdjacentElement('afterend', tag);
   }
 

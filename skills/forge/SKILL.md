@@ -39,7 +39,7 @@ The orchestrator must understand which parts of the system are fixed and which a
 |---|---|---|
 | **Pipeline** | 12 phases in fixed order, 4 gates at fixed positions | — |
 | **Message contract** | 12 message types, JSON envelope format | — |
-| **Safety mechanisms** | Keep-or-revert, immutable eval harness, cost breaker, shutdown handshake | — |
+| **Safety mechanisms** | Keep-or-revert, immutable eval harness, cost breaker, shutdown handshake, standing authorization (BUILD-AUTONOMY.md) with a fixed stop-condition set | The stop-condition list is fixed; the operator's deploy target / spend ceiling / undecidable-batch answers are per project (signed at Gate 1) |
 | **Terminal architecture** | Five-lead build team during P6: one long-lived terminal per lead (planner, coder, tester, reviewer, watchdog), connected via claude-peers; the writer is never the auditor (coder ≠ tester/reviewer/watchdog) | Track: full = all 5 leads, fast = planner+coder+reviewer+watchdog (tester folds into coder), tiny = whole loop as subagents under the planner. Coder may run 1–4 coder terminals only for long, interdependent tasks; otherwise fans out coding subagents. Addressing derives from `FORGE_ROLE` per terminal |
 | **Pillars** | 3–5 pillars derived at P0 | Content: from project risks + goals. Framework: pillar derivation protocol. |
 | **Constitution** | Articles I–V inviolable | Articles VI–X: tailored to project's specific safety domain |
@@ -53,6 +53,19 @@ The orchestrator must understand which parts of the system are fixed and which a
 | **Product Pulse** | Report format, pulse→vision loop | Data sources: from the project's deployment (analytics, error tracking, logs) |
 
 **When composing dynamic components, always pull from existing frameworks defined in this document.** Do not invent new protocols at runtime. If a project needs a capability that doesn't map to an existing framework, log it as a gap in MEMORY.md and use the closest available framework with documented adaptations.
+
+## Standing Authorization — Run to Completion (BUILD-AUTONOMY.md)
+
+A FORGE build runs to completion on its own. Once the operator has approved the plan, the build does not stop and ask permission for each file it writes, each config it touches, or each dependency it installs — that per-step check-in is exactly the friction that kills the loop. It stops only for the handful of things a reasonable engineer would also stop for: anything destructive or irreversible, anything that reaches the outside world (a push, a deploy, a publish), anything that spends money, or a genuinely-undecidable high-stakes call. Everything else, it just does — and logs.
+
+**Technically:** When `CONSTITUTION.md` + a locked PRD (`01-intake/PRD.md`) + `BUILD-AUTONOMY.md` are all present at the project root, the build carries **standing approval** to proceed through file creation/edit, config changes, and dependency installs **without per-step gates**. This mirrors the operator's own CLAUDE.md carve-out: act when reversible, stop when not. The standing authorization is **bounded by a fixed stop-condition set** — the build MUST still halt and escalate to the operator for any of:
+
+1. **Destructive / irreversible** — deleting data, force-pushing, dropping a table, rewriting history, anything `git reset --hard` can't undo.
+2. **Outward-facing** — `git push`, deploy, publish to a registry/store, sending an email/message, anything that leaves the machine.
+3. **Spends money** — provisioning paid infra, hitting a metered paid API beyond the Gate-2 budget, anything that bills.
+4. **Genuinely-undecidable high-stakes blocker** — a fork where both branches carry material, hard-to-reverse consequence and the PRD/spec give no basis to choose.
+
+`BUILD-AUTONOMY.md` is seeded from `templates/BUILD-AUTONOMY.md`, written at Phase 1, and **signed once by the operator at Gate 1** (the operator fills in the deploy target, the spend ceiling, and answers to any undecidable items batched at Gate 1 — see D5). Its presence is what flips the build from "ask-per-step" to "run-to-completion." Absent the file (or absent CONSTITUTION.md or the locked PRD), the build falls back to per-step confirmation. The stop-condition set is **deterministic and not overridable** — the standing authorization expands what runs without asking; it never expands what runs without stopping.
 
 ## Invocation
 
@@ -199,7 +212,7 @@ This counters urgency bias by forcing a deliberate pause at the moment when shor
 
 ### Phase 1 — Structure [AUTO]
 
-**Output:** Folder structure, locked PRD, CONSTITUTION.md, .forge/ initialized
+**Output:** Folder structure, locked PRD, CONSTITUTION.md, BUILD-AUTONOMY.md, .forge/ initialized
 
 1. Create the numbered folder structure:
    ```
@@ -211,7 +224,9 @@ This counters urgency bias by forcing a deliberate pause at the moment when shor
 4. Generate `CONSTITUTION.md` at project root with Articles I–X tailored to this project's risks:
    - Articles I–V: **inviolable** (truthfulness, user safety, data handling, reversibility, scope discipline)
    - Articles VI–X: **overridable with logging** (spec authority, no test theater, honest reporting, pushback discipline, root-cause discipline)
-5. Initialize `.forge/STATE.json`: `{ "phase": 1, "status": "complete", "track": "fast|full" }`
+5. Write `BUILD-AUTONOMY.md` at project root, seeded from `templates/BUILD-AUTONOMY.md`. This is the standing-authorization charter (see "Standing Authorization — Run to Completion" above): it states that with CONSTITUTION.md + the locked PRD present the build runs to completion without per-step gates, and it carries the fixed stop-condition set (destructive/irreversible, outward-facing, spends-money, undecidable high-stakes). Leave the operator-signed fields (deploy target, spend ceiling, undecidable-batch answers) blank — they are filled at Gate 1.
+6. **Preflight — probe and provision the declared stack.** Run `tools/preflight.sh`. It probes every runtime the declared stack needs (node/npm version, python, the package manager, anchor/cargo, browsers for Playwright, etc.), **installs any that are missing within the declared stack**, and **hard-fails if it cannot** install or detect one. The build is **blocked until preflight is green** — `tools/preflight.sh` writes `.forge/PREFLIGHT.json` and STATE.json cannot leave Phase 1 until it shows all required runtimes present. **Never write code that routes around a missing runtime** (a shim, a mock-because-it-won't-install, a "skip if unavailable" branch) — that produces code that can't be verified, which defeats the point of the loop. If a runtime genuinely cannot be installed, that is a Gate-1 blocker, not a thing to code around.
+7. Initialize `.forge/STATE.json`: `{ "phase": 1, "status": "complete", "track": "fast|full" }`
 
 ---
 
@@ -357,6 +372,8 @@ Each returns findings with severity. Merge into pre-screen report.
 - Research decisions with trade-off matrices (from P3)
 - Any [OPEN] or [UNVERIFIED] items that need operator judgment
 - Spec outline (proposed sections)
+- **Undecidable decision batch (D5):** the set of genuinely-undecidable high-stakes items — each with options, the consequence of each branch, and why the PRD/spec give no basis. These are batched here, at Gate 1, precisely so they are resolved **before** the build starts and never become a mid-build interrupt.
+- **BUILD-AUTONOMY.md for signature:** the standing-authorization charter and its fixed stop-condition set, presented for the operator to sign once.
 
 **Collect from operator:**
 - Strategic direction on panel divergences
@@ -364,6 +381,8 @@ Each returns findings with severity. Merge into pre-screen report.
 - Priority ranking of conflicting requirements
 - Any context, API keys, or credentials available now
 - Response to adversarial/feasibility findings
+- **Answers to the undecidable decision batch** — written back into the spec/PRD-ENHANCED so the build has a basis (these become `basis="spec"` from here on)
+- **Signature on BUILD-AUTONOMY.md** — operator fills in the deploy target, the spend ceiling, and confirms the stop-condition set. This is what authorizes run-to-completion; without it the build falls back to per-step confirmation.
 
 **On redirect:** Re-run P2–P3 with operator notes as additional constraint.
 
@@ -612,6 +631,29 @@ The planner stands up the build team via `tools/forge-team.sh`: one tmux session
 
 ---
 
+#### P6a-gate — Pin every shared seam before fan-out [planner] (GATE)
+
+The single most expensive failure mode in a parallel build is two agents that *agree the interface in the abstract but never pin the concrete contract*. The canonical case: the frontend lead and the backend lead agreed the API shape, built to it independently, and the build looked green on both sides — but they never pinned the **DOM/test contract** (the exact selectors, element roles, and event names the e2e suite drives). Result: 100% of the e2e tests failed, because the one contract that ties the two layers together at runtime was the one nobody owned. A pinned API is not enough; **every seam two or more agents share must be pinned, including the e2e/test contract.**
+
+**Technically:** Before any parallel fan-out (coder fanning out coding subagents, or sibling coder terminals), the planner enumerates **every seam two or more agents will share** and pins each as a single source of truth in `04-spec/contracts/`. The seam classes to enumerate:
+
+- **API** — endpoints, request/response schemas, status codes, error envelopes.
+- **DOM** — the exact selectors, ARIA roles, `data-testid`s, and element structure the UI exposes (this is the one that gets skipped).
+- **Events** — event names, payloads, ordering, and who emits/consumes.
+- **Data schema** — DB tables/columns, message formats, file formats shared across layers.
+- **e2e / test contract** — the concrete selectors + flows the e2e suite drives, derived from the DOM and API contracts so both sides build against the *same* thing the tests assert.
+
+Each seam gets one file in `04-spec/contracts/` (e.g. `04-spec/contracts/api.md`, `dom.md`, `events.md`, `schema.md`, `e2e.md`). These supersede the abstract interfaces in `04-spec/CONTRACTS.md` for anything shared across fan-out boundaries — the per-seam files are the authority both sides build against.
+
+**This is a GATE, not advice. P6 parallel fan-out is blocked until every shared seam has a pinned contract.** The planner asserts: for every pair of tasks in `TASKS.json` that touch a common boundary, there is a corresponding pinned file in `04-spec/contracts/`. If a shared seam has no pinned contract, fan-out does not begin — pin it first. Wire-through:
+
+- **e2e tests derive from the seam contracts** — the tester generates e2e cases from `04-spec/contracts/e2e.md` (+ `dom.md`/`api.md`), not from a fresh reading of the UI, so the suite asserts the pinned contract rather than whatever happened to get built.
+- **R8 conformance traces to the seam contract** — a completed module that touches a shared seam must trace to its pinned contract file; the module-conformance hook treats a dangling seam ref the same as a dangling `spec_ref`.
+
+Log to MEMORY.md: `[timestamp] P6a-gate — {N} shared seams pinned in 04-spec/contracts/, fan-out unblocked`.
+
+---
+
 #### Per-terminal hooks (status / monitoring / continuous build)
 
 Because each lead lives in its own terminal, the planner wires the same three hook families into every window, keyed by `FORGE_ROLE`. The hooks make the lead team observable and self-healing without changing what R1/R7/R8/R9 already do — they attribute the existing machinery per role.
@@ -752,7 +794,7 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
    - Every task has a reviewer verdict of APPROVE (not skipped)
    - Smoke test passed for every agent's output (supervisor-run)
    - Secret scan passed (no credentials in committed files)
-   - **Ship gate (R8 + R9):** run `tools/ship-gate.sh`. It scans the tree for stubs and counts open MAJOR+ stub/conformance gaps, then merges `no_open_stub_gaps` / `no_stubs_in_tree` / `no_open_conformance_gaps` assertions into `P6_EXIT.json`. Any failure → `pass:false` → the phase gate blocks P7. This is what makes R8/R9 *blocking* rather than advisory.
+   - **Ship gate (R8 + R9 + real verification):** run `tools/ship-gate.sh`. It scans the tree for stubs and counts open MAJOR+ stub/conformance gaps, **and reads `.forge/VERIFY.json`**, then merges `no_open_stub_gaps` / `no_stubs_in_tree` / `no_open_conformance_gaps` / **`verification_real`** assertions into `P6_EXIT.json`. `verification_real` is true only when `VERIFY.json` shows **every required layer green — including e2e** (and no required layer left `unverified`); e2e is required to ship. Any failure → `pass:false` → the phase gate blocks P7. This is what makes R8/R9 and real verification *blocking* rather than advisory — a build cannot ship on a green it only inspected, and cannot ship without e2e.
 5. **Write `.forge/P6_EXIT.json`** with each assertion result. STATE.json cannot advance to phase 7 until P6_EXIT.json shows all passing.
 6. **Compound learning capture** (inspired by CE's `/ce-compound`): Before killing terminals, extract and document what was learned during the build so future builds start smarter:
    - Decisions made (from MEMORY.md): which technical choices worked, which didn't
@@ -811,12 +853,15 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
 
 **Output:** Test results, visual QA results, extracted gaps
 
-1. **Execute the project's test suite via Bash** — not a file audit, not a markdown review. Run the actual commands:
+1. **Execute the project's test suite via `tools/verify.sh`** — not a file audit, not a markdown review, and not a pipe that can hide a failure. The tester runs `tools/verify.sh`, which runs build / lint / unit / **e2e** as separate layers with **genuine exit codes**: it sets `-o pipefail` and **redirects rather than pipes** (a `cmd | tee log` can mask a non-zero exit; `cmd > log 2>&1; rc=$?` cannot), so a green result means the layer actually passed. It writes per-layer results to `.forge/VERIFY.json`. **e2e is required** — it is the whole point of the loop, the thing that catches the seam failures unit tests pass right over. Underneath, verify.sh runs the project's real commands:
    - `anchor test` (or equivalent for the smart contract / backend)
    - `npm run build` in every package directory (frontend, automation, root)
    - `npm test` if test scripts exist
+   - the e2e command (Playwright / equivalent) — **required**, not optional
    - `make setup` or the project's one-command entry point
-   Capture stdout/stderr. Parse for pass/fail counts. If any command fails, that is a gap — do not paper over it. Write actual results to `.forge/TEST_RESULTS.md` with the raw command output. "Compiles" ≠ "works" — you must run it and see it pass.
+   Capture stdout/stderr per layer. If any required layer fails, that is a gap — do not paper over it. Write `.forge/VERIFY.json` plus the raw command output to `.forge/TEST_RESULTS.md`. "Compiles" ≠ "works" — you must run it and see it pass.
+
+   **Report per-layer run-vs-inspected.** For each layer state explicitly what was **actually run** (a command executed with an observed exit code) versus what was only **inspected** (read, grepped, reasoned about). Anything that could not be verified — a layer that wouldn't run, an environment that wasn't available, an e2e flow that couldn't be exercised — is **surfaced, not silently dropped**: it goes into `.forge/VERIFY.json` as `unverified` with the reason, and becomes a gap. Never report a layer as green that you only inspected.
 
 2. **Cross-check spec coverage:** For each section in spec.md (S1, S2, ...), verify there is implementing code in the repo. For each route in S5 (frontend), verify the route exists in the filesystem. For each instruction in S3 (smart contract), verify the handler exists. This is a `grep`/`find` exercise, not a read-and-judge exercise. Write a coverage table to `.forge/AUDIT.json`.
 
@@ -992,6 +1037,7 @@ Every agent classifies decisions before acting:
 - **Architectural** (new dependency, interface change, data model) → escalate to supervisor/orchestrator
 - **Strategic** (drop feature, change scope, accept security trade-off) → queue for next human gate
 - **Rule:** If reversible, pick the best option and log it. If irreversible, queue for gate. Never ask a bare question — always include: decision needed, options considered, recommendation, reversibility assessment.
+- **PRD-silent items are logged, not interrupts.** When the PRD/spec is silent on something the build must decide, the build **does not stop to ask** — it picks the best option and records it as a logged decision in `.forge/DECISIONS.json` via `tools/log-decision.sh "<decision>" spec|interpretation`. Each entry is flagged `basis="spec"` when the choice is a direct fact of the PRD/spec, or `basis="interpretation"` when it's a reasonable read of a gap. This keeps the loop moving (a silent PRD is the common case, not an exception) while leaving a reviewable trail. **The only items that interrupt are genuinely-undecidable high-stakes ones** (both branches carry material, hard-to-reverse consequence, no basis to choose) — and those are **batched to the human BEFORE the build starts**, as a Gate-1 decision batch, not surfaced mid-build. In short: log interpretations, run on; batch only the undecidable, and only at Gate 1.
 - **Decision Deck:** After resolving any **Architectural** or **Strategic** decision, invoke `/decision log` with the decision details (question, options considered, chosen option, rationale, cascade impacts). This creates a permanent McKinsey-style slide in the project's `decisions/deck.html`. Technical decisions are logged to MEMORY.md only — too frequent for deck slides.
 
 ### Constitution Enforcement
@@ -1039,6 +1085,9 @@ All state lives in `.forge/` and `docs/`. The conversation is disposable.
 | COST.json | Orchestrator | After every agent spawn/return | Token spend per agent, per phase, total |
 | EVAL/ | Spec writer (P5) — then locked | Written once, immutable | Test harness (the contract) |
 | P6_EXIT.json | Orchestrator | At P6→P7 boundary | Exit assertion pass/fail per check |
+| VERIFY.json | Tester (`tools/verify.sh`, P7) | After each verification run | Per-layer build/lint/unit/e2e result + `unverified` items; ship-gate reads it for `verification_real` |
+| DECISIONS.json | All agents (`tools/log-decision.sh`) | On every PRD-silent decision | Logged decisions, each `basis="spec"\|"interpretation"` (D5) |
+| PREFLIGHT.json | `tools/preflight.sh` (P1) | At preflight run | Declared-stack runtimes: present / installed / missing |
 | TEST_RESULTS.md | Orchestrator (P7) | After running test suite | Raw test output with pass/fail counts |
 | HEARTBEAT.json | All agents | Every 5 minutes during P6 | Agent liveness + current task + progress |
 
