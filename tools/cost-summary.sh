@@ -17,8 +17,8 @@
 #   cost-summary.sh --json          emit machine JSON only (no table)
 # Side effect: writes .forge/COST.json when a .forge/ dir exists.
 #
-# Rate overrides (USD per 1M tokens), defaults = standard Opus schedule:
-#   OPUS_IN=15  OPUS_OUT=75  OPUS_CACHE_READ=1.50  OPUS_CW5=18.75  OPUS_CW1=30
+# Rate overrides (USD per 1M tokens), defaults = Claude Opus 4.8 standard rates:
+#   OPUS_IN=5  OPUS_OUT=25  OPUS_CACHE_READ=0.50  OPUS_CW5=6.25  OPUS_CW1=10
 set -uo pipefail
 
 JSON_ONLY=0
@@ -51,13 +51,15 @@ def rate(name, default):
     try: return float(os.environ.get(name, default))
     except Exception: return default
 
-# USD per 1M tokens. Token counts below are exact; these rates drive the $ only.
+# USD per 1M tokens — Claude Opus 4.8 standard rates (platform.claude.com/docs pricing,
+# verified 2026-05). Token counts are exact; these rates drive the $ only. Override via
+# env for other models or fast mode (Opus 4.8 fast = $10 in / $50 out).
 R = {
-    "in":   rate("OPUS_IN", 15.0),
-    "out":  rate("OPUS_OUT", 75.0),
-    "cr":   rate("OPUS_CACHE_READ", 1.50),
-    "cw5":  rate("OPUS_CW5", 18.75),
-    "cw1":  rate("OPUS_CW1", 30.0),
+    "in":   rate("OPUS_IN", 5.0),
+    "out":  rate("OPUS_OUT", 25.0),
+    "cr":   rate("OPUS_CACHE_READ", 0.50),
+    "cw5":  rate("OPUS_CW5", 6.25),
+    "cw1":  rate("OPUS_CW1", 10.0),
 }
 
 def cost(in_, out_, cr, cw5, cw1):

@@ -13,11 +13,13 @@
 # A line containing `forge:allow-stub` is exempt (intentional, documented).
 set -uo pipefail
 
-# Source extensions only — docs/markdown legitimately contain "TODO".
+# Source extensions only — docs/markdown legitimately contain markers like TODO.  (forge:allow-stub)
 SRC_RE='\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|rb|php|c|cc|cpp|h|hpp|cs|swift|kt|kts|scala|sh)$'
 
 # High-signal stub markers (extended regex). Conservative on purpose.
-MARKER_RE='TODO|FIXME|XXX|HACK|NotImplementedError|NotImplemented|raise[[:space:]]+NotImplemented|not[[:space:]]+implemented|unimplemented|@stub|placeholder|lorem[[:space:]]+ipsum|throw[[:space:]]+new[[:space:]]+Error\([[:space:]]*["'"'"']?(not[[:space:]]+implemented|todo|unimplemented|stub)'
+# Note: the bare word "placeholder" was dropped (it false-matched HTML/React
+# props); use the explicit at-placeholder annotation for a deliberate stub.
+MARKER_RE='TODO|FIXME|XXX|HACK|NotImplementedError|NotImplemented|raise[[:space:]]+NotImplemented|not[[:space:]]+implemented|unimplemented|@stub|@placeholder|lorem[[:space:]]+ipsum|throw[[:space:]]+new[[:space:]]+Error\([[:space:]]*["'"'"']?(not[[:space:]]+implemented|todo|unimplemented|stub)'  # forge:allow-stub: marker definitions, not stubs
 
 scan_file() {
   local f="$1"
