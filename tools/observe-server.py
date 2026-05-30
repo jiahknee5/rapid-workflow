@@ -3,7 +3,7 @@
 
 Usage:
     cd <project-root>
-    python3 ~/projects/workflow/tools/observe-server.py [--port 4040]
+    python3 ~/projects/rapid-workflow/tools/observe-server.py [--port 4040]
 
 Serves:
     /                    → dashboard HTML
@@ -20,7 +20,7 @@ import time
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 DASHBOARD_PATH = Path(__file__).parent.parent / "docs" / "observatory.html"
 OBSERVE_DIR = ".forge/observe"
@@ -109,7 +109,7 @@ def get_meta(events, observe_dir):
         "active_agents": len(agent_count),
         "ctx_total_est": total_ctx,
         "observe_dir": observe_dir,
-        "server_time": datetime.utcnow().isoformat() + "Z",
+        "server_time": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     }
 
 

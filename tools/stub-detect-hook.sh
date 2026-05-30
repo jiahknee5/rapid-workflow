@@ -36,7 +36,9 @@ for line in os.environ.get("FINDINGS_JSON", "").splitlines():
 if not findings: sys.exit(0)
 
 def relpath(p):
-    try: return os.path.relpath(p, project)
+    # Resolve symlinks on both sides first (e.g. /tmp -> /private/tmp on macOS)
+    # so the gap id is a stable repo-relative path, not "../../private/tmp/...".
+    try: return os.path.relpath(os.path.realpath(p), os.path.realpath(project))
     except Exception: return p
 
 # phase + spec_ref-from-task (best effort: map file to a task by name match)
