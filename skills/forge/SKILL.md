@@ -548,7 +548,7 @@ In plain terms: the planner is the project manager who owns the plan and the ope
 
 **Launch.** `tools/forge-team.sh` (tmux) brings up one terminal per lead; `tools/forge-team.sh --cursor` writes `.vscode/tasks.json` so **Run Task → "FORGE: launch team"** opens each role in its own Cursor terminal. Each role reads its contract at `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`).
 
-**Technically:** one tmux session `forge-build` with one window per lead (planner, coder, tester, reviewer, watchdog), created at P6a and torn down at P6 end. Each lead exports `FORGE_ROLE` so the global hooks attribute themselves per role. All terminals form one agent team on the claude-peers MCP bus — on start each calls `set_summary(role + current task)` and `list_peers` to discover teammates, then coordinates via structured `send_message`/`check_messages` (shoulder-tap protocol). The leads dispatch subagents for review/test/coding fan-out. All state in `.forge/` files.
+**Technically:** one tmux session `forge-team` with one window per lead (planner, coder, tester, reviewer, watchdog), created at P6a and torn down at P6 end. Each lead exports `FORGE_ROLE` so the global hooks attribute themselves per role. All terminals form one agent team on the claude-peers MCP bus — on start each calls `set_summary(role + current task)` and `list_peers` to discover teammates, then coordinates via structured `send_message`/`check_messages` (shoulder-tap protocol). The leads dispatch subagents for review/test/coding fan-out. All state in `.forge/` files.
 
 **Output:** Working code, merged PRs, passing tests
 
@@ -606,11 +606,11 @@ The planner stands up the build team via `tools/forge-team.sh`: one tmux session
    # forge-team.sh creates the session and one window per lead, exporting FORGE_ROLE in each.
    # planner runs in the first window; coder/tester/reviewer/watchdog each get their own.
 
-   tmux new-session -d -s forge-build -n planner
+   tmux new-session -d -s forge-team -n planner
 
    for role in coder tester reviewer watchdog; do
-     tmux new-window -t forge-build -n "$role"
-     tmux send-keys -t "forge-build:$role" \
+     tmux new-window -t forge-team -n "$role"
+     tmux send-keys -t "forge-team:$role" \
        "FORGE_ROLE=$role claude --name \"forge-$role\" --dangerously-skip-permissions \
          --append-system-prompt-file .forge/prompts/$role.md \
          'Begin FORGE P6 $role. Read your contract at 04-spec/agents/$role.md, set your summary, list_peers to find the team, then start your loop.'" ENTER
@@ -785,7 +785,7 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
 
 1. **Shutdown handshake:** Send `SHUTDOWN` message to both supervisor and watchdog via claude-peers.
 2. **Wait for ACK:** Each terminal finishes its current atomic action (commit, review verdict), sends `ACK_SHUTDOWN`, and exits.
-3. **Timeout:** If `ACK_SHUTDOWN` not received within 60 seconds, fall back to `tmux kill-window -t forge-build:supervisor` and `tmux kill-window -t forge-build:watchdog`.
+3. **Timeout:** If `ACK_SHUTDOWN` not received within 60 seconds, fall back to `tmux kill-window` on the worker-lead windows (`forge-team:coder`, `forge-team:tester`, `forge-team:reviewer`, `forge-team:watchdog`), leaving planner to finalize.
 4. **P6 exit assertions** (blocking — build cannot proceed to P7 until all pass):
    - Every spec section has implementing code in the repo
    - Every public interface in CONTRACTS.md exists in the codebase
@@ -810,7 +810,7 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
      **Reuse:** When a future build should apply this
      ```
    Future builds read `.forge/LEARNINGS.md` from previous builds (if the project has one) at P0 and inject relevant learnings into agent prompts. Each build compounds.
-7. **Kill tmux session:** `tmux kill-session -t forge-build`
+7. **Kill tmux session:** `tmux kill-session -t forge-team`
 8. **Log:** `[timestamp] P6e complete — build phase finished, terminals shut down, {N} learnings captured`
 
 ---
