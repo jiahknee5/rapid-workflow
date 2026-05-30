@@ -125,19 +125,23 @@
     right.appendChild(buildRegenButton(regen));
     if (env) right.appendChild(buildEnvCluster(env));
     if (env && env.source) {
-      var src = document.createElement('div');
-      src.className = 'env-links';
-      src.appendChild(Object.assign(document.createElement('span'), { className: 'env-lbl', textContent: 'Source' }));
-      [['github', 'GitHub', '#8b949e'], ['gitlab', 'GitLab', '#FC6D26']].forEach(function (row) {
-        var url = env.source[row[0]] || '';
-        var a = document.createElement('a');
-        if (url) { a.href = url; a.target = '_blank'; a.rel = 'noopener'; }
-        else { a.className = 'off'; a.href = 'javascript:void 0'; }
-        a.title = url || (row[1] + ' not set');
-        a.innerHTML = '<span class="dot" style="background:' + (url ? row[2] : '#666') + '"></span>' + row[1];
-        src.appendChild(a);
-      });
-      right.appendChild(src);
+      // data-driven: show only the repo providers the project actually lists
+      var PROV = { github: ['GitHub', '#8b949e'], gitlab: ['GitLab', '#FC6D26'], bitbucket: ['Bitbucket', '#2684FF'] };
+      var srcLinks = Object.keys(env.source).filter(function (k) { return env.source[k]; });
+      if (srcLinks.length) {
+        var src = document.createElement('div');
+        src.className = 'env-links';
+        src.appendChild(Object.assign(document.createElement('span'), { className: 'env-lbl', textContent: 'Source' }));
+        srcLinks.forEach(function (key) {
+          var meta = PROV[key] || [key.charAt(0).toUpperCase() + key.slice(1), '#8b949e'];
+          var a = document.createElement('a');
+          a.href = env.source[key]; a.target = '_blank'; a.rel = 'noopener';
+          a.title = env.source[key];
+          a.innerHTML = '<span class="dot" style="background:' + meta[1] + '"></span>' + meta[0];
+          src.appendChild(a);
+        });
+        right.appendChild(src);
+      }
     }
     nav.appendChild(right);
   });

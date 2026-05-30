@@ -106,7 +106,7 @@ if not os.path.exists(env_path):
       "_note":"Atlas per-project links. Fill product/source/atlas from forge.yaml deploy targets (atlas-init/atlas-deploy).",
       "local":{"url":"http://localhost:3000","launch":"<your dev server, e.g. npm run dev>"},
       "dev":{"url":""},"prod":{"url":""},
-      "source":{"github":"","gitlab":""},
+      "source":{"github":""},
       "atlas":{"url":""}
     }, open(env_path,"w"), indent=2)
 

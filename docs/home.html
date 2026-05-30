@@ -192,8 +192,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <h2 class="section-title">Code repositories</h2>
     <p class="section-desc">Source repos from <code>docs/env.json → source</code>.</p>
     <div class="grid-2" id="source-cards">
-      <div class="card"><h4>GitHub</h4><div class="muted">loading…</div></div>
-      <div class="card"><h4>GitLab</h4><div class="muted">loading…</div></div>
+      <div class="card"><div class="muted">loading…</div></div>
     </div>
   </section>
 
@@ -295,11 +294,11 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       linkCard('Production', (prod.prod || {}).url, { linkText: 'Open production →' })
     ]);
 
-    // SOURCE
-    fill('source-cards', [
-      linkCard('GitHub', source.github, { linkText: 'Open repo →' }),
-      linkCard('GitLab', source.gitlab, { linkText: 'Open repo →' })
-    ]);
+    // SOURCE — data-driven: only the providers the project actually lists
+    var PROV = { github: 'GitHub', gitlab: 'GitLab', bitbucket: 'Bitbucket' };
+    fill('source-cards', Object.keys(source).filter(function (k) { return source[k]; }).map(function (k) {
+      return linkCard(PROV[k] || (k.charAt(0).toUpperCase() + k.slice(1)), source[k], { linkText: 'Open repo →' });
+    }));
 
     // DOCS — from docs.json (title + file) if present, else the static nav.
     var pages;
