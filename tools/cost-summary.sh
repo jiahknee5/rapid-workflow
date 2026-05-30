@@ -240,6 +240,16 @@ tr.total td{border-top:2px solid var(--border);border-bottom:none;font-weight:80
 .forge-nav-brand .forge-nav-sub{font-size:7px;font-weight:500;color:rgba(255,255,255,.45);letter-spacing:.06em;text-transform:uppercase}
 .forge-nav a{font-size:9.5px;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;padding:10px 12px;letter-spacing:.3px;white-space:nowrap;border-bottom:2px solid transparent}
 .forge-nav a:hover{color:rgba(255,255,255,.85)}.forge-nav a.active{color:#fff;border-bottom-color:#fff}
+body{min-height:100vh;display:flex;flex-direction:column}
+.spec-layout{display:flex;flex:1}
+.docpage-content{flex:1;min-width:0}
+.sidebar{width:280px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:32px 20px;position:sticky;top:38px;height:calc(100vh - 38px);overflow-y:auto}
+.sidebar-brand{font-size:1.1rem;font-weight:800;color:var(--navy);letter-spacing:-0.02em;margin-bottom:4px}
+.sidebar-sub{font-size:.7rem;color:var(--text-dim);margin-bottom:24px;font-weight:500}
+.sidebar-section{font-size:.55rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin:20px 0 8px}
+.sidebar a{display:block;font-size:.78rem;color:var(--text-muted);text-decoration:none;padding:3px 8px;border-radius:3px;margin:1px 0}
+.sidebar a:hover{background:var(--surface-alt);color:var(--text)}
+h1,h2{scroll-margin-top:48px}
 </style></head><body>"""
     nav = '<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>'
     for href, label in NAV:
@@ -267,12 +277,18 @@ tr.total td{border-top:2px solid var(--border);border-bottom:none;font-weight:80
     if forge["available"]:
         ph = "".join(f'<tr><td class="mono">{p}</td><td class="r">{k(forge["by_phase"][p])}</td></tr>'
                      for p in sorted(forge["by_phase"]))
-        forge_html = ('<h2>FORGE phase estimate<span class="tag">ctx_est · approximate · not billed</span></h2>'
+        forge_html = ('<h2 id="forge-estimate">FORGE phase estimate<span class="tag">ctx_est · approximate · not billed</span></h2>'
                       '<table class="t"><thead><tr><th>phase</th><th class="r">ctx_est</th></tr></thead><tbody>'
                       + ph + f'<tr class="total"><td>total</td><td class="r">{k(forge["total_ctx_est"])}</td></tr></tbody></table>')
     nsteps = len([s for s in steps if s["n"] > 0])
     data_through = short_ts(max((st["ts"] for st in steps), default=""))
-    body = (f'<main class="main"><h1>Cost &amp; Token Burn</h1>'
+    sidebar = ('<nav class="sidebar"><div class="sidebar-brand">RAPID</div><div class="sidebar-sub">Cost</div>'
+               '<div class="sidebar-section">On this page</div>'
+               '<a href="#overview">Overview</a><a href="#per-step">Per step</a><a href="#per-session">Per session</a>'
+               + ('<a href="#forge-estimate">FORGE phase estimate</a>' if forge["available"] else '')
+               + '</nav>')
+    body = (f'<div class="spec-layout">{sidebar}<div class="docpage-content"><main class="main">'
+            f'<h1 id="overview">Cost &amp; Token Burn</h1>'
             f'<p class="sub">Real token usage parsed from Claude Code session logs — tokens are exact; '
             f'$ uses the Opus rate table (in ${R["in"]:g} / out ${R["out"]:g} / cache-read ${R["cr"]:g} / '
             f'cache-write ${R["cw5"]:g}–${R["cw1"]:g} per Mtok), adjust if 4.8 pricing differs. Data through {data_through}.</p>'
@@ -281,15 +297,17 @@ tr.total td{border-top:2px solid var(--border);border-bottom:none;font-weight:80
             f'<div class="card"><div class="big">{k(tot["out"])}</div><div class="lbl">output tokens</div></div>'
             f'<div class="card"><div class="big">{nsteps}</div><div class="lbl">steps</div></div>'
             f'<div class="card"><div class="big">{len(files)}</div><div class="lbl">sessions</div></div></div>'
-            f'<h2>Per step<span class="tag">each user prompt</span></h2>'
+            f'<h2 id="per-step">Per step<span class="tag">each user prompt</span></h2>'
             f'<table class="t"><thead><tr><th>#</th><th>when</th><th>prompt</th><th class="r">in</th><th class="r">out</th>'
             f'<th class="r">cache-rd</th><th class="r">cache-wr</th><th class="r">$</th></tr></thead><tbody>{step_rows}'
             f'<tr class="total"><td colspan="3">whole project</td><td class="r">{k(tot["in"])}</td><td class="r">{k(tot["out"])}</td>'
             f'<td class="r">{k(tot["cr"])}</td><td class="r">{k(tcw)}</td><td class="r cost">${tot["cost"]:.2f}</td></tr></tbody></table>'
-            f'<h2>Per session</h2><table class="t"><thead><tr><th>session</th><th class="r">turns</th><th class="r">in</th>'
+            f'<h2 id="per-session">Per session</h2><table class="t"><thead><tr><th>session</th><th class="r">turns</th><th class="r">in</th>'
             f'<th class="r">out</th><th class="r">cache-rd</th><th class="r">cache-wr</th><th class="r">$</th></tr></thead><tbody>{sess_rows}</tbody></table>'
             f'{forge_html}'
-            f'<p class="foot">Generated by <code>tools/cost-summary.sh --html</code> — regenerate to refresh.</p></main></body></html>')
+            f'<p class="foot">Generated by <code>tools/cost-summary.sh --html</code> — regenerate to refresh.</p>'
+            f'</main></div></div>'
+            f'<script src="env-links.js" defer></script></body></html>')
     op = HTML_OUT if os.path.isabs(HTML_OUT) else os.path.join(PROJECT, HTML_OUT)
     try:
         os.makedirs(os.path.dirname(op), exist_ok=True)

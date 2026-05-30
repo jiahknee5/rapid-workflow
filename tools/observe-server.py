@@ -17,6 +17,7 @@ import json
 import os
 import glob
 import time
+import subprocess
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 from pathlib import Path
@@ -163,6 +164,44 @@ class ObserveHandler(SimpleHTTPRequestHandler):
             self.serve_json(self.get_meta())
         else:
             self.serve_static(path)
+
+    def do_POST(self):
+        parsed = urlparse(self.path)
+        qs = parse_qs(parsed.query)
+        # drain any body so the connection doesn't hang
+        length = int(self.headers.get("Content-Length", 0) or 0)
+        if length:
+            self.rfile.read(length)
+        if parsed.path == "/api/regen":
+            self.regen(qs.get("page", [""])[0])
+        else:
+            self.send_error(404)
+
+    def regen(self, page):
+        # Run ONLY the command registered for this page in docs/regen.json — the
+        # client supplies just the page name, never a command. Each page
+        # regenerates itself from its own source. Runs in the background so a
+        # slow (LLM) regen doesn't block the request.
+        cfg_path = os.path.join(os.getcwd(), "docs", "regen.json")
+        try:
+            cfg = json.load(open(cfg_path))
+        except Exception:
+            self.serve_json({"ok": False, "reason": "no docs/regen.json"})
+            return
+        entry = cfg.get(page) if isinstance(cfg, dict) else None
+        cmd = entry.get("cmd") if isinstance(entry, dict) else None
+        kind = (entry or {}).get("kind", "") if isinstance(entry, dict) else ""
+        if not cmd:
+            self.serve_json({"ok": True, "started": False, "page": page,
+                             "reason": (entry or {}).get("note", "no generator for this page") if isinstance(entry, dict) else "no generator for this page"})
+            return
+        try:
+            os.makedirs(".forge", exist_ok=True)
+            logf = open(os.path.join(".forge", "regen-" + page.replace("/", "_") + ".log"), "ab")
+            subprocess.Popen(["bash", "-lc", cmd], stdout=logf, stderr=logf, cwd=os.getcwd())
+            self.serve_json({"ok": True, "started": True, "page": page, "cmd": cmd, "kind": kind})
+        except Exception as e:
+            self.serve_json({"ok": False, "reason": str(e)})
 
     def serve_dashboard(self):
         if not DASHBOARD_PATH.exists():
