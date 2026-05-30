@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RAPID — eval</title>
+<title>Evaluation — RAPID</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -18,12 +18,91 @@
   --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
   --radius: 4px; --radius-sm: 3px;
 }
-html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
-body { margin: 0; }
-.main { max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
-.stub { padding: 40px; text-align: center; color: var(--text-dim); }
-.stub h1 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-.stub p { font-size: 0.88rem; max-width: 500px; margin: 0 auto; }
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+
+/* Sidebar nav (left menu) */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub:hover { color: var(--text-muted); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
+
+/* Main content */
+.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+
+/* Section system */
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+
+/* Subsection */
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* Strategy / callout block */
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+
+/* Requirement card */
+.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
+.req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
+.req-pri.must { background: var(--red-dim); color: var(--red); }
+.req-pri.should { background: var(--amber-dim); color: var(--amber); }
+.req-pri.could { background: var(--blue-dim); color: var(--blue); }
+.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body strong { color: var(--text); }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta span { display: flex; align-items: center; gap: 4px; }
+.req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tables */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout */
+.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+
+/* Code blocks */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .main { padding: 28px 20px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Top cross-page nav */
 .forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
 .forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
 .forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -43,11 +122,254 @@ body { margin: 0; }
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
   <a href="eval.html" class="active">Eval</a>
-  <a href="cost.html">Cost</a>  <a href="documentation.html">Documentation</a>
+  <a href="cost.html">Cost</a>
+  <a href="documentation.html">Documentation</a>
 </nav>
-<div class="stub">
-  <h1>eval</h1>
-  <p>This page will be dynamically generated during the RAPID pipeline. Content is populated when the corresponding phase completes.</p>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">Evaluation</div>
+  <div class="sidebar-section">On this page</div>
+  <a href="#overview">How evaluation works</a>
+  <a href="#harness">The eval harness (task-00)</a>
+  <a href="#ship-gate">The ship gate (P6 exit)</a>
+  <a href="#keep-revert">Keep-or-revert principle</a>
+  <a href="#gating">How tests gate phases</a>
+</nav>
+<div class="docpage-content"><div class="main">
+
+  <div class="section" id="overview">
+    <div class="section-id">Evaluation · Overview</div>
+    <div class="section-title">How RAPID evaluates a build</div>
+    <div class="section-desc">
+      RAPID's evaluation system has two jobs. First, it proves that the FORGE enforcement
+      hooks themselves still work — that is the immutable <strong>task-00 smoke test</strong>.
+      Second, at the end of the build it runs a <strong>ship gate</strong> that refuses to
+      let the build advance to walkthrough while stub or conformance gaps remain open. Both
+      are file-backed and re-runnable, so the result is always derived from the current tree
+      rather than a remembered claim.
+    </div>
+    <div class="strategy">
+      <h3>The two evaluation surfaces</h3>
+      <p><strong>task-00 harness</strong> (<code>.forge/EVAL/hooks.smoke.test.sh</code>) — an
+      immutable smoke test that builds a throwaway <code>.forge</code> tree in a temp directory
+      and asserts the hooks for R1, R7, R8 and R9 behave correctly.</p>
+      <p><strong>Ship gate</strong> (<code>.forge/P6_EXIT.json</code>) — three exit assertions
+      written at P6 that the phase gate (S-01) reads to decide whether P7 (walkthrough) may
+      begin.</p>
+    </div>
+  </div>
+
+  <div class="section" id="harness">
+    <div class="section-id">Evaluation · Harness</div>
+    <div class="section-title">The eval harness — task-00, the immutable smoke test</div>
+    <div class="section-desc">
+      <code>.forge/EVAL/hooks.smoke.test.sh</code> is the dependency root of the build
+      (per spec section S-04: "task-00 eval-harness is the dependency root in
+      <code>.forge/TASKS.json</code>"). It is re-runnable: it locates the repo's
+      <code>tools/</code> directory, makes a temporary build skeleton
+      (<code>.forge</code>, <code>01-intake</code>, <code>04-spec</code>, <code>src</code>),
+      seeds it with <code>{"phase":1}</code>, and exercises each enforcement hook against it.
+      It exits non-zero if any assertion fails.
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">What it asserts</div>
+      <div class="subsection-desc">
+        Four checks, each tied to a requirement. The harness uses an <code>assert</code>
+        helper that compares an actual value to an expected one and sets a fail flag.
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>R1 — Phase gate</h4>
+        <div>Writing <code>STATE.json</code> with <code>phase:2</code> while
+        <code>PRD-ENHANCED.md</code> is absent must be <strong>blocked</strong> (the hook
+        exits 2). After the artifact is created, the same write must be
+        <strong>allowed</strong> (exit 0).</div>
+      </div>
+      <div class="card">
+        <h4>R7 — Continuation hook</h4>
+        <div>With the phase artifact removed, a <code>Stop</code> event must be
+        <strong>blocked</strong> — the stop-hook output must contain
+        <code>"decision": "block"</code>.</div>
+      </div>
+      <div class="card">
+        <h4>R9 — Stub detection</h4>
+        <div>A source file containing <code>// TODO implement</code> must cause the
+        stub-detect hook to <strong>file a stub gap</strong> — a <code>GAP-STUB</code>
+        entry must appear in <code>.forge/GAPS.json</code>.</div>
+      </div>
+      <div class="card">
+        <h4>R8 — Conformance plumbing</h4>
+        <div>R8 (module conformance) is part of the same hook family this harness guards;
+        the harness header names R1/R7/R8/R9 as the behaviors asserted through the shared
+        <code>tools/</code> hooks.</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Key checks, verbatim from the harness</div>
+    </div>
+    <div class="code-block">set -uo pipefail
+TOOLS="$(cd "$(dirname "$0")/../../tools" &amp;&amp; pwd)"
+B="$(mktemp -d)"; trap 'rm -rf "$B"' EXIT
+cd "$B"; mkdir -p .forge 01-intake 04-spec src
+printf '{"phase":1}\n' &gt; .forge/STATE.json
+fail=0
+assert(){ [ "$1" = "$2" ] || { echo "FAIL: $3 (got '$1' want '$2')"; fail=1; }; }
+
+# R1: block phase advance without artifact, allow with it
+printf '{"tool_input":{"file_path":".forge/STATE.json","content":"{\\"phase\\":2}"}}' \
+  | bash "$TOOLS/phase-gate-hook.sh" &gt;/dev/null 2&gt;&amp;1
+assert "$?" "2" "R1 blocks P2 without PRD-ENHANCED"
+printf '# prd\n' &gt; 01-intake/PRD-ENHANCED.md
+printf '{"tool_input":{"file_path":".forge/STATE.json","content":"{\\"phase\\":2}"}}' \
+  | bash "$TOOLS/phase-gate-hook.sh" &gt;/dev/null 2&gt;&amp;1
+assert "$?" "0" "R1 allows P2 with PRD-ENHANCED"
+
+# R7: block stop when phase artifact missing
+rm -f 01-intake/PRD-ENHANCED.md
+out=$(printf '{"hook_event_name":"Stop"}' | bash "$TOOLS/stop-hook.sh" 2&gt;/dev/null)
+echo "$out" | grep -q '"decision": "block"'; assert "$?" "0" "R7 blocks premature stop"
+
+# R9: stub detected in source file
+printf '04-spec/spec.md\n# s\n## S1\n' &gt; 04-spec/spec.md
+printf 'function f(){ // TODO implement\n}\n' &gt; src/a.js
+printf '{"tool_input":{"file_path":"src/a.js"}}' \
+  | bash "$TOOLS/stub-detect-hook.sh" &gt;/dev/null 2&gt;&amp;1
+grep -q 'GAP-STUB' .forge/GAPS.json 2&gt;/dev/null; assert "$?" "0" "R9 files stub gap"
+
+echo "task-00 smoke: $([ $fail -eq 0 ] &amp;&amp; echo PASS || echo FAIL)"
+exit $fail</div>
+    <div class="footnote">Source: .forge/EVAL/hooks.smoke.test.sh. The harness is "immutable" — it is the fixed reference the build is measured against, not a test that gets rewritten to pass. This page does not claim the harness currently passes; it describes what the harness asserts.</div>
+  </div>
+
+  <div class="section" id="ship-gate">
+    <div class="section-id">Evaluation · Ship gate</div>
+    <div class="section-title">The ship gate — P6 exit assertions</div>
+    <div class="section-desc">
+      At P6 the ship gate (<code>tools/ship-gate.sh</code>, spec S-09) merges the stub and
+      conformance assertions into <code>.forge/P6_EXIT.json</code>. The phase-gate hook
+      (S-01) reads that file and blocks P7 (walkthrough) if any assertion fails. The table
+      below shows the assertions <strong>exactly as recorded in the current
+      <code>.forge/P6_EXIT.json</code></strong>.
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr><th>Status</th><th>Assertion</th><th>Detail (from file)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
+          <td>no_open_stub_gaps</td>
+          <td>0 open MAJOR+ stub gap(s)</td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
+          <td>no_stubs_in_tree</td>
+          <td>0 stub marker(s) found in source tree</td>
+        </tr>
+        <tr>
+          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
+          <td>no_open_conformance_gaps</td>
+          <td>0 open MAJOR+ conformance gap(s)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="key-insight">
+      <strong>All three P6 exit assertions are recorded as passing</strong> in
+      <code>.forge/P6_EXIT.json</code> (each entry has <code>"pass": true</code>). Because
+      no assertion fails, the phase gate does not block advancement to P7. If any assertion's
+      detail showed a non-zero count, its <code>pass</code> would be <code>false</code>, its
+      dot would be red, and S-01 would refuse the walkthrough phase.
+    </div>
+    <div class="footnote">Source: .forge/P6_EXIT.json. Status dots reflect the file's recorded values; this page does not assert results beyond what the file contains.</div>
+  </div>
+
+  <div class="section" id="keep-revert">
+    <div class="section-id">Evaluation · Principle</div>
+    <div class="section-title">Keep-or-revert principle</div>
+    <div class="section-desc">
+      The eval harness is the fixed reference and is never weakened to make a build pass.
+      A change is kept only if the relevant assertions still hold; otherwise it is reverted.
+      The harness asserting exact exit codes (2 for blocked, 0 for allowed) and exact output
+      strings (<code>"decision": "block"</code>, the presence of a <code>GAP-STUB</code> entry)
+      is what makes "keep" an objective, file-derived decision rather than a judgment call.
+    </div>
+    <div class="strategy">
+      <h3>Why keep-or-revert is enforceable here</h3>
+      <p>The smoke test is re-runnable against a throwaway tree, so it can be run before and
+      after any change to the hooks or the build. If a change breaks an assertion, the harness
+      exits non-zero and the change does not survive.</p>
+      <p>At ship time the same discipline applies through <code>.forge/P6_EXIT.json</code>: a
+      build only ships forward when no open MAJOR+ stub or conformance gaps remain and no stub
+      markers are found in the tree. A regression flips an assertion to
+      <code>"pass": false</code> and the gate holds.</p>
+    </div>
+  </div>
+
+  <div class="section" id="gating">
+    <div class="section-id">Evaluation · Gating</div>
+    <div class="section-title">How tests gate phases (R1 and R4)</div>
+    <div class="section-desc">
+      Two requirements connect the eval system to phase progression. R1 is the phase gate that
+      blocks advancement without the prerequisite artifact; R4 makes the eval harness the
+      dependency root so the build cannot reach P6 until tests exist.
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R1</span>
+        <span class="req-title">Phase-gate hook — block advance without the artifact</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        <strong>tools/phase-gate-hook.sh</strong> (spec S-01) runs PreToolUse on
+        <code>Write|Edit</code>. It parses the written <code>STATE.json</code> content from
+        stdin, reads the target phase, and blocks (exit 2) when the prerequisite artifact for
+        that phase is absent. The artifact chain is:
+        PRD-ENHANCED &#8594; synthesis &#8594; spec &#8594; EVAL+TASKS &#8594; P6_EXIT &#8594; WALKTHROUGH.
+        At the P6&#8594;P7 boundary the prerequisite is a passing <code>P6_EXIT.json</code>.
+      </div>
+      <div class="req-meta">
+        <span><span class="label">Spec</span> S-01</span>
+        <span><span class="label">Hook</span> phase-gate-hook.sh</span>
+        <span><span class="label">Event</span> PreToolUse · Write|Edit</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R4</span>
+        <span class="req-title">Blocking dependency graph — tests are the root</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Spec S-04: the <strong>task-00 eval-harness is the dependency root</strong> in
+        <code>.forge/TASKS.json</code>, and the phase gate <strong>refuses P6 until
+        <code>.forge/EVAL/</code> holds test files</strong>. This makes the smoke test a
+        prerequisite of the build rather than an afterthought — there is no path to the ship
+        gate that skips the eval harness.
+      </div>
+      <div class="req-meta">
+        <span><span class="label">Spec</span> S-04</span>
+        <span><span class="label">Root task</span> task-00</span>
+        <span><span class="label">Gate</span> P6 requires .forge/EVAL/</span>
+      </div>
+    </div>
+
+    <div class="key-insight">
+      <strong>The flow:</strong> R4 forces the eval harness to exist before P6 &#8594; the harness
+      asserts R1/R7/R8/R9 still hold &#8594; the ship gate writes P6_EXIT.json &#8594; R1 reads that
+      file and only then permits P7. Tests gate phases at both ends of the build.
+    </div>
+  </div>
+
+</div></div>
 </div>
 </body>
 </html>

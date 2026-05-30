@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{TITLE}} — RAPID</title>
+<!-- ============================================================
+     STANDARD DOCS WEB-PAGE TEMPLATE  (the "spec" layout)
+     Top forge-nav (cross-page) + left sidebar (in-page menu) + main.
+     This is the single source of truth for the RAPID documentation
+     web site, and the standard layout FORGE emits for every project's
+     doc site. (The Reveal.js per-folder decks from /docs build are a
+     separate artifact and unchanged.)
+
+     Placeholders a generator/transform fills:
+       {{TITLE}}      page title
+       {{NAV}}        cross-page links (mark current with class="active")
+       {{SIDEBAR}}    in-page menu: .sidebar-section headers + <a href="#id">
+       {{MAIN}}       page content (.section blocks)
+     ============================================================ -->
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FFFFFF; --surface: #F7F8FA; --surface-alt: #F0F2F5;
+  --border: #D4D8DE; --border-light: #E2E5EA;
+  --text: #1A2744; --text-muted: #4A5568; --text-dim: #8896A6;
+  --navy: #1A2744; --blue: #2B6CB0; --blue-dim: rgba(43,108,176,0.08);
+  --green: #276749; --green-dim: rgba(39,103,73,0.08);
+  --red: #C53030; --red-dim: rgba(197,48,48,0.06);
+  --amber: #B7791F; --amber-dim: rgba(183,121,31,0.08);
+  --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
+  --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
+  --radius: 4px; --radius-sm: 3px;
+}
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+
+/* Sidebar nav (left menu) */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub:hover { color: var(--text-muted); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
+
+/* Main content */
+.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+
+/* Section system */
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+
+/* Subsection */
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* Strategy / callout block */
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+
+/* Requirement card */
+.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
+.req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
+.req-pri.must { background: var(--red-dim); color: var(--red); }
+.req-pri.should { background: var(--amber-dim); color: var(--amber); }
+.req-pri.could { background: var(--blue-dim); color: var(--blue); }
+.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body strong { color: var(--text); }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta span { display: flex; align-items: center; gap: 4px; }
+.req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tables */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout */
+.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+
+/* Code blocks */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .main { padding: 28px 20px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Top cross-page nav */
+.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.forge-nav a:hover { color: rgba(255,255,255,0.85); }
+.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+</style>
+</head>
+<body>
+<nav class="forge-nav">
+  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  {{NAV}}
+</nav>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">{{TITLE}}</div>
+  {{SIDEBAR}}
+</nav>
+<div class="main">
+  {{MAIN}}
+</div>
+</div>
+</body>
+</html>

@@ -122,6 +122,18 @@ h3 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 6p
 .forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
 .forge-nav a:hover { color: rgba(255,255,255,0.85); }
 .forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+
+/* --- standard sidebar layout (template-docs-page.html) --- */
+body{min-height:100vh;display:flex;flex-direction:column}
+.spec-layout{display:flex;flex:1}
+.docpage-content{flex:1;min-width:0}
+.sidebar{width:280px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:32px 20px;position:sticky;top:38px;height:calc(100vh - 38px);overflow-y:auto}
+.sidebar-brand{font-size:1.1rem;font-weight:800;color:var(--navy);letter-spacing:-0.02em;margin-bottom:4px}
+.sidebar-sub{font-size:0.7rem;color:var(--text-dim);margin-bottom:24px;font-weight:500}
+.sidebar-section{font-size:0.55rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin:20px 0 8px}
+.sidebar a{display:block;font-size:0.78rem;color:var(--text-muted);text-decoration:none;padding:3px 8px;border-radius:3px;margin:1px 0;line-height:1.4}
+.sidebar a:hover{background:var(--surface-alt);color:var(--text)}
+.section{scroll-margin-top:48px}
 </style>
 </head>
 <body>
@@ -137,6 +149,49 @@ h3 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 6p
   <a href="eval.html">Eval</a>
   <a href="cost.html">Cost</a>  <a href="documentation.html">Documentation</a>
 </nav>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">Architecture</div>
+  <div class="sidebar-section">Diagrams &amp; Sections</div>
+  <a href="#principle">Separate the builder from the auditor &mdash; the single design decision that shapes every mechanism in RAPID</a>
+  <a href="#d0">The complete system: pipeline, agents, safety mechanisms, data flows, and communication &mdash; all in one view</a>
+  <a href="#d1">The complete pipeline: 12 phases, 4 gates, 1 feedback loop, 1 compound loop</a>
+  <a href="#d2">10 agents mapped to pipeline phases, each selected for isolation and cost</a>
+  <a href="#d3">4 decision points where the pipeline pauses for operator input &mdash; each pre-screened by document review agents</a>
+  <a href="#d4">7-category watchdog: triggered on PR submission, merge, and periodic audit &mdash; never on work-in-progress</a>
+  <a href="#d5">How agents classify decisions: act silently, log, escalate, or queue for gate</a>
+  <a href="#d6">How panels and research agents produce grounded, traceable evidence</a>
+  <a href="#d7">How the system determines implementor count during P5 (Task Decomposition)</a>
+  <a href="#d7b">Tests generated from workflow state machine before any code is written</a>
+  <a href="#d8">How code is written, reviewed, and fixed without human intervention</a>
+  <a href="#d9">The convergence mechanism: classify failures, re-derive spec, rebuild &mdash; plus parallel optimization experiments for performance gaps</a>
+  <a href="#d10">Screenshot-driven UI verification at 3 viewports &mdash; the test that code review cannot perform</a>
+  <a href="#d11">Auto-generated pipeline that makes the watchdog permanent infrastructure &mdash; drift checking survives the build</a>
+  <a href="#d12">Three cost layers tracked at different timescales &mdash; with a circuit-breaker that stops the build before it blows the budget</a>
+  <a href="#d13">Every agent writes structured events to a shared state layer, visible in a live dashboard with 4 visual themes</a>
+  <a href="#d14">forge.yaml: 3-level override cascade controlling all agent and build behavior</a>
+  <a href="#d15">Why the operator can walk away between gates: every autonomous phase has a catch mechanism</a>
+  <a href="#d16">Where each borrowed mechanism lives in the pipeline, and what it prevents</a>
+  <a href="#d17">Every expert panel invocation produces a persistent, navigable record &mdash; organized by expert and by topic</a>
+  <a href="#d18">Every numbered folder gets a navigable Reveal.js deck &mdash; one hub ties them all together with honest change tracking</a>
+  <a href="#d19">The pipeline is a fixed scaffold &mdash; everything inside is composed dynamically per project from a library of thinking frameworks</a>
+  <a href="#d20">Seven capabilities from Compound Engineering make each build smarter than the last &mdash; the system compounds, not just the code</a>
+  <a href="#d21">Every agent and skill in RAPID, with its source file, invocation point, inputs, outputs, and the pattern for creating new ones</a>
+  <a href="#index">How all diagrams connect</a>
+  <a href="#d22">Every file in the .forge/ directory, with complete field-level schemas, who writes it, and when it&rsquo;s read</a>
+  <a href="#d23">12 structured message types between 3 persistent terminals &mdash; every message persisted to MESSAGES.json as crash-recovery fallback</a>
+  <a href="#d24">16 event types written to .forge/observe/*.jsonl &mdash; the raw feed for the observatory dashboard</a>
+  <a href="#d25">Every skill, with invocation, phase mapping, what it reads and writes</a>
+  <a href="#d26">Programmatic checks between every phase &mdash; failure triggers automatic retry with the violation appended, not a warning</a>
+  <a href="#d27">Every gate pre-screened by specialized review subagents &mdash; the operator sees findings, not raw artifacts</a>
+  <a href="#d28">Every forge.yaml setting &mdash; cascade: global (~/.forge/) &rarr; project (.forge/) &rarr; CLI flags</a>
+  <a href="#d29">Every phase broken into atomic steps with inputs, outputs, agents, and enforcement mechanisms</a>
+  <a href="#d30">7 categories the watchdog checks on every PR, merge, and 30-minute audit</a>
+  <a href="#d31">9 specialized reviewers with per-domain weight shifting and confidence-gated verdict synthesis</a>
+</nav>
+<div class="docpage-content">
+
 <div class="page-body">
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -2810,5 +2865,7 @@ claude-peers list_peers --scope repo
 
 </div>
 
+</div><!-- /docpage-content -->
+</div><!-- /spec-layout -->
 </body>
 </html>

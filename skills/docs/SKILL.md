@@ -2,8 +2,9 @@
 
 Generate navigable Reveal.js documentation decks from project artifacts. One deck per numbered folder, one hub deck as master navigation, honest change tracking across everything. Works with any project — auto-detects folder structure and content.
 
-> CSS template: `~/projects/workflow/templates/template-docs-deck.html`
-> System reference: `~/projects/workflow/docs/forge-architecture.html` (D17, D18)
+> CSS template (slide decks): `~/projects/rapid-workflow/templates/template-docs-deck.html`
+> CSS template (web doc site): `~/projects/rapid-workflow/templates/template-docs-page.html` — the **standard** spec-style layout (top forge-nav + left sidebar menu + main) for every project's documentation **web pages**. Convert existing pages in place with `tools/apply-docs-sidebar.py <file> --title <T>`.
+> System reference: `~/projects/rapid-workflow/docs/forge-architecture.html` (D17, D18)
 > Shares CSS vocabulary with `/decision` decks (decisions + panels).
 
 ## Invocation

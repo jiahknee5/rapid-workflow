@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RAPID — users</title>
+<title>Users — RAPID</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -18,12 +18,91 @@
   --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
   --radius: 4px; --radius-sm: 3px;
 }
-html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
-body { margin: 0; }
-.main { max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
-.stub { padding: 40px; text-align: center; color: var(--text-dim); }
-.stub h1 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-.stub p { font-size: 0.88rem; max-width: 500px; margin: 0 auto; }
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+
+/* Sidebar nav (left menu) */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub:hover { color: var(--text-muted); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
+
+/* Main content */
+.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+
+/* Section system */
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+
+/* Subsection */
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* Strategy / callout block */
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+
+/* Requirement card */
+.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
+.req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
+.req-pri.must { background: var(--red-dim); color: var(--red); }
+.req-pri.should { background: var(--amber-dim); color: var(--amber); }
+.req-pri.could { background: var(--blue-dim); color: var(--blue); }
+.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body strong { color: var(--text); }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta span { display: flex; align-items: center; gap: 4px; }
+.req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tables */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout */
+.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+
+/* Code blocks */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .main { padding: 28px 20px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Top cross-page nav */
 .forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
 .forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
 .forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -43,11 +122,207 @@ body { margin: 0; }
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
   <a href="eval.html">Eval</a>
-  <a href="cost.html">Cost</a>  <a href="documentation.html">Documentation</a>
+  <a href="cost.html">Cost</a>
+  <a href="documentation.html">Documentation</a>
 </nav>
-<div class="stub">
-  <h1>users</h1>
-  <p>This page will be dynamically generated during the RAPID pipeline. Content is populated when the corresponding phase completes.</p>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">Users</div>
+  <div class="sidebar-section">On this page</div>
+  <a href="#overview">Who this is for</a>
+  <a href="#primary-user">Primary user — the AI engineering lead</a>
+  <a href="#decision-points">Decision points — the operator at four gates</a>
+  <a href="#secondary-readers">Secondary readers</a>
+</nav>
+<div class="docpage-content"><div class="main">
+
+  <div class="section" id="overview">
+    <div class="section-id">Audience</div>
+    <div class="section-title">Who this is for</div>
+    <div class="section-desc">
+      RAPID takes a product idea or requirements document and builds the entire application — planning, coding, testing, and deploying — with minimal human input. The whole pipeline runs autonomously except at four decision points, where a human checks in. This page describes the people on the other side of those check-ins.
+    </div>
+    <div class="strategy">
+      <h3>The promise</h3>
+      <p>One person hands over a requirements document and walks away. They come back to a deployed application, a complete documentation site, a test report, and a timeline of everything that happened during the build.</p>
+      <p>Between the handoff and the result, they are asked to make exactly four decisions. Everything else is run by AI agents.</p>
+    </div>
+    <div class="key-insight">
+      <strong>The user is not babysitting the build.</strong> The system is designed so the human reviews and decides, rather than supervises every step. The dashboard and the integrated gate views exist to make those four decisions fast and well-informed.
+    </div>
+  </div>
+
+  <div class="section" id="primary-user">
+    <div class="section-id">Persona</div>
+    <div class="section-title">Primary user — the AI engineering lead</div>
+    <div class="section-desc">
+      From the PRD: an AI engineering lead who wants to turn a stakeholder's requirements into a shipped, tested, documented application using AI agents — without babysitting every step.
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h4>Goals</h4>
+        <div>
+          - Turn a stakeholder's PRD into a shipped, tested, documented app<br>
+          - Use AI agents to do the building, in parallel<br>
+          - Stay in control at the moments that matter, not every moment<br>
+          - Hand a clean documentation site to a stakeholder with no manual cleanup
+        </div>
+      </div>
+      <div class="card">
+        <h4>Frustrations</h4>
+        <div>
+          - Having to babysit every step of an agent build<br>
+          - Test results buried in a log file instead of surfaced in views they already look at<br>
+          - Documentation bolted on at the end instead of created as the build goes<br>
+          - Four systems (build, dashboard, docs, tests) that work but do not talk to each other, forcing cross-referencing
+        </div>
+      </div>
+      <div class="card">
+        <h4>What they need</h4>
+        <div>
+          - A dashboard that is prepopulated with the full plan when the build starts — not an empty screen<br>
+          - Documentation that updates whenever a phase completes<br>
+          - Pass/fail test status visible in every view<br>
+          - One combined view at each decision point<br>
+          - Everything explainable in plain English
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">A day in their workflow</div>
+      <div class="subsection-desc">The PRD's "what does done look like" reads as a walkthrough of this user's experience.</div>
+      <div class="strategy">
+        <h3>Start</h3>
+        <p>They run <code>/forge "build a math tutor for kids"</code> and immediately see the full build plan laid out in the dashboard — phases, agents, and a timeline, prepopulated rather than filling in from blank.</p>
+      </div>
+      <div class="strategy">
+        <h3>Walk away</h3>
+        <p>They leave and come back an hour later. The dashboard tells them, in one glance: "Phase 6, 5 of 8 tasks done, 2 tests failing, docs current through Phase 5."</p>
+      </div>
+      <div class="strategy">
+        <h3>Decide to ship</h3>
+        <p>At the ship decision point they see one screen with the working app, test results, doc completeness, cost, and remaining gaps — not four things to cross-reference.</p>
+      </div>
+      <div class="strategy">
+        <h3>Hand off</h3>
+        <p>After deploy, they have a documentation site they can send to a stakeholder without any manual cleanup.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="decision-points">
+    <div class="section-id">Operator role</div>
+    <div class="section-title">Decision points — the operator at four gates</div>
+    <div class="section-desc">
+      The pipeline runs autonomously except at four human decision points. At each one, the same person — the AI engineering lead, now acting as operator — looks at what the system has produced so far and decides whether to proceed. The PRD asks that each gate present one combined view rather than four separate things to cross-reference.
+    </div>
+
+    <div class="key-insight">
+      The PRD names four check-ins as the only points where the human is required. The labels below (G0–G3) describe each gate by what the operator is deciding at that moment. The integration work in the PRD is what makes each gate a single, informed view.
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G0</span>
+        <span class="req-title">Vision lock — is this the right thing to build?</span>
+        <span class="req-pri must">Gate</span>
+      </div>
+      <div class="req-body">
+        <strong>What they see:</strong> the system's understanding of what needs to be built, informed by expert panels and research. <strong>What they decide:</strong> whether that understanding matches the intent before any planning hardens around it.
+      </div>
+      <div class="req-meta">
+        <span><span class="label">Operator</span> AI engineering lead</span>
+        <span><span class="label">Source</span> "Understand what needs to be built by consulting expert panels and doing research"</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G1</span>
+        <span class="req-title">PRD / plan lock — is the plan approved?</span>
+        <span class="req-pri must">Gate</span>
+      </div>
+      <div class="req-body">
+        <strong>What they see:</strong> a detailed plan written by the system. <strong>What they decide:</strong> whether to approve it. The PRD is explicit that the system must "write a detailed plan and get human approval before starting." Nothing is built until this gate is passed.
+      </div>
+      <div class="req-meta">
+        <span><span class="label">Operator</span> AI engineering lead</span>
+        <span><span class="label">Source</span> "Write a detailed plan and get human approval before starting"</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G2</span>
+        <span class="req-title">Spec + tests — are the acceptance criteria right?</span>
+        <span class="req-pri must">Gate</span>
+      </div>
+      <div class="req-body">
+        <strong>What they see:</strong> the criteria the build will be tested against, generated from the plan — so "done" is defined before anyone starts building. <strong>What they decide:</strong> whether those criteria capture what success means. Test pass/fail status is meant to be visible here, not buried in a log.
+      </div>
+      <div class="req-meta">
+        <span><span class="label">Operator</span> AI engineering lead</span>
+        <span><span class="label">Source</span> "Tests are generated before code is written, so you know what done looks like before anyone starts building"</span>
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">G3</span>
+        <span class="req-title">Ship — deploy, or send back?</span>
+        <span class="req-pri must">Gate</span>
+      </div>
+      <div class="req-body">
+        <strong>What they see:</strong> one screen with the working app, test results, doc completeness, cost, and remaining gaps. <strong>What they decide:</strong> whether to deploy. This is the gate the PRD describes most concretely — a single integrated view rather than four artifacts to reconcile.
+      </div>
+      <div class="req-meta">
+        <span><span class="label">Operator</span> AI engineering lead</span>
+        <span><span class="label">Source</span> "At the ship decision point, I see one screen with: working app, test results, doc completeness, cost, and remaining gaps"</span>
+      </div>
+    </div>
+
+    <div class="metric-row">
+      <div class="metric"><span class="metric-value">4</span><span class="metric-label">Human decision points</span></div>
+      <div class="metric"><span class="metric-value">13</span><span class="metric-label">Pipeline phases</span></div>
+      <div class="metric"><span class="metric-value">3</span><span class="metric-label">Agent terminals</span></div>
+    </div>
+    <div class="footnote">Phase, decision-point, and terminal counts are taken from the PRD's "what already exists" section. Gate labels (G0–G3) summarize the four check-ins the PRD describes; the PRD does not itself number them.</div>
+  </div>
+
+  <div class="section" id="secondary-readers">
+    <div class="section-id">Other readers</div>
+    <div class="section-title">Secondary readers</div>
+    <div class="section-desc">
+      The primary user makes the decisions. But the artifacts the system produces are aimed at others too — chiefly the stakeholder the documentation is handed to.
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>The stakeholder</h4>
+        <p>The person whose requirements started the build. They are the audience for the final documentation site — which the PRD says must be clean, navigable, and handed over "without any manual cleanup." They do not run the build; they receive its output.</p>
+      </div>
+      <div class="card">
+        <h4>Anyone reviewing the build</h4>
+        <p>The dashboard and documentation are meant to make the build legible to someone who was not watching it live. Test status, phase progress, and a timeline like a Gantt chart let a reader reconstruct what happened and where it stands.</p>
+      </div>
+    </div>
+
+    <div class="strategy">
+      <h3>What every reader gets at the end</h3>
+      <p>A deployed application, a complete documentation site, a test report, and a timeline of everything that happened during the build. Documentation is created as the build goes — not bolted on afterward — so a reader who opens the docs mid-build sees everything completed so far.</p>
+    </div>
+
+    <div class="key-insight">
+      A constraint that shapes every reader's experience: <strong>everything the system produces must be explainable in plain English.</strong> The audience is not assumed to be the engineer who launched the build.
+    </div>
+
+    <div class="footnote">Synthesized from the PRD's "Who is this for?", "What should it do?", and "What does done look like?" sections. No personas, metrics, or test results beyond those stated in the PRD have been added.</div>
+  </div>
+
+</div></div>
 </div>
 </body>
 </html>

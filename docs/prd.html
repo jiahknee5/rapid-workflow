@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RAPID — prd</title>
+<title>Product Requirements — RAPID</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -18,12 +18,91 @@
   --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
   --radius: 4px; --radius-sm: 3px;
 }
-html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
-body { margin: 0; }
-.main { max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
-.stub { padding: 40px; text-align: center; color: var(--text-dim); }
-.stub h1 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-.stub p { font-size: 0.88rem; max-width: 500px; margin: 0 auto; }
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+
+/* Sidebar nav (left menu) */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub:hover { color: var(--text-muted); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
+
+/* Main content */
+.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+
+/* Section system */
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+
+/* Subsection */
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* Strategy / callout block */
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+
+/* Requirement card */
+.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
+.req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
+.req-pri.must { background: var(--red-dim); color: var(--red); }
+.req-pri.should { background: var(--amber-dim); color: var(--amber); }
+.req-pri.could { background: var(--blue-dim); color: var(--blue); }
+.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body strong { color: var(--text); }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta span { display: flex; align-items: center; gap: 4px; }
+.req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tables */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout */
+.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+
+/* Code blocks */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .main { padding: 28px 20px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Top cross-page nav */
 .forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
 .forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
 .forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -43,11 +122,161 @@ body { margin: 0; }
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
   <a href="eval.html">Eval</a>
-  <a href="cost.html">Cost</a>  <a href="documentation.html">Documentation</a>
+  <a href="cost.html">Cost</a>
+  <a href="documentation.html">Documentation</a>
 </nav>
-<div class="stub">
-  <h1>prd</h1>
-  <p>This page will be dynamically generated during the RAPID pipeline. Content is populated when the corresponding phase completes.</p>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">Product Requirements</div>
+  <div class="sidebar-section">On this page</div>
+  <a href="#what-is-this">What is this</a>
+  <a href="#who-is-this-for">Who is this for</a>
+  <a href="#what-it-should-do">What it should do</a>
+  <a href="#what-exists">What already exists</a>
+  <a href="#done">What "done" looks like</a>
+  <a href="#constraints">Constraints</a>
+  <a href="#open-questions">Open questions</a>
+</nav>
+<div class="docpage-content"><div class="main">
+
+  <div class="section" id="what-is-this">
+    <div class="section-id">Product Requirements</div>
+    <div class="section-title">What is this?</div>
+    <div class="section-desc">A tool that takes a product idea or requirements document and builds the entire application — planning, coding, testing, and deploying — with minimal human input. You check in at four decision points. Everything else runs autonomously.</div>
+    <p style="font-size:0.86rem;color:var(--text-muted);line-height:1.7;margin-bottom:8px;">While it builds, you can watch everything happening in real time through a live dashboard. Documentation is created as it goes, not bolted on at the end. Tests are generated before code is written, so you know what "done" looks like before anyone starts building.</p>
+    <div class="key-insight">When it finishes, you get a deployed application, a complete documentation site, a test report, and a timeline of everything that happened during the build.</div>
+  </div>
+
+  <div class="section" id="who-is-this-for">
+    <div class="section-id">Audience</div>
+    <div class="section-title">Who is this for?</div>
+    <div class="section-desc">An AI engineering lead who wants to turn a stakeholder's requirements into a shipped, tested, documented application using AI agents — without babysitting every step.</div>
+  </div>
+
+  <div class="section" id="what-it-should-do">
+    <div class="section-id">Capabilities</div>
+    <div class="section-title">What should it do?</div>
+    <div class="section-desc">The system spans five capabilities: building the application, showing the build in progress, producing documentation as it goes, making test results visible everywhere, and wiring all of those together.</div>
+
+    <div class="subsection">
+      <div class="subsection-title">Build the application</div>
+      <div class="subsection-desc">Given a product idea or PRD document, the system should:</div>
+      <ul style="font-size:0.82rem;color:var(--text-muted);line-height:1.8;padding-left:20px;">
+        <li>Understand what needs to be built by consulting expert panels and doing research</li>
+        <li>Write a detailed plan and get human approval before starting</li>
+        <li>Assign work to a team of AI agents that build in parallel</li>
+        <li>Review every piece of code through multiple specialized lenses before merging</li>
+        <li>Test everything against criteria generated from the plan</li>
+        <li>Fix problems automatically when possible, flag them for humans when not</li>
+        <li>Deploy the result</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Show me what's happening while it builds</div>
+      <div class="subsection-desc">I want to open a dashboard and immediately see:</div>
+      <ul style="font-size:0.82rem;color:var(--text-muted);line-height:1.8;padding-left:20px;">
+        <li>What phase the build is in</li>
+        <li>Which agents are working on what</li>
+        <li>Whether anything is blocked or broken</li>
+        <li>How much of the plan is complete</li>
+        <li>A timeline of the entire build, like a Gantt chart</li>
+      </ul>
+      <div class="key-insight">This should be prepopulated when the build starts — I should see the full plan laid out, not an empty screen that fills in as things happen. As the build progresses, the bars fill in and status updates in real time.</div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Create documentation as it builds, not after</div>
+      <div class="subsection-desc">Every phase should produce documentation automatically. I don't want to run a separate command — the docs should update whenever a phase completes. If I look at the documentation mid-build, it should reflect everything that's been completed so far.</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">At the end, all the documentation should be reorganized into a clean, navigable site I can hand to a stakeholder.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Make test results visible everywhere</div>
+      <div class="subsection-desc">I should see test pass/fail status in the dashboard, in the documentation, and at every decision point. Not buried in a log file.</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">If 3 out of 50 tests are failing, I should know that from any view — the dashboard health screen, the phase status, the documentation coverage page.</p>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Wire everything together</div>
+      <div class="subsection-desc">The build status, the documentation, the test results, and the dashboard should all know about each other. When a phase completes, all four should update.</div>
+      <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">When I'm at a decision point, I should see one combined view — not four separate things I have to cross-reference.</p>
+    </div>
+  </div>
+
+  <div class="section" id="what-exists">
+    <div class="section-id">Current State</div>
+    <div class="section-title">What already exists?</div>
+    <div class="section-desc">Four systems work independently today. The gap is the integration — they don't talk to each other.</div>
+    <table class="compare-table">
+      <thead>
+        <tr><th>System</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>The build pipeline (13 phases, 4 decision points, 3 agent terminals)</td><td>Working</td></tr>
+        <tr><td>The observability dashboard (4 visual themes, event streaming)</td><td>Working, but not prepopulated</td></tr>
+        <tr><td>The documentation generator (<code>/docs</code> skill)</td><td>Working, but manual</td></tr>
+        <tr><td>The eval harness (task-00, immutable tests)</td><td>Working, but results not surfaced</td></tr>
+      </tbody>
+    </table>
+    <div class="key-insight"><strong>The gap is the integration.</strong> These four systems work independently but don't talk to each other.</div>
+  </div>
+
+  <div class="section" id="done">
+    <div class="section-id">Acceptance</div>
+    <div class="section-title">What does "done" look like?</div>
+    <div class="section-desc">Four concrete scenarios define a finished product.</div>
+    <div class="req">
+      <div class="req-header"><span class="req-id">1</span><span class="req-title">Prepopulated plan on start</span></div>
+      <div class="req-body">I run <code>/forge "build a math tutor for kids"</code> and immediately see the full build plan in the dashboard.</div>
+    </div>
+    <div class="req">
+      <div class="req-header"><span class="req-id">2</span><span class="req-title">Walk-away status at a glance</span></div>
+      <div class="req-body">I walk away and come back in an hour. The dashboard tells me "Phase 6, 5 of 8 tasks done, 2 tests failing, docs current through Phase 5."</div>
+    </div>
+    <div class="req">
+      <div class="req-header"><span class="req-id">3</span><span class="req-title">One combined ship gate</span></div>
+      <div class="req-body">At the ship decision point, I see one screen with: working app, test results, doc completeness, cost, and remaining gaps.</div>
+    </div>
+    <div class="req">
+      <div class="req-header"><span class="req-id">4</span><span class="req-title">Stakeholder-ready docs after deploy</span></div>
+      <div class="req-body">After deploy, I have a documentation site I can send to a stakeholder without any manual cleanup.</div>
+    </div>
+  </div>
+
+  <div class="section" id="constraints">
+    <div class="section-id">Constraints</div>
+    <div class="section-title">Constraints</div>
+    <div class="section-desc">Boundaries the build must respect.</div>
+    <ul style="font-size:0.82rem;color:var(--text-muted);line-height:1.8;padding-left:20px;">
+      <li>No external dependencies beyond Python 3 and Claude Code</li>
+      <li>Dashboard must work offline (self-contained HTML)</li>
+      <li>Must work with the existing pipeline — this is integration, not a redesign</li>
+      <li>Documentation generation should not block the build (run in background)</li>
+      <li>Everything the system produces must be explainable in plain English</li>
+    </ul>
+  </div>
+
+  <div class="section" id="open-questions">
+    <div class="section-id">Unresolved</div>
+    <div class="section-title">Open questions</div>
+    <div class="section-desc">Decisions still to be made.</div>
+    <div class="req">
+      <div class="req-header"><span class="req-id">Q1</span><span class="req-title">Doc generation visibility</span></div>
+      <div class="req-body">Should the dashboard show doc generation happening in real time, or just show "docs: current" / "docs: stale"?</div>
+    </div>
+    <div class="req">
+      <div class="req-header"><span class="req-id">Q2</span><span class="req-title">Replay fidelity</span></div>
+      <div class="req-body">When I replay a completed build, should it show the documentation state at each point in time, or just the events?</div>
+    </div>
+    <div class="req">
+      <div class="req-header"><span class="req-id">Q3</span><span class="req-title">Gate view delivery</span></div>
+      <div class="req-body">Should the integrated gate view be a new dashboard tab, or a generated HTML file?</div>
+    </div>
+  </div>
+
+</div></div>
 </div>
 </body>
 </html>

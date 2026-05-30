@@ -834,6 +834,7 @@ This is optional on fast track (skip optimization gaps, log them as WONTFIX with
 3. Generate `RUNBOOK.md` with operational procedures (start, stop, monitor, troubleshoot)
 4. Write `.forge/RETRO.md`: what worked, what drifted, what the gap loop caught, token spend, time breakdown
 5. **Generate all documentation decks:** Run `/docs build` to produce per-folder Reveal.js decks and the master hub at `docs/hub.html`. This is the final documentation pass — every folder gets a navigable deck with diagrams, change tracking, and cross-links.
+   - **Documentation web site (standard layout):** the sectioned doc web pages (PRD, spec, architecture, eval, …) use the standard spec-style layout — top `forge-nav` + left `.sidebar` in-page menu + `.main` — defined in `templates/template-docs-page.html`. Apply it to a page with `python3 tools/apply-docs-sidebar.py docs/<page>.html --title <Title>`. This is the standard for every project's doc web site (slide-deck output above is unchanged). Page types that aren't sectioned docs (a Reveal slide deck, a live dashboard) keep the top-nav only.
 6. Final STATE.json: `{ "phase": 9, "status": "shipped" }`
 
 ---

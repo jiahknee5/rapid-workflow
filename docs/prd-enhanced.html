@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RAPID — prd-enhanced</title>
+<title>Enhanced PRD — RAPID</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -18,12 +18,91 @@
   --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
   --radius: 4px; --radius-sm: 3px;
 }
-html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
-body { margin: 0; }
-.main { max-width: 980px; margin: 0 auto; padding: 48px 40px 96px; }
-.stub { padding: 40px; text-align: center; color: var(--text-dim); }
-.stub h1 { font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-.stub p { font-size: 0.88rem; max-width: 500px; margin: 0 auto; }
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+
+/* Sidebar nav (left menu) */
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub:hover { color: var(--text-muted); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
+
+/* Main content */
+.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+
+/* Section system */
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+
+/* Subsection */
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+/* Strategy / callout block */
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+
+/* Requirement card */
+.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
+.req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
+.req-pri.must { background: var(--red-dim); color: var(--red); }
+.req-pri.should { background: var(--amber-dim); color: var(--amber); }
+.req-pri.could { background: var(--blue-dim); color: var(--blue); }
+.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body strong { color: var(--text); }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta span { display: flex; align-items: center; gap: 4px; }
+.req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Tables */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:nth-child(even) td { background: var(--surface); }
+.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+
+/* Metric callout */
+.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+
+/* Code blocks */
+.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+
+@media (max-width: 900px) {
+  body { flex-direction: column; }
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .main { padding: 28px 20px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* Top cross-page nav */
 .forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
 .forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
 .forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -43,11 +122,266 @@ body { margin: 0; }
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
   <a href="eval.html">Eval</a>
-  <a href="cost.html">Cost</a>  <a href="documentation.html">Documentation</a>
+  <a href="cost.html">Cost</a>
+  <a href="documentation.html">Documentation</a>
 </nav>
-<div class="stub">
-  <h1>prd-enhanced</h1>
-  <p>This page will be dynamically generated during the RAPID pipeline. Content is populated when the corresponding phase completes.</p>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">Enhanced PRD</div>
+  <div class="sidebar-section">On this page</div>
+  <a href="#overview">Overview</a>
+  <a href="#pillars">Pillars</a>
+  <a href="#must">MUST requirements <span class="req-count">11</span></a>
+  <a href="#should">SHOULD requirements <span class="req-count">1</span></a>
+  <a href="#could">COULD requirements <span class="req-count">1</span></a>
+  <a href="#deliverables">Deliverables</a>
+</nav>
+<div class="docpage-content"><div class="main">
+
+  <div class="section" id="overview">
+    <div class="section-id">Requirements Register</div>
+    <div class="section-title">Enhanced PRD — FORGE requirements register</div>
+    <div class="section-desc">
+      Derived from <strong>docs/PRD.md</strong> and <strong>skills/forge/SKILL.md</strong>. This is the
+      machine-traceable requirements document that <strong>04-spec/spec.md</strong> and
+      <strong>.forge/TASKS.json</strong> reference. The HTML decks under <strong>docs/</strong> are the
+      human-facing presentation of the same content.
+    </div>
+    <div class="key-insight">
+      <strong>rapid-workflow dogfoods FORGE.</strong> It tracks its own requirements, conformance, and
+      gaps with the exact mechanisms FORGE applies to the projects it builds.
+    </div>
+  </div>
+
+  <div class="section" id="pillars">
+    <div class="section-id">Foundations</div>
+    <div class="section-title">Pillars</div>
+    <div class="section-desc">The three principles every requirement below is measured against.</div>
+    <div class="grid-3">
+      <div class="card">
+        <h4>1. Enforcement over prose</h4>
+        <p>Every safety step is a hook, a dependency, or a separate agent. A step described only in words will eventually be skipped under pressure.</p>
+      </div>
+      <div class="card">
+        <h4>2. The writer is never the auditor</h4>
+        <p>Implementation and review are structurally split.</p>
+      </div>
+      <div class="card">
+        <h4>3. The gap loop is the product</h4>
+        <p>The build is the artifact; surfacing and closing gaps is the value.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="must">
+    <div class="section-id">Priority</div>
+    <div class="section-title">MUST requirements</div>
+    <div class="section-desc">Requirements that must ship. The build does not pass its gates without all of these.</div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-01</span>
+        <span class="req-title">Phase-gate enforcement</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        STATE.json cannot advance to a phase whose required artifacts are missing. Enforced by a
+        PreToolUse hook that blocks on exit 2, not by prose.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-02</span>
+        <span class="req-title">Independent watchdog</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        A separate auditing agent (no implementation incentive) is spawned automatically at P6a and
+        writes <strong>.forge/AUDIT.json</strong>. P6 cannot exit without watchdog entries.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-03</span>
+        <span class="req-title">Deliverable coverage</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        After task decomposition, every MUST deliverable in the PRD maps to at least one task. An
+        unmapped deliverable is a blocking gap.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-04</span>
+        <span class="req-title">Blocking dependency graph</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Safety steps are nodes in the dependency graph, not reminders. The eval harness
+        (<strong>task-00</strong>) is the root; everything depends on it.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-06</span>
+        <span class="req-title">Concrete walkthrough</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        P7 runs an explicit, step-by-step walkthrough across every surface and writes
+        <strong>.forge/WALKTHROUGH.md</strong>. The phase gate blocks P8 without it.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-07</span>
+        <span class="req-title">Continuation enforcement</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        A synchronous Stop/SubagentStop hook makes it mechanically impossible to stop early while the
+        current phase's completion artifact is missing. Every halt is logged to
+        <strong>.forge/observe/&lt;role&gt;.jsonl</strong>; escalates to the operator after 5 same-phase nudges.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-08</span>
+        <span class="req-title">Module conformance tracing</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        As each module completes, its <strong>spec_ref</strong> / <strong>prd_ref</strong> /
+        <strong>arch_ref</strong> must resolve to real anchors in the spec/PRD/architecture. Orphans are
+        filed as conformance gaps and recorded in <strong>.forge/CONFORMANCE.md</strong>.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-09</span>
+        <span class="req-title">Stub detection and ship gate</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Placeholder code is detected at write time (non-blocking) and the ship gate blocks release on
+        any open stub gap mapped to a MUST module.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-10</span>
+        <span class="req-title">Prepopulated live dashboard</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        The observability dashboard shows the full build plan the moment a build starts — phase,
+        agents, blockers, plan completion, and a Gantt-style timeline — not an empty screen.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-11</span>
+        <span class="req-title">Documentation generated as the build runs</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Each phase produces documentation automatically; mid-build docs reflect everything completed
+        so far. No separate command. At the end, docs reorganize into a navigable site.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-12</span>
+        <span class="req-title">Test results visible in every view</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Eval pass/fail status surfaces in the dashboard, the documentation, and at every decision
+        point — never buried in a log.
+      </div>
+    </div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-13</span>
+        <span class="req-title">Cross-system integration / combined gate view</span>
+        <span class="req-pri must">Must</span>
+      </div>
+      <div class="req-body">
+        Build status, documentation, test results, and dashboard know about each other; a phase
+        completion updates all four, and each decision point shows one combined gate view.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="should">
+    <div class="section-id">Priority</div>
+    <div class="section-title">SHOULD requirements</div>
+    <div class="section-desc">Strongly desired, but not gating for the first ship.</div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-05</span>
+        <span class="req-title">Context-checkpoint protocol</span>
+        <span class="req-pri should">Should</span>
+      </div>
+      <div class="req-body">
+        Above ~200k tokens the skill checkpoints all state to <strong>.forge/</strong> and runs a
+        phase-completion checklist before continuing, to counter urgency bias.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="could">
+    <div class="section-id">Priority</div>
+    <div class="section-title">COULD requirements</div>
+    <div class="section-desc">Optional enhancements for later consideration.</div>
+
+    <div class="req">
+      <div class="req-header">
+        <span class="req-id">R-14</span>
+        <span class="req-title">Configurable artifact paths</span>
+        <span class="req-pri could">Could</span>
+      </div>
+      <div class="req-body">
+        The enforcement hooks currently hardcode <strong>01-intake/</strong>, <strong>03-panels/</strong>,
+        <strong>04-spec/</strong>. Making these configurable would let a repo dogfood FORGE without
+        root-level numbered folders.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="deliverables">
+    <div class="section-id">Mapping</div>
+    <div class="section-title">Deliverables (MUST)</div>
+    <div class="section-desc">Each deliverable groups the requirements it satisfies.</div>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Deliverable</th><th>Description</th><th>Requirements</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>D1</td><td>Enforcement hook suite</td><td>R-01, R-07, R-08, R-09</td></tr>
+        <tr><td>D2</td><td>FORGE skill orchestration</td><td>R-02, R-03, R-04, R-05, R-06</td></tr>
+        <tr><td>D3</td><td>Observatory dashboard</td><td>R-10, R-12</td></tr>
+        <tr><td>D4</td><td>Documentation system</td><td>R-11</td></tr>
+        <tr><td>D5</td><td>Integration layer + combined gate</td><td>R-13</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div></div>
 </div>
 </body>
 </html>

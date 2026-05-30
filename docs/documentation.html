@@ -67,6 +67,18 @@ body { margin: 0; }
 .error h2 { font-size: 1rem; color: var(--red); margin-bottom: 8px; }
 .error p { font-size: 0.78rem; color: var(--text-muted); }
 .error code { font-size: 0.68rem; display: block; margin-top: 12px; padding: 10px; background: var(--surface); border-radius: 4px; }
+
+/* --- standard sidebar layout (templates/template-docs-page.html) --- */
+body{min-height:100vh;display:flex;flex-direction:column}
+.spec-layout{display:flex;flex:1}
+.docpage-content{flex:1;min-width:0}
+.sidebar{width:280px;flex-shrink:0;background:var(--surface,#F7F8FA);border-right:1px solid var(--border,#D4D8DE);padding:32px 20px;position:sticky;top:38px;height:calc(100vh - 38px);overflow-y:auto}
+.sidebar-brand{font-size:1.1rem;font-weight:800;color:var(--navy,#1A2744);letter-spacing:-0.02em;margin-bottom:4px}
+.sidebar-sub{font-size:0.7rem;color:var(--text-dim,#8896A6);margin-bottom:24px;font-weight:500}
+.sidebar-section{font-size:0.55rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim,#8896A6);margin:20px 0 8px}
+.sidebar a{display:block;font-size:0.78rem;color:var(--text-muted,#4A5568);text-decoration:none;padding:3px 8px;border-radius:3px;margin:1px 0;line-height:1.4}
+.sidebar a:hover{background:var(--surface-alt,#F0F2F5);color:var(--text,#1A2744)}
+.section{scroll-margin-top:48px}
 </style>
 </head>
 <body>
@@ -82,6 +94,23 @@ body { margin: 0; }
   <a href="eval.html">Eval</a>
   <a href="cost.html">Cost</a>  <a href="documentation.html" class="active">Documentation</a>
 </nav>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">Documentation</div>
+  <div class="sidebar-section">Documents</div>
+  <a href="prd.html">PRD</a>
+  <a href="prd-enhanced.html">Enhanced PRD</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="workflow.html">Workflow</a>
+  <a href="users.html">Users</a>
+  <a href="spec.html">Spec</a>
+  <a href="observatory.html">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="cost.html">Cost</a>
+</nav>
+<div class="docpage-content">
+
 <div class="main">
   <div id="content"><div class="loading">Loading documentation registry...</div></div>
 </div>
@@ -195,5 +224,7 @@ function docCard(d) {
 
 loadRegistry();
 </script>
+</div><!-- /docpage-content -->
+</div><!-- /spec-layout -->
 </body>
 </html>

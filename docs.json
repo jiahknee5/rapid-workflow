@@ -1,6 +1,6 @@
 {
-  "version": 5,
-  "updated": "2026-05-28",
+  "version": 6,
+  "updated": "2026-05-30",
   "generated_by": "tools/build-docs-registry.sh",
   "categories": {
     "forge": {
@@ -42,6 +42,14 @@
       "category": "workflow",
       "description": "",
       "status": "current",
+      "generated": true
+    },
+    {
+      "file": "docs/cost.html",
+      "title": "Cost",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
       "generated": true
     },
     {
@@ -184,11 +192,43 @@
       "generated": true
     },
     {
+      "file": "tools/cost-summary.sh",
+      "title": "Cost Summary",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
+    },
+    {
       "file": "tools/forge-spec.html",
       "title": "FORGE System Specification",
       "category": "forge",
       "description": "Complete spec: 65 requirements across 11 categories, agent prompts, schemas, configuration",
       "status": "current"
+    },
+    {
+      "file": "tools/gaps-to-issues.sh",
+      "title": "Gaps To Issues",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
+    },
+    {
+      "file": "tools/install-hooks.sh",
+      "title": "Install Hooks",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
+    },
+    {
+      "file": "tools/module-conformance-hook.sh",
+      "title": "Module Conformance Hook",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
     },
     {
       "file": "tools/observe-server.py",
@@ -210,6 +250,38 @@
       "category": "workflow",
       "description": "",
       "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/ship-gate.sh",
+      "title": "Ship Gate",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
+    },
+    {
+      "file": "tools/stop-hook.sh",
+      "title": "Stop Hook",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
+    },
+    {
+      "file": "tools/stub-detect-hook.sh",
+      "title": "Stub Detect Hook",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
+    },
+    {
+      "file": "tools/stub-scan.sh",
+      "title": "Stub Scan",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
       "generated": true
     }
   ],
