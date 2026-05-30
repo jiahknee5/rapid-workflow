@@ -15,6 +15,9 @@ The fix is structural, not behavioral:
 - **A separate watchdog (R2)** whose only job is auditing — no implementation incentive
 - **Blocking dependencies (R4)** make safety steps tasks in the dependency graph, not prose reminders
 - **Tiered reviewers (CE)** run as separate subagents that can't be pressured by the implementor's context
+- **A continuation hook (R7)** makes it mechanically impossible to *stop early* — the inverse of R1
+- **A conformance hook (R8)** traces every *completed* module back to spec → PRD → architecture, filing a gap on any break
+- **A stub scanner (R9)** detects placeholder code as it's written and the ship gate blocks release on unresolved stubs in required modules
 
 **Every enforcement mechanism in FORGE exists because prose instructions fail under pressure.** When reading this skill, if you see a step described in words but not enforced by a hook, a dependency, or a separate agent — that step will eventually be skipped. Flag it.
 
@@ -159,6 +162,12 @@ There is no real-time context counter. Estimate using:
 ## The Pipeline (D1)
 
 Execute these phases in order. Write a checkpoint to `.forge/STATE.json` after each phase completes. **Phase gate hook (R1):** STATE.json writes are blocked by `forge-phase-gate.sh` unless required artifacts exist. This is the enforcement mechanism — prose won't prevent phase-skipping, a hook will.
+
+**Continuation hook (R7):** R1 stops an agent from skipping *ahead* without artifacts; R7 stops an agent from quitting *early* while work remains. `tools/stop-hook.sh` is registered synchronously on `Stop` and `SubagentStop` in `~/.claude/settings.json` (alongside the async clorch/notification hooks, which cannot block). On every turn-end it (1) appends a `STOP` event to `.forge/observe/<role>.jsonl` so a halt is never silent, then (2) if the current phase's completion artifact is missing, returns `{"decision":"block","reason":...}` with the concrete next step, forcing the agent to continue. It no-ops instantly outside an active build (`.forge/STATE.json` absent), respects `stop_hook_active` (never blocks twice), logs-only on `SubagentStop` (a fan-out worker can't be mapped to an orchestrator artifact), and after 5 consecutive same-phase nudges escalates to the operator instead of looping. Set `FORGE_ROLE` per terminal (orchestrator/supervisor/watchdog/impl-N) so observe events are attributed. This is the deterministic backstop *under* the heartbeat/claude-peers coordination — those still drive normal operation; R7 catches the silent halt when they don't fire.
+
+**Conformance hook (R8):** Inter-stage assertions (P4/P5) verify traceability *before* the build; R8 verifies it *as each module completes*. `tools/module-conformance-hook.sh` is registered async on `Write|Edit` (PostToolUse). When a task in `.forge/TASKS.json` flips to a done state, it checks that the task's `spec_ref` / `prd_ref` / `arch_ref` each resolve to a real anchor in `04-spec/spec.md` / `01-intake/PRD-ENHANCED.md` / `04-spec/architecture.md`. Every completed module gets a row in `.forge/CONFORMANCE.md`; an orphan (missing or dangling ref) is filed to `.forge/GAPS.json` as a `conformance` gap (it does **not** block — it flows into the P8 gap loop / GitHub ticketing). The `task-00` eval-harness (`spec_ref: ALL`) is exempt. The hook is idempotent (a `.conformance_seen` ledger checks each task once) and structural only — *semantic* conformance (does the code actually satisfy the requirement) remains the watchdog's job. Fails safe: no-ops if it can't read its input.
+
+**Stub scanner (R9):** The *primary* defense against placeholder code is behavior-asserting tests + keep-or-revert — a stub only survives a weak harness. R9 is the secondary net for what tests miss. `tools/stub-detect-hook.sh` is registered async on `Write|Edit`: when a source file is written inside a build, `tools/stub-scan.sh` scans it for high-signal markers (`TODO`/`FIXME`/`XXX`/`HACK`, `NotImplementedError`, `throw new Error("not implemented")`, `@stub`, `placeholder`, …). New stubs are logged to `.forge/STUBS.md` and filed to `.forge/GAPS.json` as `type:"stub"` gaps — **non-blocking at write time** (too noisy; false positives would stall the build). Enforcement is at the **ship gate**: P6 exit assertions / G3 run `stub-scan.sh --tree` and **block release if any open `stub` gap maps to a MUST module**. A line tagged `// forge:allow-stub <reason>` is exempt (intentional, logged). Honest scope: a regex net has false positives/negatives and covers source files only — it is a net plus a ledger, not a correctness proof. Stub gaps are resolved through the P8 gap loop / GitHub ticketing; the gate stays red until MUST stubs reach zero.
 
 **Context-long checkpoint protocol (R5):** When the conversation exceeds ~200k tokens (roughly where urgency bias starts), the skill MUST:
 1. Write all current state to `.forge/` (STATE.json, MEMORY.md, TASKS.json, COST.json)
@@ -410,8 +419,10 @@ Each returns findings with severity. Merge into pre-screen report.
 3. **Decompose remaining work into tasks** with dependency graph (all depend on task-00):
    ```json
    { "id": "task-01", "name": "init-config", "spec_ref": "S3.1",
+     "prd_ref": "R-12", "arch_ref": "C2",
      "depends_on": ["task-00"], "estimated_lines": 150, "agent_slot": 1 }
    ```
+   Every non-eval task MUST carry `spec_ref` (a section id in `04-spec/spec.md`) and `prd_ref` (a requirement id in `01-intake/PRD-ENHANCED.md`); `arch_ref` (a component id in `04-spec/architecture.md`) is optional. These are what the module-conformance hook (R8) traces when the task completes — a task with a missing or dangling ref is filed as a conformance gap.
 
 4. **Deliverable coverage assertion (R3).** After task decomposition, verify that every deliverable listed in the PRD's "Deliverables" section maps to at least one task:
    - Parse the deliverables from `01-intake/PRD-ENHANCED.md` (MUST items)
@@ -662,6 +673,7 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
    - Every task has a reviewer verdict of APPROVE (not skipped)
    - Smoke test passed for every agent's output (supervisor-run)
    - Secret scan passed (no credentials in committed files)
+   - **Ship gate (R8 + R9):** run `tools/ship-gate.sh`. It scans the tree for stubs and counts open MAJOR+ stub/conformance gaps, then merges `no_open_stub_gaps` / `no_stubs_in_tree` / `no_open_conformance_gaps` assertions into `P6_EXIT.json`. Any failure → `pass:false` → the phase gate blocks P7. This is what makes R8/R9 *blocking* rather than advisory.
 5. **Write `.forge/P6_EXIT.json`** with each assertion result. STATE.json cannot advance to phase 7 until P6_EXIT.json shows all passing.
 6. **Compound learning capture** (inspired by CE's `/ce-compound`): Before killing terminals, extract and document what was learned during the build so future builds start smarter:
    - Decisions made (from MEMORY.md): which technical choices worked, which didn't

@@ -2395,5 +2395,420 @@ claude-peers list_peers --scope repo
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D22 — .forge/ FILE SCHEMAS                                      -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d22">
+  <div class="section-id">D22 &mdash; .forge/ File Schemas</div>
+  <div class="section-title">Every file in the .forge/ directory, with complete field-level schemas, who writes it, and when it&rsquo;s read</div>
+  <div class="plain-english">
+    The <code>.forge/</code> directory is the build&rsquo;s durable state layer. <strong>Every piece of information that matters survives conversation compression</strong> because it lives on disk, not in context. If a session crashes and restarts, <code>/forge --resume</code> reads these files and continues from the last checkpoint.
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D22a: Primary State Files</div>
+
+    <h3>STATE.json</h3>
+    <div class="explain">Current pipeline position. Written by orchestrator after every phase and gate. Guarded by <code>phase-gate-hook.sh</code> (R1).</div>
+    <div class="code-block">{ <span class="str">"phase"</span>: <span class="num">6</span>, <span class="str">"status"</span>: <span class="str">"in_progress"</span>, <span class="str">"track"</span>: <span class="str">"full"</span>, <span class="str">"started"</span>: <span class="str">"2026-05-27T08:30:01Z"</span>, <span class="str">"last_gate"</span>: <span class="str">"G2"</span>, <span class="str">"build_id"</span>: <span class="str">"forge-agentforge-20260527"</span> }
+<span class="comment">// status: "complete" | "in_progress" | "blocked" | "shipped"</span>
+<span class="comment">// track: "fast" | "full"</span></div>
+
+    <h3>TASKS.json</h3>
+    <div class="explain">Task dependency graph. Written by spec-writer at P5; updated by supervisor during P6.</div>
+    <div class="code-block">{ <span class="str">"id"</span>: <span class="str">"task-01"</span>, <span class="str">"name"</span>: <span class="str">"red-team-agent"</span>, <span class="str">"spec_ref"</span>: <span class="str">"S3.1"</span>, <span class="str">"depends_on"</span>: [<span class="str">"task-00"</span>],
+  <span class="str">"estimated_lines"</span>: <span class="num">400</span>, <span class="str">"agent_slot"</span>: <span class="num">1</span>, <span class="str">"status"</span>: <span class="str">"done"</span>, <span class="str">"assigned_to"</span>: <span class="str">"impl-1"</span>,
+  <span class="str">"branch"</span>: <span class="str">"forge/phase-6/red-team-agent"</span>, <span class="str">"reviewer_verdict"</span>: <span class="str">"APPROVE"</span> }
+<span class="comment">// status: "pending" | "assigned" | "coding" | "review" | "done" | "blocked"</span>
+<span class="comment">// task-00 (eval-harness) is ALWAYS the dependency root (R4)</span></div>
+
+    <h3>HEARTBEAT.json</h3>
+    <div class="explain">Agent liveness. Every agent updates its entry every 5 minutes during P6. &gt;10m stale = STALLED.</div>
+    <div class="code-block">{ <span class="str">"agents"</span>: { <span class="str">"impl-1"</span>: {
+    <span class="str">"task"</span>: <span class="str">"task-03"</span>, <span class="str">"spec_ref"</span>: <span class="str">"S4.2"</span>, <span class="str">"status"</span>: <span class="str">"coding"</span>,
+    <span class="str">"last_commit"</span>: <span class="str">"2026-05-27T14:32:00Z"</span>, <span class="str">"last_heartbeat"</span>: <span class="str">"2026-05-27T14:35:00Z"</span>,
+    <span class="str">"files_written"</span>: <span class="num">4</span>, <span class="str">"tests_passing"</span>: <span class="num">12</span>, <span class="str">"tests_failing"</span>: <span class="num">2</span>, <span class="str">"blocked_on"</span>: <span class="kw">null</span> } } }
+<span class="comment">// status: "coding" | "testing" | "reviewing" | "watching" | "blocked" | "done" | "failed"</span></div>
+
+    <h3>AUDIT.json</h3>
+    <div class="explain">Watchdog drift-check verdicts. Written on PR submission, merge, and every 30m periodic audit.</div>
+    <div class="code-block">{ <span class="str">"checks"</span>: [{ <span class="str">"timestamp"</span>: <span class="str">"..."</span>, <span class="str">"trigger"</span>: <span class="str">"PR_SUBMITTED"</span>, <span class="str">"task_id"</span>: <span class="str">"T-03"</span>,
+    <span class="str">"verdict"</span>: <span class="str">"CLEAN"</span>,  <span class="comment">// "CLEAN" | "DRIFT" | "CRITICAL"</span>
+    <span class="str">"categories"</span>: { <span class="str">"structural"</span>:<span class="str">"pass"</span>, <span class="str">"interface"</span>:<span class="str">"pass"</span>, <span class="str">"invariant"</span>:<span class="str">"pass"</span>, <span class="str">"feature"</span>:<span class="str">"pass"</span>, <span class="str">"test"</span>:<span class="str">"pass"</span>, <span class="str">"quality"</span>:<span class="str">"pass"</span>, <span class="str">"visual"</span>:<span class="str">"pass"</span> } }] }</div>
+
+    <h3>GAPS.json, COST.json, P6_EXIT.json, MESSAGES.json</h3>
+    <div class="explain"><strong>GAPS.json:</strong> Classified gaps — pillar, severity (BLOCKER/HIGH/MEDIUM/LOW), type (spec-level/prd-level/optimization), resolution status. <strong>COST.json:</strong> Token spend per agent, per phase, total — circuit breaker at 80% of budget. <strong>P6_EXIT.json:</strong> 7 exit assertions (spec coverage, contracts, architecture, APIs, reviews, smoke tests, secret scan) — all must pass. <strong>MESSAGES.json:</strong> Durable fallback for every claude-peers message.</div>
+
+    <h3>EVAL/ (directory, immutable)</h3>
+    <div class="explain">Test harness generated from workflow state machine at P5. <strong>Locked after creation — no agent may modify tests.</strong> Each workflow node &rarr; test file (arrange from <code>in</code>, act from <code>proc</code>, assert from <code>out</code>). Blocking dependency (R4).</div>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D22b: Secondary &amp; Generated Files</div>
+    <table class="compare-table">
+      <thead><tr><th>File</th><th>Written by</th><th>Phase</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>MEMORY.md</td><td>All agents</td><td>All</td><td>Append-only prose log of decisions, escalations, errors</td></tr>
+        <tr><td>LEARNINGS.md</td><td>Orchestrator</td><td>P6e</td><td>Compound learning: title, context, learning, evidence, reuse guidance. Read at future P0.</td></tr>
+        <tr><td>WALKTHROUGH.md</td><td>Orchestrator</td><td>P7</td><td>Surface-by-surface walkthrough with screenshot paths. Required for P8 (R1).</td></tr>
+        <tr><td>TEST_RESULTS.md</td><td>Orchestrator</td><td>P7</td><td>Raw test command output with pass/fail counts</td></tr>
+        <tr><td>DEEPENING.md</td><td>Subagents</td><td>P5b</td><td>Confidence ratings, missing flows, orphaned deliverables</td></tr>
+        <tr><td>REVIEW.json</td><td>Supervisor</td><td>P6</td><td>Per-PR reviewer verdicts (individual + synthesized) across all tiers</td></tr>
+        <tr><td>DOGFOOD.md</td><td>Orchestrator</td><td>P7</td><td>Autonomous diff-scoped QA results with fix-commit hashes</td></tr>
+        <tr><td>SIMPLIFY.md</td><td>Supervisor</td><td>P7</td><td>Applied simplifications from reuse/quality/efficiency reviewers</td></tr>
+        <tr><td>OPTIMIZE.json</td><td>Orchestrator</td><td>P8</td><td>Parallel experiment results: goal, approaches, measurements, winner</td></tr>
+        <tr><td>RETRO.md</td><td>Orchestrator</td><td>P9</td><td>Build retrospective: what worked, drifted, token spend</td></tr>
+        <tr><td>HANDOFF-*.md</td><td>Implementors</td><td>P6</td><td>Context handoff for high-context agents</td></tr>
+        <tr><td>prompts/supervisor.md</td><td>Orchestrator</td><td>P6a</td><td>Generated prompt for supervisor terminal</td></tr>
+        <tr><td>prompts/watchdog.md</td><td>Orchestrator</td><td>P6a</td><td>Generated prompt for watchdog terminal</td></tr>
+        <tr><td>observe/*.jsonl</td><td>All agents</td><td>All</td><td>Per-agent event streams for observatory</td></tr>
+        <tr><td>observe/seq.txt</td><td>All agents</td><td>All</td><td>Global monotonic sequence counter</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D23 — INTER-AGENT MESSAGE CONTRACT                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d23">
+  <div class="section-id">D23 &mdash; Inter-Agent Message Contract</div>
+  <div class="section-title">12 structured message types between 3 persistent terminals &mdash; every message persisted to MESSAGES.json as crash-recovery fallback</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D23a: Message Types</div>
+    <table class="compare-table">
+      <thead><tr><th>Type</th><th>Direction</th><th>Trigger</th><th>Expected Response</th></tr></thead>
+      <tbody>
+        <tr><td>TASK_ASSIGNED</td><td>supervisor &rarr; orchestrator</td><td>Task dispatched to implementor</td><td>&mdash;</td></tr>
+        <tr><td>TASK_COMPLETE</td><td>supervisor &rarr; orchestrator</td><td>Task done, PR submitted</td><td>&mdash;</td></tr>
+        <tr><td>PR_SUBMITTED</td><td>supervisor &rarr; watchdog</td><td>PR ready for drift check</td><td>DRIFT_RESULT</td></tr>
+        <tr><td>PR_MERGED</td><td>supervisor &rarr; watchdog + orchestrator</td><td>PR merged to main</td><td>DRIFT_RESULT</td></tr>
+        <tr><td>DRIFT_RESULT</td><td>watchdog &rarr; supervisor</td><td>Response to PR_SUBMITTED/PR_MERGED</td><td>&mdash;</td></tr>
+        <tr><td>DRIFT_CRITICAL</td><td>watchdog &rarr; orchestrator</td><td>Invariant violation</td><td>BUILD_HALT</td></tr>
+        <tr><td>AUDIT_PERIODIC</td><td>watchdog &rarr; supervisor</td><td>30m full-repo audit</td><td>&mdash;</td></tr>
+        <tr><td>STALL_NUDGE</td><td>supervisor &rarr; implementor</td><td>Heartbeat &gt;10m stale</td><td>&mdash;</td></tr>
+        <tr><td>BUILD_HALT</td><td>orchestrator &rarr; all</td><td>Emergency stop</td><td>ACK_SHUTDOWN</td></tr>
+        <tr><td>P6_COMPLETE</td><td>supervisor &rarr; orchestrator</td><td>All tasks done + reviewed</td><td>SHUTDOWN</td></tr>
+        <tr><td>SHUTDOWN</td><td>orchestrator &rarr; all</td><td>Graceful shutdown</td><td>ACK_SHUTDOWN</td></tr>
+        <tr><td>ACK_SHUTDOWN</td><td>supervisor/watchdog &rarr; orchestrator</td><td>Confirm shutdown</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+    <div class="explain"><strong>Envelope:</strong> <code>{"type":"...","from":"...","ts":"ISO-8601","payload":{...}}</code>. Unrecognized types logged and ignored. Every send also emits an observe SEND event + appends to MESSAGES.json.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D24 — OBSERVE EVENT TYPES                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d24">
+  <div class="section-id">D24 &mdash; Observe Event Types</div>
+  <div class="section-title">16 event types written to .forge/observe/*.jsonl &mdash; the raw feed for the observatory dashboard</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D24a: Event Schema + Types</div>
+    <div class="code-block"><span class="comment">// Every line in a .jsonl file:</span>
+{ <span class="str">"t"</span>:<span class="str">"ISO-8601"</span>, <span class="str">"seq"</span>:<span class="num">42</span>, <span class="str">"agent"</span>:<span class="str">"impl-1"</span>, <span class="str">"role"</span>:<span class="str">"implementor"</span>, <span class="str">"event"</span>:<span class="str">"WRITE"</span>,
+  <span class="str">"detail"</span>:<span class="str">"src/App.tsx (47 lines)"</span>, <span class="str">"target"</span>:<span class="kw">null</span>, <span class="str">"from"</span>:<span class="kw">null</span>,
+  <span class="str">"ctx_est"</span>:<span class="num">62000</span>, <span class="str">"ctx_total"</span>:<span class="num">184000</span>, <span class="str">"task"</span>:<span class="str">"T-03"</span>, <span class="str">"phase"</span>:<span class="str">"P6"</span> }</div>
+    <table class="compare-table" style="margin-top:16px;">
+      <thead><tr><th>Event</th><th>When Emitted</th><th>Detail Content</th></tr></thead>
+      <tbody>
+        <tr><td>SPAWN</td><td>Agent starts</td><td>Name, role, assigned task</td></tr>
+        <tr><td>PHASE</td><td>Phase transition</td><td>Phase name, purpose</td></tr>
+        <tr><td>GATE</td><td>Human gate reached</td><td>Gate ID, what operator is asked</td></tr>
+        <tr><td>READ</td><td>File read</td><td>Path, line count</td></tr>
+        <tr><td>WRITE</td><td>File written</td><td>Path, lines changed</td></tr>
+        <tr><td>TOOL</td><td>Bash/MCP call</td><td>Tool name, command (truncated 100 chars)</td></tr>
+        <tr><td>SEND</td><td>Message sent</td><td>Target agent, summary</td></tr>
+        <tr><td>RECV</td><td>Message received</td><td>Source agent, summary</td></tr>
+        <tr><td>LOOP_START</td><td>Loop begun</td><td>Purpose, max iterations</td></tr>
+        <tr><td>LOOP_ITER</td><td>Loop iteration</td><td>Iteration number, what changed</td></tr>
+        <tr><td>LOOP_END</td><td>Loop completed</td><td>Total iterations, outcome</td></tr>
+        <tr><td>DECIDE</td><td>Decision made (D5)</td><td>Level, choice, rationale</td></tr>
+        <tr><td>ESCALATE</td><td>Decision escalated</td><td>To whom, why</td></tr>
+        <tr><td>ERROR</td><td>Error occurred</td><td>Error description</td></tr>
+        <tr><td>CONTEXT</td><td>Context checkpoint</td><td>Estimate, % of window</td></tr>
+        <tr><td>COMPLETE</td><td>Agent finished</td><td>Work summary</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D25 — SKILL CONTRACTS                                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d25">
+  <div class="section-id">D25 &mdash; Skill Contracts</div>
+  <div class="section-title">Every skill, with invocation, phase mapping, what it reads and writes</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D25a: RAPID Skills</div>
+    <table class="compare-table">
+      <thead><tr><th>Skill</th><th>Invocation</th><th>Phase</th><th>Writes</th></tr></thead>
+      <tbody>
+        <tr><td>/forge</td><td><code>/forge &lt;idea|PRD&gt; [--track] [--resume] [--gap-loop]</code></td><td>P0&ndash;P10</td><td>All .forge/, all docs/, code</td></tr>
+        <tr><td>/forge status</td><td><code>/forge status</code></td><td>Any</td><td>&mdash; (terminal output)</td></tr>
+        <tr><td>/forge pulse</td><td><code>/forge pulse [--window]</code></td><td>P10</td><td>docs/pulse-reports/YYYY-MM-DD.md</td></tr>
+        <tr><td>/decision log</td><td><code>/decision log [context]</code></td><td>Any</td><td>decisions/D-{NN}.md + deck.html</td></tr>
+        <tr><td>/decision panel</td><td><code>/decision panel [context]</code></td><td>P2</td><td>panels/P-{NN}.md + deck.html</td></tr>
+        <tr><td>/docs build</td><td><code>/docs build [folder]</code></td><td>P9 + after each phase</td><td>{folder}/deck.html + docs/hub.html</td></tr>
+        <tr><td>/workflow</td><td><code>/workflow</code></td><td>Reference</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D25b: External Skills Used by RAPID</div>
+    <table class="compare-table">
+      <thead><tr><th>Skill</th><th>Phase</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>technical-expert-panel</td><td>P2</td><td>8-person technical review</td></tr>
+        <tr><td>business-expert-panel</td><td>P2</td><td>8-person business review</td></tr>
+        <tr><td>security-expert-panel</td><td>P2</td><td>10-person security review</td></tr>
+        <tr><td>grill-me</td><td>P3</td><td>Stress-test plan assumptions</td></tr>
+        <tr><td>usability-testing</td><td>P7</td><td>Agent-driven UX walkthrough</td></tr>
+        <tr><td>agent-browser</td><td>P7</td><td>Browser automation for visual QA</td></tr>
+        <tr><td>blueprint</td><td>P5</td><td>Production build orchestration</td></tr>
+        <tr><td>eval</td><td>P7</td><td>Production-readiness evaluation</td></tr>
+        <tr><td>code-review</td><td>P6</td><td>Diff-level correctness review</td></tr>
+        <tr><td>loop / loop-recipes</td><td>P8, P10</td><td>Gap loop + product pulse scheduling</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D26 — INTER-STAGE ASSERTIONS                                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d26">
+  <div class="section-id">D26 &mdash; Inter-Stage Assertions</div>
+  <div class="section-title">Programmatic checks between every phase &mdash; failure triggers automatic retry with the violation appended, not a warning</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D26a: Assertion Inventory</div>
+    <table class="compare-table">
+      <thead><tr><th>After</th><th>Assertion</th><th>Checks</th><th>On Failure</th></tr></thead>
+      <tbody>
+        <tr><td>P1b</td><td>PRD completeness</td><td>Every requirement has priority + acceptance criterion</td><td>Re-run with missing items flagged</td></tr>
+        <tr><td>P4</td><td>PRD &rarr; spec traceability</td><td>Every PRD req maps to spec or [OUT OF SCOPE]</td><td>Retry with unmapped reqs appended</td></tr>
+        <tr><td>P5</td><td>Task &rarr; spec coverage</td><td>Every spec section covered by &ge;1 task</td><td>Create missing tasks</td></tr>
+        <tr><td>P5</td><td>Dependency acyclicity</td><td>No cycles in task graph</td><td>Split tasks</td></tr>
+        <tr><td>P5</td><td>Deliverable coverage (R3)</td><td>Every PRD deliverable &rarr; &ge;1 task</td><td>Create tasks for orphans</td></tr>
+        <tr><td>P5</td><td>Eval root (R4)</td><td>task-00 exists, is dependency root</td><td>Create and wire</td></tr>
+        <tr><td>P5</td><td>Eval completeness</td><td>Every workflow node has test file + function</td><td>Generate missing stubs</td></tr>
+        <tr><td>P5b</td><td>Confidence coverage</td><td>Every spec section rated HIGH/MEDIUM/LOW</td><td>Rate unrated sections</td></tr>
+        <tr><td>P6</td><td>Smoke test (per PR)</td><td>npm install &amp;&amp; npm run build passes</td><td>Send failure to implementor</td></tr>
+        <tr><td>P6</td><td>Eval harness (per commit)</td><td>All tests pass (keep-or-revert)</td><td>git reset --hard to last good</td></tr>
+        <tr><td>P6 exit</td><td>7 exit assertions</td><td>See P6_EXIT.json (D22)</td><td>Block STATE.json advance</td></tr>
+        <tr><td>P7</td><td>Walkthrough coverage</td><td>WALKTHROUGH.md covers every workflow surface</td><td>Block P8 entry (R1)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D27 — DOCUMENT REVIEW AGENTS                                    -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d27">
+  <div class="section-id">D27 &mdash; Document Review Agents</div>
+  <div class="section-title">Every gate pre-screened by specialized review subagents &mdash; the operator sees findings, not raw artifacts</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D27a: Review Agents Per Gate</div>
+    <table class="compare-table">
+      <thead><tr><th>Gate</th><th>Reviewer</th><th>Lens</th><th>Catches</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3" style="vertical-align:top;">G0</td><td>Feasibility</td><td>Can this be built with stated constraints?</td><td>Impossible or wildly expensive requirements</td></tr>
+        <tr><td>Scope Guardian</td><td>Unjustified complexity?</td><td>Gold-plating, features that don&rsquo;t serve pillars</td></tr>
+        <tr><td>Coherence</td><td>Requirements contradict?</td><td>&ldquo;Real-time&rdquo; vs &ldquo;batch&rdquo;; conflicting MUSTs</td></tr>
+        <tr><td rowspan="2" style="vertical-align:top;">G1</td><td>Adversarial</td><td>What breaks if assumptions wrong?</td><td>Weak premises, single points of failure</td></tr>
+        <tr><td>Feasibility</td><td>Given research, can spec be built?</td><td>Research undermining proposed approach</td></tr>
+        <tr><td rowspan="3" style="vertical-align:top;">G2</td><td>Scope Guardian</td><td>Spec overbuilt for timeline?</td><td>Tasks that don&rsquo;t serve any pillar</td></tr>
+        <tr><td>Coherence</td><td>Spec vs workflow state machine</td><td>Architecture mismatches</td></tr>
+        <tr><td>Adversarial</td><td>Most likely failure mode?</td><td>Weakest assumption</td></tr>
+        <tr><td>G3</td><td colspan="3"><em>No doc review &mdash; G3 uses verifiable evidence (running app, test results, audit report)</em></td></tr>
+      </tbody>
+    </table>
+    <div class="explain"><strong>Output per reviewer:</strong> <code>{ finding, severity, section_ref, recommendation }</code></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D28 — CONFIGURATION KEYS                                        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d28">
+  <div class="section-id">D28 &mdash; Configuration Keys</div>
+  <div class="section-title">Every forge.yaml setting &mdash; cascade: global (~/.forge/) &rarr; project (.forge/) &rarr; CLI flags</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D28a: Configuration Reference</div>
+    <table class="compare-table">
+      <thead><tr><th>Key</th><th>Default</th><th>Controls</th></tr></thead>
+      <tbody>
+        <tr><td>build.default_track</td><td>fast</td><td>Panel count, implementor count, test depth, gap loop</td></tr>
+        <tr><td>build.max_implementors</td><td>4</td><td>Max concurrent worktree agents in P6</td></tr>
+        <tr><td>build.gap_loop_max</td><td>3</td><td>Max auto gap loop iterations for BLOCKER/HIGH</td></tr>
+        <tr><td>build.ci_platform</td><td>github</td><td>Which CI/CD config to generate</td></tr>
+        <tr><td>budget.max_build_cost</td><td>$100</td><td>Circuit breaker &mdash; build halts at this spend</td></tr>
+        <tr><td>budget.alert_threshold</td><td>0.8</td><td>Fraction of budget that triggers warning</td></tr>
+        <tr><td>models.default</td><td>opus</td><td>Default Claude model for all agents</td></tr>
+        <tr><td>models.overrides.reviewer</td><td>&mdash;</td><td>Model override for reviewer subagents</td></tr>
+        <tr><td>models.overrides.panel</td><td>&mdash;</td><td>Model override for panel subagents</td></tr>
+        <tr><td>agents.stall_timeout</td><td>600s</td><td>Heartbeat staleness before STALL_NUDGE</td></tr>
+        <tr><td>agents.stall_retries</td><td>3</td><td>Max fix attempts before escalation</td></tr>
+        <tr><td>code.typescript.strict</td><td>true</td><td>Strict TypeScript in generated tsconfig</td></tr>
+        <tr><td>design.theme</td><td>linear</td><td>Observatory dashboard theme</td></tr>
+        <tr><td>communication.verbosity</td><td>normal</td><td>Agent output verbosity in MEMORY.md</td></tr>
+        <tr><td>pulse.auto</td><td>false</td><td>Auto daily product pulse reports</td></tr>
+        <tr><td>pulse.window</td><td>24h</td><td>Default pulse report time window</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D29 — PHASE SUB-STEPS                                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d29">
+  <div class="section-id">D29 &mdash; Phase Sub-Steps</div>
+  <div class="section-title">Every phase broken into atomic steps with inputs, outputs, agents, and enforcement mechanisms</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D29a: P0 Vision &rarr; P1b PRD Decomposition</div>
+    <table class="compare-table">
+      <thead><tr><th style="width:8%">Phase</th><th style="width:25%">Step</th><th style="width:25%">Input</th><th style="width:25%">Output</th><th style="width:17%">Enforcement</th></tr></thead>
+      <tbody>
+        <tr><td>P0</td><td>Extract north star + success signals</td><td>Product idea or PRD</td><td>North star sentence, 3&ndash;5 success signals</td><td>&mdash;</td></tr>
+        <tr><td>P0</td><td>Derive evaluation pillars</td><td>Project risks + goals</td><td>3&ndash;5 project-specific pillars (generic prohibited)</td><td>&mdash;</td></tr>
+        <tr><td>P0</td><td>Write vision artifacts</td><td>Pillars + north star</td><td>00-vision/VISION.md, PILLARS.md</td><td>&mdash;</td></tr>
+        <tr><td>P0</td><td>Compound refresh (CE #9)</td><td>Prior LEARNINGS.md</td><td>Stale entries marked, non-stale injected</td><td>&mdash;</td></tr>
+        <tr><td>P1</td><td>Create folder structure</td><td>&mdash;</td><td>00-vision/ through 05-gaps/ + .forge/</td><td>&mdash;</td></tr>
+        <tr><td>P1</td><td>Lock PRD (immutable)</td><td>Stakeholder PRD</td><td>01-intake/PRD.md</td><td>&mdash;</td></tr>
+        <tr><td>P1</td><td>Generate Constitution</td><td>Project risks from pillars</td><td>CONSTITUTION.md (I&ndash;V inviolable, VI&ndash;X tailored)</td><td>&mdash;</td></tr>
+        <tr><td>P1b</td><td>Decompose PRD</td><td>PRD + VISION + PILLARS</td><td>01-intake/PRD-ENHANCED.md (MUST/SHOULD/COULD)</td><td>Assertion: every item tagged</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D29b: P2 Panels &rarr; P5b Deepening</div>
+    <table class="compare-table">
+      <thead><tr><th style="width:8%">Phase</th><th style="width:25%">Step</th><th style="width:25%">Input</th><th style="width:25%">Output</th><th style="width:17%">Enforcement</th></tr></thead>
+      <tbody>
+        <tr><td>P2</td><td>Run panels (1 fast / 3 full)</td><td>VISION + PILLARS + PRD-ENHANCED</td><td>Panel findings + asks</td><td>&mdash;</td></tr>
+        <tr><td>P2</td><td>Synthesize findings</td><td>Panel reports</td><td>03-panels/synthesis.md (convergent/divergent/risks)</td><td>&mdash;</td></tr>
+        <tr><td>P3</td><td>Research [OPEN] questions</td><td>Panel synthesis open questions</td><td>02-grounding/*.md (VERIFIED/UNVERIFIED/OPEN)</td><td>15m timebox per question</td></tr>
+        <tr><td>P3</td><td>Data availability check</td><td>External dependencies</td><td>Verified actual availability</td><td>Lesson: ASL 200&rarr;52 clips</td></tr>
+        <tr><td>P4</td><td>Derive spec with traceability</td><td>PRD + panels + research</td><td>04-spec/spec.md [FROM PRD]/[DERIVED]/[OPEN]</td><td>Every PRD req mapped</td></tr>
+        <tr><td>P4</td><td>Build workflow state machine</td><td>Spec requirements</td><td>04-spec/workflow.md (in/proc/out per node)</td><td>&mdash;</td></tr>
+        <tr><td>P4</td><td>Define interface contracts</td><td>Architecture</td><td>04-spec/CONTRACTS.md</td><td>Used by drift checker</td></tr>
+        <tr><td>P5</td><td>Generate eval harness (task-00)</td><td>workflow.md state machine</td><td>.forge/EVAL/ (immutable)</td><td>R4: blocking dependency</td></tr>
+        <tr><td>P5</td><td>Decompose into tasks</td><td>Spec sections</td><td>.forge/TASKS.json</td><td>No cycles; all sections covered</td></tr>
+        <tr><td>P5</td><td>Deliverable coverage (R3)</td><td>PRD deliverables + tasks</td><td>Every deliverable &rarr; task</td><td>Missing = create task</td></tr>
+        <tr><td>P5b</td><td>Spec flow analysis (CE #15)</td><td>Workflow state machine</td><td>Unreachable states, missing error paths</td><td>&mdash;</td></tr>
+        <tr><td>P5b</td><td>Confidence rating</td><td>Each spec section</td><td>HIGH/MEDIUM/LOW per section</td><td>All sections must be rated</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D29c: P6 Parallel Build (3-Terminal)</div>
+    <table class="compare-table">
+      <thead><tr><th style="width:8%">Sub</th><th style="width:25%">Step</th><th style="width:25%">Input</th><th style="width:25%">Output</th><th style="width:17%">Enforcement</th></tr></thead>
+      <tbody>
+        <tr><td>P6a</td><td>Generate prompt files + spawn tmux</td><td>TASKS, spec, CONTRACTS, D5 rules</td><td>supervisor + watchdog terminals</td><td>Verify via list_peers (30s)</td></tr>
+        <tr><td>P6b</td><td>Task assignment + worktree agents</td><td>TASKS.json dependency order</td><td>Code, PRs, branches</td><td>Keep-or-revert ratchet</td></tr>
+        <tr><td>P6b</td><td>Smoke test (mandatory)</td><td>Agent output</td><td>Build pass/fail</td><td>Fail &rarr; send back to implementor</td></tr>
+        <tr><td>P6b</td><td>Tiered review (3&ndash;9 reviewers)</td><td>PR diff</td><td>APPROVE or REQUEST_CHANGES</td><td>Confidence gating</td></tr>
+        <tr><td>P6b</td><td>Watchdog coordination</td><td>PR_SUBMITTED to watchdog</td><td>DRIFT_RESULT</td><td>DRIFT &rarr; block; CRITICAL &rarr; halt</td></tr>
+        <tr><td>P6b</td><td>Structured debug protocol</td><td>Failing test/smoke</td><td>Reproduce &rarr; trace &rarr; hypothesis &rarr; test-first fix</td><td>Learnings researcher first (CE #11)</td></tr>
+        <tr><td>P6c</td><td>Watchdog: PR check + 30m audit</td><td>Diffs, repo state</td><td>AUDIT.json entries</td><td>CRITICAL &rarr; immediate escalation</td></tr>
+        <tr><td>P6d</td><td>Orchestrator: liveness + cost + messages</td><td>list_peers, HEARTBEAT, COST</td><td>Stall detection, budget alerts</td><td>Every 5 minutes</td></tr>
+        <tr><td>P6e</td><td>Shutdown handshake</td><td>P6_COMPLETE</td><td>SHUTDOWN &rarr; ACK &rarr; kill tmux</td><td>60s timeout fallback</td></tr>
+        <tr><td>P6e</td><td>Exit assertions (7 checks)</td><td>Repo state</td><td>P6_EXIT.json</td><td>All must pass (R1)</td></tr>
+        <tr><td>P6e</td><td>Compound learning capture</td><td>MEMORY, reviews, debug traces</td><td>LEARNINGS.md</td><td>CE #11</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D29d: P7 Test + Visual QA &rarr; P10 Pulse</div>
+    <table class="compare-table">
+      <thead><tr><th style="width:8%">Phase</th><th style="width:25%">Step</th><th style="width:25%">Input</th><th style="width:25%">Output</th><th style="width:17%">Enforcement</th></tr></thead>
+      <tbody>
+        <tr><td>P7</td><td>Execute test suite via Bash</td><td>Project test commands</td><td>TEST_RESULTS.md (raw output)</td><td>&ldquo;Compiles&rdquo; &ne; &ldquo;works&rdquo;</td></tr>
+        <tr><td>P7</td><td>Visual QA (3 viewports)</td><td>Dev server (390/768/1440px)</td><td>Screenshots + Claude vision</td><td>Fix loop max 3</td></tr>
+        <tr><td>P7</td><td>Concrete walkthrough (R6)</td><td>Every workflow surface</td><td>WALKTHROUGH.md + screenshots</td><td>Required for P8 (R1)</td></tr>
+        <tr><td>P7</td><td>Dogfood QA (CE #10)</td><td>Git diff since G2</td><td>DOGFOOD.md + fix commits</td><td>Auto-fix loops max 3</td></tr>
+        <tr><td>P7</td><td>Simplification pass (CE #8)</td><td>Passing codebase</td><td>SIMPLIFY.md</td><td>Only if tests stay green</td></tr>
+        <tr><td>P8</td><td>Classify gaps</td><td>P7 failures</td><td>GAPS.json (pillar, severity, type)</td><td>&mdash;</td></tr>
+        <tr><td>P8</td><td>BLOCKER/HIGH: re-derive &rarr; rebuild</td><td>Affected spec section</td><td>Updated spec + code + tests</td><td>Max 3 iterations</td></tr>
+        <tr><td>P8</td><td>Optimization: 3 parallel experiments</td><td>Measurable goal</td><td>OPTIMIZE.json (best kept)</td><td>Optional on fast track</td></tr>
+        <tr><td>P9</td><td>Deploy + README + RUNBOOK + /docs build</td><td>G3 approval</td><td>Live URL, docs/hub.html, RETRO.md</td><td>&mdash;</td></tr>
+        <tr><td>P10</td><td>Product pulse (/loop)</td><td>Analytics, errors, feedback</td><td>pulse-reports/YYYY-MM-DD.md</td><td>Feeds next P0 (compound loop)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D30 — DRIFT DETECTION CATEGORIES                                -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d30">
+  <div class="section-id">D30 &mdash; Drift Detection Categories</div>
+  <div class="section-title">7 categories the watchdog checks on every PR, merge, and 30-minute audit</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D30a: Category Reference</div>
+    <table class="compare-table">
+      <thead><tr><th>Category</th><th>Checks</th><th>CLEAN</th><th>DRIFT</th><th>CRITICAL</th></tr></thead>
+      <tbody>
+        <tr><td>Structural</td><td>Files match architecture.md</td><td>All present</td><td>New files not in arch</td><td>Core files missing</td></tr>
+        <tr><td>Interface</td><td>APIs match CONTRACTS.md</td><td>All signatures match</td><td>New interface not in contracts</td><td>Signature changed</td></tr>
+        <tr><td>Invariant</td><td>Constitution I&ndash;V + project invariants</td><td>No violations</td><td>&mdash;</td><td>Any violation (Art. I = halt)</td></tr>
+        <tr><td>Feature</td><td>Features match spec sections</td><td>Matches spec</td><td>Deviates from spec</td><td>Contradicts spec</td></tr>
+        <tr><td>Test</td><td>Eval harness integrity</td><td>No changes to EVAL/</td><td>Test added</td><td>Test modified/deleted</td></tr>
+        <tr><td>Quality</td><td>Code quality thresholds</td><td>Within thresholds</td><td>Minor regressions</td><td>&mdash;</td></tr>
+        <tr><td>Visual</td><td>UI matches design spec</td><td>Layout matches</td><td>Minor regression</td><td>Broken layout</td></tr>
+      </tbody>
+    </table>
+    <div class="explain"><strong>Triggers:</strong> (1) PR_SUBMITTED &mdash; PR diff only. (2) PR_MERGED &mdash; integrated repo state (catches cross-task drift). (3) Every 30m &mdash; full-repo audit. Watchdog never checks in-progress worktrees.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- D31 — REVIEWER TIERS                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="section" id="d31">
+  <div class="section-id">D31 &mdash; Reviewer Tiers</div>
+  <div class="section-title">9 specialized reviewers with per-domain weight shifting and confidence-gated verdict synthesis</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D31a: Reviewer Reference</div>
+    <table class="compare-table">
+      <thead><tr><th>Reviewer</th><th>Lens</th><th>Catches</th><th>Track</th><th>Heaviest For</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--green);font-weight:700;">Correctness</td><td>Logic, edge cases, state bugs</td><td>The bug the author can&rsquo;t see</td><td>Fast+Full</td><td>Financial</td></tr>
+        <tr><td style="color:var(--blue);font-weight:700;">Spec Compliance</td><td>Constitution I&ndash;V, CONTRACTS.md</td><td>Drift from the plan</td><td>Fast+Full</td><td>&mdash;</td></tr>
+        <tr><td style="color:var(--red);font-weight:700;">Security</td><td>Vulns, PII, credentials, COPPA</td><td>What pages you at 2am</td><td>Fast+Full</td><td>Healthcare</td></tr>
+        <tr><td>Performance</td><td>N+1, bundle, render-blocking</td><td>What makes users wait</td><td>Full</td><td>Real-time</td></tr>
+        <tr><td>Maintainability</td><td>Coupling, complexity, naming</td><td>What makes next engineer cry</td><td>Full</td><td>&mdash;</td></tr>
+        <tr><td>API Contract (CE)</td><td>Breaking changes, interface drift</td><td>Breaks downstream consumers</td><td>Full</td><td>Platform/SDK</td></tr>
+        <tr><td>Reliability (CE)</td><td>Failure modes, retry, degradation</td><td>Fails silently in prod</td><td>Full</td><td>Infrastructure</td></tr>
+        <tr><td>Pattern Recognition (CE)</td><td>Anti-patterns, code smells</td><td>Fine locally, systemic problem</td><td>Full</td><td>&mdash;</td></tr>
+        <tr><td>Standards (CE)</td><td>CLAUDE.md, conventions, Art. VI&ndash;X</td><td>Violates project&rsquo;s own rules</td><td>Full</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+    <div class="explain"><strong>Synthesis:</strong> Dedup overlapping findings. Contradictions: higher confidence wins. APPROVE if all approve or LOW-confidence objections only. REQUEST_CHANGES on any HIGH-confidence objection. All verdicts logged to REVIEW.json.</div>
+  </div>
+</div>
+
+  <div class="footnote" style="margin-top:48px; padding-top: 16px; border-top: 2.5px solid var(--navy);">
+    <strong>D0&ndash;D31 exhaustive reference.</strong> 13+ .forge/ file schemas (D22), 12 inter-agent messages (D23), 16 observe events (D24), 8 skill contracts (D25), 12 inter-stage assertions (D26), 8 doc-review agents across 3 gates (D27), 16 config keys (D28), every phase in atomic sub-steps (D29), 7 drift categories (D30), 9 reviewer tiers (D31).
+  </div>
+
+</div>
+
 </body>
 </html>

@@ -1,16 +1,3 @@
 {
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "command": "bash tools/phase-gate-hook.sh"
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "command": "bash tools/post-write-hook.sh"
-      }
-    ]
-  }
+  "hooks": {}
 }
