@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TerMinal UI — replicated components</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="terminal-ui.css">
+<style>
+  /* page-local helpers for the showcase only */
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  .lede { padding: 0 16px 4px; color: var(--z400); font-size: 12.5px; max-width: 720px; }
+  .lede code { font-family: var(--font-mono); color: var(--gt-accent-light); }
+  .grp { font-size: 9.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--z600); padding: 14px 16px 4px; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+  .foot { padding: 18px 16px 40px; color: var(--z600); font-size: 11px; border-top: 1px solid var(--gt-border); margin-top: 12px; }
+  .foot code { font-family: var(--font-mono); color: var(--z400); }
+</style>
+</head>
+<body class="tui">
+<div class="wrap">
+
+  <!-- topbar with the gradient wordmark + tabs -->
+  <div class="tui-topbar">
+    <span class="tui-wordmark"><span class="gt-grad-text">TerMinal</span> <span style="color:var(--z500);font-weight:500;font-size:11px;">/ RAPID UI kit</span></span>
+    <div class="tui-tabs" style="margin-left:auto;">
+      <span class="tui-tab active">Activity</span><span class="tui-tab">Agents</span><span class="tui-tab">CI</span>
+      <span class="tui-tab">Runs</span><span class="tui-tab">Sessions</span><span class="tui-tab">Usage</span>
+    </div>
+  </div>
+
+  <p class="lede">Visual components replicated from <code>trevormil/TerMinal</code> — the dark <code>gt-</code> palette,
+    IBM Plex Sans/Mono, the teal→violet signature gradient, and TerMinal's compact dashboard primitives — as a
+    vanilla-CSS kit (<code>terminal-ui.css</code>), no React/Tailwind.</p>
+
+  <div class="grp">Dashboard cards (Card · Gauge · Big · Stat · Row)</div>
+  <div class="tui-grid">
+
+    <div class="tui-card gt-pop-in">
+      <div class="tui-card-head">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span class="tui-card-title">Burn rate</span>
+        <span class="tui-badge accent">live</span>
+      </div>
+      <div class="tui-big" style="margin-bottom:8px;"><span class="val tui-mono">$12.40</span><span class="sub">/hr · projected $74 today</span></div>
+      <div class="tui-gauge warn" style="margin-bottom:8px;"><i style="width:72%"></i></div>
+      <div style="display:flex;gap:14px;">
+        <span class="tui-stat"><span class="val tui-mono">1.2M</span><span class="lbl">tokens</span></span>
+        <span class="tui-stat"><span class="val tui-mono">340</span><span class="lbl">calls</span></span>
+        <span class="tui-stat"><span class="val tui-mono">4</span><span class="lbl">agents</span></span>
+      </div>
+    </div>
+
+    <div class="tui-card gt-pop-in">
+      <div class="tui-card-head">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3.34 19a10 10 0 1 1 17.32 0"/><path d="m12 14 4-4"/></svg>
+        <span class="tui-card-title">Context usage</span>
+      </div>
+      <div class="tui-big" style="margin-bottom:8px;"><span class="val tui-mono">91%</span><span class="sub">182k / 200k</span></div>
+      <div class="tui-gauge bad" style="margin-bottom:6px;"><i style="width:91%"></i></div>
+      <div class="tui-row"><span class="lbl">checkpoint in</span><span class="val tui-mono">~9k tok</span></div>
+    </div>
+
+    <div class="tui-card gt-pop-in">
+      <div class="tui-card-head">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <span class="tui-card-title">Agent team</span>
+        <span class="tui-dot gt-pulse" style="background:var(--gt-green);"></span>
+      </div>
+      <div class="tui-row"><span class="lbl">planner</span><span class="tui-badge ok">active</span></div>
+      <div class="tui-row"><span class="lbl">coder</span><span class="tui-badge accent">building</span></div>
+      <div class="tui-row"><span class="lbl">tester</span><span class="tui-badge mute">idle</span></div>
+      <div class="tui-row"><span class="lbl">reviewer</span><span class="tui-badge blue">review</span></div>
+      <div class="tui-row"><span class="lbl">watchdog</span><span class="tui-badge ok">ok</span></div>
+    </div>
+
+    <div class="tui-card gt-pop-in">
+      <div class="tui-card-head">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+        <span class="tui-card-title">CI · ship gate</span>
+      </div>
+      <div class="tui-row"><span class="lbl">build</span><span class="tui-badge green">pass</span></div>
+      <div class="tui-row"><span class="lbl">lint</span><span class="tui-badge green">pass</span></div>
+      <div class="tui-row"><span class="lbl">unit</span><span class="tui-badge green">pass</span></div>
+      <div class="tui-row"><span class="lbl">e2e</span><span class="tui-badge bad">fail</span></div>
+      <div style="margin-top:8px;"><span class="tui-forcechip">⚡ force main</span></div>
+    </div>
+
+    <div class="tui-card gt-pop-in">
+      <div class="tui-card-head">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="tui-card-title">Run #1287</span>
+        <span class="tui-badge warn">running</span>
+      </div>
+      <div class="tui-row"><span class="lbl">phase</span><span class="val">P6 · build</span></div>
+      <div class="tui-row"><span class="lbl">elapsed</span><span class="val tui-mono">02:14</span></div>
+      <div class="tui-row"><span class="lbl">tasks</span><span class="val tui-mono">5 / 8</span></div>
+    </div>
+
+    <div class="tui-card gt-pop-in">
+      <div class="tui-card-head"><span class="tui-card-title">Sessions</span></div>
+      <div class="tui-empty">No sessions yet — start a build to populate.</div>
+    </div>
+
+  </div>
+
+  <div class="grp">Badge tones</div>
+  <div class="swatches" style="padding:0 16px;">
+    <span class="tui-badge ok">ok</span><span class="tui-badge warn">warn</span><span class="tui-badge bad">bad</span>
+    <span class="tui-badge blue">blue</span><span class="tui-badge accent">accent</span><span class="tui-badge mute">mute</span>
+    <span class="tui-forcechip">⚡ force main</span>
+  </div>
+
+  <div class="foot">Replicated from <code>github.com/trevormil/TerMinal</code> — primitives Card / Gauge / Big / Stat / Row / Badge / Empty / ForceChip,
+    the <code>gt-</code> palette, IBM Plex, and the teal→violet gradient, ported to vanilla CSS in <code>docs/terminal-ui.css</code> (no React/Tailwind/Electron).</div>
+
+</div>
+</body>
+</html>

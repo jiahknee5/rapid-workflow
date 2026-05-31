@@ -1,0 +1,85 @@
+/* terminal-ui.css — RAPID component kit replicating the TerMinal visual language
+ * (github.com/trevormil/TerMinal): dark gt- palette, IBM Plex Sans/Mono, the
+ * teal→violet signature gradient, and the compact dashboard primitives from its
+ * React+Tailwind ui.tsx (Card / Gauge / Big / Stat / Row / Badge / Empty /
+ * ForceChip), ported faithfully to vanilla CSS. */
+:root {
+  --gt-bg: #0b0b10; --gt-panel: #131318; --gt-surface-hover: #1a1a22; --gt-border: #26262e;
+  --gt-accent: #7c6ef6; --gt-accent-light: #a89eff; --gt-accent-2: #00e0c6;
+  --gt-red: #f87171; --gt-yellow: #fbbf24; --gt-green: #4ade80; --gt-blue: #60a5fa;
+  --gt-text: #e7e7ee; --gt-text-muted: #6b6b7b;
+  --gt-grad: linear-gradient(135deg, #00e0c6 0%, #7c6ef6 100%);
+  /* tailwind zinc scale used by the primitives */
+  --z50:#fafafa; --z100:#f4f4f5; --z200:#e4e4e7; --z400:#a1a1aa; --z500:#71717a; --z600:#52525b;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body.tui { margin: 0; background: var(--gt-bg); color: var(--gt-text); font-family: var(--font-sans);
+  font-feature-settings: 'ss03', 'cv05'; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.tui-mono { font-family: var(--font-mono); }
+
+/* the one brand flourish: gradient wordmark */
+.gt-grad-text { background: var(--gt-grad); -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent; }
+
+/* Card — panel with an uppercase micro-label header + optional icon/right slot */
+.tui-card { margin-bottom: 6px; border: 1px solid var(--gt-border); background: var(--gt-panel);
+  border-radius: 8px; padding: 8px 10px; transition: border-color .15s; }
+.tui-card:hover { border-color: color-mix(in srgb, var(--gt-border) 80%, var(--gt-text)); }
+.tui-card-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.tui-card-head .ico { width: 12px; height: 12px; flex-shrink: 0; color: var(--z500); }
+.tui-card-title { flex: 1; font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--z500); }
+
+/* Gauge — thin bar, teal by default, amber >65%, red >85% */
+.tui-gauge { height: 8px; width: 100%; overflow: hidden; border-radius: 9999px; background: rgba(0,0,0,.4); }
+.tui-gauge > i { display: block; height: 100%; border-radius: 9999px; transition: width .5s ease-out; background: var(--gt-accent-2); }
+.tui-gauge.warn > i { background: #ffb35c; }
+.tui-gauge.bad > i { background: #ff5c7c; }
+
+/* Big — headline stat + muted sub */
+.tui-big { display: flex; align-items: baseline; gap: 6px; }
+.tui-big .val { font-size: 1.125rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; color: var(--z50); }
+.tui-big .sub { font-size: 10.5px; color: var(--z500); }
+
+/* Stat — inline label:value pill for cramming metrics into a row */
+.tui-stat { display: inline-flex; align-items: baseline; gap: 4px; }
+.tui-stat .val { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--z100); }
+.tui-stat .lbl { font-size: 9.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--z600); }
+
+/* Row — label/value line */
+.tui-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; font-size: 12px; }
+.tui-row .lbl { color: var(--z500); }
+.tui-row .val { font-weight: 500; font-variant-numeric: tabular-nums; color: var(--z200); }
+
+/* Badge — tone = color/12 bg + color text + color/25 border */
+.tui-badge { display: inline-flex; align-items: center; gap: 2px; border: 1px solid; border-radius: 6px;
+  padding: 2px 6px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.tui-badge.ok, .tui-badge.green { background: color-mix(in srgb, var(--gt-green) 12%, transparent); color: var(--gt-green); border-color: color-mix(in srgb, var(--gt-green) 25%, transparent); }
+.tui-badge.warn, .tui-badge.yellow { background: color-mix(in srgb, var(--gt-yellow) 12%, transparent); color: var(--gt-yellow); border-color: color-mix(in srgb, var(--gt-yellow) 25%, transparent); }
+.tui-badge.bad, .tui-badge.red { background: color-mix(in srgb, var(--gt-red) 12%, transparent); color: var(--gt-red); border-color: color-mix(in srgb, var(--gt-red) 25%, transparent); }
+.tui-badge.blue { background: color-mix(in srgb, var(--gt-blue) 12%, transparent); color: var(--gt-blue); border-color: color-mix(in srgb, var(--gt-blue) 25%, transparent); }
+.tui-badge.accent { background: color-mix(in srgb, var(--gt-accent) 15%, transparent); color: var(--gt-accent-light); border-color: color-mix(in srgb, var(--gt-accent) 30%, transparent); }
+.tui-badge.mute { background: color-mix(in srgb, var(--z500) 10%, transparent); color: var(--z400); border-color: color-mix(in srgb, var(--z500) 25%, transparent); }
+
+/* Empty + ForceChip (loud, glowing — TERMINAL_FORCE_MAIN marker) */
+.tui-empty { font-size: 12px; font-style: italic; color: var(--z600); }
+.tui-forcechip { display: inline-flex; align-items: center; gap: 4px; border-radius: 6px; background: var(--gt-red);
+  padding: 2px 8px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: #fff;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--gt-red) 55%, transparent); }
+
+/* dashboard shell: topbar + tabs + panel grid */
+.tui-topbar { display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-bottom: 1px solid var(--gt-border); }
+.tui-wordmark { font-weight: 800; font-size: 15px; letter-spacing: -.02em; }
+.tui-tabs { display: flex; gap: 2px; }
+.tui-tab { font-size: 11px; font-weight: 600; color: var(--z500); padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+.tui-tab:hover { background: var(--gt-surface-hover); color: var(--gt-text); }
+.tui-tab.active { background: color-mix(in srgb, var(--gt-accent) 15%, transparent); color: var(--gt-accent-light); }
+.tui-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; padding: 16px; }
+
+/* animations (TerMinal: gt-pop-in, gt-pulse) */
+@keyframes gt-pop-in { 0% { opacity: 0; transform: translateY(8px) scale(.97); } 100% { opacity: 1; transform: none; } }
+.gt-pop-in { animation: gt-pop-in .25s ease-out; }
+@keyframes gt-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+.gt-pulse { animation: gt-pulse 1.6s ease-in-out infinite; }
+.tui-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
