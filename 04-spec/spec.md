@@ -58,3 +58,32 @@ Eval harness output (`.forge/EVAL/`, `.forge/P6_EXIT.json`) surfaced into dashbo
 ## S-13 — Integration layer  (← R-13)
 Cross-system event bus so STATE/docs/eval/dashboard update together and decision points show a
 combined gate view. **This is the primary open work** (the PRD's "the gap is the integration").
+
+## S-14 — Workflow Test Theater  (← FR-9)
+`docs/workflows.json` (machine-readable user-workflow map: per node `in`/`proc`/`out`, a golden
+assertion, and a bounded `exec`) is generated in P4/P5 from `04-spec/workflow.md`. `tools/workflow-runner.py`
+live-drives a workflow — running each node's `exec`, threading data-out → next data-in — and streams the
+trace to `.forge/RUNS/<wf>/<run>.jsonl`, appends `.forge/RUNS/<wf>/index.json`, and publishes
+`docs/testruns.json`. `tools/observe-server.py` exposes `GET /api/runs`, `GET /api/run` (live-tail), and
+`POST /api/run` (trigger). `docs/testsuite.html` renders the diagram from the map and shows, per node and in
+sync, the user-facing surface (left) and the actual declared-vs-runtime data flow (right), with a per-workflow
+run log. Static half (diagram + replay of `testruns.json`) deploys under `/_atlas`; the live `▶ Run` half
+stays local under observe-server (the two-halves rule, S-13 / P9).
+**Agent-backed nodes:** a node `exec.kind` may be `codex` (the **tester** — Codex runs/judges the test under a
+sandboxed `codex exec` with a strict JSON verdict schema; `04-spec/agents/tester-codex.md`) or `human` (a guardrailed
+**simulated operator** standing in for the gate human — fails safe to `hold`, never approves destructive/irreversible/
+outward-facing/spends-money/deploy actions, forces `needs_real_human`; `04-spec/agents/operator-sim.md`). Every agent
+node carries a deterministic `fallback`, so `--agents off`/no-Codex still completes (live ▶ Run uses `--agents auto`;
+bulk republish uses `off`).
+
+## S-15 — Project lifecycle E2E (acceptance test of the skill)  (← FR-10)
+`tools/new-project.sh` is the deterministic P1 scaffold extracted as one command (structure + CONSTITUTION +
+BUILD-AUTONOMY + locked PRD + `.forge/STATE` + self-contained toolset + `atlas-init`). `tools/lifecycle-e2e.sh`
+drives a fresh project through the real lifecycle in stages (`create|build|docs|deploy|verify|all`): it seeds a real
+small app, builds it, populates the deck from the project's own artifacts (`tools/populate-deck.py` renders each
+markdown/JSON artifact into its deck page, replacing the `atlas-stub` placeholder), deploys to a local/staging dir
+(`atlas-deploy`), and **asserts the three deliverables** — documentation populated (no stub pages), local app built
+(`dist/`), dev deployed (app + `/_atlas` + `env.json` dev url) — writing `.forge/E2E.json`. Surfaced as **WF-5** in the
+Test Theater (S-14): Create → Populate Docs → Build (codex tester) → Approve deploy (simulated operator, approves a
+local staging deploy / would hold a real cloud one) → Deploy+verify. The full multi-agent `/forge` build + real cloud
+deploy is the separate opt-in "live" tier (gated: spends money, outward-facing).

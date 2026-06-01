@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Test Suite — RAPID</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FFFFFF; --surface: #F7F8FA; --surface-alt: #F0F2F5;
+  --border: #D4D8DE; --border-light: #E2E5EA;
+  --text: #1A2744; --text-muted: #4A5568; --text-dim: #8896A6;
+  --navy: #1A2744; --blue: #2B6CB0; --blue-dim: rgba(43,108,176,0.08);
+  --green: #276749; --green-dim: rgba(39,103,73,0.08);
+  --red: #C53030; --red-dim: rgba(197,48,48,0.06);
+  --amber: #B7791F; --amber-dim: rgba(183,121,31,0.08);
+  --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
+  --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
+  --radius: 4px; --radius-sm: 3px;
+}
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+.spec-layout { display: flex; flex: 1; }
+.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar a:hover { background: var(--surface-alt); color: var(--text); }
+.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+
+.main { flex: 1; max-width: 1080px; padding: 48px 48px 96px; }
+.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
+.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
+.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 760px; line-height: 1.6; }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 28px 0 8px; }
+
+.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy p:last-child { margin-bottom: 0; }
+.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
+.key-insight strong { color: var(--navy); }
+.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+.code-inline { font-family:"SF Mono","Fira Code",monospace; font-size:0.82em; background:var(--surface-alt); padding:1px 5px; border-radius:3px; }
+
+/* diagram chips (shared vocabulary with users.html) */
+.diagram { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.diagram-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; }
+.hflow { display: flex; align-items: stretch; flex-wrap: wrap; gap: 0; }
+.n { border:1.5px solid var(--border); border-radius:var(--radius); padding:8px 11px; font-size:0.74rem; font-weight:600; display:flex; flex-direction:column; gap:2px; min-width:120px; position:relative; cursor:pointer; transition:all .12s; background:var(--bg); }
+.n small { font-weight:500; opacity:.7; font-size:0.62rem; }
+.n-auto { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.n-gate { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); font-weight: 800; }
+.n-guard { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+.n-primary { border-color: var(--navy); background: var(--navy); color: #fff; }
+.n-blue { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+.n-purple { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+.n.active { outline:3px solid var(--navy); outline-offset:1px; box-shadow:0 4px 14px rgba(26,39,68,.18); transform:translateY(-1px); }
+.n .nstat { position:absolute; top:-8px; right:-8px; width:18px; height:18px; border-radius:50%; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; background:#fff; border:1.5px solid var(--border); }
+.n .nstat.pass { color:var(--green); border-color:var(--green); }
+.n .nstat.fail { color:var(--red); border-color:var(--red); }
+.n .nstat.info { color:var(--blue); border-color:var(--blue); }
+.n .nstat.live { color:var(--amber); border-color:var(--amber); animation:pulse 1s infinite; }
+@keyframes pulse { 50% { opacity:.35; } }
+.arr { display:flex; align-items:center; padding:0 6px; color:var(--text-dim); font-size:1rem; }
+
+/* theater controls */
+.theater-controls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:14px; }
+.wf-tabs { display:flex; gap:4px; flex-wrap:wrap; }
+.wf-tab { font-size:0.72rem; font-weight:700; padding:5px 11px; border-radius:20px; border:1.5px solid var(--border); background:var(--bg); color:var(--text-muted); cursor:pointer; }
+.wf-tab.active { background:var(--navy); color:#fff; border-color:var(--navy); }
+.ctl { font:inherit; font-size:0.75rem; padding:5px 9px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); }
+.ctl-label { font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); margin-right:2px; }
+.btn { font:inherit; font-size:0.76rem; font-weight:700; padding:6px 14px; border-radius:var(--radius-sm); border:1px solid var(--navy); background:var(--navy); color:#fff; cursor:pointer; }
+.btn:hover { background:#24355c; }
+.btn.ghost { background:var(--bg); color:var(--navy); }
+.btn:disabled { opacity:.45; cursor:default; }
+.custom-input { width:100%; font-family:"SF Mono","Fira Code",monospace; font-size:0.72rem; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-sm); margin-top:8px; display:none; }
+
+.transport { display:flex; align-items:center; gap:10px; margin:12px 0; flex-wrap:wrap; }
+.transport input[type=range] { flex:1; min-width:160px; }
+.run-status { font-size:0.72rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+.run-status.pass { background:var(--green-dim); color:var(--green); }
+.run-status.fail { background:var(--red-dim); color:var(--red); }
+.run-status.live { background:var(--amber-dim); color:var(--amber); }
+.run-status.idle { background:var(--surface-alt); color:var(--text-dim); }
+
+/* side-by-side */
+.theater-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.pane { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--bg); display:flex; flex-direction:column; }
+.pane-head { font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:#fff; background:var(--navy); padding:7px 12px; display:flex; justify-content:space-between; align-items:center; }
+.pane-head .sub { font-weight:500; opacity:.7; text-transform:none; letter-spacing:0; }
+.userview { height:420px; background:var(--surface); }
+.userview iframe { width:100%; height:100%; border:0; background:#fff; }
+.userview .placeholder { padding:24px; color:var(--text-dim); font-size:0.8rem; }
+.dataflow { padding:14px; font-size:0.78rem; max-height:420px; overflow:auto; }
+.flow-row { margin-bottom:12px; }
+.flow-k { font-size:0.56rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text-dim); margin-bottom:3px; }
+.flow-declared { color:var(--text-muted); line-height:1.5; }
+.flow-json { font-family:"SF Mono","Fira Code",monospace; font-size:0.68rem; background:var(--surface); border:1px solid var(--border-light); border-radius:var(--radius-sm); padding:8px 10px; white-space:pre-wrap; word-break:break-word; color:var(--text); max-height:150px; overflow:auto; }
+.flow-arrow { text-align:center; color:var(--text-dim); font-size:0.9rem; margin:4px 0; }
+.io-pill { display:inline-block; font-size:0.56rem; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; }
+.io-pill.in { background:var(--blue-dim); color:var(--blue); }
+.io-pill.out { background:var(--teal-dim); color:var(--teal); }
+
+/* run log */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.74rem; margin: 12px 0; }
+.compare-table th { text-align: left; padding: 7px 10px; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
+.compare-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table tr:hover td { background: var(--surface); }
+.compare-table td.linkish { color:var(--blue); cursor:pointer; font-family:"SF Mono",monospace; }
+.dot { font-weight:800; }
+.dot.pass { color:var(--green); } .dot.fail { color:var(--red); } .dot.info { color:var(--blue); }
+
+@media (max-width: 960px) {
+  .spec-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); }
+  .main { padding: 28px 20px; }
+  .theater-grid { grid-template-columns: 1fr; }
+}
+.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.forge-nav a:hover { color: rgba(255,255,255,0.85); }
+.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+</style>
+</head>
+<body>
+<nav class="forge-nav">
+  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <a href="prd.html">PRD</a>
+  <a href="prd-enhanced.html">Enhanced PRD</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="workflow.html">Workflow</a>
+  <a href="users.html">Users</a>
+  <a href="spec.html">Spec</a>
+  <a href="observatory.html">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="testsuite.html" class="active">Test Suite</a>
+  <a href="cost.html">Cost</a>
+  <a href="documentation.html">Documentation</a>
+</nav>
+<div class="spec-layout">
+<nav class="sidebar">
+  <div class="sidebar-brand">RAPID</div>
+  <div class="sidebar-sub">Workflow Test Theater</div>
+  <div class="sidebar-section">On this page</div>
+  <a href="#overview">What the test suite is</a>
+  <a href="#placement">Where it sits in the architecture</a>
+  <a href="#theater">Live test theater</a>
+  <a href="#runlog">Run log</a>
+  <a href="#how">How it works (the contract)</a>
+</nav>
+<div class="docpage-content"><div class="main">
+
+  <div class="section" id="overview">
+    <div class="section-id">Test Suite · Overview</div>
+    <div class="section-title">The test suite is the user workflows, made runnable</div>
+    <div class="section-desc">
+      Every user workflow declares, node by node, what data enters, what processing happens, and what
+      data exits — and its expected final data-out is locked as a <strong>golden assertion</strong>.
+      This page turns each of those workflows into an <strong>executable test you can drive in real
+      time</strong>: pick an input (a preset or your own), run it, and watch the diagram light up node
+      by node while two panels stay in sync — on the left <strong>what the user sees</strong>, on the
+      right the <strong>actual data-in / processing / data-out at that node</strong>, threaded
+      end-to-end so each node's output is visibly the next node's input. Every run is recorded, so
+      there is a permanent log per workflow.
+    </div>
+    <div class="strategy">
+      <h3>One source, three faces</h3>
+      <p>The diagram, the per-node breakdown, and the executable test all come from a single
+      machine-readable map — <span class="code-inline">docs/workflows.json</span> — generated from the
+      project's own spec (Phase 4 workflow derivation + Phase 5 test mapping). The prose version of the
+      same map lives on the <a href="users.html">Users</a> page; the pass/fail of the immutable harness
+      lives on <a href="eval.html">Eval</a>. This page is the <em>runnable</em> face that ties them
+      together — it is generated dynamically per project, not hand-authored.</p>
+    </div>
+  </div>
+
+  <div class="section" id="placement">
+    <div class="section-id">Test Suite · Architecture placement</div>
+    <div class="section-title">Where this sits, and how a run flows end to end</div>
+    <div class="section-desc">
+      The test theater is a thin layer over machinery that already exists: the workflow map (Phase 4),
+      the eval harness and per-node test mapping (Phase 5), the live runner, and the observe-server
+      that already powers the <a href="observatory.html">Observatory</a>. Component
+      <strong>C-07</strong> in the architecture register; specified at <strong>S-14</strong>.
+    </div>
+    <div class="diagram">
+      <div class="diagram-label"><span>Data flow — a run, end to end</span></div>
+      <div class="hflow">
+        <span class="n n-auto" style="cursor:default">P4 / P5<small>docs/workflows.json</small></span>
+        <span class="arr">→</span>
+        <span class="n n-blue" style="cursor:default">▶ Run (you or preset)<small>POST /api/run</small></span>
+        <span class="arr">→</span>
+        <span class="n n-blue" style="cursor:default">workflow-runner.py<small>drives nodes live</small></span>
+        <span class="arr">→</span>
+        <span class="n n-auto" style="cursor:default">.forge/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl<small>streamed trace</small></span>
+        <span class="arr">→</span>
+        <span class="n n-primary" style="cursor:default">This page<small>live-tail + replay</small></span>
+        <span class="arr">→</span>
+        <span class="n n-auto" style="cursor:default">docs/testruns.json<small>published run log</small></span>
+      </div>
+    </div>
+    <div class="key-insight">
+      <strong>Two halves (per the deploy rule).</strong> The diagram + the replay of the last published
+      run are static — they deploy with the product under <span class="code-inline">/_atlas</span> and
+      work offline. The live <strong>▶ Run</strong> button drives the real build through
+      <span class="code-inline">observe-server</span> and stays local. With no server, the page silently
+      falls back to replaying <span class="code-inline">testruns.json</span> — never a dead screen.
+    </div>
+  </div>
+
+  <div class="section" id="theater">
+    <div class="section-id">Test Suite · Live theater</div>
+    <div class="section-title">Run a workflow and follow it node by node</div>
+    <div class="section-desc">
+      Choose a workflow, give it an input, and press <strong>▶ Run</strong> to live-drive it — or scrub
+      the last recorded run. The active node is highlighted in the diagram; the panels below show that
+      node's user-facing surface and its real data flow.
+    </div>
+
+    <div class="theater-controls">
+      <div class="wf-tabs" id="wf-tabs"></div>
+      <span style="flex:1"></span>
+      <span class="ctl-label">Input</span>
+      <select class="ctl" id="preset-select" title="Pick a preset input, or Custom to type your own"></select>
+      <button class="btn" id="run-btn">▶ Run</button>
+    </div>
+    <textarea class="custom-input" id="custom-input" rows="2" placeholder='{"idea":"build a math tutor for kids"}'></textarea>
+
+    <div class="diagram">
+      <div class="diagram-label">
+        <span id="wf-title">Workflow</span>
+        <span id="wf-golden-pill" class="run-status idle" style="font-size:0.58rem;">golden assertion</span>
+      </div>
+      <div class="hflow" id="wf-diagram"></div>
+    </div>
+
+    <div class="transport">
+      <button class="btn ghost" id="step-prev" title="Previous node">◀</button>
+      <button class="btn ghost" id="play-btn" title="Play / pause">▶</button>
+      <button class="btn ghost" id="step-next" title="Next node">▶▶</button>
+      <input type="range" id="scrubber" min="0" max="0" value="0" />
+      <span class="run-status idle" id="run-verdict">no run yet</span>
+    </div>
+
+    <div class="theater-grid">
+      <div class="pane">
+        <div class="pane-head"><span>What the user sees</span><span class="sub" id="userview-sub"></span></div>
+        <div class="userview" id="userview"><div class="placeholder">Run or scrub a workflow to see the surface for each node.</div></div>
+      </div>
+      <div class="pane">
+        <div class="pane-head"><span>Data flow at this node</span><span class="sub" id="dataflow-sub"></span></div>
+        <div class="dataflow" id="dataflow"><div class="placeholder" style="color:var(--text-dim)">Declared contract (in / processing / out) and the actual values captured at runtime appear here. Each node's <em>data-out</em> is the next node's <em>data-in</em>.</div></div>
+      </div>
+    </div>
+    <div class="footnote" id="theater-foot">Live runs stream from <code>observe-server</code> (:4040); without it, the last published run from <code>docs/testruns.json</code> is replayed. This page reflects recorded values — it does not fabricate results.</div>
+  </div>
+
+  <div class="section" id="runlog">
+    <div class="section-id">Test Suite · Run log</div>
+    <div class="section-title">Every run of the selected workflow</div>
+    <div class="section-desc">Newest first. Click a run to load its trace into the theater above and replay it.</div>
+    <div id="runlog-body"><div class="key-insight">Loading run log…</div></div>
+    <div class="footnote">Source: <code>/api/runs</code> when a server is up, else <code>docs/testruns.json</code> (published by <code>tools/workflow-runner.py</code> from <code>.forge/RUNS/&lt;wf&gt;/index.json</code>).</div>
+  </div>
+
+  <div class="section" id="how">
+    <div class="section-id">Test Suite · How it works</div>
+    <div class="section-title">The contract behind the theater</div>
+    <div class="section-desc">
+      A node in <span class="code-inline">workflows.json</span> carries both its <strong>declared</strong>
+      contract (<code>in</code> / <code>proc</code> / <code>out</code> — the same prose as the Users page)
+      and an <strong>exec</strong> spec that runs a real, bounded command against the live build. The
+      runner executes each node, threads its output into the next node's input, and streams the trace.
+    </div>
+    <div class="strategy">
+      <h3>Bounded by construction</h3>
+      <p>No node triggers a real <span class="code-inline">/forge</span> build or spends money. For this
+      project the execs are FORGE's own seconds-scale tools — <span class="code-inline">ship-gate.sh</span>
+      (re-runs the eval harness), <span class="code-inline">stub-scan.sh</span> (scans the tree) — and
+      reads of live state files (<span class="code-inline">.forge/STATE.json</span>,
+      <span class="code-inline">TASKS.json</span>, <span class="code-inline">GAPS.json</span>). For a built
+      project, Phase 5 generates these execs to point at <em>that</em> project's own test / e2e commands
+      and UI surfaces. The map is generated; the theater is generic.</p>
+      <p>Because each node runs a real command and asserts an exit code or a resolved value, a green run is
+      derived from the current tree — not a remembered claim. A node that fails surfaces the real error in
+      its data panel, never swallowed.</p>
+    </div>
+    <div class="subsection-title">Agent-backed nodes: Codex tester + simulated operator</div>
+    <div class="strategy">
+      <h3>Codex is the tester; a guardrailed agent simulates the human</h3>
+      <p>Test nodes (<code>exec.kind: "codex"</code>) are run by <strong>Codex</strong> (the OpenAI Codex CLI) under a
+      sandboxed <code>codex exec</code> with a strict JSON verdict schema <code>{status, evidence, commands_run}</code>.
+      Codex actually runs the test (e.g. the ship gate) and returns an <em>independent</em> pass/fail with the evidence
+      it observed — the writer is never the auditor. Role doc: <code>04-spec/agents/tester-codex.md</code>.</p>
+      <p>Where a workflow needs a <strong>human</strong> at a gate (<code>exec.kind: "human"</code>), a
+      <strong>simulated operator</strong> agent stands in so the gate can be dry-run end-to-end — with hard guardrails:
+      it <strong>fails safe</strong> (defaults to <em>hold</em>, never rubber-stamps), decides only from cited evidence,
+      runs <strong>read-only</strong>, and <strong>never approves anything destructive, irreversible, outward-facing, or
+      that spends money / deploys</strong> — those force <code>needs_real_human: true</code> and a real person must own them.
+      It is always labeled "operator (simulated)" and is never authorization for a real action. Role doc:
+      <code>04-spec/agents/operator-sim.md</code>.</p>
+      <p><strong>Always runnable.</strong> Each agent node keeps a deterministic <code>fallback</code>, so with
+      <code>--agents off</code> (or no Codex installed) the run still completes — the live ▶ Run uses Codex
+      (<code>--agents auto</code>); the bulk republish uses the fallback to stay free.</p>
+    </div>
+    <div class="key-insight">
+      <strong>Project Lifecycle E2E (WF-5).</strong> One suite is the acceptance test of the skill itself:
+      it <strong>creates a new project</strong> (<code>tools/new-project.sh</code>), <strong>populates its docs</strong>
+      from the project's own artifacts, <strong>builds the local app</strong> (Codex tester judges it), and
+      <strong>deploys dev</strong> to a local/staging dir (the simulated operator approves the local deploy, but would
+      hold a real cloud one) — asserting all three deliverables and writing <code>.forge/E2E.json</code>. Driven by
+      <code>tools/lifecycle-e2e.sh</code>; bounded (local, no paid services). The full multi-agent <code>/forge</code>
+      build + real cloud deploy is the opt-in live tier.
+    </div>
+    <div class="key-insight">
+      <strong>Run it yourself:</strong>
+      <code>python3 tools/workflow-runner.py --wf WF-1 --preset math-tutor</code> &nbsp;·&nbsp;
+      <code>--all</code> runs every workflow &nbsp;·&nbsp; <code>--input '{"idea":"…"}'</code> drives your own input &nbsp;·&nbsp;
+      <code>--agents on|off|auto</code> toggles Codex (default <code>auto</code>).
+    </div>
+  </div>
+
+</div></div>
+</div>
+  <script src="env-links.js" defer></script><script src="sidebar.js" defer></script>
+  <script>
+  (function () {
+    "use strict";
+    var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); };
+    var jsonPretty = function (v) { try { return JSON.stringify(v, null, 2); } catch (e) { return String(v); } };
+
+    var state = {
+      doc: null,            // workflows.json
+      wfId: null,           // selected workflow id
+      nodes: [],            // node records for the active trace (node_done shape)
+      idx: 0,               // active node index
+      playing: false,
+      timer: null,
+      polling: null,        // live-tail interval
+      serverUp: false,
+      published: null,      // testruns.json
+    };
+
+    var $ = function (id) { return document.getElementById(id); };
+    var getJSON = function (u, opts) { return fetch(u, opts).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
+
+    function wf() { return (state.doc.workflows || []).find(function (w) { return w.id === state.wfId; }); }
+
+    // ---- diagram ----------------------------------------------------------
+    function renderDiagram() {
+      var w = wf(); if (!w) return;
+      $("wf-title").textContent = w.id + " — " + w.title;
+      var gp = $("wf-golden-pill");
+      gp.textContent = "GOLDEN: " + (w.golden || "").slice(0, 90) + ((w.golden || "").length > 90 ? "…" : "");
+      gp.title = w.golden || "";
+      var html = "";
+      w.nodes.forEach(function (n, i) {
+        if (i) html += '<span class="arr">→</span>';
+        var rec = state.nodes[i];
+        var stat = rec ? rec.status : null;
+        var badge = stat ? '<span class="nstat ' + stat + '">' + (stat === "pass" ? "✓" : stat === "fail" ? "✗" : "•") + "</span>" : "";
+        html += '<span class="n ' + esc(n.node_class || "n-auto") + (i === state.idx ? " active" : "") + '" data-i="' + i + '">' +
+          badge + esc(n.label) + "<small>" + esc((n.lane || "system")) + "</small></span>";
+      });
+      $("wf-diagram").innerHTML = html;
+      Array.prototype.forEach.call($("wf-diagram").querySelectorAll(".n"), function (el) {
+        el.addEventListener("click", function () { setActive(+el.getAttribute("data-i")); });
+      });
+    }
+
+    // ---- side-by-side panels ---------------------------------------------
+    function renderPanels() {
+      var w = wf(); if (!w) return;
+      var node = w.nodes[state.idx] || {};
+      var rec = state.nodes[state.idx];
+      // user view
+      var uv = $("userview"), sub = $("userview-sub");
+      var view = (rec && rec.view) || node.view || { kind: "data" };
+      sub.textContent = node.label || "";
+      if (view.kind === "iframe" && view.src) {
+        if (uv.getAttribute("data-src") !== view.src) {
+          uv.setAttribute("data-src", view.src);
+          uv.innerHTML = '<iframe src="' + esc(view.src) + '" title="' + esc(node.label) + '"></iframe>';
+        }
+      } else if (view.kind === "text") {
+        uv.removeAttribute("data-src");
+        var txt = rec && rec.data_out ? (rec.data_out.tail || rec.data_out.value || jsonPretty(rec.data_out)) : "(run to capture output)";
+        uv.innerHTML = '<div class="placeholder"><div class="flow-k">captured output</div><pre class="flow-json" style="max-height:360px">' + esc(txt) + "</pre></div>";
+      } else {
+        uv.removeAttribute("data-src");
+        uv.innerHTML = '<div class="placeholder">The data panel on the right is the view for this node.</div>';
+      }
+      // data flow
+      var declared = (rec && rec.declared) || { in: node.in, proc: node.proc, out: node.out };
+      var df = $("dataflow");
+      var statusLine = rec
+        ? '<span class="run-status ' + rec.status + '">' + rec.status.toUpperCase() + "</span> " +
+          (rec.elapsed_s != null ? '<span style="color:var(--text-dim);font-size:.7rem">' + rec.elapsed_s + "s</span>" : "")
+        : '<span class="run-status idle">not run</span>';
+      $("dataflow-sub").innerHTML = "node " + (state.idx + 1) + "/" + w.nodes.length;
+      var html = "";
+      html += '<div class="flow-row">' + statusLine + "</div>";
+      // Agent-backed node (codex tester / simulated operator): surface the verdict up front
+      var dout = (rec && rec.data_out) || {};
+      if (dout.role && (dout.verdict || dout.engine)) {
+        var v = dout.verdict || {};
+        var eng = dout.engine || "";
+        var isOp = /operator/.test(dout.role);
+        var head = isOp ? "🧑‍⚖️ Operator (simulated)" : "🤖 Tester";
+        var line2 = "";
+        if (isOp) {
+          var dec = (v.decision || "?").toUpperCase();
+          var decCls = v.decision === "approve" ? "pass" : v.decision === "reject" ? "fail" : "live";
+          line2 = '<span class="run-status ' + decCls + '">' + esc(dec) + "</span>" +
+            (v.needs_real_human ? ' <span class="io-pill in" style="background:var(--red-dim);color:var(--red)">needs real human</span>' : "") +
+            '<div class="flow-declared" style="margin-top:6px">' + esc(v.rationale || "") + "</div>" +
+            (v.evidence_cited ? '<div class="flow-k" style="margin-top:6px">Evidence cited</div><div class="flow-declared">' + esc(v.evidence_cited) + "</div>" : "");
+        } else {
+          var vs = (v.status || "?").toUpperCase();
+          line2 = '<span class="run-status ' + (v.status === "pass" ? "pass" : "fail") + '">' + esc(vs) + "</span>" +
+            '<div class="flow-declared" style="margin-top:6px">' + esc(v.evidence || "") + "</div>" +
+            (v.commands_run && v.commands_run.length ? '<div class="flow-k" style="margin-top:6px">Commands run</div><div class="flow-json">' + esc(v.commands_run.join("\n")) + "</div>" : "");
+        }
+        var engShort = /fallback/.test(eng) ? "fallback (no codex)" : eng;
+        html += '<div class="flow-row" style="background:var(--purple-dim);border-left:3px solid var(--purple);padding:10px 12px;border-radius:0 4px 4px 0">' +
+          '<div class="flow-k" style="color:var(--purple)">' + head + ' &nbsp;·&nbsp; engine: <code>' + esc(engShort) + "</code></div>" + line2 + "</div>";
+      }
+      html += '<div class="flow-row"><div class="flow-k">Processing (declared)</div><div class="flow-declared">' + esc(declared.proc || "") + "</div></div>";
+      html += '<div class="flow-row"><div class="flow-k">Data in <span class="io-pill in">from prev node</span></div>' +
+        '<div class="flow-declared" style="margin-bottom:4px">' + esc(declared.in || "") + "</div>" +
+        '<div class="flow-json">' + esc(rec ? jsonPretty(rec.data_in) : "(run to capture)") + "</div></div>";
+      html += '<div class="flow-arrow">▼ processing ▼</div>';
+      html += '<div class="flow-row"><div class="flow-k">Data out <span class="io-pill out">→ next node\'s input</span></div>' +
+        '<div class="flow-declared" style="margin-bottom:4px">' + esc(declared.out || "") + "</div>" +
+        '<div class="flow-json">' + esc(rec ? jsonPretty(rec.data_out) : "(run to capture)") + "</div></div>";
+      df.innerHTML = html;
+    }
+
+    function setActive(i) {
+      var w = wf(); if (!w) return;
+      state.idx = Math.max(0, Math.min(i, w.nodes.length - 1));
+      $("scrubber").value = state.idx;
+      renderDiagram(); renderPanels();
+    }
+
+    function setVerdict(text, cls) {
+      var v = $("run-verdict"); v.textContent = text; v.className = "run-status " + (cls || "idle");
+    }
+
+    // ---- transport --------------------------------------------------------
+    function play() {
+      if (state.playing) { stop(); return; }
+      var w = wf(); if (!w) return;
+      state.playing = true; $("play-btn").textContent = "⏸";
+      state.timer = setInterval(function () {
+        if (state.idx >= w.nodes.length - 1) { stop(); return; }
+        setActive(state.idx + 1);
+      }, 1100);
+    }
+    function stop() { state.playing = false; $("play-btn").textContent = "▶"; clearInterval(state.timer); }
+
+    // ---- load a trace (replay) -------------------------------------------
+    function loadTrace(nodeRecords, verdict) {
+      stop();
+      state.nodes = nodeRecords || [];
+      var w = wf();
+      $("scrubber").max = Math.max(0, (w ? w.nodes.length : state.nodes.length) - 1);
+      state.idx = 0;
+      if (verdict) setVerdict(verdict.text, verdict.cls);
+      renderDiagram(); renderPanels();
+    }
+
+    // extract node_done records from an events array
+    function nodesFromEvents(events) {
+      return (events || []).filter(function (e) { return e.type === "node_done"; })
+        .sort(function (a, b) { return a.index - b.index; });
+    }
+
+    // ---- live run ---------------------------------------------------------
+    function startRun() {
+      var w = wf(); if (!w) return;
+      var sel = $("preset-select").value;
+      var payload = {};
+      if (sel === "__custom__") {
+        try { payload.input = JSON.parse($("custom-input").value || "{}"); }
+        catch (e) { setVerdict("invalid JSON input", "fail"); return; }
+      } else { payload.preset = sel; }
+
+      $("run-btn").disabled = true;
+      setVerdict("starting…", "live");
+      fetch("/api/run?wf=" + encodeURIComponent(w.id), { method: "POST", body: JSON.stringify(payload) })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.run_id) throw new Error("no run id");
+          state.serverUp = true;
+          liveTail(w.id, res.run_id);
+        })
+        .catch(function () {
+          $("run-btn").disabled = false;
+          setVerdict("needs observe-server (:4040) — replaying last run", "idle");
+          $("theater-foot").innerHTML = "⚠ Live ▶ Run needs <code>observe-server</code> running locally (the live half stays local by design). Showing the last published run instead.";
+        });
+    }
+
+    function liveTail(wfId, runId) {
+      state.nodes = []; state.idx = 0;
+      setVerdict("running…", "live");
+      renderDiagram();
+      var seen = 0;
+      state.polling = setInterval(function () {
+        getJSON("/api/run?wf=" + encodeURIComponent(wfId) + "&run=" + encodeURIComponent(runId) + "&since=0")
+          .then(function (d) {
+            if (!d) return;
+            var recs = nodesFromEvents(d.events);
+            state.nodes = recs;
+            // advance to the newest completed node as it streams in
+            if (recs.length > seen) { seen = recs.length; setActive(recs.length - 1); }
+            else { renderDiagram(); }
+            // mark the in-flight node as live
+            var ns = $("wf-diagram").querySelectorAll(".n");
+            if (recs.length < (wf().nodes.length) && ns[recs.length]) {
+              var b = document.createElement("span"); b.className = "nstat live"; b.textContent = "•";
+              if (!ns[recs.length].querySelector(".nstat")) ns[recs.length].appendChild(b);
+            }
+            if (d.done) {
+              clearInterval(state.polling); state.polling = null;
+              $("run-btn").disabled = false;
+              var done = d.events.filter(function (e) { return e.type === "run_done"; })[0] || {};
+              var ok = done.fail === 0;
+              setVerdict((ok ? "PASS " : "FAIL ") + (done.pass || 0) + "/" + (done.total || recs.length), ok ? "pass" : "fail");
+              setActive(0);
+              loadRunLog();
+            }
+          });
+      }, 700);
+    }
+
+    // ---- run log ----------------------------------------------------------
+    function renderRunLog(rows) {
+      var body = $("runlog-body");
+      if (!rows || !rows.length) {
+        body.innerHTML = '<div class="key-insight">No runs recorded yet for ' + esc(state.wfId) + '. Press ▶ Run above, or run <code>python3 tools/workflow-runner.py --wf ' + esc(state.wfId) + '</code>.</div>';
+        return;
+      }
+      var html = '<table class="compare-table"><thead><tr><th>Status</th><th>Run</th><th>When</th><th>Pass</th><th>Nodes</th></tr></thead><tbody>';
+      rows.forEach(function (r) {
+        var cls = r.status === "pass" ? "pass" : r.status === "fail" ? "fail" : "info";
+        html += "<tr>" +
+          '<td><span class="dot ' + cls + '">●</span> ' + esc((r.status || "").toUpperCase()) + "</td>" +
+          '<td class="linkish" data-run="' + esc(r.run_id) + '">' + esc(r.run_id) + "</td>" +
+          "<td>" + esc((r.started || "").replace("T", " ").replace("Z", "")) + "</td>" +
+          "<td>" + esc(r.pass) + "/" + esc(r.total) + "</td>" +
+          "<td>" + esc(r.total) + "</td></tr>";
+      });
+      html += "</tbody></table>";
+      body.innerHTML = html;
+      Array.prototype.forEach.call(body.querySelectorAll(".linkish"), function (el) {
+        el.addEventListener("click", function () { openRun(el.getAttribute("data-run")); });
+      });
+    }
+
+    function openRun(runId) {
+      // try live server first, else pull from published latest if it matches
+      getJSON("/api/run?wf=" + encodeURIComponent(state.wfId) + "&run=" + encodeURIComponent(runId) + "&since=0")
+        .then(function (d) {
+          if (d && d.events && d.events.length) {
+            var done = d.events.filter(function (e) { return e.type === "run_done"; })[0] || {};
+            loadTrace(nodesFromEvents(d.events), { text: (done.fail === 0 ? "PASS " : "FAIL ") + (done.pass || 0) + "/" + (done.total || 0), cls: done.fail === 0 ? "pass" : "fail" });
+            window.scrollTo({ top: $("theater").offsetTop - 20, behavior: "smooth" });
+            return;
+          }
+          // fallback: published latest
+          var pub = state.published && state.published.workflows && state.published.workflows[state.wfId];
+          if (pub && pub.latest && pub.latest.run_id === runId) {
+            var s = pub.latest.summary || {};
+            loadTrace(nodesFromEvents(pub.latest.nodes), { text: (s.fail === 0 ? "PASS " : "FAIL ") + (s.pass || 0) + "/" + (s.total || 0), cls: s.fail === 0 ? "pass" : "fail" });
+            window.scrollTo({ top: $("theater").offsetTop - 20, behavior: "smooth" });
+          }
+        });
+    }
+
+    function loadRunLog() {
+      // live server list first, else published
+      getJSON("/api/runs?wf=" + encodeURIComponent(state.wfId)).then(function (d) {
+        if (d && d.present && d.workflows && d.workflows[state.wfId]) {
+          state.serverUp = true;
+          renderRunLog(d.workflows[state.wfId]);
+        } else {
+          var pub = state.published && state.published.workflows && state.published.workflows[state.wfId];
+          renderRunLog(pub ? pub.runs : []);
+        }
+      });
+    }
+
+    // ---- workflow selection ----------------------------------------------
+    function selectWf(id) {
+      state.wfId = id;
+      stop(); if (state.polling) { clearInterval(state.polling); state.polling = null; }
+      Array.prototype.forEach.call($("wf-tabs").children, function (t) { t.classList.toggle("active", t.getAttribute("data-id") === id); });
+      // presets
+      var w = wf();
+      var ps = $("preset-select"); ps.innerHTML = "";
+      (w.presets || []).forEach(function (p) {
+        var o = document.createElement("option"); o.value = p.id; o.textContent = p.label; ps.appendChild(o);
+      });
+      var oc = document.createElement("option"); oc.value = "__custom__"; oc.textContent = "Custom input…"; ps.appendChild(oc);
+      $("custom-input").style.display = "none";
+      // seed theater with the last published run (offline-friendly), else empty contract view
+      var pub = state.published && state.published.workflows && state.published.workflows[id];
+      if (pub && pub.latest && pub.latest.nodes && pub.latest.nodes.length) {
+        var s = pub.latest.summary || {};
+        loadTrace(nodesFromEvents(pub.latest.nodes), { text: (s.fail === 0 ? "PASS " : "FAIL ") + (s.pass || 0) + "/" + (s.total || 0) + " (last run)", cls: s.fail === 0 ? "pass" : "fail" });
+      } else {
+        loadTrace([], { text: "no run yet", cls: "idle" });
+      }
+      loadRunLog();
+    }
+
+    // ---- boot -------------------------------------------------------------
+    Promise.all([getJSON("workflows.json"), getJSON("testruns.json")]).then(function (res) {
+      state.doc = res[0]; state.published = res[1];
+      if (!state.doc || !state.doc.workflows) {
+        $("wf-diagram").innerHTML = '<div class="placeholder">Could not load <code>workflows.json</code>.</div>';
+        return;
+      }
+      var tabs = $("wf-tabs");
+      state.doc.workflows.forEach(function (w) {
+        var b = document.createElement("button"); b.className = "wf-tab"; b.setAttribute("data-id", w.id);
+        b.textContent = w.id; b.title = w.title;
+        b.addEventListener("click", function () { selectWf(w.id); });
+        tabs.appendChild(b);
+      });
+      $("preset-select").addEventListener("change", function () {
+        $("custom-input").style.display = this.value === "__custom__" ? "block" : "none";
+      });
+      $("run-btn").addEventListener("click", startRun);
+      $("play-btn").addEventListener("click", play);
+      $("step-prev").addEventListener("click", function () { setActive(state.idx - 1); });
+      $("step-next").addEventListener("click", function () { setActive(state.idx + 1); });
+      $("scrubber").addEventListener("input", function () { setActive(+this.value); });
+      selectWf(state.doc.workflows[0].id);
+    });
+  })();
+  </script>
+</body>
+</html>

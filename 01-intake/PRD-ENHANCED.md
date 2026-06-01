@@ -72,6 +72,12 @@ Build status, docs, test results, and dashboard update together on phase complet
 ### FR-8 — Cost & token visibility  [SHOULD] ↑BR-4
 Token/cost burn is tracked and shown per step, per phase/section, and per project; the developer view surfaces it.
 
+### FR-10 — Project lifecycle acceptance test  [SHOULD] ↑BR-1, BR-2
+The skill is itself testable end-to-end: a harness creates a new project via the skill, populates its documentation, builds the local app, and deploys dev — asserting each of the three outcomes. Runnable repeatably against a fresh project (deterministic, local/staging deploy, no paid services); the full multi-agent `/forge` build + real cloud deploy is the opt-in live tier. *(proves BR-1's "shipped, tested, documented app" actually comes out the other end, and BR-2's trustworthy autonomy)* ↓S-15
+
+### FR-9 — Runnable workflow test theater  [SHOULD] ↑BR-4, BR-5
+Each user workflow is executable as a test the operator can drive in real time: pick an input (preset or custom), run it, and follow the workflow diagram node by node with two synchronized panels — what the user sees, and the actual data-in/processing/data-out at that node, threaded end-to-end. Every run is recorded to a per-workflow log. Built dynamically from the project's own workflow map (`docs/workflows.json`, derived in P4/P5), so it generalizes to any project FORGE builds — not just FORGE itself. *(makes FR-6's "visible everywhere" walkable, and feeds BR-5 by recording every run)* ↓S-14
+
 ---
 
 ## §3 — Technical Requirements & NFRs (TR)

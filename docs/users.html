@@ -138,7 +138,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 </style>
 </head>
 <body>
-<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html" class="active">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
+<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html" class="active">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="testsuite.html">Test Suite</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
 <div class="spec-layout">
 <nav class="sidebar">
   <div class="sidebar-brand">RAPID</div>
@@ -502,10 +502,14 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <div class="key-insight">
     <strong>Why this matters.</strong> Because "done" is defined by tests generated from the plan before any code is written, every workflow's expected data-out is locked as an assertion up front. The gap loop (WF-2) is what closes any distance between the current build and these assertions.
   </div>
+
+  <div class="key-insight">
+    <strong>Run these workflows live.</strong> Each workflow above is executable on the <a href="testsuite.html">Test Suite</a> page (the Workflow Test Theater): pick an input, press &#9654; Run, and follow the diagram node by node with two synced panels &mdash; what the user sees, and the actual data-in/processing/data-out at that node &mdash; plus a recorded run log. The prose here and the runnable test there are generated from one machine-readable map, <code>docs/workflows.json</code>.
+  </div>
 </section>
 
 </div></div>
 </div>
-  <script src="env-links.js" defer></script>
+  <script src="env-links.js" defer></script><script src="sidebar.js" defer></script>
 </body>
 </html>

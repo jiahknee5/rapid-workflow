@@ -1,0 +1,37 @@
+{
+  "generated": "2026-05-31 17:56 CDT",
+  "summary": {
+    "pass": 4,
+    "fail": 0,
+    "total": 4
+  },
+  "assertions": [
+    {
+      "name": "no_open_stub_gaps",
+      "pass": true,
+      "detail": "0 open MAJOR+ stub gap(s)"
+    },
+    {
+      "name": "no_stubs_in_tree",
+      "pass": true,
+      "detail": "0 stub marker(s) found in source tree"
+    },
+    {
+      "name": "no_open_conformance_gaps",
+      "pass": true,
+      "detail": "0 open MAJOR+ conformance gap(s)"
+    },
+    {
+      "name": "verification_real",
+      "pass": true,
+      "detail": "all required layers green with genuine exit codes"
+    }
+  ],
+  "harness": [
+    {
+      "name": "hooks.smoke.test.sh",
+      "pass": true,
+      "output": "task-00 smoke: PASS"
+    }
+  ]
+}

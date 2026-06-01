@@ -10,7 +10,7 @@
 #   atlas-init.sh /path/to/proj   target a specific project root
 #
 # Generates (into the project):
-#   docs/env-links.js, docs/home.html          (copied from the kit)
+#   docs/env-links.js, docs/sidebar.js, docs/home.html   (copied from the kit)
 #   docs/env.json, docs/regen.json             (per-project config, placeholders)
 #   docs/<page>.html  x10                       (deck shell: nav + sidebar + stub)
 #   .vscode/tasks.json                          (Atlas serve + forge-team)
@@ -26,7 +26,7 @@ TPL="$KIT/templates/template-docs-page.html"
 mkdir -p "$PROJECT/docs" "$PROJECT/.vscode"
 
 # Copy the runtime kit files (don't clobber project edits).
-for f in env-links.js home.html; do
+for f in env-links.js sidebar.js home.html; do
   [ -f "$KIT/docs/$f" ] && [ ! -f "$PROJECT/docs/$f" ] && cp "$KIT/docs/$f" "$PROJECT/docs/$f"
 done
 
@@ -46,8 +46,10 @@ NAV = [("prd.html","PRD"),("prd-enhanced.html","Enhanced PRD"),("architecture.ht
        ("observatory.html","Observatory"),("eval.html","Eval"),("cost.html","Cost"),
        ("documentation.html","Documentation")]
 
+BRAND = os.path.basename(os.path.normpath(project))   # the project's own name, not the kit's
+
 def nav_html(active):
-    out = ['<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>']
+    out = [f'<nav class="forge-nav"><span class="forge-nav-brand">{BRAND} <span style="font-weight:400;opacity:0.5;font-size:10px;">/ Atlas</span><span class="forge-nav-sub">developer view</span></span>']
     for href, label in NAV:
         cls = ' class="active"' if href == active else ''
         out.append(f'<a href="{href}"{cls}>{label}</a>')
@@ -81,9 +83,9 @@ for href,(title, eyebrow, when) in PAGES.items():
     active = href
     body = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"/>'
             f'<meta name="viewport" content="width=device-width, initial-scale=1"/>'
-            f'<title>{title} — RAPID</title>{STYLE}</head><body>'
+            f'<title>{title} — {BRAND}</title>{STYLE}</head><body>'
             f'{nav_html(active)}'
-            f'<div class="spec-layout"><nav class="sidebar"><div class="sidebar-brand">RAPID</div>'
+            f'<div class="spec-layout"><nav class="sidebar"><div class="sidebar-brand">{BRAND}</div>'
             f'<div class="sidebar-sub">{title}</div><div class="sidebar-section">Status</div>'
             f'<a href="#pending">Pending</a></nav>'
             f'<div class="docpage-content"><div class="main">'
@@ -95,9 +97,19 @@ for href,(title, eyebrow, when) in PAGES.items():
             f'<div class="key-insight">This is a scaffold stub created by <code>atlas-init</code>. '
             f'The nav, sidebar, and Product/Source links are already wired.</div></div>'
             f'</div></div></div>'
-            f'<script src="env-links.js" defer></script></body></html>')
+            f'<script src="env-links.js" defer></script>'
+            f'<script src="sidebar.js" defer></script></body></html>')
     open(path,"w").write(body)
     made.append(href)
+
+# Stamp the project brand into the copied hub page (home.html ships the kit's brand).
+home = os.path.join(docs, "home.html")
+if os.path.isfile(home):
+    s = open(home).read()
+    s = (s.replace(">RAPID <span", f">{BRAND} <span")
+          .replace("/ AI Build Workflow", "/ Atlas")
+          .replace("Rapid Autonomous Pipeline for Iterative Development", "developer view"))
+    open(home, "w").write(s)
 
 # env.json — per-project link config (placeholders; filled from forge.yaml at deploy)
 env_path = os.path.join(docs, "env.json")
@@ -114,8 +126,9 @@ if not os.path.exists(env_path):
 regen_path = os.path.join(docs, "regen.json")
 if not os.path.exists(regen_path):
     json.dump({
-      "_note":"Per-page regenerate commands (POST /api/regen). cost is instant; wire others to the project's generators or claude -p.",
+      "_note":"Per-page regenerate commands (POST /api/regen). cost + eval are instant; wire others to the project's generators or claude -p.",
       "cost.html":{"kind":"instant","cmd":"bash tools/cost-summary.sh --html"},
+      "eval.html":{"kind":"instant","cmd":"bash tools/ship-gate.sh","note":"re-runs the eval harness + ship gate, republishing docs/eval.json (eval.html renders from it)"},
       "observatory.html":{"kind":"live","note":"live dashboard — no regen"}
     }, open(regen_path,"w"), indent=2)
 
@@ -131,7 +144,7 @@ if not os.path.exists(vs):
     ]}, open(vs,"w"), indent=2)
 
 print(f"atlas-init: scaffolded {len(made)} deck stub(s): {', '.join(made) or '(all pages already had content)'}")
-print(f"  config: docs/env.json, docs/regen.json | kit: env-links.js, home.html | .vscode/tasks.json")
+print(f"  config: docs/env.json, docs/regen.json | kit: env-links.js, sidebar.js, home.html | .vscode/tasks.json")
 PY
 
 echo "atlas-init: done. Serve Atlas: python3 $KIT/tools/observe-server.py --port 4040  (open http://localhost:4040/home.html)"

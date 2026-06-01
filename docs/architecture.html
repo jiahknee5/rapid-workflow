@@ -146,7 +146,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <a href="users.html">Users</a>
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
-  <a href="eval.html">Eval</a>
+  <a href="eval.html">Eval</a><a href="testsuite.html">Test Suite</a>
   <a href="cost.html">Cost</a>  <a href="documentation.html">Documentation</a>
 </nav>
 <div class="spec-layout">
@@ -191,6 +191,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <a href="#d29">D29 &mdash; Phase Sub-Steps</a>
   <a href="#d30">D30 &mdash; Drift Detection Categories</a>
   <a href="#d31">D31 &mdash; Reviewer Tiers</a>
+  <a href="#d32">D32 &mdash; Workflow Test Theater</a>
 </nav>
 <div class="docpage-content">
 
@@ -2973,10 +2974,55 @@ claude-peers list_peers --scope repo
     <strong>D0&ndash;D31 exhaustive reference.</strong> 13+ .forge/ file schemas (D22), 12 inter-agent messages (D23), 16 observe events (D24), 8 skill contracts (D25), 12 inter-stage assertions (D26), 8 doc-review agents across 3 gates (D27), 16 config keys (D28), every phase in atomic sub-steps (D29), 7 drift categories (D30), 9 reviewer tiers (D31).
   </div>
 
+<div class="section" id="d32">
+  <div class="section-id">D32 &mdash; Workflow Test Theater</div>
+  <div class="section-title">Each user workflow, made runnable: a live node-by-node test with a synchronized user-view / data-flow walkthrough and a per-workflow run log</div>
+
+  <div class="diagram">
+    <div class="diagram-label">D32a: Where it sits &mdash; one map, three faces, two halves</div>
+    <div class="explain" style="margin-bottom:14px;">
+      The Workflow Test Theater (component <strong>C-07</strong>, spec <strong>S-14</strong>, requirement <strong>FR-9</strong>) turns the user workflows
+      (the prose swimlanes on <code>users.html</code>) into executable, recorded tests. It is a thin layer over machinery that already exists:
+      the workflow map (P4), the eval harness + per-node test mapping (P5, D7b), the live runner, and the <code>observe-server</code> that powers
+      Observability (D13).
+    </div>
+    <table class="compare-table">
+      <thead><tr><th>Piece</th><th>Artifact</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:700;">Map (one source)</td><td><code>docs/workflows.json</code></td><td>Per node: <code>in</code>/<code>proc</code>/<code>out</code> + golden assertion + <code>view</code> + a bounded <code>exec</code>. Generated in P4/P5. Drives the diagram, the breakdown, and the test.</td></tr>
+        <tr><td style="font-weight:700;">Runner</td><td><code>tools/workflow-runner.py</code></td><td>Live-drives a workflow node by node, threads each node&rsquo;s data-out into the next node&rsquo;s data-in, streams <code>.forge/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl</code>, publishes <code>docs/testruns.json</code>.</td></tr>
+        <tr><td style="font-weight:700;">Endpoints</td><td><code>observe-server.py</code></td><td><code>GET /api/runs</code> (log), <code>GET /api/run</code> (live-tail), <code>POST /api/run</code> (trigger).</td></tr>
+        <tr><td style="font-weight:700;">Page</td><td><code>docs/testsuite.html</code></td><td>Renders the diagram; per node and in sync, shows the user-facing surface (left) and the actual declared-vs-runtime data flow (right); lists the run log.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-label">D32b: A run, end to end</div>
+    <div class="code-block" style="white-space:pre; overflow-x:auto;">P4 / P5 ──► docs/workflows.json        (generated map: nodes + golden + bounded exec)
+                  │
+   ▶ Run (you or a preset)  ──POST /api/run──►  workflow-runner.py
+                                                   │  runs each node's exec against the LIVE build
+                                                   │  threads data-out ──► next node's data-in
+                                                   ▼
+                              .forge/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl   (streamed trace = real-time feed)
+                                                   │
+                 testsuite.html ◄── live-tail ─────┘     and ──► docs/testruns.json (published run log)
+                 (diagram lights up node-by-node; left = what the user sees, right = data in/out)</div>
+    <div class="explain">
+      <strong>Two halves (the deploy rule, D13 / P9).</strong> The diagram + the replay of the last published run are <em>static</em> &mdash; they ride
+      along in the <code>/_atlas</code> deck and work offline. The live <strong>&#9654; Run</strong> button drives the real build through
+      <code>observe-server</code> and stays <em>local</em>. With no server, the page silently falls back to replaying <code>testruns.json</code> &mdash;
+      never a dead screen. <strong>Bounded by construction:</strong> no node triggers a real <code>/forge</code> build or spends money &mdash; execs are the
+      project&rsquo;s own seconds-scale test/scan commands and live-state reads.
+    </div>
+  </div>
+</div>
+
 </div>
 
 </div><!-- /docpage-content -->
 </div><!-- /spec-layout -->
-  <script src="env-links.js" defer></script>
+  <script src="env-links.js" defer></script><script src="sidebar.js" defer></script>
 </body>
 </html>

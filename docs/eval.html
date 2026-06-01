@@ -121,7 +121,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <a href="users.html">Users</a>
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
-  <a href="eval.html" class="active">Eval</a>
+  <a href="eval.html" class="active">Eval</a><a href="testsuite.html">Test Suite</a>
   <a href="cost.html">Cost</a>
   <a href="documentation.html">Documentation</a>
 </nav>
@@ -154,7 +154,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       <p><strong>task-00 harness</strong> (<code>.forge/EVAL/hooks.smoke.test.sh</code>) — an
       immutable smoke test that builds a throwaway <code>.forge</code> tree in a temp directory
       and asserts the hooks for R1, R7, R8 and R9 behave correctly.</p>
-      <p><strong>Ship gate</strong> (<code>.forge/P6_EXIT.json</code>) — three exit assertions
+      <p><strong>Ship gate</strong> (<code>.forge/P6_EXIT.json</code>) — the exit assertions
       written at P6 that the phase gate (S-01) reads to decide whether P7 (walkthrough) may
       begin.</p>
     </div>
@@ -172,6 +172,8 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       seeds it with <code>{"phase":1}</code>, and exercises each enforcement hook against it.
       It exits non-zero if any assertion fails.
     </div>
+
+    <div id="harness-status"><div class="key-insight">Live harness status loading…</div></div>
 
     <div class="subsection">
       <div class="subsection-title">What it asserts</div>
@@ -243,7 +245,7 @@ grep -q 'GAP-STUB' .forge/GAPS.json 2&gt;/dev/null; assert "$?" "0" "R9 files st
 
 echo "task-00 smoke: $([ $fail -eq 0 ] &amp;&amp; echo PASS || echo FAIL)"
 exit $fail</div>
-    <div class="footnote">Source: .forge/EVAL/hooks.smoke.test.sh. The harness is "immutable" — it is the fixed reference the build is measured against, not a test that gets rewritten to pass. This page does not claim the harness currently passes; it describes what the harness asserts.</div>
+    <div class="footnote">Source: .forge/EVAL/hooks.smoke.test.sh. The harness is "immutable" — it is the fixed reference the build is measured against, not a test that gets rewritten to pass. The live status box above shows the result of actually running the harness (recorded in <code>eval.json</code> by the ship gate); the cards describe what it asserts.</div>
   </div>
 
   <div class="section" id="ship-gate">
@@ -257,37 +259,8 @@ exit $fail</div>
       <code>.forge/P6_EXIT.json</code></strong>.
     </div>
 
-    <table class="compare-table">
-      <thead>
-        <tr><th>Status</th><th>Assertion</th><th>Detail (from file)</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
-          <td>no_open_stub_gaps</td>
-          <td>0 open MAJOR+ stub gap(s)</td>
-        </tr>
-        <tr>
-          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
-          <td>no_stubs_in_tree</td>
-          <td>0 stub marker(s) found in source tree</td>
-        </tr>
-        <tr>
-          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
-          <td>no_open_conformance_gaps</td>
-          <td>0 open MAJOR+ conformance gap(s)</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="key-insight">
-      <strong>All three P6 exit assertions are recorded as passing</strong> in
-      <code>.forge/P6_EXIT.json</code> (each entry has <code>"pass": true</code>). Because
-      no assertion fails, the phase gate does not block advancement to P7. If any assertion's
-      detail showed a non-zero count, its <code>pass</code> would be <code>false</code>, its
-      dot would be red, and S-01 would refuse the walkthrough phase.
-    </div>
-    <div class="footnote">Source: .forge/P6_EXIT.json. Status dots reflect the file's recorded values; this page does not assert results beyond what the file contains.</div>
+    <div id="eval-gate"><div class="key-insight">Loading exit assertions from <code>eval.json</code>…</div></div>
+    <div class="footnote">Source: <code>docs/eval.json</code>, published by <code>tools/ship-gate.sh</code> from the live <code>.forge/P6_EXIT.json</code>. The table and counts above are rendered from that file at load time — they reflect the recorded values, not a hardcoded claim. Use ↻ Regenerate (or run the ship gate) to refresh.</div>
   </div>
 
   <div class="section" id="keep-revert">
@@ -371,6 +344,52 @@ exit $fail</div>
 
 </div></div>
 </div>
-  <script src="env-links.js" defer></script>
+  <script src="env-links.js" defer></script><script src="sidebar.js" defer></script>
+  <!-- Live eval state: rendered from docs/eval.json (published by tools/ship-gate.sh
+       from the real .forge/P6_EXIT.json + an actual run of .forge/EVAL/*.test.sh).
+       Works under observe-server and on a static /_atlas deploy; degrades to an
+       honest "not run yet" note when the file is absent. -->
+  <script>
+  (function () {
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function dot(pass) {
+      var ok = pass === true;
+      return '<span style="color:var(--' + (ok ? 'green' : 'red') + ');font-weight:800;">&#9679;</span> ' + (ok ? 'PASS' : 'FAIL');
+    }
+    fetch('eval.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (d) {
+      var hs = document.getElementById('harness-status');
+      if (hs) {
+        if (d && Array.isArray(d.harness) && d.harness.length) {
+          hs.innerHTML = d.harness.map(function (h) {
+            return '<div class="key-insight">' + dot(h.pass) + ' &nbsp;<strong>' + esc(h.name) + '</strong> — ' + esc(h.output || '') + '</div>';
+          }).join('');
+        } else if (d) {
+          hs.innerHTML = '<div class="key-insight">No harness tests found in <code>.forge/EVAL/</code>.</div>';
+        } else {
+          hs.innerHTML = '<div class="key-insight">Live status unavailable — run <code>tools/ship-gate.sh</code> (or serve via observe-server) to publish <code>eval.json</code>.</div>';
+        }
+      }
+      var ge = document.getElementById('eval-gate');
+      if (ge) {
+        if (d && Array.isArray(d.assertions) && d.assertions.length) {
+          var rows = d.assertions.map(function (a) {
+            return '<tr><td>' + dot(a.pass) + '</td><td>' + esc(a.name) + '</td><td>' + esc(a.detail || '') + '</td></tr>';
+          }).join('');
+          var s = d.summary || {}, fail = s.fail || 0, total = s.total || d.assertions.length, pass = (s.pass != null ? s.pass : total - fail);
+          ge.innerHTML =
+            '<table class="compare-table"><thead><tr><th>Status</th><th>Assertion</th><th>Detail (from file)</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+            '<div class="key-insight"><strong>' + pass + '/' + total + ' P6 exit assertion(s) passing</strong> in <code>.forge/P6_EXIT.json</code>. ' +
+            (fail === 0
+              ? 'No assertion fails, so the phase gate (S-01) does not block advancement to P7.'
+              : fail + ' assertion(s) fail — S-01 refuses the walkthrough phase until the underlying gaps are resolved.') +
+            (d.generated ? ' <span style="opacity:.6;">Generated ' + esc(d.generated) + '.</span>' : '') +
+            '</div>';
+        } else {
+          ge.innerHTML = '<div class="key-insight">No exit assertions recorded yet — run <code>tools/ship-gate.sh</code> at P6 to generate <code>.forge/P6_EXIT.json</code> and <code>eval.json</code>. This page reflects the file; it does not fabricate results.</div>';
+        }
+      }
+    });
+  })();
+  </script>
 </body>
 </html>

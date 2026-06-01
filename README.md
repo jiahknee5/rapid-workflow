@@ -104,6 +104,24 @@ Add to your project's `.claude/settings.json`:
 /forge "your product idea or PRD path"
 ```
 
+### Run the test suite (Workflow Test Theater)
+Each user workflow is a runnable, recorded test — pick an input, follow the diagram node by node
+with two synced panels (what the user sees · the real data-in/processing/data-out), with a Codex
+tester and a guardrailed simulated-operator at the gates. Driven by `docs/workflows.json`.
+```bash
+python3 tools/workflow-runner.py --wf WF-1 --preset math-tutor   # one workflow, Codex tester
+python3 tools/workflow-runner.py --all --agents off              # all, deterministic (CI/offline)
+# then open docs/testsuite.html (served by observe-server) for the live theater + run log
+```
+
+### End-to-end acceptance test (create a new project, prove it ships)
+WF-5 / `tools/lifecycle-e2e.sh` creates a fresh project via the skill, then asserts the three
+deliverables — **docs populated, local app built, dev deployed** — writing `.forge/E2E.json`.
+```bash
+tools/new-project.sh --name myproj --idea "..."                 # scaffold (deterministic P1)
+tools/lifecycle-e2e.sh --stage all --name myproj                # create→docs→build→deploy→verify
+```
+
 ## Key Design Decisions
 
 | Decision | Why |
@@ -128,7 +146,7 @@ Add to your project's `.claude/settings.json`:
 
 **v2.5.0** — Full Compound Engineering integration (15 capabilities), 9-reviewer tiered review, spec deepening pass, dogfood QA, simplification pass, compound refresh.
 
-See [CHANGELOG.md](CHANGELOG.md) for full history.
+See [CHANGELOG.md](CHANGELOG.md) for full history and [ROADMAP.md](ROADMAP.md) for the running list of future features.
 
 ## Author
 

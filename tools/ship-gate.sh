@@ -18,7 +18,7 @@ TOOLS_DIR="$(cd "$(dirname "$0")" && pwd)"
 STUB_FINDINGS=$(bash "$TOOLS_DIR/stub-scan.sh" --tree . 2>/dev/null || true)
 
 STUB_FINDINGS="$STUB_FINDINGS" python3 <<'PY'
-import json, os, sys
+import json, os, sys, glob, subprocess, datetime
 
 def load(p, d):
     try: return json.load(open(p))
@@ -78,6 +78,36 @@ if isinstance(exit_obj, dict):
 else:
     out = merged
 json.dump(out, open(".forge/P6_EXIT.json", "w"), indent=2)
+
+# Run the eval harness (.forge/EVAL/*.test.sh) for REAL and record its results,
+# then publish docs/eval.json — the single data file the eval page renders from.
+# It works both under observe-server (live view) and in a static /_atlas deploy,
+# so the eval page reflects actual state instead of a remembered claim.
+harness = []
+for tf in sorted(glob.glob(".forge/EVAL/*.test.sh")):
+    try:
+        r = subprocess.run(["bash", tf], capture_output=True, text=True, timeout=180)
+        tail = [l for l in (r.stdout or "").splitlines() if l.strip()]
+        err = [l for l in (r.stderr or "").splitlines() if l.strip()]
+        harness.append({"name": os.path.basename(tf),
+                        "pass": r.returncode == 0,
+                        "output": (tail[-1] if tail else (err[-1] if err else f"exit {r.returncode}"))})
+    except Exception as e:
+        harness.append({"name": os.path.basename(tf), "pass": False, "output": f"error: {e}"})
+
+summary = {"pass": sum(1 for a in merged if a.get("pass") is True),
+           "fail": sum(1 for a in merged if a.get("pass") is False),
+           "total": len(merged)}
+eval_doc = {
+    "generated": datetime.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z").strip(),
+    "summary": summary,
+    "assertions": merged,
+    "harness": harness,
+}
+if os.path.isdir("docs"):
+    json.dump(eval_doc, open("docs/eval.json", "w"), indent=2)
+    print(f"  wrote docs/eval.json ({summary['pass']}/{summary['total']} assertions, "
+          f"{sum(1 for h in harness if h['pass'])}/{len(harness)} harness test(s) passing)")
 
 failed = [a for a in assertions if not a["pass"]]
 for a in assertions:

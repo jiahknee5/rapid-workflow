@@ -28,3 +28,16 @@ truth for "done." Implements R-04 (root), R-12 (data).
 `.forge/GAPS.json` (in-build truth) + `tools/gaps-to-issues.sh` (externalize to GitHub) +
 `tools/ship-gate.sh` (blocking gate). The feedback loop that ties R-08/R-09 findings to
 resolution. Implements R-13 (in part).
+
+## C-07 — Workflow Test Theater
+`docs/workflows.json` (the generated workflow map) + `tools/workflow-runner.py` (live-drive runner;
+streams `.forge/RUNS/<wf>/<run>.jsonl`, publishes `docs/testruns.json`) + the `/api/runs`,
+`/api/run`, `POST /api/run` endpoints on `tools/observe-server.py` + `docs/testsuite.html` (diagram +
+synchronized user-view / data-flow theater + run log). Turns the user workflows (C-02 / users.html) into
+runnable, recorded tests over the eval harness (C-05) and live surfaces (C-03). Implements FR-9.
+
+## C-08 — Project lifecycle E2E
+`tools/new-project.sh` (deterministic P1 scaffold = "create a new project using this skill") +
+`tools/lifecycle-e2e.sh` (staged create→build→docs→deploy→verify harness that asserts the three deliverables and
+writes `.forge/E2E.json`) + `tools/populate-deck.py` (renders a project's own markdown/JSON artifacts into its deck
+pages). Surfaced as WF-5 in the Test Theater (C-07). The acceptance test of the skill itself. Implements FR-10.

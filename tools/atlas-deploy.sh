@@ -32,7 +32,7 @@ done
 
 DEST="$OUT/_atlas"
 mkdir -p "$DEST"
-# copy the static deck (html + env.json + regen.json + env-links.js + home.html + docs.json)
+# copy the static deck (html + env.json + regen.json + env-links.js + sidebar.js + home.html + docs.json)
 cp -R docs/. "$DEST/" 2>/dev/null
 echo "atlas-deploy: copied static deck → $DEST"
 

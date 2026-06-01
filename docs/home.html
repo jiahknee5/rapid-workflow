@@ -156,7 +156,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <a href="users.html">Users</a>
   <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
-  <a href="eval.html">Eval</a>
+  <a href="eval.html">Eval</a><a href="testsuite.html">Test Suite</a>
   <a href="cost.html">Cost</a>
   <a href="documentation.html">Documentation</a>
 </nav>
@@ -326,7 +326,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 })();
 </script>
 <!-- Project harness = developer view. env-links.js renders the Local/Dev/Production
-     links to the finished PRODUCT (from env.json) and tags this deck as the dev view. -->
+     links to the finished PRODUCT (from env.json) and tags this deck as the dev view.
+     sidebar.js builds the left-menu Atlas map: Deployments + all pages & sections. -->
 <script src="env-links.js" defer></script>
+<script src="sidebar.js" defer></script>
 </body>
 </html>

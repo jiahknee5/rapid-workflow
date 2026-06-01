@@ -17,6 +17,15 @@
        {{NAV}}        cross-page links (mark current with class="active")
        {{SIDEBAR}}    in-page menu: .sidebar-section headers + <a href="#id">
        {{MAIN}}       page content (.section blocks)
+
+     Required sibling assets — every emitted page loads two scripts (see the
+     bottom of this file). Any builder/skill/generator that writes these pages
+     MUST copy BOTH next to the HTML (same dir), or the page renders broken:
+       env-links.js   harness tag + top-nav Product/Source links + Regenerate
+       sidebar.js     left-menu Atlas map (Deployments + all pages & sections,
+                      page list derived from {{NAV}} — no per-project edits)
+     The Atlas copy helpers (tools/atlas-init.sh, tools/atlas-deploy.sh) ship
+     both automatically; a standalone generator must do the same.
      ============================================================ -->
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -167,7 +176,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 </div>
 </div>
 <!-- Project harness = developer view. env-links.js renders the Local/Dev/Production
-     links to the finished PRODUCT (from env.json) and tags this deck as the dev view. -->
+     links to the finished PRODUCT (from env.json) and tags this deck as the dev view.
+     sidebar.js builds the left-menu Atlas map: Deployments + all pages & sections. -->
 <script src="env-links.js" defer></script>
+<script src="sidebar.js" defer></script>
 </body>
 </html>

@@ -115,6 +115,21 @@
       "generated": true
     },
     {
+      "file": "docs/testsuite.html",
+      "title": "Test Suite",
+      "category": "workflow",
+      "description": "Workflow Test Theater — runs each user workflow as a live test with a synchronized user-view / data-flow walkthrough and a per-workflow run log",
+      "status": "new",
+      "generated": true
+    },
+    {
+      "file": "docs/workflows.json",
+      "title": "Workflow Map",
+      "category": "workflow",
+      "description": "Machine-readable user-workflow map (per-node in/proc/out + golden assertion + bounded exec) that drives the diagram, breakdown, and executable test on testsuite.html",
+      "status": "new"
+    },
+    {
       "file": "docs/users.html",
       "title": "Users",
       "category": "workflow",
@@ -283,6 +298,34 @@
       "description": "",
       "status": "new",
       "generated": true
+    },
+    {
+      "file": "tools/workflow-runner.py",
+      "title": "Workflow Runner",
+      "category": "workflow",
+      "description": "Live-drives a user workflow as an executable test: runs each node's exec against the live build, threads data-out→data-in, streams .forge/RUNS/<wf>/<run>.jsonl, publishes docs/testruns.json. Codex tester + simulated-operator nodes.",
+      "status": "new"
+    },
+    {
+      "file": "tools/new-project.sh",
+      "title": "New Project",
+      "category": "workflow",
+      "description": "Create a new project using this skill — the deterministic P1 scaffold (structure + CONSTITUTION + BUILD-AUTONOMY + locked PRD + .forge/STATE + self-contained toolset + atlas-init)",
+      "status": "new"
+    },
+    {
+      "file": "tools/lifecycle-e2e.sh",
+      "title": "Lifecycle E2E",
+      "category": "workflow",
+      "description": "End-to-end acceptance test of the skill: create a new project → populate docs → build local app → deploy dev, asserting each deliverable and writing .forge/E2E.json. Surfaced as WF-5 in the Test Suite.",
+      "status": "new"
+    },
+    {
+      "file": "tools/populate-deck.py",
+      "title": "Populate Deck",
+      "category": "workflow",
+      "description": "Deterministically renders a project's own markdown/JSON artifacts into its Atlas deck pages, replacing the atlas-stub placeholder — proves documentation populates from the project's content.",
+      "status": "new"
     }
   ],
   "archive": [

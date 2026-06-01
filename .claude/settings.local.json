@@ -47,7 +47,19 @@
       "Bash(rm -rf /Users/johnny/.claude/skills/decision)",
       "Bash(ln -sf /Users/johnny/projects/workflow/skills/decision /Users/johnny/.claude/skills/decision)",
       "Bash(cp /Users/johnny/.claude/skills/docs/SKILL.md skills/docs/)",
-      "Bash(rm -rf /Users/johnny/.claude/skills/docs)"
+      "Bash(rm -rf /Users/johnny/.claude/skills/docs)",
+      "Bash(xargs ls -la)",
+      "Bash(mv /Users/johnny/projects/workflow /Users/johnny/projects/rapid-workflow)",
+      "Bash(ln -sf /Users/johnny/projects/rapid-workflow/skills/forge ~/.claude/skills/forge)",
+      "Bash(ln -sf /Users/johnny/projects/rapid-workflow/skills/decision ~/.claude/skills/decision)",
+      "Bash(ln -sf /Users/johnny/projects/rapid-workflow/skills/docs ~/.claude/skills/docs)",
+      "Bash(ln -sf /Users/johnny/projects/rapid-workflow/skills/workflow ~/.claude/skills/workflow)",
+      "Bash(gh auth *)",
+      "WebFetch(domain:claudefa.st)",
+      "WebFetch(domain:github.com)",
+      "Read(//Users/johnny/.claude/**)",
+      "Bash(command -v jq)",
+      "Bash(command -v python3)"
     ]
   }
 }
