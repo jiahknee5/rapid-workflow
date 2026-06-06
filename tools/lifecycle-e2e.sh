@@ -6,14 +6,14 @@
 # REAL tooling (new-project.sh → atlas-init → real generators → real build → atlas-deploy)
 # against a real (small) app, so a green result means the pipeline actually produced the
 # three deliverables — not a remembered claim. Bounded: a local/staging deploy, no cloud,
-# no paid services. (The full multi-agent /forge build with human gates is the separate
+# no paid services. (The full multi-agent /rapid-workflow build with human gates is the separate
 # opt-in "live" tier; this exercises the deterministic plumbing the skill guarantees.)
 #
 #   lifecycle-e2e.sh --stage <create|build|docs|deploy|verify|all> --name <name> \
 #                    [--dir <parent>] [--deploy-out <dir>]
 #
 # Each stage exits non-zero on a failed assertion (so a workflow node fails honestly).
-# `verify` writes <kit>/.forge/E2E.json summarizing the three outcomes.
+# `verify` writes <kit>/.rapid/E2E.json summarizing the three outcomes.
 set -uo pipefail
 
 KIT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -43,7 +43,7 @@ stage_create(){
     >/dev/null || die "new-project.sh failed"
   [ -f "$PROJ/CONSTITUTION.md" ] || die "CONSTITUTION.md missing"
   [ -f "$PROJ/BUILD-AUTONOMY.md" ] || die "BUILD-AUTONOMY.md missing"
-  [ -f "$PROJ/.forge/STATE.json" ] || die ".forge/STATE.json missing"
+  [ -f "$PROJ/.rapid/STATE.json" ] || die ".rapid/STATE.json missing"
   [ -d "$PROJ/docs" ] || die "docs/ missing"
   ok "project scaffolded at $PROJ (structure + CONSTITUTION + BUILD-AUTONOMY + Atlas deck)"
 }
@@ -88,8 +88,8 @@ MK
   [ -f "$PROJ/dist/index.html" ] && [ -f "$PROJ/dist/app.js" ] || die "dist/ output missing after build"
   ( cd "$PROJ" && make test ) >/dev/null 2>&1 || die "make test (app.js syntax) failed"
   # seed an eval test so the eval doc has real content to surface
-  mkdir -p "$PROJ/.forge/EVAL"
-  cat > "$PROJ/.forge/EVAL/build.smoke.test.sh" <<'EVAL'
+  mkdir -p "$PROJ/.rapid/EVAL"
+  cat > "$PROJ/.rapid/EVAL/build.smoke.test.sh" <<'EVAL'
 #!/usr/bin/env bash
 # smoke: the app builds to dist/ and app.js is valid JS
 set -uo pipefail
@@ -99,7 +99,7 @@ node --check src/app.js  || { echo "build smoke: FAIL (syntax)"; exit 1; }
 [ -f dist/index.html ]   || { echo "build smoke: FAIL (no dist)"; exit 1; }
 echo "build smoke: PASS"
 EVAL
-  chmod +x "$PROJ/.forge/EVAL/build.smoke.test.sh"
+  chmod +x "$PROJ/.rapid/EVAL/build.smoke.test.sh"
   ok "local app built → dist/ ($(ls "$PROJ/dist" | wc -l | tr -d ' ') files), app.js valid, eval seeded"
 }
 
@@ -211,8 +211,8 @@ stage_verify(){
   npages=$(ls "$PROJ"/docs/*.html 2>/dev/null | wc -l | tr -d ' ')
   nstub=$(grep -l 'atlas-stub' "$PROJ"/docs/*.html 2>/dev/null | wc -l | tr -d ' ')
   gen="$(date -u +%FT%TZ)"
-  mkdir -p "$KIT/.forge"
-  cat > "$KIT/.forge/E2E.json" <<JSON
+  mkdir -p "$KIT/.rapid"
+  cat > "$KIT/.rapid/E2E.json" <<JSON
 { "generated": "$gen", "project": "$NAME", "project_dir": "$PROJ", "deploy_out": "$DEPLOY_OUT",
   "summary": { "pass": $((docs_ok+build_ok+deploy_ok)), "fail": $((3-docs_ok-build_ok-deploy_ok)), "total": 3 },
   "assertions": [
@@ -221,7 +221,7 @@ stage_verify(){
     { "name": "dev_deployed", "pass": $([ $deploy_ok -eq 1 ] && echo true || echo false), "detail": "app + /_atlas in $DEPLOY_OUT, env.json dev.url=$dev" }
   ] }
 JSON
-  echo "  wrote $KIT/.forge/E2E.json"
+  echo "  wrote $KIT/.rapid/E2E.json"
   [ $docs_ok -eq 1 ]   && ok "documentation populated" || die "documentation NOT populated"
   [ $build_ok -eq 1 ]  && ok "local app built"        || die "local app NOT built"
   [ $deploy_ok -eq 1 ] && ok "dev deployed"           || die "dev NOT deployed"

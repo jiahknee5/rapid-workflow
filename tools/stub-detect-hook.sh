@@ -2,7 +2,7 @@
 # stub-detect-hook.sh — write-time stub detector (R9), PostToolUse on Write|Edit.
 #
 # Non-blocking by design: a written source file is scanned; new stubs are
-# logged to .forge/STUBS.md and filed to .forge/GAPS.json (type:"stub") so they
+# logged to .rapid/STUBS.md and filed to .rapid/GAPS.json (type:"stub") so they
 # flow into the P8 gap loop / GitHub ticketing. The SHIP GATE (not this hook)
 # is what blocks release on open stub gaps in MUST modules.
 #
@@ -16,7 +16,7 @@ except Exception: d={}
 print((d.get('tool_input') or {}).get('file_path','') or '')" 2>/dev/null || true)
 
 [ -z "$FILE_PATH" ] && exit 0
-[ -f ".forge/STATE.json" ] || exit 0          # only inside an active build
+[ -f ".rapid/STATE.json" ] || exit 0          # only inside an active build
 [ -f "$FILE_PATH" ] || exit 0
 
 TOOLS_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -44,7 +44,7 @@ def relpath(p):
 # phase + spec_ref-from-task (best effort: map file to a task by name match)
 phase = "P?"
 try:
-    phase = "P" + str(json.load(open(".forge/STATE.json")).get("phase", "?"))
+    phase = "P" + str(json.load(open(".rapid/STATE.json")).get("phase", "?"))
 except Exception:
     pass
 
@@ -53,7 +53,7 @@ def load(p, default):
     except Exception: return default
 
 # --- GAPS.json (preserve list or {gaps:[]} shape), dedup by id ---
-gaps_obj = load(".forge/GAPS.json", [])
+gaps_obj = load(".rapid/GAPS.json", [])
 arr = gaps_obj["gaps"] if isinstance(gaps_obj, dict) else (gaps_obj if isinstance(gaps_obj, list) else [])
 existing = {g.get("id") for g in arr if isinstance(g, dict)}
 
@@ -77,10 +77,10 @@ if not added:
     sys.exit(0)
 
 out = gaps_obj if isinstance(gaps_obj, dict) else arr
-json.dump(out, open(".forge/GAPS.json", "w"), indent=2)
+json.dump(out, open(".rapid/GAPS.json", "w"), indent=2)
 
 # --- STUBS.md ledger ---
-ledger = ".forge/STUBS.md"
+ledger = ".rapid/STUBS.md"
 if not os.path.exists(ledger):
     open(ledger, "w").write("# Stub Ledger (R9)\n\n"
         "Detected placeholder/incomplete code. Resolved by the gap loop; the "
@@ -91,10 +91,10 @@ with open(ledger, "a") as fh:
 
 # --- observe event ---
 try:
-    os.makedirs(".forge/observe", exist_ok=True)
-    seq = sum(sum(1 for _ in open(os.path.join(".forge/observe", fn)))
-              for fn in os.listdir(".forge/observe") if fn.endswith(".jsonl"))
-    open(".forge/observe/stub.jsonl", "a").write(json.dumps({
+    os.makedirs(".rapid/observe", exist_ok=True)
+    seq = sum(sum(1 for _ in open(os.path.join(".rapid/observe", fn)))
+              for fn in os.listdir(".rapid/observe") if fn.endswith(".jsonl"))
+    open(".rapid/observe/stub.jsonl", "a").write(json.dumps({
         "t": "", "seq": seq + 1, "agent": "stub-detect", "role": "stub-detect",
         "event": "STUB", "detail": f"{added} new stub(s) in {relpath(findings[0]['file'])}",
         "phase": phase.lstrip("P"),
@@ -102,6 +102,6 @@ try:
 except Exception:
     pass
 
-print(f"[R9 stub-detect] {added} new stub(s) filed to GAPS.json — see .forge/STUBS.md")
+print(f"[R9 stub-detect] {added} new stub(s) filed to GAPS.json — see .rapid/STUBS.md")
 PY
 exit 0

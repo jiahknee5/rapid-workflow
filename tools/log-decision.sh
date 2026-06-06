@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # log-decision.sh — log a PRD-silent build decision instead of interrupting the
 # build for it.  Under standing authorization (CONSTITUTION.md + locked PRD +
-# BUILD-AUTONOMY.md), a FORGE build runs to completion without per-step
+# BUILD-AUTONOMY.md), a RAPID build runs to completion without per-step
 # check-ins; the only things that stop it are destructive/irreversible,
 # outward-facing, spends-money, or genuinely-undecidable high-stakes blockers.
 # Everything the PRD is silent about is RESOLVED IN-PLACE and recorded here so
@@ -14,16 +14,16 @@
 # human as a Gate-1 decision batch BEFORE the build starts.)
 #
 # Usage:  tools/log-decision.sh "<decision text>" spec|interpretation
-# Appends {id, ts, phase, decision, basis, by} to .forge/DECISIONS.json (a JSON
+# Appends {id, ts, phase, decision, basis, by} to .rapid/DECISIONS.json (a JSON
 # list, created if absent), prints the logged id, and emits the structured
-# {file, wrote, summary} result.  Runs only inside a FORGE build.
+# {file, wrote, summary} result.  Runs only inside a RAPID build.
 set -uo pipefail
 
 err() { echo "log-decision: $*" >&2; }
 
-# --- must be inside a FORGE build -------------------------------------------
-if [ ! -f ".forge/STATE.json" ]; then
-  err "not a FORGE build (no .forge/STATE.json in $(pwd)) — run from the build root"
+# --- must be inside a RAPID build -------------------------------------------
+if [ ! -f ".rapid/STATE.json" ]; then
+  err "not a RAPID build (no .rapid/STATE.json in $(pwd)) — run from the build root"
   exit 2
 fi
 
@@ -44,14 +44,14 @@ fi
 
 command -v python3 >/dev/null 2>&1 || { err "python3 not found on PATH"; exit 2; }
 
-mkdir -p .forge
+mkdir -p .rapid
 
 # --- append (python3 owns the JSON: parse, validate shape, next id, write) ---
-DECISION="$DECISION" BASIS="$BASIS" BY="${FORGE_ROLE:-build}" python3 <<'PY'
+DECISION="$DECISION" BASIS="$BASIS" BY="${RAPID_ROLE:-build}" python3 <<'PY'
 import json, os, sys, datetime
 
-PATH = ".forge/DECISIONS.json"
-STATE = ".forge/STATE.json"
+PATH = ".rapid/DECISIONS.json"
+STATE = ".rapid/STATE.json"
 
 def fail(msg, code=1):
     sys.stderr.write("log-decision: %s\n" % msg)

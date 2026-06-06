@@ -1,4 +1,4 @@
-# FORGE — Dynamic AI Build Workflow
+# RAPID — Dynamic AI Build Workflow
 
 ## What is this?
 
@@ -63,7 +63,7 @@ The gap is the integration. These four systems work independently but don't talk
 
 ## What does "done" look like?
 
-1. I run `/forge "build a math tutor for kids"` and immediately see the full build plan in the dashboard
+1. I run `/rapid-workflow "build a math tutor for kids"` and immediately see the full build plan in the dashboard
 2. I walk away and come back in an hour. The dashboard tells me "Phase 6, 5 of 8 tasks done, 2 tests failing, docs current through Phase 5"
 3. At the ship decision point, I see one screen with: working app, test results, doc completeness, cost, and remaining gaps
 4. After deploy, I have a documentation site I can send to a stakeholder without any manual cleanup

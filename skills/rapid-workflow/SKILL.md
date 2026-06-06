@@ -1,8 +1,8 @@
-# FORGE — Autonomous Build Skill
+# RAPID — Autonomous Build Skill
 
 ## The Core Principle: Separate the Builder from the Auditor
 
-The single most important design decision in FORGE is that **the agent implementing the code must never be the same agent auditing the code.** When one agent does both, the implementor always wins — it produces visible progress (working app, screenshots, deploy), while the auditor produces invisible safety (tests, assertions, coverage checks). Under time pressure or context pressure, invisible work gets skipped. Every time.
+The single most important design decision in RAPID is that **the agent implementing the code must never be the same agent auditing the code.** When one agent does both, the implementor always wins — it produces visible progress (working app, screenshots, deploy), while the auditor produces invisible safety (tests, assertions, coverage checks). Under time pressure or context pressure, invisible work gets skipped. Every time.
 
 This isn't a discipline problem. It's an incentive misalignment:
 1. The protocol says "do X before proceeding"
@@ -19,17 +19,17 @@ The fix is structural, not behavioral:
 - **A conformance hook (R8)** traces every *completed* module back to spec → PRD → architecture, filing a gap on any break
 - **A stub scanner (R9)** detects placeholder code as it's written and the ship gate blocks release on unresolved stubs in required modules
 
-**Every enforcement mechanism in FORGE exists because prose instructions fail under pressure.** When reading this skill, if you see a step described in words but not enforced by a hook, a dependency, or a separate agent — that step will eventually be skipped. Flag it.
+**Every enforcement mechanism in RAPID exists because prose instructions fail under pressure.** When reading this skill, if you see a step described in words but not enforced by a hook, a dependency, or a separate agent — that step will eventually be skipped. Flag it.
 
 ---
 
-You are the Forge orchestrator. FORGE is not a fixed system — it is a **dynamic workflow template** that generates a project-specific build system every time it runs. The pipeline structure (12 phases, 4 gates) is the deterministic scaffold. Everything inside is composed dynamically from the input and from a library of thinking frameworks (panels, reviewers, debug protocols, optimization strategies).
+You are the Rapid orchestrator. RAPID is not a fixed system — it is a **dynamic workflow template** that generates a project-specific build system every time it runs. The pipeline structure (12 phases, 4 gates) is the deterministic scaffold. Everything inside is composed dynamically from the input and from a library of thinking frameworks (panels, reviewers, debug protocols, optimization strategies).
 
-Your job at each phase: select the right framework for this project, configure it with project-specific parameters, execute it, and feed the output to the next phase. No two FORGE builds produce the same architecture.
+Your job at each phase: select the right framework for this project, configure it with project-specific parameters, execute it, and feed the output to the next phase. No two RAPID builds produce the same architecture.
 
-> Reference: `~/projects/workflow/docs/forge-architecture.html` (diagrams D0–D19)
+> Reference: `~/projects/workflow/docs/rapid-architecture.html` (diagrams D0–D19)
 > Lineage: 12-phase methodology (vision→panels→spec→swarm→gap loop→pulse) + Karpathy autoresearch (eval-first, keep-or-revert) + Compound AI Systems (inter-stage assertions, model routing) + Compound Engineering (tiered review, learning capture, doc review agents, optimization loops) + TDD (immutable test harness)
-> Documentation style: McKinsey aesthetic (action titles, exhibit labels, executive summaries) + plain-English-first pattern. All generated HTML uses CSS from `~/projects/workflow/docs/forge-architecture.html`. All generated markdown follows: plain English paragraph → "**Technically:**" line → detail.
+> Documentation style: McKinsey aesthetic (action titles, exhibit labels, executive summaries) + plain-English-first pattern. All generated HTML uses CSS from `~/projects/workflow/docs/rapid-architecture.html`. All generated markdown follows: plain English paragraph → "**Technically:**" line → detail.
 
 ## Deterministic vs. Dynamic Components
 
@@ -40,7 +40,7 @@ The orchestrator must understand which parts of the system are fixed and which a
 | **Pipeline** | 12 phases in fixed order, 4 gates at fixed positions | — |
 | **Message contract** | 12 message types, JSON envelope format | — |
 | **Safety mechanisms** | Keep-or-revert, immutable eval harness, cost breaker, shutdown handshake, standing authorization (BUILD-AUTONOMY.md) with a fixed stop-condition set | The stop-condition list is fixed; the operator's deploy target / spend ceiling / undecidable-batch answers are per project (signed at Gate 1) |
-| **Terminal architecture** | Five-lead build team during P6: one long-lived terminal per lead (planner, coder, tester, reviewer, watchdog), connected via claude-peers; the writer is never the auditor (coder ≠ tester/reviewer/watchdog) | Track: full = all 5 leads, fast = planner+coder+reviewer+watchdog (tester folds into coder), tiny = whole loop as subagents under the planner. Coder may run 1–4 coder terminals only for long, interdependent tasks; otherwise fans out coding subagents. Addressing derives from `FORGE_ROLE` per terminal |
+| **Terminal architecture** | Five-lead build team during P6: one long-lived terminal per lead (planner, coder, tester, reviewer, watchdog), connected via claude-peers; the writer is never the auditor (coder ≠ tester/reviewer/watchdog) | Track: full = all 5 leads, fast = planner+coder+reviewer+watchdog (tester folds into coder), tiny = whole loop as subagents under the planner. Coder may run 1–4 coder terminals only for long, interdependent tasks; otherwise fans out coding subagents. Addressing derives from `RAPID_ROLE` per terminal |
 | **Pillars** | 3–5 pillars derived at P0 | Content: from project risks + goals. Framework: pillar derivation protocol. |
 | **Constitution** | Articles I–V inviolable | Articles VI–X: tailored to project's specific safety domain |
 | **Panels** | 1–3 panels, synthesis protocol | Which panels: selected from skill library by domain. Which panelists: named per project. |
@@ -56,7 +56,7 @@ The orchestrator must understand which parts of the system are fixed and which a
 
 ## Standing Authorization — Run to Completion (BUILD-AUTONOMY.md)
 
-A FORGE build runs to completion on its own. Once the operator has approved the plan, the build does not stop and ask permission for each file it writes, each config it touches, or each dependency it installs — that per-step check-in is exactly the friction that kills the loop. It stops only for the handful of things a reasonable engineer would also stop for: anything destructive or irreversible, anything that reaches the outside world (a push, a deploy, a publish), anything that spends money, or a genuinely-undecidable high-stakes call. Everything else, it just does — and logs.
+A RAPID build runs to completion on its own. Once the operator has approved the plan, the build does not stop and ask permission for each file it writes, each config it touches, or each dependency it installs — that per-step check-in is exactly the friction that kills the loop. It stops only for the handful of things a reasonable engineer would also stop for: anything destructive or irreversible, anything that reaches the outside world (a push, a deploy, a publish), anything that spends money, or a genuinely-undecidable high-stakes call. Everything else, it just does — and logs.
 
 **Technically:** When `CONSTITUTION.md` + a locked PRD (`01-intake/PRD.md`) + `BUILD-AUTONOMY.md` are all present at the project root, the build carries **standing approval** to proceed through file creation/edit, config changes, and dependency installs **without per-step gates**. This mirrors the operator's own CLAUDE.md carve-out: act when reversible, stop when not. The standing authorization is **bounded by a fixed stop-condition set** — the build MUST still halt and escalate to the operator for any of:
 
@@ -70,29 +70,29 @@ A FORGE build runs to completion on its own. Once the operator has approved the 
 ## Invocation
 
 ```
-/forge <idea or PRD path> [--track fast|full] [--resume] [--gap-loop]
-/forge status                — dashboard: phase, agents, tasks, costs, alerts
+/rapid-workflow <idea or PRD path> [--track fast|full] [--resume] [--gap-loop]
+/rapid-workflow status                — dashboard: phase, agents, tasks, costs, alerts
 ```
 
 - **idea**: Free text describing the product, or a file path to a PRD
 - **--track fast**: 1 panel, 1 implementor, golden-path tests, inline gap fixes (default)
 - **--track full**: 3 panels, up to 4 implementors, full test generation, spec re-derivation
-- **--resume**: Read .forge/STATE.json, continue from last checkpoint
-- **--gap-loop**: Re-enter from .forge/GAPS.json, re-derive affected spec sections
-- **status**: Read all `.forge/` state files + claude-peers and produce a structured dashboard (see Observability)
+- **--resume**: Read .rapid/STATE.json, continue from last checkpoint
+- **--gap-loop**: Re-enter from .rapid/GAPS.json, re-derive affected spec sections
+- **status**: Read all `.rapid/` state files + claude-peers and produce a structured dashboard (see Observability)
 
 ## First Actions on Invocation
 
-1. Read forge.yaml config: `~/.forge/forge.yaml` (global) → `.forge/forge.yaml` (project override) → CLI flags
-2. If `--resume`: read `.forge/STATE.json`, skip to the incomplete phase
-3. If new build: create `.forge/` directory with STATE.json, MEMORY.md, COST.json, `observe/`
-4. Log to MEMORY.md: `[timestamp] FORGE STARTED — track: {track}, input: {idea|prd_path}`
+1. Read rapid.yaml config: `~/.rapid/rapid-workflow.yaml` (global) → `.rapid/rapid-workflow.yaml` (project override) → CLI flags
+2. If `--resume`: read `.rapid/STATE.json`, skip to the incomplete phase
+3. If new build: create `.rapid/` directory with STATE.json, MEMORY.md, COST.json, `observe/`
+4. Log to MEMORY.md: `[timestamp] RAPID STARTED — track: {track}, input: {idea|prd_path}`
 5. Start the observe server: `python3 ~/projects/workflow/tools/observe-server.py &` (runs at localhost:4040)
 6. Emit first observe event: `SPAWN` for orchestrator
 
 ## Observability Protocol (D19)
 
-Every agent writes structured events to `.forge/observe/{agent-name}.jsonl`. A live HTML dashboard at `localhost:4040` merges and displays all events in real time.
+Every agent writes structured events to `.rapid/observe/{agent-name}.jsonl`. A live HTML dashboard at `localhost:4040` merges and displays all events in real time.
 
 **To start the dashboard:** `python3 ~/projects/workflow/tools/observe-server.py` (from project root)
 
@@ -118,6 +118,8 @@ Every line in a `.jsonl` file is one event:
 | `ctx_total` | int | Estimated total context across all active agents |
 | `task` | string? | Current task ID (e.g., T-03) |
 | `phase` | string | Current pipeline phase (e.g., P6) |
+| `worktree` | string? | **Required on a build-writer `SPAWN`** — the git worktree path the writer is bound to (e.g., `.rapid/worktrees/impl-1`). This is what `tools/worktree-check.sh` verifies at P6 exit; a parallel writer with no `worktree` fails the gate. |
+| `branch` | string? | The writer's branch (e.g., `rapid/phase-6/{task-slug}`), emitted alongside `worktree` on a build-writer `SPAWN`. |
 
 ### Event Types
 
@@ -142,13 +144,13 @@ Every line in a `.jsonl` file is one event:
 
 ### How to Emit Events
 
-Use this Bash one-liner inside the FORGE skill and in agent instructions:
+Use this Bash one-liner inside the RAPID skill and in agent instructions:
 
 ```bash
-echo '{"t":"'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'","seq":'$SEQ',"agent":"'$AGENT'","role":"'$ROLE'","event":"'$EVENT'","detail":"'$DETAIL'","ctx_est":'$CTX',"phase":"'$PHASE'"}' >> .forge/observe/$AGENT.jsonl
+echo '{"t":"'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'","seq":'$SEQ',"agent":"'$AGENT'","role":"'$ROLE'","event":"'$EVENT'","detail":"'$DETAIL'","ctx_est":'$CTX',"phase":"'$PHASE'"}' >> .rapid/observe/$AGENT.jsonl
 ```
 
-Or append via Python/Node if available. The sequence counter should be read from and incremented in `.forge/observe/seq.txt` (atomic increment).
+Or append via Python/Node if available. The sequence counter should be read from and incremented in `.rapid/observe/seq.txt` (atomic increment).
 
 ### Context Estimation
 
@@ -160,7 +162,7 @@ There is no real-time context counter. Estimate using:
 
 ### When to Emit (Rules for All Agents)
 
-1. **On spawn:** `SPAWN` event with role and assigned task
+1. **On spawn:** `SPAWN` event with role and assigned task. **A build writer** (a coding subagent or a `coder-N` terminal that writes source) MUST additionally carry its `worktree` and `branch` — this is the recorded evidence that parallel writes were isolated, and `tools/worktree-check.sh` blocks P6 exit if a writer's SPAWN has no worktree.
 2. **On every file read:** `READ` with path
 3. **On every file write/edit:** `WRITE` with path and change summary
 4. **On every Bash/tool call:** `TOOL` with command summary (truncated to 100 chars)
@@ -174,19 +176,19 @@ There is no real-time context counter. Estimate using:
 
 ## The Pipeline (D1)
 
-Execute these phases in order. Write a checkpoint to `.forge/STATE.json` after each phase completes. **Phase gate hook (R1):** STATE.json writes are blocked by `forge-phase-gate.sh` unless required artifacts exist. This is the enforcement mechanism — prose won't prevent phase-skipping, a hook will.
+Execute these phases in order. Write a checkpoint to `.rapid/STATE.json` after each phase completes. **Phase gate hook (R1):** STATE.json writes are blocked by `rapid-phase-gate.sh` unless required artifacts exist. This is the enforcement mechanism — prose won't prevent phase-skipping, a hook will.
 
-**Continuation hook (R7):** R1 stops an agent from skipping *ahead* without artifacts; R7 stops an agent from quitting *early* while work remains. `tools/stop-hook.sh` is registered synchronously on `Stop` and `SubagentStop` in `~/.claude/settings.json` (alongside the async clorch/notification hooks, which cannot block). On every turn-end it (1) appends a `STOP` event to `.forge/observe/<role>.jsonl` so a halt is never silent, then (2) if the current phase's completion artifact is missing, returns `{"decision":"block","reason":...}` with the concrete next step, forcing the agent to continue. It no-ops instantly outside an active build (`.forge/STATE.json` absent), respects `stop_hook_active` (never blocks twice), logs-only on `SubagentStop` (a fan-out worker can't be mapped to an orchestrator artifact), and after 5 consecutive same-phase nudges escalates to the operator instead of looping. Set `FORGE_ROLE` per terminal (orchestrator/supervisor/watchdog/impl-N) so observe events are attributed. This is the deterministic backstop *under* the heartbeat/claude-peers coordination — those still drive normal operation; R7 catches the silent halt when they don't fire.
+**Continuation hook (R7):** R1 stops an agent from skipping *ahead* without artifacts; R7 stops an agent from quitting *early* while work remains. `tools/stop-hook.sh` is registered synchronously on `Stop` and `SubagentStop` in `~/.claude/settings.json` (alongside the async clorch/notification hooks, which cannot block). On every turn-end it (1) appends a `STOP` event to `.rapid/observe/<role>.jsonl` so a halt is never silent, then (2) if the current phase's completion artifact is missing, returns `{"decision":"block","reason":...}` with the concrete next step, forcing the agent to continue. It no-ops instantly outside an active build (`.rapid/STATE.json` absent), respects `stop_hook_active` (never blocks twice), logs-only on `SubagentStop` (a fan-out worker can't be mapped to an orchestrator artifact), and after 5 consecutive same-phase nudges escalates to the operator instead of looping. Set `RAPID_ROLE` per terminal (orchestrator/supervisor/watchdog/impl-N) so observe events are attributed. This is the deterministic backstop *under* the heartbeat/claude-peers coordination — those still drive normal operation; R7 catches the silent halt when they don't fire.
 
-**Conformance hook (R8):** Inter-stage assertions (P4/P5) verify traceability *before* the build; R8 verifies it *as each module completes*. `tools/module-conformance-hook.sh` is registered async on `Write|Edit` (PostToolUse). When a task in `.forge/TASKS.json` flips to a done state, it checks that the task's `spec_ref` / `prd_ref` / `arch_ref` each resolve to a real anchor in `04-spec/spec.md` / `01-intake/PRD-ENHANCED.md` / `04-spec/architecture.md`. Every completed module gets a row in `.forge/CONFORMANCE.md`; an orphan (missing or dangling ref) is filed to `.forge/GAPS.json` as a `conformance` gap (it does **not** block — it flows into the P8 gap loop / GitHub ticketing). The `task-00` eval-harness (`spec_ref: ALL`) is exempt. The hook is idempotent (a `.conformance_seen` ledger checks each task once) and structural only — *semantic* conformance (does the code actually satisfy the requirement) remains the watchdog's job. Fails safe: no-ops if it can't read its input.
+**Conformance hook (R8):** Inter-stage assertions (P4/P5) verify traceability *before* the build; R8 verifies it *as each module completes*. `tools/module-conformance-hook.sh` is registered async on `Write|Edit` (PostToolUse). When a task in `.rapid/TASKS.json` flips to a done state, it checks that the task's `spec_ref` / `prd_ref` / `arch_ref` each resolve to a real anchor in `04-spec/spec.md` / `01-intake/PRD-ENHANCED.md` / `04-spec/architecture.md`. Every completed module gets a row in `.rapid/CONFORMANCE.md`; an orphan (missing or dangling ref) is filed to `.rapid/GAPS.json` as a `conformance` gap (it does **not** block — it flows into the P8 gap loop / GitHub ticketing). The `task-00` eval-harness (`spec_ref: ALL`) is exempt. The hook is idempotent (a `.conformance_seen` ledger checks each task once) and structural only — *semantic* conformance (does the code actually satisfy the requirement) remains the watchdog's job. Fails safe: no-ops if it can't read its input.
 
-**Stub scanner (R9):** The *primary* defense against placeholder code is behavior-asserting tests + keep-or-revert — a stub only survives a weak harness. R9 is the secondary net for what tests miss. `tools/stub-detect-hook.sh` is registered async on `Write|Edit`: when a source file is written inside a build, `tools/stub-scan.sh` scans it for high-signal markers (`TODO`/`FIXME`/`XXX`/`HACK`, `NotImplementedError`, `throw new Error("not implemented")`, `@stub`, `@placeholder`, …). New stubs are logged to `.forge/STUBS.md` and filed to `.forge/GAPS.json` as `type:"stub"` gaps — **non-blocking at write time** (too noisy; false positives would stall the build). Enforcement is at the **ship gate**: P6 exit assertions / G3 run `stub-scan.sh --tree` and **block release if any open `stub` gap maps to a MUST module**. A line tagged `// forge:allow-stub <reason>` is exempt (intentional, logged). Honest scope: a regex net has false positives/negatives and covers source files only — it is a net plus a ledger, not a correctness proof. Stub gaps are resolved through the P8 gap loop / GitHub ticketing; the gate stays red until MUST stubs reach zero.
+**Stub scanner (R9):** The *primary* defense against placeholder code is behavior-asserting tests + keep-or-revert — a stub only survives a weak harness. R9 is the secondary net for what tests miss. `tools/stub-detect-hook.sh` is registered async on `Write|Edit`: when a source file is written inside a build, `tools/stub-scan.sh` scans it for high-signal markers (`TODO`/`FIXME`/`XXX`/`HACK`, `NotImplementedError`, `throw new Error("not implemented")`, `@stub`, `@placeholder`, …). New stubs are logged to `.rapid/STUBS.md` and filed to `.rapid/GAPS.json` as `type:"stub"` gaps — **non-blocking at write time** (too noisy; false positives would stall the build). Enforcement is at the **ship gate**: P6 exit assertions / G3 run `stub-scan.sh --tree` and **block release if any open `stub` gap maps to a MUST module**. A line tagged `// rapid:allow-stub <reason>` is exempt (intentional, logged). Honest scope: a regex net has false positives/negatives and covers source files only — it is a net plus a ledger, not a correctness proof. Stub gaps are resolved through the P8 gap loop / GitHub ticketing; the gate stays red until MUST stubs reach zero.
 
 **Context-long checkpoint protocol (R5):** When the conversation exceeds ~200k tokens (roughly where urgency bias starts), the skill MUST:
-1. Write all current state to `.forge/` (STATE.json, MEMORY.md, TASKS.json, COST.json)
+1. Write all current state to `.rapid/` (STATE.json, MEMORY.md, TASKS.json, COST.json)
 2. Run a phase-completion checklist for the current phase — enumerate every required output and check if it exists
 3. Log any skipped steps to MEMORY.md: `[timestamp] CONTEXT CHECKPOINT — skipped: [list]`
-4. Only then continue (or instruct operator to `/forge --resume`)
+4. Only then continue (or instruct operator to `/rapid-workflow --resume`)
 This counters urgency bias by forcing a deliberate pause at the moment when shortcuts are most tempting. The checkpoint is not optional — it fires automatically based on estimated context size.
 
 ---
@@ -202,8 +204,8 @@ This counters urgency bias by forcing a deliberate pause at the moment when shor
    - **Project objective**: what a user can do when this ships
 2. Derive 3–5 **evaluation pillars** specific to this project (not generic). Examples: Correctness, Liveness, Operability, Defensibility. These pillars will be referenced by every panel, spec section, and gap classification.
 3. Write `00-vision/VISION.md` and `00-vision/PILLARS.md`
-4. **Strategy as living doc (CE #13):** VISION.md and PILLARS.md are not write-once artifacts. They are re-runnable — `/forge` can be invoked with `--resume` to update them when direction changes. All downstream phases (panels, spec, gap loop) read these files as grounding on every invocation. If a previous build exists for this project, read its VISION.md and PILLARS.md first and present the diff to the operator: "Last build's vision was X. Is this still correct, or has direction changed?"
-5. **Compound refresh (CE #9):** If a previous build's `.forge/LEARNINGS.md` exists, run a refresh pass before reading it: check each learning against the current codebase — are the files/functions it references still there? Is the pattern still applicable? Mark stale entries with `status: stale` and a reason. Only inject non-stale learnings into agent prompts.
+4. **Strategy as living doc (CE #13):** VISION.md and PILLARS.md are not write-once artifacts. They are re-runnable — `/rapid-workflow` can be invoked with `--resume` to update them when direction changes. All downstream phases (panels, spec, gap loop) read these files as grounding on every invocation. If a previous build exists for this project, read its VISION.md and PILLARS.md first and present the diff to the operator: "Last build's vision was X. Is this still correct, or has direction changed?"
+5. **Compound refresh (CE #9):** If a previous build's `.rapid/LEARNINGS.md` exists, run a refresh pass before reading it: check each learning against the current codebase — are the files/functions it references still there? Is the pattern still applicable? Mark stale entries with `status: stale` and a reason. Only inject non-stale learnings into agent prompts.
 6. **Interactive brainstorm (CE #14):** If the input is vague (a rough idea rather than a PRD), engage the operator in a collaborative Q&A before proceeding: "What problem does this solve? Who is the user? What does success look like? What's out of scope?" Surface ambiguities through dialogue, not assumptions. Write the output as `01-intake/BRAINSTORM.md` and use it as input for P1b (PRD Decomposition).
 
 **Do not use generic pillars.** Derive them from the specific risks and goals of this project.
@@ -212,12 +214,12 @@ This counters urgency bias by forcing a deliberate pause at the moment when shor
 
 ### Phase 1 — Structure [AUTO]
 
-**Output:** Folder structure, locked PRD, CONSTITUTION.md, BUILD-AUTONOMY.md, .forge/ initialized
+**Output:** Folder structure, locked PRD, CONSTITUTION.md, BUILD-AUTONOMY.md, .rapid/ initialized
 
 1. Create the numbered folder structure:
    ```
    00-vision/  01-intake/  02-grounding/  03-panels/  04-spec/  05-gaps/
-   04-spec/agents/  audits/  decisions/  panels/  tests/  docs/  .forge/
+   04-spec/agents/  audits/  decisions/  panels/  tests/  docs/  .rapid/
    ```
 2. Copy or write the PRD to `01-intake/PRD.md` — this file is **immutable** from this point
 3. Create `01-intake/DIFF.md` (empty — will track divergences from PRD)
@@ -225,13 +227,14 @@ This counters urgency bias by forcing a deliberate pause at the moment when shor
    - Articles I–V: **inviolable** (truthfulness, user safety, data handling, reversibility, scope discipline)
    - Articles VI–X: **overridable with logging** (spec authority, no test theater, honest reporting, pushback discipline, root-cause discipline)
 5. Write `BUILD-AUTONOMY.md` at project root, seeded from `templates/BUILD-AUTONOMY.md`. This is the standing-authorization charter (see "Standing Authorization — Run to Completion" above): it states that with CONSTITUTION.md + the locked PRD present the build runs to completion without per-step gates, and it carries the fixed stop-condition set (destructive/irreversible, outward-facing, spends-money, undecidable high-stakes). Leave the operator-signed fields (deploy target, spend ceiling, undecidable-batch answers) blank — they are filled at Gate 1.
-6. **Preflight — probe and provision the declared stack.** Run `tools/preflight.sh`. It probes every runtime the declared stack needs (node/npm version, python, the package manager, anchor/cargo, browsers for Playwright, etc.), **installs any that are missing within the declared stack**, and **hard-fails if it cannot** install or detect one. The build is **blocked until preflight is green** — `tools/preflight.sh` writes `.forge/PREFLIGHT.json` and STATE.json cannot leave Phase 1 until it shows all required runtimes present. **Never write code that routes around a missing runtime** (a shim, a mock-because-it-won't-install, a "skip if unavailable" branch) — that produces code that can't be verified, which defeats the point of the loop. If a runtime genuinely cannot be installed, that is a Gate-1 blocker, not a thing to code around.
-7. Initialize `.forge/STATE.json`: `{ "phase": 1, "status": "complete", "track": "fast|full" }`
+   - **Seed `.rapid/INPUTS.json` from `templates/INPUTS.json`** — the machine-checked human-input ledger (B). It starts with the two always-required rows (`deploy_target`, `spend_ceiling`) and grows as panels/spec discover credentials and decisions the build will need. It is *populated* at Gate 1/Gate 2 and *enforced* at the P6 boundary: `tools/inputs-check.sh` and the phase-gate hook refuse to let STATE.json reach phase 6 until every `required` input is `resolved` (or `waived`). This is what turns "gather human input up front, then run to completion" from a convention into a mechanical gate.
+6. **Preflight — probe and provision the declared stack.** Run `tools/preflight.sh`. It probes every runtime the declared stack needs (node/npm version, python, the package manager, anchor/cargo, browsers for Playwright, etc.), **installs any that are missing within the declared stack**, and **hard-fails if it cannot** install or detect one. The build is **blocked until preflight is green** — `tools/preflight.sh` writes `.rapid/PREFLIGHT.json` and STATE.json cannot leave Phase 1 until it shows all required runtimes present. **Never write code that routes around a missing runtime** (a shim, a mock-because-it-won't-install, a "skip if unavailable" branch) — that produces code that can't be verified, which defeats the point of the loop. If a runtime genuinely cannot be installed, that is a Gate-1 blocker, not a thing to code around.
+7. Initialize `.rapid/STATE.json`: `{ "phase": 1, "status": "complete", "track": "fast|full" }`
 8. **Scaffold Atlas (R-10).** Every project gets its own Atlas — the developer-view harness — generated and live from the very first phase, not bolted on at the end. Run `tools/atlas-init.sh`. It scaffolds the deck shell (the 10-page nav: prd, prd-enhanced, architecture, workflow, users, spec, observatory, eval, cost, documentation), writes the single wiring file `docs/env.json` (with `product{local,dev,prod}`, `source{github,gitlab}`, and `atlas{url}`) plus `docs/regen.json`, copies the harness assets `env-links.js`, `sidebar.js`, and `home.html`, and drops a `.vscode` config. Atlas is then prepopulated and live from day one.
 
-   **The content is the PROJECT's own — never the workflow's.** Atlas is generated *inside the target project* and every page is filled from *that project's* artifacts (its vision, PRD, spec, architecture, users, tests, deploys). The kit (rapid-workflow) supplies only the **form** — template, CSS, nav, tools; the project supplies the **content**. A build of `gauntlet-st6` produces *st6's* Atlas — st6's DESIGN-SPEC, its Spring Boot + micro-frontend architecture, its e2e suite — not anything about FORGE. rapid-workflow's own Atlas is solely the reference/dogfood instance; never copy kit or workflow content into a project's Atlas.
+   **The content is the PROJECT's own — never the workflow's.** Atlas is generated *inside the target project* and every page is filled from *that project's* artifacts (its vision, PRD, spec, architecture, users, tests, deploys). The kit (rapid-workflow) supplies only the **form** — template, CSS, nav, tools; the project supplies the **content**. A build of `gauntlet-st6` produces *st6's* Atlas — st6's DESIGN-SPEC, its Spring Boot + micro-frontend architecture, its e2e suite — not anything about RAPID. rapid-workflow's own Atlas is solely the reference/dogfood instance; never copy kit or workflow content into a project's Atlas.
 
-   **Technically:** `tools/atlas-init.sh` lays down the static deck shell and the live-view scaffolding so the developer view exists before any content does. The pages **self-populate as phases complete** — P1b fills prd/prd-enhanced, P4 fills architecture/workflow/spec, P5 fills eval, P6+ fill observatory/cost/users — each phase writing its artifacts back into the matching page. The **static deck** half (the PRD/spec/arch/… pages) is deployable; the **live view** half (Observatory, Cost, regen) is served locally by `observe-server` (the same observe server at localhost:4040). `env-links.js`, already wired on every page, renders the "Atlas" tag, the Product and Source clusters, and the ↻ Regenerate button — all driven by `docs/env.json`. Its sibling `sidebar.js` (also wired on every page, and copied by atlas-init) builds the left-menu Atlas map — a Deployments block plus a tree of all pages with sections nested, the page list **derived from the forge-nav** so it adapts to any project's page set. Both scripts must travel together; deterministic generators (e.g. `cost-summary.sh`) emit both.
+   **Technically:** `tools/atlas-init.sh` lays down the static deck shell and the live-view scaffolding so the developer view exists before any content does. The pages **self-populate as phases complete** — P1b fills prd/prd-enhanced, P4 fills architecture/workflow/spec, P5 fills eval, P6+ fill observatory/cost/users — each phase writing its artifacts back into the matching page. The **static deck** half (the PRD/spec/arch/… pages) is deployable; the **live view** half (Observatory, Cost, regen) is served locally by `observe-server` (the same observe server at localhost:4040). `env-links.js`, already wired on every page, renders the "Atlas" tag, the Product and Source clusters, and the ↻ Regenerate button — all driven by `docs/env.json`. Its sibling `sidebar.js` (also wired on every page, and copied by atlas-init) builds the left-menu Atlas map — a Deployments block plus a tree of all pages with sections nested, the page list **derived from the rapid-nav** so it adapts to any project's page set. Both scripts must travel together; deterministic generators (e.g. `cost-summary.sh`) emit both.
 
 ---
 
@@ -389,13 +392,17 @@ Each returns findings with severity. Merge into pre-screen report.
 - **Answers to the undecidable decision batch** — written back into the spec/PRD-ENHANCED so the build has a basis (these become `basis="spec"` from here on)
 - **Signature on BUILD-AUTONOMY.md** — operator fills in the deploy target, the spend ceiling, and confirms the stop-condition set. This is what authorizes run-to-completion; without it the build falls back to per-step confirmation.
 
+**Update the input ledger (B):** As decisions are resolved here, write them back into `.rapid/INPUTS.json` — set `spend_ceiling` to `resolved`, and add one row per undecidable-batch decision (`kind:"decision"`, `status:"resolved"`, `value_ref` pointing at the spec/BUILD-AUTONOMY anchor that now records it). Any credential the operator can provide now is added as a `resolved` `kind:"secret"` row pointing at its `.env:KEY`. Anything the operator defers stays `unresolved` and must be cleared at Gate 2 — the build cannot enter P6 with it open.
+
 **On redirect:** Re-run P2–P3 with operator notes as additional constraint.
 
 ---
 
 ### Phase 4 — Spec Derivation [AUTO]
 
-**Output:** `04-spec/spec.md`, `04-spec/workflow.md`, `04-spec/architecture.md`, `04-spec/CONTRACTS.md`
+**Output:** `04-spec/spec.md`, `04-spec/workflow.md`, `04-spec/mocks/*.html` + `04-spec/screens.md` (UI projects), `04-spec/architecture.md`, `04-spec/CONTRACTS.md`
+
+**Design-first ordering (E).** For any project with a user-facing surface, the order is **spec → workflow → design the screens → derive architecture + contracts from the screens**, not the other way round. A hi-fi comp of each screen forces the data question — *exactly what does this screen read and write?* — and the backend is then built to serve real screens instead of a guessed API. Step 2b below sits between the workflow and the architecture for that reason. (Headless projects — pure CLI/library/service with no UI — skip 2b and note it `n/a` in the spec.)
 
 1. **spec.md**: Derive from PRD + panel synthesis + research. Every requirement tagged:
    - `[FROM PRD §X]` — directly from the stakeholder PRD
@@ -408,11 +415,17 @@ Each returns findings with severity. Merge into pre-screen report.
    - `proc:` what processing happens
    - `out:` what data/state exits
    - Golden path + named edge cases + failure paths + recovery
-   - **Also emit `docs/workflows.json`** — the machine-readable form of this same map (per node: `in`/`proc`/`out`, a per-workflow `golden` assertion, a `view` for the user-facing surface, and a bounded `exec` that drives that node against the real app). This single file feeds the runnable Workflow Test Theater (`docs/testsuite.html`, S-14): the diagram, the per-node breakdown, and the executable test all derive from it. Point each node's `exec` at THIS project's own test/e2e command or UI surface — never a real `/forge` build (bounded by construction).
+   - **Also emit `docs/workflows.json`** — the machine-readable form of this same map (per node: `in`/`proc`/`out`, a per-workflow `golden` assertion, a `view` for the user-facing surface, and a bounded `exec` that drives that node against the real app). This single file feeds the runnable Workflow Test Theater (`docs/testsuite.html`, S-14): the diagram, the per-node breakdown, and the executable test all derive from it. Point each node's `exec` at THIS project's own test/e2e command or UI surface — never a real `/rapid-workflow` build (bounded by construction).
 
-3. **architecture.md**: File structure, layer boundaries, interface contracts, schema/PDA design
+2b. **Design mocks → screens → contracts (E) [UI projects].** Before deriving architecture, design the screens. Run `tools/mock-init.sh` to scaffold `04-spec/mocks/` (a real design-token system `_tokens.css` + a hi-fi screen template + a gallery) and `04-spec/screens.md` (the screen inventory). Then:
+   - **Inventory every screen** in `04-spec/screens.md`: route, states (loading/empty/populated/error), the exact data it reads, and each action → endpoint.
+   - **Build a hi-fi comp per screen** as `04-spec/mocks/<screen-id>.html`, composed only from `_tokens.css` so the whole set stays in sync (re-skin from a reference screenshot via `tools/design-extract-prompt.md` if the operator has a brand). Dispatch this as a design subagent fan-out — one comp (or one screen-cluster) per subagent — and depict each meaningful state. Keep each comp's metadata header in sync with `screens.md`.
+   - **Derive the seam contracts from the screens**: the DOM contract (`data-testid`s / roles each comp exposes), the API contract (the endpoints + request/response shapes the actions imply), and the data schema (the entities/fields the screens render) are written to `04-spec/contracts/{dom,api,schema}.md` *from the mocks*. This is the first draft of the P6a-gate seam contracts, pulled forward to plan time — so architecture is built against pinned, screen-derived contracts rather than the build discovering them at fan-out.
+   - These comps are presented for visual sign-off at **GATE 2** and become the **visual target P7 QA** compares the built UI against.
 
-4. **CONTRACTS.md**: Interface boundaries between layers. Function signatures, type exports, API endpoints. This is what the drift checker (D4) validates against.
+3. **architecture.md**: File structure, layer boundaries, interface contracts, schema/PDA design. **For UI projects, derive this to serve the screens** — the API surface, data model, and layer boundaries follow from `04-spec/screens.md` + the screen-derived contracts in `04-spec/contracts/`, not from a guessed backend. A backend endpoint that no screen consumes (and no non-UI requirement needs) is scope to question, not build.
+
+4. **CONTRACTS.md**: Interface boundaries between layers. Function signatures, type exports, API endpoints. This is what the drift checker (D4) validates against. For UI projects the shared seams (DOM/API/data) live in the per-seam files under `04-spec/contracts/` derived in 2b; CONTRACTS.md references them rather than restating them.
 
 **Inter-stage assertion (Compound AI):** After this phase, programmatically verify: every PRD requirement maps to a spec section OR has an explicit `[OUT OF SCOPE]` tag. If any requirement is unmapped, retry with the violation appended.
 
@@ -420,7 +433,7 @@ Each returns findings with severity. Merge into pre-screen report.
 
 ### Phase 5 — Task Decomposition + Eval Harness [AUTO]
 
-**Output:** `.forge/TASKS.json`, `04-spec/agents/*.md`, `.forge/EVAL/`
+**Output:** `.rapid/TASKS.json`, `04-spec/agents/*.md`, `.rapid/EVAL/`
 
 1. **Analyze spec complexity** and determine implementor count (D7):
    - ≤5 tasks with linear deps → 1 implementor
@@ -437,7 +450,7 @@ Each returns findings with severity. Merge into pre-screen report.
    - From workflow.md: each node → test case (arrange from `in`, act from `proc`, assert from `out`)
    - Each branch → negative test
    - Each failure path → recovery test
-   - Output: `.forge/EVAL/` directory with test files
+   - Output: `.rapid/EVAL/` directory with test files
    - **Lock this directory. Agents cannot modify it.** Tests are the contract.
    - task-00 must be status "done" before any other task can begin.
    - **Wire each `docs/workflows.json` node's `exec` to the same assertion** so the runnable test theater (S-14) and the immutable harness share one source of truth: a node's `exec` is the walkable, recorded form of the node's eval test (a real command + an expected exit/value), not a second definition.
@@ -458,7 +471,7 @@ Each returns findings with severity. Merge into pre-screen report.
 
 5. **Generate agent role files** in `04-spec/agents/`: implementor.md, reviewer.md, watchdog.md. Each includes R/W contract (which files the agent may modify) and the Decision Router rules (D5).
 
-6. **Generate CI/CD config** (D11): `.github/workflows/forge-ci.yml` or `.gitlab-ci.yml` based on forge.yaml `ci_platform` setting. Stages: lint → test → build → drift-check → constitution → visual-qa → deploy.
+6. **Generate CI/CD config** (D11): `.github/workflows/rapid-workflow-ci.yml` or `.gitlab-ci.yml` based on rapid.yaml `ci_platform` setting. Stages: lint → test → build → drift-check → constitution → visual-qa → deploy.
 
 **Inter-stage assertion (blocking — P5 cannot complete until all pass):**
 - Every task references a spec section. Dependency graph has no cycles.
@@ -466,7 +479,7 @@ Each returns findings with severity. Merge into pre-screen report.
 - **Every PRD deliverable maps to at least one task** (R3 — the assertion that catches missing deliverables).
 - **task-00 (eval-harness) exists and is the root of the dependency graph** (R4).
 - **Eval completeness:** Every node in workflow.md has a corresponding test file and at least one test function. Every spec section (S1, S2, ...) has at least one test that exercises it. Missing coverage = phase fails, orchestrator generates the missing test stub before proceeding.
-- **Phase gate hook enforced:** STATE.json cannot advance to phase 6 unless `.forge/EVAL/` has test files (R1).
+- **Phase gate hook enforced:** STATE.json cannot advance to phase 6 unless `.rapid/EVAL/` has test files (R1).
 
 ---
 
@@ -479,7 +492,7 @@ Before the operator sees the spec at G2, run a **deepening pass** — sub-agents
    - **Confidence checker**: For each spec section, rate confidence HIGH/MEDIUM/LOW. LOW = based on an unverified assumption or missing research. MEDIUM = reasonable but untested. HIGH = verified or deterministic.
    - **Deliverable verifier**: Cross-check spec → tasks → deliverables → PRD. Every PRD deliverable must trace through to a task. Flag orphaned deliverables.
 
-2. Merge findings into `.forge/DEEPENING.md`: section, confidence, gaps found, missing flows.
+2. Merge findings into `.rapid/DEEPENING.md`: section, confidence, gaps found, missing flows.
 
 3. Any LOW-confidence finding or missing flow becomes a **blocking question** for G2 — the operator must resolve it before approving the build.
 
@@ -501,7 +514,8 @@ Each returns findings with severity. Merge into pre-screen report.
 **Present to operator using AskUserQuestion:**
 - Document review pre-screen (scope, coherence, adversarial findings)
 - Full spec with workflow state machine
-- Architecture diagram + interface contracts
+- **Design comps (E) [UI projects]:** the hi-fi mocks in `04-spec/mocks/` (open `index.html`) for visual sign-off, alongside `04-spec/screens.md` and the screen-derived seam contracts. This is the cheapest point to change the look and the data shape together — after G2 they're the build's target. Collect: visual approval (or change requests), and confirmation the screen inventory is complete (no missing screen/state).
+- Architecture diagram + interface contracts (derived to serve the screens)
 - Task decomposition with dependency graph and estimated implementor count
 - Eval harness summary (test count, coverage map)
 - Cost projection: estimated build tokens + runtime infra (from P3 research)
@@ -513,11 +527,13 @@ Each returns findings with severity. Merge into pre-screen report.
 - Final architecture sign-off
 - `.env` values → write to `.env` (gitignored)
 
+**Close the input ledger — this gate is fail-closed (B).** By now `.rapid/INPUTS.json` must enumerate *every* human input the build needs: the architecture review surfaces which credentials/services the code will call, and each becomes a required row. Mark each resolved as the operator provides it (a `kind:"secret"`/`env`/`credential` row is only truly resolved once its `.env:KEY` actually exists — `tools/inputs-check.sh` verifies this, it does not take the row's word for it). Then **run `tools/inputs-check.sh`**; it must exit 0 before you advance STATE.json to P6. The phase-gate hook (R1) runs the same check independently, so a build with any unresolved required input **cannot** enter P6 — it stops here, at the last gate, rather than mid-build. This is the guarantee that the build, once started, runs to completion without surfacing for a missing key or an undecided fork. Anything the operator genuinely wants to defer must be explicitly `waived` (with a reason), never left `unresolved`.
+
 ---
 
-### Phase 6 — Parallel Build [AUTO] — The Five-Lead FORGE Build Team
+### Phase 6 — Parallel Build [AUTO] — The Five-Lead RAPID Build Team
 
-Phase 6 runs as the **FORGE build team**: five named **lead agents**, each in its OWN long-lived terminal, connected as a team over the claude-peers bus. The five leads are **planner**, **coder**, **tester**, **reviewer**, and **watchdog**. Each is a persistent terminal that *fans out subagents* — it is the coordination spine for its concern, not a solo worker. The five leads map onto the prior naming as follows: **planner = orchestrator** (team lead), **coder + tester = supervisor/implementors** (build + test leads), **reviewer = the tiered CE reviewer**, **watchdog = R2 auditor** (unchanged).
+Phase 6 runs as the **RAPID build team**: five named **lead agents**, each in its OWN long-lived terminal, connected as a team over the claude-peers bus. The five leads are **planner**, **coder**, **tester**, **reviewer**, and **watchdog**. Each is a persistent terminal that *fans out subagents* — it is the coordination spine for its concern, not a solo worker. The five leads map onto the prior naming as follows: **planner = orchestrator** (team lead), **coder + tester = supervisor/implementors** (build + test leads), **reviewer = the tiered CE reviewer**, **watchdog = R2 auditor** (unchanged).
 
 The five lead roles:
 
@@ -525,7 +541,7 @@ The five lead roles:
 - **coder** = build lead: implements tasks; **fans out coding subagents** for independent tasks (or runs 1–4 coder terminals only when tasks are long AND interdependent); keep-or-revert ratchet; never self-approves.
 - **tester** = test lead: owns the immutable eval harness (task-00); runs and extends behavior tests, **fanning out per-surface test subagents**.
 - **reviewer** = review lead: tiered code review of every diff via **per-dimension subagents** (correctness / security / performance); returns APPROVE / REJECT.
-- **watchdog** = R2 auditor: independently audits completed work against spec/architecture for drift; writes `.forge/AUDIT.json`; **NEVER implements**.
+- **watchdog** = R2 auditor: independently audits completed work against spec/architecture for drift; writes `.rapid/AUDIT.json`; **NEVER implements**.
 
 **CORE PRINCIPLE — the writer is never the auditor.** The **coder** is a different agent from the **tester**, the **reviewer**, and the **watchdog**. The reviewer checks the *diff*; the watchdog independently checks *drift against spec*. These are not merged — they catch different failures.
 
@@ -549,13 +565,13 @@ The five lead roles:
 
 **Topology.** planner ⟷ coder ⟷ tester ⟷ reviewer form the build loop over claude-peers (plan → build → test → review → re-plan). **watchdog observes all** and reports drift to the planner. The **planner owns the human gates**.
 
-**R2: Watchdog spawn is automatic, not discretionary.** The watchdog MUST be spawned at P6a as its own terminal. It is not something the planner "may" do — it is a required step. The phase gate hook (R1) cannot be fooled because the watchdog writes to `.forge/AUDIT.json`, and P6 exit assertions check that AUDIT.json exists with watchdog entries. If the watchdog was never spawned, P6 cannot exit.
+**R2: Watchdog spawn is automatic, not discretionary.** The watchdog MUST be spawned at P6a as its own terminal. It is not something the planner "may" do — it is a required step. The phase gate hook (R1) cannot be fooled because the watchdog writes to `.rapid/AUDIT.json`, and P6 exit assertions check that AUDIT.json exists with watchdog entries. If the watchdog was never spawned, P6 cannot exit.
 
 In plain terms: the planner is the project manager who owns the plan and the operator's gates. The coder is the build lead with a bench of builder-subagents; the tester is the QA lead with a bench of test-subagents; the reviewer inspects every delivery with a panel of specialist reviewer-subagents; the watchdog independently checks every delivery against the original plan for drift. Everyone sits in the same room (the claude-peers team bus) and answers a shoulder-tap immediately.
 
-**Launch.** `tools/forge-team.sh` (tmux) brings up one terminal per lead; `tools/forge-team.sh --cursor` writes `.vscode/tasks.json` so **Run Task → "FORGE: launch team"** opens each role in its own Cursor terminal. Each role reads its contract at `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`).
+**Launch.** `tools/rapid-team.sh` (tmux) brings up one terminal per lead; `tools/rapid-team.sh --cursor` writes `.vscode/tasks.json` so **Run Task → "RAPID: launch team"** opens each role in its own Cursor terminal. Each role reads its contract at `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`).
 
-**Technically:** one tmux session `forge-team` with one window per lead (planner, coder, tester, reviewer, watchdog), created at P6a and torn down at P6 end. Each lead exports `FORGE_ROLE` so the global hooks attribute themselves per role. All terminals form one agent team on the claude-peers MCP bus — on start each calls `set_summary(role + current task)` and `list_peers` to discover teammates, then coordinates via structured `send_message`/`check_messages` (shoulder-tap protocol). The leads dispatch subagents for review/test/coding fan-out. All state in `.forge/` files.
+**Technically:** one tmux session `rapid-team` with one window per lead (planner, coder, tester, reviewer, watchdog), created at P6a and torn down at P6 end. Each lead exports `RAPID_ROLE` so the global hooks attribute themselves per role. All terminals form one agent team on the claude-peers MCP bus — on start each calls `set_summary(role + current task)` and `list_peers` to discover teammates, then coordinates via structured `send_message`/`check_messages` (shoulder-tap protocol). The leads dispatch subagents for review/test/coding fan-out. All state in `.rapid/` files.
 
 **Output:** Working code, merged PRs, passing tests
 
@@ -563,76 +579,76 @@ In plain terms: the planner is the project manager who owns the plan and the ope
 
 #### P6a — Team Setup (the five-lead team) [planner]
 
-The planner stands up the build team via `tools/forge-team.sh`: one tmux session, one long-lived window per lead — planner, coder, tester, reviewer, watchdog (full track) or the fast-track subset. Each window exports `FORGE_ROLE` so the global hooks, observe events, and claude-peers addressing are attributed per role. When the coder runs as 1–4 coder terminals (long, interdependent tasks only), each coder terminal is bound to its own git worktree; otherwise the coder fans out coding subagents that carry their own isolation. `tools/forge-team.sh --cursor` instead writes `.vscode/tasks.json` so the operator can **Run Task → "FORGE: launch team"** to open each role in its own Cursor terminal. Each role reads its contract from `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`).
+The planner stands up the build team via `tools/rapid-team.sh`: one tmux session, one long-lived window per lead — planner, coder, tester, reviewer, watchdog (full track) or the fast-track subset. Each window exports `RAPID_ROLE` so the global hooks, observe events, and claude-peers addressing are attributed per role. When the coder runs as 1–4 coder terminals (long, interdependent tasks only), each coder terminal is bound to its own git worktree; otherwise the coder fans out coding subagents that carry their own isolation. `tools/rapid-team.sh --cursor` instead writes `.vscode/tasks.json` so the operator can **Run Task → "RAPID: launch team"** to open each role in its own Cursor terminal. Each role reads its contract from `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`).
 
-1. **Check tmux:** `which tmux || { log "FORGE P6 requires tmux. Install: brew install tmux"; halt; }`
+1. **Check tmux:** `which tmux || { log "RAPID P6 requires tmux. Install: brew install tmux"; halt; }`
 
 2. **Generate prompt files** — the planner writes one brief per lead for this specific build. Each lead's brief points at its contract `04-spec/agents/<role>.md` (seeded from `templates/agent-roles/<role>.md`) and adds the build-specific paths:
 
-   `.forge/prompts/coder.md` — contains:
-   - Role: "You are the FORGE coder (build lead) for this build. Read your contract at 04-spec/agents/coder.md."
+   `.rapid/prompts/coder.md` — contains:
+   - Role: "You are the RAPID coder (build lead) for this build. Read your contract at 04-spec/agents/coder.md."
    - TASKS.json path and format
    - Spec section references for each task
    - CONTRACTS.md / architecture.md / eval-harness paths
    - Decision Router rules (D5)
-   - Observability protocol: emit events to `.forge/observe/coder.jsonl`
+   - Observability protocol: emit events to `.rapid/observe/coder.jsonl`
    - Claude-peers message format contract (see below)
-   - Heartbeat: update `.forge/HEARTBEAT.json` every 5 minutes
+   - Heartbeat: update `.rapid/HEARTBEAT.json` every 5 minutes
    - Reference project protocol (if applicable)
    - Instructions: "Read TASKS.json. For each ready task in dependency order, FAN OUT a coding subagent (worktree-isolated); only run sibling coder terminals when tasks are long AND interdependent. Apply keep-or-revert; never self-approve. On a task's completion send PR_SUBMITTED to the reviewer and watchdog. Send P6_COMPLETE to the planner when all tasks have APPROVE verdicts."
 
-   `.forge/prompts/tester.md` — contains:
-   - Role: "You are the FORGE tester (test lead) for this build. Read your contract at 04-spec/agents/tester.md."
+   `.rapid/prompts/tester.md` — contains:
+   - Role: "You are the RAPID tester (test lead) for this build. Read your contract at 04-spec/agents/tester.md."
    - Eval-harness (task-00) path — the harness is immutable; tester extends behavior tests, never weakens them
    - workflow.md / spec section references (one test per node, one per spec section)
-   - Observability protocol: emit events to `.forge/observe/tester.jsonl`
+   - Observability protocol: emit events to `.rapid/observe/tester.jsonl`
    - Claude-peers message format contract; heartbeat every ≤5 minutes
    - Instructions: "Own the immutable eval harness. On each PR_SUBMITTED, FAN OUT per-surface test subagents to run + extend behavior tests against the diff. Report PASS/FAIL to the coder and planner. Never alter the harness to make a test pass (R4)."
 
-   `.forge/prompts/reviewer.md` — contains:
-   - Role: "You are the FORGE reviewer (review lead) for this build. Read your contract at 04-spec/agents/reviewer.md."
+   `.rapid/prompts/reviewer.md` — contains:
+   - Role: "You are the RAPID reviewer (review lead) for this build. Read your contract at 04-spec/agents/reviewer.md."
    - CONTRACTS.md / spec section paths; review-dimension list (correctness / security / performance / …)
-   - Observability protocol: emit events to `.forge/observe/reviewer.jsonl`
+   - Observability protocol: emit events to `.rapid/observe/reviewer.jsonl`
    - Claude-peers message format contract; heartbeat every ≤5 minutes
    - Instructions: "On each PR_SUBMITTED, FAN OUT one review subagent per dimension over the diff. Aggregate to a single APPROVE/REJECT verdict and send it to the coder and planner. You review the DIFF only — drift-vs-spec is the watchdog's job, do not duplicate it."
 
-   `.forge/prompts/watchdog.md` — contains:
-   - Role: "You are the FORGE watchdog (R2 auditor) for this build. Read your contract at 04-spec/agents/watchdog.md. You NEVER implement."
+   `.rapid/prompts/watchdog.md` — contains:
+   - Role: "You are the RAPID watchdog (R2 auditor) for this build. Read your contract at 04-spec/agents/watchdog.md. You NEVER implement."
    - Drift check protocol (D4): 7 categories, 3 trigger points
    - AUDIT.json format
    - Spec.md and CONTRACTS.md paths
-   - Observability protocol: emit events to `.forge/observe/watchdog.jsonl`
+   - Observability protocol: emit events to `.rapid/observe/watchdog.jsonl`
    - Claude-peers message format contract
-   - Instructions: "On PR_SUBMITTED message: drift-check the PR diff against the spec/architecture (this is drift, NOT the reviewer's per-dimension diff review). On PR_MERGED: check integrated repo state. Run /loop 30m for periodic full-repo audit. Write findings to `.forge/AUDIT.json`. On CRITICAL: send DRIFT_CRITICAL to the planner immediately."
+   - Instructions: "On PR_SUBMITTED message: drift-check the PR diff against the spec/architecture (this is drift, NOT the reviewer's per-dimension diff review). On PR_MERGED: check integrated repo state. Run /loop 30m for periodic full-repo audit. Write findings to `.rapid/AUDIT.json`. On CRITICAL: send DRIFT_CRITICAL to the planner immediately."
 
-   The `planner` runs in the first window and needs no separate prompt file beyond its contract `04-spec/agents/planner.md`. When the coder is run as 1–4 coder terminals (long, interdependent tasks only), the planner writes a `.forge/prompts/coder-N.md` per coder terminal carrying its bound worktree path, branch naming `forge/phase-6/{task-slug}`, `[SPEC §X.Y]` commit convention, and its `.forge/observe/coder-N.jsonl` stream. Otherwise the single coder lead fans out coding subagents that carry their own worktree isolation.
+   The `planner` runs in the first window and needs no separate prompt file beyond its contract `04-spec/agents/planner.md`. When the coder is run as 1–4 coder terminals (long, interdependent tasks only), the planner writes a `.rapid/prompts/coder-N.md` per coder terminal carrying its bound worktree path, branch naming `rapid/phase-6/{task-slug}`, `[SPEC §X.Y]` commit convention, and its `.rapid/observe/coder-N.jsonl` stream. Otherwise the single coder lead fans out coding subagents that carry their own worktree isolation.
 
-3. **Spawn the team — one window per lead, via `tools/forge-team.sh` (tmux):**
+3. **Spawn the team — one window per lead, via `tools/rapid-team.sh` (tmux):**
 
    ```bash
-   # forge-team.sh creates the session and one window per lead, exporting FORGE_ROLE in each.
+   # rapid-team.sh creates the session and one window per lead, exporting RAPID_ROLE in each.
    # planner runs in the first window; coder/tester/reviewer/watchdog each get their own.
 
-   tmux new-session -d -s forge-team -n planner
+   tmux new-session -d -s rapid-team -n planner
 
    for role in coder tester reviewer watchdog; do
-     tmux new-window -t forge-team -n "$role"
-     tmux send-keys -t "forge-team:$role" \
-       "FORGE_ROLE=$role claude --name \"forge-$role\" --dangerously-skip-permissions \
-         --append-system-prompt-file .forge/prompts/$role.md \
-         'Begin FORGE P6 $role. Read your contract at 04-spec/agents/$role.md, set your summary, list_peers to find the team, then start your loop.'" ENTER
+     tmux new-window -t rapid-team -n "$role"
+     tmux send-keys -t "rapid-team:$role" \
+       "RAPID_ROLE=$role claude --name \"rapid-$role\" --dangerously-skip-permissions \
+         --append-system-prompt-file .rapid/prompts/$role.md \
+         'Begin RAPID P6 $role. Read your contract at 04-spec/agents/$role.md, set your summary, list_peers to find the team, then start your loop.'" ENTER
    done
 
    # Fast track: omit the tester window (tester folds into the coder's keep-or-revert ratchet).
    # Long, interdependent tasks only: replace the single coder window with coder-1..coder-N (N ≤ 4),
-   # each cd'd into its own `.forge/worktrees/coder-$i` git worktree.
+   # each cd'd into its own `.rapid/worktrees/coder-$i` git worktree.
    ```
 
-   `tools/forge-team.sh --cursor` instead writes `.vscode/tasks.json` with a "FORGE: launch team" task that opens each role in its own Cursor terminal (same `FORGE_ROLE` + contract wiring).
+   `tools/rapid-team.sh --cursor` instead writes `.vscode/tasks.json` with a "RAPID: launch team" task that opens each role in its own Cursor terminal (same `RAPID_ROLE` + contract wiring).
 
    **Permission model:** `--dangerously-skip-permissions` is used because the operator approved the build at Gate 2 (point of no return). Every lead — planner, coder, tester, reviewer, watchdog — operates within the scope approved at G2.
 
-4. **Verify spawn:** Wait 15 seconds, then call `list_peers(scope: "repo")`. Assert that the launched leads (`forge-coder`, `forge-tester`, `forge-reviewer`, `forge-watchdog` on full track; the fast-track subset otherwise) all appear. If any is missing after 30 seconds, retry the spawn for that window once. If still missing after 60 seconds, halt P6 and alert operator.
+4. **Verify spawn:** Wait 15 seconds, then call `list_peers(scope: "repo")`. Assert that the launched leads (`rapid-coder`, `rapid-tester`, `rapid-reviewer`, `rapid-watchdog` on full track; the fast-track subset otherwise) all appear. If any is missing after 30 seconds, retry the spawn for that window once. If still missing after 60 seconds, halt P6 and alert operator.
 
 5. **Log:** Emit `SPAWN` observe events for each launched lead. Write to MEMORY.md: `[timestamp] P6a complete — build team spawned (planner + {leads on this track})`
 
@@ -663,17 +679,17 @@ Log to MEMORY.md: `[timestamp] P6a-gate — {N} shared seams pinned in 04-spec/c
 
 #### Per-terminal hooks (status / monitoring / continuous build)
 
-Because each lead lives in its own terminal, the planner wires the same three hook families into every window, keyed by `FORGE_ROLE`. The hooks make the lead team observable and self-healing without changing what R1/R7/R8/R9 already do — they attribute the existing machinery per role.
+Because each lead lives in its own terminal, the planner wires the same three hook families into every window, keyed by `RAPID_ROLE`. The hooks make the lead team observable and self-healing without changing what R1/R7/R8/R9 already do — they attribute the existing machinery per role.
 
 In plain terms: each terminal wears a name tag, raises its hand when it's working, and isn't allowed to walk out while the room still has work to do. If a terminal goes quiet, the monitor notices and gets it restarted.
 
 **Technically:**
 
-- **STATUS (who is this terminal + what is it doing).** A statusline / `SessionStart` hook stamps the terminal's `FORGE_ROLE` (planner/coder/tester/reviewer/watchdog) and its current claude-peers summary into the prompt line, so a glance at any window says which lead it is. Each lead updates its slot in `.forge/HEARTBEAT.json` (per role) every ≤5 minutes — the liveness signal the planner (P6d) and the monitor read.
+- **STATUS (who is this terminal + what is it doing).** A statusline / `SessionStart` hook stamps the terminal's `RAPID_ROLE` (planner/coder/tester/reviewer/watchdog) and its current claude-peers summary into the prompt line, so a glance at any window says which lead it is. Each lead updates its slot in `.rapid/HEARTBEAT.json` (per role) every ≤5 minutes — the liveness signal the planner (P6d) and the monitor read.
 
-- **MONITORING (observe + /forge status + stalled-terminal detection).** Every terminal emits observe events (`SPAWN`/`PROGRESS`/…) to `.forge/observe/<role>.jsonl`. `/forge status` and the observatory dashboard read all leads' observe + heartbeat streams to render the whole team. A monitor flags any lead whose heartbeat is older than the threshold as stalled and surfaces it for restart (the same re-spawn path the planner uses in P6d).
+- **MONITORING (observe + /rapid-workflow status + stalled-terminal detection).** Every terminal emits observe events (`SPAWN`/`PROGRESS`/…) to `.rapid/observe/<role>.jsonl`. `/rapid-workflow status` and the observatory dashboard read all leads' observe + heartbeat streams to render the whole team. A monitor flags any lead whose heartbeat is older than the threshold as stalled and surfaces it for restart (the same re-spawn path the planner uses in P6d).
 
-- **CONTINUOUS BUILD (R7 stop-hook, per role).** The R7 `Stop`/`SubagentStop` hook (`tools/stop-hook.sh`) runs in every terminal and blocks that terminal from halting while phase work remains; `FORGE_ROLE` attributes both the continuation decision and the observe `STOP` event to the right agent. After 5 consecutive same-phase nudges it escalates to the operator instead of looping. (Behavior is exactly the R7 contract described in The Pipeline — terminal-per-agent only changes *which* role the nudge is attributed to.)
+- **CONTINUOUS BUILD (R7 stop-hook, per role).** The R7 `Stop`/`SubagentStop` hook (`tools/stop-hook.sh`) runs in every terminal and blocks that terminal from halting while phase work remains; `RAPID_ROLE` attributes both the continuation decision and the observe `STOP` event to the right agent. After 5 consecutive same-phase nudges it escalates to the operator instead of looping. (Behavior is exactly the R7 contract described in The Pipeline — terminal-per-agent only changes *which* role the nudge is attributed to.)
 
 ---
 
@@ -695,7 +711,7 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
    - Spawn an Agent with `isolation: "worktree"` as implementor
    - Prompt includes: the specific spec section, CONTRACTS.md, architecture.md, eval harness, Decision Router rules (D5)
    - Commit messages must reference `[SPEC §X.Y]`
-   - Branch naming: `forge/phase-6/{task-slug}`
+   - Branch naming: `rapid/phase-6/{task-slug}`
    - Send `TASK_ASSIGNED` to orchestrator via claude-peers
    - **Reference project protocol:** If the user provides a reference codebase, agent prompts MUST say: "The spec is the authority. The reference project is a pattern guide for implementation style, not a source of truth for features or scope."
 
@@ -721,7 +737,7 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
    | **Pattern Recognition** (CE) | Architectural patterns and anti-patterns, code smells across the PR | What looks fine locally but is a systemic problem |
    | **Standards** (CE) | CLAUDE.md compliance, project conventions, Constitution Articles VI–X | What violates the project's own rules |
 
-   After all reviewers return, the supervisor runs a **dedup/synthesis step**: merge overlapping findings, resolve contradictions (higher-confidence wins), produce a single verdict: APPROVE (all reviewers approve or LOW-confidence objections only) or REQUEST_CHANGES (any HIGH-confidence objection). Log all individual verdicts + synthesis to `.forge/REVIEW.json`.
+   After all reviewers return, the supervisor runs a **dedup/synthesis step**: merge overlapping findings, resolve contradictions (higher-confidence wins), produce a single verdict: APPROVE (all reviewers approve or LOW-confidence objections only) or REQUEST_CHANGES (any HIGH-confidence objection). Log all individual verdicts + synthesis to `.rapid/REVIEW.json`.
 
    On fast track: run 3 reviewers (Correctness + Spec Compliance + Security).
    On full track: run all 9. Reviewer weights shift by domain — security heaviest for healthcare, performance for real-time, reliability for infrastructure, API contract for platform/SDK projects.
@@ -733,7 +749,7 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
    - On DRIFT: block the PR, route to bug-fix loop (D8), re-submit after fix
    - On CRITICAL: send `DRIFT_CRITICAL` to orchestrator, halt all task assignment
 
-6. **Learnings researcher (CE #11):** Before starting the structured debug protocol, the implementor (or supervisor) checks `.forge/LEARNINGS.md` for relevant past solutions: "Has this error pattern been seen before? Was there a known root cause? What fix worked?" If a matching learning exists, apply it first. This prevents re-solving known problems and is the mechanism that makes the compound loop actually work — learnings only compound if agents read them.
+6. **Learnings researcher (CE #11):** Before starting the structured debug protocol, the implementor (or supervisor) checks `.rapid/LEARNINGS.md` for relevant past solutions: "Has this error pattern been seen before? Was there a known root cause? What fix worked?" If a matching learning exists, apply it first. This prevents re-solving known problems and is the mechanism that makes the compound loop actually work — learnings only compound if agents read them.
 
 7. **Structured debug protocol** (inspired by CE's `/ce-debug`): When a test fails or a smoke test catches a bug, the implementor follows a systematic debug flow rather than guessing:
    - **Reproduce**: Run the failing test/command, capture exact error output
@@ -745,7 +761,7 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
 
 7. **Stall detection:** If an implementor hasn't committed in 10 minutes (stale HEARTBEAT.json), the supervisor sends a `STALL_NUDGE` via claude-peers. If blocked after 3 fix attempts: escalate to operator.
 
-7. **Cost tracking (D12):** After every agent spawn/return, update `.forge/COST.json`. If total spend reaches 80% of budget, pause and alert operator.
+7. **Cost tracking (D12):** After every agent spawn/return, update `.rapid/COST.json`. If total spend reaches 80% of budget, pause and alert operator.
 
 8. **Completion:** When every task has status "done" with reviewer verdict APPROVE, send `P6_COMPLETE` to orchestrator via claude-peers.
 
@@ -763,7 +779,7 @@ The watchdog terminal runs independently, responding to events and periodic chec
 
 4. **On CRITICAL finding** (invariant violation): Immediately send `DRIFT_CRITICAL` to orchestrator. Do not wait for the supervisor to relay. This is the emergency path.
 
-5. **Write all results to `.forge/AUDIT.json`** and emit observe events.
+5. **Write all results to `.rapid/AUDIT.json`** and emit observe events.
 
 The watchdog never checks in-progress worktrees — agents mid-implementation will always fail checks because the work isn't done.
 
@@ -775,14 +791,14 @@ While the supervisor and watchdog run, the orchestrator:
 
 1. **Liveness check:** Call `list_peers(scope: "repo")` every 5 minutes. If a peer disappears (terminal crashed), re-spawn it via tmux with the same prompt file. The re-spawned session reads TASKS.json and HEARTBEAT.json to resume from the next incomplete action. **Session intelligence** (inspired by CE's `/ce-sessions`): When re-spawning a crashed terminal, search `~/.claude/projects/` session logs for the crashed agent's last conversation context. Include a summary of what it was doing when it died in the re-spawn prompt. This gives the replacement session continuity instead of a cold start.
 
-2. **Heartbeat check:** Read `.forge/HEARTBEAT.json`. If any agent's heartbeat is stale (>10 minutes), log a warning.
+2. **Heartbeat check:** Read `.rapid/HEARTBEAT.json`. If any agent's heartbeat is stale (>10 minutes), log a warning.
 
 3. **Message check:** Listen for claude-peers messages:
    - `P6_COMPLETE` from supervisor → proceed to P6e shutdown
    - `DRIFT_CRITICAL` from watchdog → send `BUILD_HALT` to supervisor, alert operator
    - `TASK_ASSIGNED` / `TASK_COMPLETE` from supervisor → update cost tracking
 
-4. **Cost check:** Read `.forge/COST.json` periodically. If approaching budget, send `BUILD_HALT` to supervisor.
+4. **Cost check:** Read `.rapid/COST.json` periodically. If approaching budget, send `BUILD_HALT` to supervisor.
 
 ---
 
@@ -792,7 +808,7 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
 
 1. **Shutdown handshake:** Send `SHUTDOWN` message to both supervisor and watchdog via claude-peers.
 2. **Wait for ACK:** Each terminal finishes its current atomic action (commit, review verdict), sends `ACK_SHUTDOWN`, and exits.
-3. **Timeout:** If `ACK_SHUTDOWN` not received within 60 seconds, fall back to `tmux kill-window` on the worker-lead windows (`forge-team:coder`, `forge-team:tester`, `forge-team:reviewer`, `forge-team:watchdog`), leaving planner to finalize.
+3. **Timeout:** If `ACK_SHUTDOWN` not received within 60 seconds, fall back to `tmux kill-window` on the worker-lead windows (`rapid-team:coder`, `rapid-team:tester`, `rapid-team:reviewer`, `rapid-team:watchdog`), leaving planner to finalize.
 4. **P6 exit assertions** (blocking — build cannot proceed to P7 until all pass):
    - Every spec section has implementing code in the repo
    - Every public interface in CONTRACTS.md exists in the codebase
@@ -801,14 +817,15 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
    - Every task has a reviewer verdict of APPROVE (not skipped)
    - Smoke test passed for every agent's output (supervisor-run)
    - Secret scan passed (no credentials in committed files)
-   - **Ship gate (R8 + R9 + real verification):** run `tools/ship-gate.sh`. It scans the tree for stubs and counts open MAJOR+ stub/conformance gaps, **and reads `.forge/VERIFY.json`**, then merges `no_open_stub_gaps` / `no_stubs_in_tree` / `no_open_conformance_gaps` / **`verification_real`** assertions into `P6_EXIT.json`. `verification_real` is true only when `VERIFY.json` shows **every required layer green — including e2e** (and no required layer left `unverified`); e2e is required to ship. Any failure → `pass:false` → the phase gate blocks P7. This is what makes R8/R9 and real verification *blocking* rather than advisory — a build cannot ship on a green it only inspected, and cannot ship without e2e.
-5. **Write `.forge/P6_EXIT.json`** with each assertion result. STATE.json cannot advance to phase 7 until P6_EXIT.json shows all passing.
+   - **Worktree isolation (C):** run `tools/worktree-check.sh`. It reads the observe log and asserts every parallel build writer (coding subagent / `coder-N` terminal) ran in its own declared git worktree — no missing worktree, no two writers sharing one. It merges a `build_writers_isolated` assertion into `P6_EXIT.json`, so a build that fanned out writers into the shared tree (instead of isolated worktrees) mechanically fails the gate. Passes trivially when no parallel writers ran (single-agent / tiny-change build).
+   - **Ship gate (R8 + R9 + real verification):** run `tools/ship-gate.sh`. It scans the tree for stubs and counts open MAJOR+ stub/conformance gaps, **and reads `.rapid/VERIFY.json`**, then merges `no_open_stub_gaps` / `no_stubs_in_tree` / `no_open_conformance_gaps` / **`verification_real`** assertions into `P6_EXIT.json`. `verification_real` is true only when `VERIFY.json` shows **every required layer green — including e2e** (and no required layer left `unverified`); e2e is required to ship. Any failure → `pass:false` → the phase gate blocks P7. This is what makes R8/R9 and real verification *blocking* rather than advisory — a build cannot ship on a green it only inspected, and cannot ship without e2e.
+5. **Write `.rapid/P6_EXIT.json`** with each assertion result. STATE.json cannot advance to phase 7 until P6_EXIT.json shows all passing.
 6. **Compound learning capture** (inspired by CE's `/ce-compound`): Before killing terminals, extract and document what was learned during the build so future builds start smarter:
    - Decisions made (from MEMORY.md): which technical choices worked, which didn't
    - Patterns discovered: reusable code patterns, gotchas, framework quirks
    - Review findings: recurring review themes (e.g., "this codebase consistently has N+1 queries")
    - Debug traces: root causes found, what the symptoms looked like
-   - Write to `.forge/LEARNINGS.md` in structured format:
+   - Write to `.rapid/LEARNINGS.md` in structured format:
      ```
      ## L-01: [Short title]
      **Context:** What we were doing when we learned this
@@ -816,8 +833,8 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
      **Evidence:** The specific file/test/review that proved it
      **Reuse:** When a future build should apply this
      ```
-   Future builds read `.forge/LEARNINGS.md` from previous builds (if the project has one) at P0 and inject relevant learnings into agent prompts. Each build compounds.
-7. **Kill tmux session:** `tmux kill-session -t forge-team`
+   Future builds read `.rapid/LEARNINGS.md` from previous builds (if the project has one) at P0 and inject relevant learnings into agent prompts. Each build compounds.
+7. **Kill tmux session:** `tmux kill-session -t rapid-team`
 8. **Log:** `[timestamp] P6e complete — build phase finished, terminals shut down, {N} learnings captured`
 
 ---
@@ -827,7 +844,7 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
 All inter-terminal messages use a structured JSON envelope inside the `message` field of `send_message`:
 
 ```json
-{"type":"PR_SUBMITTED","from":"supervisor","ts":"2026-05-27T14:08:12Z","payload":{"task_id":"T-03","branch":"forge/phase-6/auth-module","pr_url":"...","spec_refs":["§3.1","§3.2"]}}
+{"type":"PR_SUBMITTED","from":"supervisor","ts":"2026-05-27T14:08:12Z","payload":{"task_id":"T-03","branch":"rapid/phase-6/auth-module","pr_url":"...","spec_refs":["§3.1","§3.2"]}}
 ```
 
 | Type | Direction | Purpose |
@@ -845,7 +862,7 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
 | `SHUTDOWN` | orchestrator → supervisor, watchdog | Graceful shutdown signal |
 | `ACK_SHUTDOWN` | supervisor/watchdog → orchestrator | Confirm shutdown, report final state |
 
-**Durability:** Every message is also appended to `.forge/MESSAGES.json` as a fallback. If a claude-peers notification is missed, agents check this file on their heartbeat cycle.
+**Durability:** Every message is also appended to `.rapid/MESSAGES.json` as a fallback. If a claude-peers notification is missed, agents check this file on their heartbeat cycle.
 
 **Rules:**
 - Every `send_message` call must also emit an observe `SEND` event
@@ -860,33 +877,34 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
 
 **Output:** Test results, visual QA results, extracted gaps
 
-1. **Execute the project's test suite via `tools/verify.sh`** — not a file audit, not a markdown review, and not a pipe that can hide a failure. The tester runs `tools/verify.sh`, which runs build / lint / unit / **e2e** as separate layers with **genuine exit codes**: it sets `-o pipefail` and **redirects rather than pipes** (a `cmd | tee log` can mask a non-zero exit; `cmd > log 2>&1; rc=$?` cannot), so a green result means the layer actually passed. It writes per-layer results to `.forge/VERIFY.json`. **e2e is required** — it is the whole point of the loop, the thing that catches the seam failures unit tests pass right over. Underneath, verify.sh runs the project's real commands:
+1. **Execute the project's test suite via `tools/verify.sh`** — not a file audit, not a markdown review, and not a pipe that can hide a failure. The tester runs `tools/verify.sh`, which runs build / lint / unit / **e2e** as separate layers with **genuine exit codes**: it sets `-o pipefail` and **redirects rather than pipes** (a `cmd | tee log` can mask a non-zero exit; `cmd > log 2>&1; rc=$?` cannot), so a green result means the layer actually passed. It writes per-layer results to `.rapid/VERIFY.json`. **e2e is required** — it is the whole point of the loop, the thing that catches the seam failures unit tests pass right over. Underneath, verify.sh runs the project's real commands:
    - `anchor test` (or equivalent for the smart contract / backend)
    - `npm run build` in every package directory (frontend, automation, root)
    - `npm test` if test scripts exist
    - the e2e command (Playwright / equivalent) — **required**, not optional
    - `make setup` or the project's one-command entry point
-   Capture stdout/stderr per layer. If any required layer fails, that is a gap — do not paper over it. Write `.forge/VERIFY.json` plus the raw command output to `.forge/TEST_RESULTS.md`. "Compiles" ≠ "works" — you must run it and see it pass.
+   Capture stdout/stderr per layer. If any required layer fails, that is a gap — do not paper over it. Write `.rapid/VERIFY.json` plus the raw command output to `.rapid/TEST_RESULTS.md`. "Compiles" ≠ "works" — you must run it and see it pass.
 
-   **Report per-layer run-vs-inspected.** For each layer state explicitly what was **actually run** (a command executed with an observed exit code) versus what was only **inspected** (read, grepped, reasoned about). Anything that could not be verified — a layer that wouldn't run, an environment that wasn't available, an e2e flow that couldn't be exercised — is **surfaced, not silently dropped**: it goes into `.forge/VERIFY.json` as `unverified` with the reason, and becomes a gap. Never report a layer as green that you only inspected.
+   **Report per-layer run-vs-inspected.** For each layer state explicitly what was **actually run** (a command executed with an observed exit code) versus what was only **inspected** (read, grepped, reasoned about). Anything that could not be verified — a layer that wouldn't run, an environment that wasn't available, an e2e flow that couldn't be exercised — is **surfaced, not silently dropped**: it goes into `.rapid/VERIFY.json` as `unverified` with the reason, and becomes a gap. Never report a layer as green that you only inspected.
 
-2. **Cross-check spec coverage:** For each section in spec.md (S1, S2, ...), verify there is implementing code in the repo. For each route in S5 (frontend), verify the route exists in the filesystem. For each instruction in S3 (smart contract), verify the handler exists. This is a `grep`/`find` exercise, not a read-and-judge exercise. Write a coverage table to `.forge/AUDIT.json`.
+2. **Cross-check spec coverage:** For each section in spec.md (S1, S2, ...), verify there is implementing code in the repo. For each route in S5 (frontend), verify the route exists in the filesystem. For each instruction in S3 (smart contract), verify the handler exists. This is a `grep`/`find` exercise, not a read-and-judge exercise. Write a coverage table to `.rapid/AUDIT.json`.
 
 3. If the project has a frontend, run **visual QA** (D10):
    - Start the dev server
    - Playwright screenshots of every route at 3 viewports (mobile 390px, tablet 768px, desktop 1440px)
    - Send screenshots to Claude vision: check for overlapping text, clipped elements, broken layouts, unreadable diagrams
+   - **Compare against the approved comps (E):** for each screen, diff the built screenshot against its `04-spec/mocks/<screen-id>.html` comp (the GATE-2-approved visual target) — same layout, same states, same components. A built screen that diverges from its approved comp is a gap (either the build drifted or the comp needs an operator-approved update — do not silently accept either). This is what makes the plan-phase design an enforced target rather than a discarded sketch.
    - On failure: implementor fixes → re-screenshot → re-check (max 3 iterations per component)
 4. **Concrete walkthrough — not "run walkthrough," but these exact steps (R6):**
    - Start the dev server (`npm run dev` or equivalent)
    - Open the app in a browser (Playwright or agent-browser)
    - For each surface in workflow.md (S1, S2, ... SN), in sequence:
      - Navigate to the surface
-     - Screenshot it: `.forge/walkthrough/S{N}.png`
+     - Screenshot it: `.rapid/walkthrough/S{N}.png`
      - Interact with it (click primary action, fill forms, trigger transitions)
      - Screenshot the result state
      - If any surface errors, throws, or shows broken layout: that is a BLOCKER gap
-   - Write `.forge/WALKTHROUGH.md` with: surface ID, screenshot path, pass/fail, error description
+   - Write `.rapid/WALKTHROUGH.md` with: surface ID, screenshot path, pass/fail, error description
    - **Phase 8 cannot begin until WALKTHROUGH.md covers every surface in workflow.md**
    - Phase gate hook enforces this: STATE.json cannot advance to phase 8 without WALKTHROUGH.md (R1)
    Concrete commands get followed. Vague instructions get interpreted — and "interpreted" under time pressure means "skipped."
@@ -895,15 +913,15 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
    - For each changed surface: navigate to it in a real browser, exercise the primary user journey, check for errors
    - On failure: **auto-fix the issue, commit the fix, and re-test** — fully autonomous fix loops (max 3 per surface)
    - This upgrades the current P7 visual QA from "screenshot and flag" to "screenshot, fix, retest, and commit until green"
-   - Write results to `.forge/DOGFOOD.md` with fix-commit hashes
+   - Write results to `.rapid/DOGFOOD.md` with fix-commit hashes
 
 6. **Simplification pass (CE #8):** After all tests pass and the dogfood QA is green, run 3 parallel simplification agents before gap classification:
    - **Reuse reviewer**: Find duplicated logic that should be extracted into shared functions
    - **Quality reviewer**: Find overly complex code that can be simplified without changing behavior
    - **Efficiency reviewer**: Find performance anti-patterns (unnecessary re-renders, redundant queries, bloated imports)
-   Each produces findings. The supervisor applies safe simplifications (those that keep all tests green) and discards risky ones. This prevents "it works but it's ugly" from shipping. Write applied simplifications to `.forge/SIMPLIFY.md`.
+   Each produces findings. The supervisor applies safe simplifications (those that keep all tests green) and discards risky ones. This prevents "it works but it's ugly" from shipping. Write applied simplifications to `.rapid/SIMPLIFY.md`.
 
-7. **Capture a recorded run of every user workflow (S-14).** Run `python3 tools/workflow-runner.py --all` to live-drive each workflow in `docs/workflows.json` node by node, threading each node's data-out into the next node's data-in. This streams a per-node trace to `.forge/RUNS/<wf>/<run>.jsonl`, appends `.forge/RUNS/<wf>/index.json`, and publishes `docs/testruns.json` — so the Workflow Test Theater (`docs/testsuite.html`) has a recorded run to replay and a run log, and any workflow whose final node misses its golden assertion becomes a gap. This complements (does not replace) the eval harness in step 1: step 1 proves the layers; this proves the user workflows end-to-end.
+7. **Capture a recorded run of every user workflow (S-14).** Run `python3 tools/workflow-runner.py --all` to live-drive each workflow in `docs/workflows.json` node by node, threading each node's data-out into the next node's data-in. This streams a per-node trace to `.rapid/RUNS/<wf>/<run>.jsonl`, appends `.rapid/RUNS/<wf>/index.json`, and publishes `docs/testruns.json` — so the Workflow Test Theater (`docs/testsuite.html`) has a recorded run to replay and a run log, and any workflow whose final node misses its golden assertion becomes a gap. This complements (does not replace) the eval harness in step 1: step 1 proves the layers; this proves the user workflows end-to-end.
 
 8. **Extract gaps** from all failures: test failures, visual QA failures, dogfood failures, spec coverage misses, walkthrough findings, recorded-run golden-assertion misses, simplification opportunities that were too risky to auto-apply
 
@@ -911,7 +929,7 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
 
 ### Phase 8 — Gap Loop + Optimization [AUTO]
 
-**Output:** `.forge/GAPS.json`, potentially re-derived spec sections, optimization results
+**Output:** `.rapid/GAPS.json`, potentially re-derived spec sections, optimization results
 
 Classify each gap: `{ pillar, severity, spec_ref, description, type }`
 
@@ -932,7 +950,7 @@ Classify each gap: `{ pillar, severity, spec_ref, description, type }`
 2. Run up to 3 parallel experiment branches (worktree agents), each trying a different approach
 3. Measure each against the goal (run benchmarks, Lighthouse, Playwright timing)
 4. Keep the best-performing approach, discard others
-5. Log the experiment results to `.forge/OPTIMIZE.json`: `{ goal, experiments: [{ approach, result, kept }] }`
+5. Log the experiment results to `.rapid/OPTIMIZE.json`: `{ goal, experiments: [{ approach, result, kept }] }`
 
 This is optional on fast track (skip optimization gaps, log them as WONTFIX with rationale).
 
@@ -965,9 +983,9 @@ This is optional on fast track (skip optimization gaps, log them as WONTFIX with
 1. Deploy to the target specified at Gate 2 (Vercel, Railway, devnet, etc.)
 2. Generate/update `README.md` with quick-start instructions
 3. Generate `RUNBOOK.md` with operational procedures (start, stop, monitor, troubleshoot)
-4. Write `.forge/RETRO.md`: what worked, what drifted, what the gap loop caught, token spend, time breakdown
+4. Write `.rapid/RETRO.md`: what worked, what drifted, what the gap loop caught, token spend, time breakdown
 5. **Generate all documentation decks:** Run `/docs build` to produce per-folder Reveal.js decks and the master hub at `docs/hub.html`. This is the final documentation pass — every folder gets a navigable deck with diagrams, change tracking, and cross-links.
-   - **Documentation web site (standard layout):** the sectioned doc web pages (PRD, spec, architecture, eval, …) use the standard spec-style layout — top `forge-nav` + left `.sidebar` in-page menu + `.main` — defined in `templates/template-docs-page.html`. Apply it to a page with `python3 tools/apply-docs-sidebar.py docs/<page>.html --title <Title>`. This is the standard for every project's doc web site (slide-deck output above is unchanged). Page types that aren't sectioned docs (a Reveal slide deck, a live dashboard) keep the top-nav only.
+   - **Documentation web site (standard layout):** the sectioned doc web pages (PRD, spec, architecture, eval, …) use the standard spec-style layout — top `rapid-nav` + left `.sidebar` in-page menu + `.main` — defined in `templates/template-docs-page.html`. Apply it to a page with `python3 tools/apply-docs-sidebar.py docs/<page>.html --title <Title>`. This is the standard for every project's doc web site (slide-deck output above is unchanged). Page types that aren't sectioned docs (a Reveal slide deck, a live dashboard) keep the top-nav only.
 6. **Deploy Atlas alongside the product.** Atlas ships with the product so the developer view is reachable next to the thing it documents. Run `tools/atlas-deploy.sh --out <deploy_dir> --url <product_url>` — it folds the static deck into the product deploy under `/_atlas`, then records `atlas.url` (and the matching `dev`/`prod` entries) back into `docs/env.json`. Commit `docs/env.json`.
 
    **Technically:** `tools/atlas-deploy.sh` copies the static deck half into `<deploy_dir>/_atlas` so it deploys as part of the product, and writes the resolved `atlas.url`/`dev`/`prod` into `docs/env.json` (the single wiring file `env-links.js` reads to render the Atlas/Product/Source clusters). The **two-halves rule**: only the **static deck** (PRD/spec/arch/… pages) deploys with the product under `/_atlas`; the **live view** half — the Observatory, Cost, and regen surfaces — stays **local**, served by `observe-server`, and is never folded into the public deploy. The **Test Suite** page (`testsuite.html`, S-14) is itself two-halved: its diagram + replay of the published `docs/testruns.json` ride along in the static `/_atlas` deck, while its live `▶ Run` (`POST /api/run` → `workflow-runner.py`) stays local under `observe-server` like the other live surfaces.
@@ -981,7 +999,7 @@ After the build ships, the product's job isn't done — it's being used. Product
 
 **Technically:** A `/loop`-based monitoring skill that runs post-deploy and writes reports to `docs/pulse-reports/`.
 
-**Invocation:** `/forge pulse [--window 24h|7d|30d]` or set `pulse.auto: true` in forge.yaml for automatic daily reports.
+**Invocation:** `/rapid-workflow pulse [--window 24h|7d|30d]` or set `pulse.auto: true` in rapid.yaml for automatic daily reports.
 
 **What it checks:**
 1. **Usage**: page views, session counts, feature adoption (from analytics if available)
@@ -1020,7 +1038,7 @@ The system is designed so the operator does not need to monitor between gates. E
 
 ### What the system replaces (and how it earns trust)
 
-| Previously manual | Forge mechanism | What catches failure | Operator sees at gate |
+| Previously manual | Rapid mechanism | What catches failure | Operator sees at gate |
 |---|---|---|---|
 | Synthesizing 3 panel outputs into coherent findings | Auto-synthesis with convergent/divergent/risk classification (P2) | Inter-stage assertion: every PRD req maps to spec | G1: synthesis doc with flagged divergences |
 | Researching trade-offs, writing decision docs | Research agents with required format: options, evidence, fallback (P3) | [VERIFIED]/[UNVERIFIED]/[OPEN] classification — nothing slips through unchecked | G1: trade-off matrices with source citations |
@@ -1051,7 +1069,7 @@ Every agent classifies decisions before acting:
 - **Architectural** (new dependency, interface change, data model) → escalate to supervisor/orchestrator
 - **Strategic** (drop feature, change scope, accept security trade-off) → queue for next human gate
 - **Rule:** If reversible, pick the best option and log it. If irreversible, queue for gate. Never ask a bare question — always include: decision needed, options considered, recommendation, reversibility assessment.
-- **PRD-silent items are logged, not interrupts.** When the PRD/spec is silent on something the build must decide, the build **does not stop to ask** — it picks the best option and records it as a logged decision in `.forge/DECISIONS.json` via `tools/log-decision.sh "<decision>" spec|interpretation`. Each entry is flagged `basis="spec"` when the choice is a direct fact of the PRD/spec, or `basis="interpretation"` when it's a reasonable read of a gap. This keeps the loop moving (a silent PRD is the common case, not an exception) while leaving a reviewable trail. **The only items that interrupt are genuinely-undecidable high-stakes ones** (both branches carry material, hard-to-reverse consequence, no basis to choose) — and those are **batched to the human BEFORE the build starts**, as a Gate-1 decision batch, not surfaced mid-build. In short: log interpretations, run on; batch only the undecidable, and only at Gate 1.
+- **PRD-silent items are logged, not interrupts.** When the PRD/spec is silent on something the build must decide, the build **does not stop to ask** — it picks the best option and records it as a logged decision in `.rapid/DECISIONS.json` via `tools/log-decision.sh "<decision>" spec|interpretation`. Each entry is flagged `basis="spec"` when the choice is a direct fact of the PRD/spec, or `basis="interpretation"` when it's a reasonable read of a gap. This keeps the loop moving (a silent PRD is the common case, not an exception) while leaving a reviewable trail. **The only items that interrupt are genuinely-undecidable high-stakes ones** (both branches carry material, hard-to-reverse consequence, no basis to choose) — and those are **batched to the human BEFORE the build starts**, as a Gate-1 decision batch, not surfaced mid-build. In short: log interpretations, run on; batch only the undecidable, and only at Gate 1.
 - **Decision Deck:** After resolving any **Architectural** or **Strategic** decision, invoke `/decision log` with the decision details (question, options considered, chosen option, rationale, cascade impacts). This creates a permanent McKinsey-style slide in the project's `decisions/deck.html`. Technical decisions are logged to MEMORY.md only — too frequent for deck slides.
 
 ### Constitution Enforcement
@@ -1083,9 +1101,9 @@ Run programmatic checks between phases:
 
 ## Observability (D13)
 
-All state lives in `.forge/` and `docs/`. The conversation is disposable.
+All state lives in `.rapid/` and `docs/`. The conversation is disposable.
 
-**Agent output persistence invariant:** When a background agent (panel, researcher, reviewer) completes, the orchestrator MUST write its full result to the designated docs/ file BEFORE consuming it for decisions or proceeding to the next phase. Panel results → `03-panels/`, research results → `02-grounding/`, review results → `.forge/AUDIT.json`. Context is compressible and losable — files are the record. If a panel ran but its findings aren't in `03-panels/`, the panel effectively didn't run. Enforcement: after every agent return, verify the designated output file exists and is non-empty before proceeding.
+**Agent output persistence invariant:** When a background agent (panel, researcher, reviewer) completes, the orchestrator MUST write its full result to the designated docs/ file BEFORE consuming it for decisions or proceeding to the next phase. Panel results → `03-panels/`, research results → `02-grounding/`, review results → `.rapid/AUDIT.json`. Context is compressible and losable — files are the record. If a panel ran but its findings aren't in `03-panels/`, the panel effectively didn't run. Enforcement: after every agent return, verify the designated output file exists and is non-empty before proceeding.
 
 ### State Files
 
@@ -1102,12 +1120,14 @@ All state lives in `.forge/` and `docs/`. The conversation is disposable.
 | VERIFY.json | Tester (`tools/verify.sh`, P7) | After each verification run | Per-layer build/lint/unit/e2e result + `unverified` items; ship-gate reads it for `verification_real` |
 | DECISIONS.json | All agents (`tools/log-decision.sh`) | On every PRD-silent decision | Logged decisions, each `basis="spec"\|"interpretation"` (D5) |
 | PREFLIGHT.json | `tools/preflight.sh` (P1) | At preflight run | Declared-stack runtimes: present / installed / missing |
+| INPUTS.json | Seeded P1, populated G1/G2 | At each gate | Human-input ledger; `tools/inputs-check.sh` + phase-gate block P6 entry until every required input is resolved/waived (B) |
+| WORKTREE_CHECK.json | `tools/worktree-check.sh` (P6 exit) | At P6→P7 boundary | Per-writer worktree isolation; merges `build_writers_isolated` into P6_EXIT.json (C) |
 | TEST_RESULTS.md | Orchestrator (P7) | After running test suite | Raw test output with pass/fail counts |
 | HEARTBEAT.json | All agents | Every 5 minutes during P6 | Agent liveness + current task + progress |
 
 ### Agent Heartbeat Protocol
 
-During Phase 6 (parallel build), every agent writes to `.forge/HEARTBEAT.json` every 5 minutes. The orchestrator reads this file to detect stalls without waiting 15 minutes of silence.
+During Phase 6 (parallel build), every agent writes to `.rapid/HEARTBEAT.json` every 5 minutes. The orchestrator reads this file to detect stalls without waiting 15 minutes of silence.
 
 **Format:**
 ```json
@@ -1161,10 +1181,10 @@ During Phase 6 (parallel build), every agent writes to `.forge/HEARTBEAT.json` e
 
 **On agent spawn (enforced):** Every agent's prompt MUST include: "As your first action, call `set_summary` with a description of your task. Update it when your status changes. This is not optional — the operator uses it to monitor the build."
 
-**Summary format:** `[FORGE {role}] {status}: {task description}`
-- Examples: `[FORGE impl-1] coding: camera pipeline per SPEC §4.2`
-- `[FORGE watchdog] CLEAN: last audit 2m ago, 0 drift`
-- `[FORGE reviewer] reviewing: task-03 PR, checking Art. I-V`
+**Summary format:** `[RAPID {role}] {status}: {task description}`
+- Examples: `[RAPID impl-1] coding: camera pipeline per SPEC §4.2`
+- `[RAPID watchdog] CLEAN: last audit 2m ago, 0 drift`
+- `[RAPID reviewer] reviewing: task-03 PR, checking Art. I-V`
 
 **Summary updates (enforced):** Agents update their summary when:
 - Starting a new task
@@ -1174,13 +1194,13 @@ During Phase 6 (parallel build), every agent writes to `.forge/HEARTBEAT.json` e
 
 If an agent's summary still says "coding" but its heartbeat shows "blocked," the orchestrator treats the summary as stale and escalates.
 
-### `/forge status` — Operator Dashboard
+### `/rapid-workflow status` — Operator Dashboard
 
-When the operator runs `/forge status`, read all `.forge/` state files and claude-peers, then produce a structured dashboard:
+When the operator runs `/rapid-workflow status`, read all `.rapid/` state files and claude-peers, then produce a structured dashboard:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│ FORGE STATUS — [project name]                       │
+│ RAPID STATUS — [project name]                       │
 │ Phase: P6 Build (3/8 tasks done)                    │
 │ Track: full │ Elapsed: 2h 14m │ Budget: $23/$100    │
 ├─────────────────────────────────────────────────────┤
@@ -1222,31 +1242,31 @@ When the operator runs `/forge status`, read all `.forge/` state files and claud
 └─────────────────────────────────────────────────────┘
 ```
 
-**How `/forge status` builds this dashboard:**
+**How `/rapid-workflow status` builds this dashboard:**
 
 1. **Phase + progress:** Read `STATE.json` for current phase. Read `TASKS.json` and count statuses.
 2. **Agents:** Read `HEARTBEAT.json` for per-agent status, task, progress metrics, last commit time. Flag any agent whose `last_heartbeat` is >10m stale.
 3. **Tasks:** Read `TASKS.json` for the full task list with status and agent assignment. Mark blocked tasks and their downstream dependencies.
 4. **Safety:** Read `AUDIT.json` for latest watchdog verdict. Check `P6_EXIT.json` if it exists. Read MEMORY.md for recent secret scan results. Count reviewer verdicts from AUDIT.json.
 5. **Alerts:** Aggregate: stalled agents (heartbeat >10m), blocked tasks, drift alerts, budget warnings (>60%), unresolved BLOCKER gaps.
-6. **Cost:** Read `COST.json` for per-phase and total spend. Show progress bar against `budget.max_build` from forge.yaml.
+6. **Cost:** Read `COST.json` for per-phase and total spend. Show progress bar against `budget.max_build` from rapid.yaml.
 
 **The dashboard is text, not HTML.** It prints to the terminal. The operator can run it from any Claude Code session at any time — it reads files, not conversation state. Works after a crash, after resume, mid-build.
 
 ### Communication Channels
 
-- **File-based** (primary): `.forge/MEMORY.md` (prose decisions), `.forge/HEARTBEAT.json` (structured liveness), `.forge/TASKS.json` (task status). All persistent, survive crashes, readable by any session.
+- **File-based** (primary): `.rapid/MEMORY.md` (prose decisions), `.rapid/HEARTBEAT.json` (structured liveness), `.rapid/TASKS.json` (task status). All persistent, survive crashes, readable by any session.
 - **Real-time** (inter-terminal): claude-peers MCP. `set_summary` for status visibility, `send_message` for stall nudges and drift alerts. Ephemeral — lost on crash, but HEARTBEAT.json has the durable record.
 
-**Resume:** `/forge --resume` reads STATE.json, validates HEARTBEAT.json for agent liveness, continues from the next incomplete task. If agents appear stalled (heartbeat >10m), the orchestrator re-spawns them from their last commit.
+**Resume:** `/rapid-workflow --resume` reads STATE.json, validates HEARTBEAT.json for agent liveness, continues from the next incomplete task. If agents appear stalled (heartbeat >10m), the orchestrator re-spawns them from their last commit.
 
 ---
 
 ## Configuration (D14)
 
-Cascade: `~/.forge/forge.yaml` (global) → `.forge/forge.yaml` (project) → CLI flags.
+Cascade: `~/.rapid/rapid-workflow.yaml` (global) → `.rapid/rapid-workflow.yaml` (project) → CLI flags.
 
-Read forge.yaml at skill start. Apply to all agent prompts, build parameters, and model selection.
+Read rapid.yaml at skill start. Apply to all agent prompts, build parameters, and model selection.
 
 Key settings: `build.default_track`, `build.max_implementors`, `build.gap_loop_max`, `budget.max_build_cost`, `budget.alert_threshold`, `models.default`, `models.overrides.*`, `agents.stall_timeout`, `agents.stall_retries`, `code.typescript.strict`, `design.theme`, `communication.verbosity`, `build.ci_platform`.
 
@@ -1258,22 +1278,22 @@ Key settings: `build.default_track`, `build.max_implementors`, `build.gap_loop_m
 |------|---------|
 | `SKILL.md` | The skill itself (this file) |
 | `CHANGELOG.md` | Version history — what changed, what gap each fix closes |
-| `dashboard.html` | Live build dashboard — drop .forge/ files to visualize state |
+| `dashboard.html` | Live build dashboard — drop .rapid/ files to visualize state |
 | `test-harness.md` | 10 regression tests — run after any SKILL.md edit to verify fixes hold |
 
 **After editing SKILL.md**, run the test harness:
 ```bash
 # Quick: all 10 tests in one command (see test-harness.md for details)
-echo "T1: $(grep -c 'Reference project protocol' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T2: $(grep -c 'Smoke test (mandatory' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T3: $(grep -c 'Code review (mandatory' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T4: $(grep -c 'Secret Scanning' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T5: $(grep -c 'not a file audit' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T6: $(grep -c 'P6_EXIT.json' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T7: $(grep -c 'HEARTBEAT.json' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T8: $(grep -c 'claude-peers Protocol' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T9: $(grep -c 'forge status' ~/.claude/skills/forge/SKILL.md)" && \
-echo "T10: $(test -f ~/.claude/skills/forge/CHANGELOG.md && echo OK || echo MISSING)"
+echo "T1: $(grep -c 'Reference project protocol' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T2: $(grep -c 'Smoke test (mandatory' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T3: $(grep -c 'Code review (mandatory' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T4: $(grep -c 'Secret Scanning' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T5: $(grep -c 'not a file audit' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T6: $(grep -c 'P6_EXIT.json' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T7: $(grep -c 'HEARTBEAT.json' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T8: $(grep -c 'claude-peers Protocol' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T9: $(grep -c 'rapid status' ~/.claude/skills/rapid-workflow/SKILL.md)" && \
+echo "T10: $(test -f ~/.claude/skills/rapid-workflow/CHANGELOG.md && echo OK || echo MISSING)"
 # All values should be >=1 (T6 >=3, T7 >=3, T9 >=3)
 ```
 

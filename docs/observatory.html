@@ -162,17 +162,17 @@ body { margin: 0; height: 100vh; display: flex; flex-direction: column; overflow
   .columns { flex-direction: column; }
   .col-left { width: 100%; max-height: 40vh; border-right: none; border-bottom: 1px solid var(--border); }
 }
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
   <a href="prd.html">PRD</a>
   <a href="prd-enhanced.html">Enhanced PRD</a>
   <a href="architecture.html">Architecture</a>
@@ -375,13 +375,13 @@ function renderEmpty() {
   document.getElementById('arc3-agents').innerHTML = `
     <div style="padding:20px;text-align:center;color:var(--text-dim);font-size:0.7rem;">
       <p style="font-weight:700;margin-bottom:4px;">Observatory offline</p>
-      <p>Start observe-server.py and run a FORGE build to see live agent activity.</p>
+      <p>Start observe-server.py and run a RAPID build to see live agent activity.</p>
       <code style="font-size:0.6rem;display:block;margin-top:8px;padding:8px;background:var(--surface-alt);border-radius:4px;">python3 ~/projects/rapid-workflow/tools/observe-server.py</code>
     </div>`;
   document.getElementById('status-cards').innerHTML = '';
   document.getElementById('log-rows').innerHTML = `
     <div style="padding:40px;text-align:center;color:var(--text-dim);font-size:0.7rem;">
-      Waiting for events from .forge/observe/*.jsonl
+      Waiting for events from .rapid/observe/*.jsonl
     </div>`;
 }
 

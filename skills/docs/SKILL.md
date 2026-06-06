@@ -3,10 +3,10 @@
 Generate navigable Reveal.js documentation decks from project artifacts. One deck per numbered folder, one hub deck as master navigation, honest change tracking across everything. Works with any project — auto-detects folder structure and content.
 
 > CSS template (slide decks): `~/projects/rapid-workflow/templates/template-docs-deck.html`
-> CSS template (web doc site): `~/projects/rapid-workflow/templates/template-docs-page.html` — the **standard** spec-style layout (top forge-nav + left sidebar menu + main) for every project's documentation **web pages**. Convert existing pages in place with `tools/apply-docs-sidebar.py <file> --title <T>`.
-> Harness identity & product links: the doc site is the **developer view** (navigate + develop the product). Every page includes **two** sibling scripts — `<script src="env-links.js" defer></script>` then `<script src="sidebar.js" defer></script>` (`docs/env-links.js`, `docs/sidebar.js`). `env-links.js` tags the harness "Developer View" and renders a **Product** cluster linking to the *finished product* per environment — Local / Dev / Production — from `docs/env.json` (`{local:{url,launch}, dev:{url}, prod:{url}}`). Local exposes a copyable launch command. A built application project fills `env.json` from its deploy targets (local dev server + dev/prod deployments). `env-links.js` also adds a per-page **↻ Regenerate** button that regenerates *that* page from its source via `observe-server` `POST /api/regen?page=<file>`, running the page's registered command from `docs/regen.json` (deterministic script · page-specific `claude -p` · or manual). `sidebar.js` builds the **left-menu Atlas map** — a **Deployments** block (Local/Dev/Prod from `env.json`) plus a tree of **all** pages with their sections nested; the page list is **derived from the top forge-nav links**, so it adapts to whatever pages a project renders with **no per-project edits**. **Both scripts must ship next to the HTML** — `tools/atlas-init.sh` and `tools/atlas-deploy.sh` copy them automatically; a standalone builder (e.g. a project's `build-atlas.py`) must copy both itself. **Any deterministic generator must emit the full harness** (forge-nav + left sidebar + `env-links.js` + `sidebar.js`) or regenerating the page strips it.
-> Document roles (standard separation): **PRD** = original requirements · **Enhanced PRD** = requirements organized as a Business→Functional→Technical pyramid (priority as a badge) **with change tracking** — a per-requirement change history + an issue-aligned Change Log (every change names its GitHub issue and the BR/FR/TR it updated) · **Documentation** = the full, organized description of the *finished product* (product-level, **no change logs**) · **Spec** = implementation. Requirement changes flow from the gap loop (`.forge/GAPS.json` → `gaps-to-issues.sh` → GitHub) into the Enhanced PRD Change Log.
-> System reference: `~/projects/rapid-workflow/docs/forge-architecture.html` (D17, D18)
+> CSS template (web doc site): `~/projects/rapid-workflow/templates/template-docs-page.html` — the **standard** spec-style layout (top rapid-nav + left sidebar menu + main) for every project's documentation **web pages**. Convert existing pages in place with `tools/apply-docs-sidebar.py <file> --title <T>`.
+> Harness identity & product links: the doc site is the **developer view** (navigate + develop the product). Every page includes **two** sibling scripts — `<script src="env-links.js" defer></script>` then `<script src="sidebar.js" defer></script>` (`docs/env-links.js`, `docs/sidebar.js`). `env-links.js` tags the harness "Developer View" and renders a **Product** cluster linking to the *finished product* per environment — Local / Dev / Production — from `docs/env.json` (`{local:{url,launch}, dev:{url}, prod:{url}}`). Local exposes a copyable launch command. A built application project fills `env.json` from its deploy targets (local dev server + dev/prod deployments). `env-links.js` also adds a per-page **↻ Regenerate** button that regenerates *that* page from its source via `observe-server` `POST /api/regen?page=<file>`, running the page's registered command from `docs/regen.json` (deterministic script · page-specific `claude -p` · or manual). `sidebar.js` builds the **left-menu Atlas map** — a **Deployments** block (Local/Dev/Prod from `env.json`) plus a tree of **all** pages with their sections nested; the page list is **derived from the top rapid-nav links**, so it adapts to whatever pages a project renders with **no per-project edits**. **Both scripts must ship next to the HTML** — `tools/atlas-init.sh` and `tools/atlas-deploy.sh` copy them automatically; a standalone builder (e.g. a project's `build-atlas.py`) must copy both itself. **Any deterministic generator must emit the full harness** (rapid-nav + left sidebar + `env-links.js` + `sidebar.js`) or regenerating the page strips it.
+> Document roles (standard separation): **PRD** = original requirements · **Enhanced PRD** = requirements organized as a Business→Functional→Technical pyramid (priority as a badge) **with change tracking** — a per-requirement change history + an issue-aligned Change Log (every change names its GitHub issue and the BR/FR/TR it updated) · **Documentation** = the full, organized description of the *finished product* (product-level, **no change logs**) · **Spec** = implementation. Requirement changes flow from the gap loop (`.rapid/GAPS.json` → `gaps-to-issues.sh` → GitHub) into the Enhanced PRD Change Log.
+> System reference: `~/projects/rapid-workflow/docs/rapid-architecture.html` (D17, D18)
 > Shares CSS vocabulary with `/decision` decks (decisions + panels).
 
 ## Invocation
@@ -21,7 +21,7 @@ Generate navigable Reveal.js documentation decks from project artifacts. One dec
 
 ## First Actions on Invocation
 
-1. **Find the project root.** Walk up from cwd looking for `CONSTITUTION.md`, `.forge/`, or numbered folders (`00-*/`, `01-*/`, etc.). Fall back to cwd.
+1. **Find the project root.** Walk up from cwd looking for `CONSTITUTION.md`, `.rapid/`, or numbered folders (`00-*/`, `01-*/`, etc.). Fall back to cwd.
 2. **Scan for numbered folders.** List all directories matching `NN-*` pattern (00 through 99). Also check for `decisions/`, `panels/`, `tests/`.
 3. **Read project name.** From `00-vision/VISION.md` first heading, or `CLAUDE.md` first heading, or directory name.
 4. **Read pillars.** From `00-vision/PILLARS.md` if it exists. These are used as tags throughout all decks.
@@ -86,7 +86,7 @@ Every slide title is a **complete sentence stating the slide's conclusion**, not
 
 ### Plain-English-First Pattern
 
-Every section and slide must lead with a **plain-English explanation** before any technical detail. Write for someone who walked into the room cold — what is this and why should they care? Then follow with "**Technically:**" and the precise description. This applies to slide bodies, section intros, and all generated documentation. Reference: `~/projects/workflow/docs/forge-architecture.html` (`.plain-english` + `.technical-detail` CSS classes).
+Every section and slide must lead with a **plain-English explanation** before any technical detail. Write for someone who walked into the room cold — what is this and why should they care? Then follow with "**Technically:**" and the precise description. This applies to slide bodies, section intros, and all generated documentation. Reference: `~/projects/workflow/docs/rapid-architecture.html` (`.plain-english` + `.technical-detail` CSS classes).
 
 ### Diagrams
 
@@ -180,9 +180,9 @@ This is typically the largest deck. Generate slides in this order:
 2. **Dependency Graph** — SVG diagram showing task dependencies. Completed tasks in green, in-progress in navy, blocked in red, pending in gray.
 3. **Agent Map** — `.options` grid with one card per agent. Each: agent name, assigned tasks, owned files, status.
 4. **Decisions Log** — Link to `decisions/deck.html`. Show count of decided vs open decisions.
-5. **Build Timeline** — `.cascade` grid showing phase progression with timestamps from `.forge/MEMORY.md`.
+5. **Build Timeline** — `.cascade` grid showing phase progression with timestamps from `.rapid/MEMORY.md`.
 
-**Content source:** `.forge/TASKS.json`, `.forge/MEMORY.md`, `.forge/STATE.json`, `PLAN.md`, `DECISIONS.md`, `RISKS.md`
+**Content source:** `.rapid/TASKS.json`, `.rapid/MEMORY.md`, `.rapid/STATE.json`, `PLAN.md`, `DECISIONS.md`, `RISKS.md`
 
 ---
 
@@ -207,7 +207,7 @@ This is typically the largest deck. Generate slides in this order:
 3. **Resolution History** — `.changelog` entries showing gap loop iterations. What was re-derived, what was routed to stakeholder.
 4. **Remaining Asks** — `.decision-index` table of unresolved items for Gate 3.
 
-**Content source:** `GAPS.md`, `HISTORY.md`, `RETROSPECTIVE.md`, `gaps/*.md`, `.forge/GAPS.json`
+**Content source:** `GAPS.md`, `HISTORY.md`, `RETROSPECTIVE.md`, `gaps/*.md`, `.rapid/GAPS.json`
 
 ---
 
@@ -219,7 +219,7 @@ This is typically the largest deck. Generate slides in this order:
 3. **Visual QA** (if applicable) — `.options.cols-3` grid with screenshots at mobile/tablet/desktop viewports. Pass/fail badge per viewport.
 4. **Eval Harness Status** — `.rationale` callout showing whether the eval harness is locked (immutable) and last run timestamp.
 
-**Content source:** `.forge/EVAL/`, `.forge/TEST_RESULTS.md`, test output, screenshot evidence
+**Content source:** `.rapid/EVAL/`, `.rapid/TEST_RESULTS.md`, test output, screenshot evidence
 
 ---
 
@@ -231,7 +231,7 @@ The master navigation deck. Entry point for the entire documentation corpus.
 - Eyebrow: `Documentation Hub`
 - Title: `{PROJECT NAME} — {one-line objective from VISION.md}`
 - `.metrics` row: folders, total files, decisions, panel runs, gaps, test coverage %
-- `.rationale` callout: current forge phase + status from `.forge/STATE.json`
+- `.rationale` callout: current rapid phase + status from `.rapid/STATE.json`
 
 **Slide 2 — Folder Navigation:**
 - `.hub-grid` with one `.hub-card` per numbered folder + `decisions/` + `panels/` + `tests/`
@@ -269,12 +269,12 @@ Append-only file at project root. Every meaningful artifact change gets an entry
 ```
 
 **Two sources feed CHANGES.md:**
-1. **Agents** — every forge phase appends what it produced and why. This is the semantic layer.
+1. **Agents** — every rapid phase appends what it produced and why. This is the semantic layer.
 2. **Hook** — catches every file write to numbered folders and appends a mechanical entry (timestamp + path). This is the honesty layer — even if an agent forgets, the hook catches it.
 
 ### Per-Folder Changelogs
 
-Each numbered folder gets a `CHANGELOG.md` maintained by forge agents as part of their phase output. Not auto-generated by hooks — agents write meaningful descriptions of what changed and why.
+Each numbered folder gets a `CHANGELOG.md` maintained by rapid agents as part of their phase output. Not auto-generated by hooks — agents write meaningful descriptions of what changed and why.
 
 ### Deck Changelogs
 
@@ -294,11 +294,11 @@ The hook captures the mechanical "what file changed when" record. Agents provide
 
 ---
 
-## Integration with Forge
+## Integration with Rapid
 
-The forge skill invokes `/docs` at these points:
+The rapid skill invokes `/docs` at these points:
 
-| Forge Phase | /docs Invocation |
+| Rapid Phase | /docs Invocation |
 |-------------|-----------------|
 | P1 Structure | `/docs build` — initial scaffold with empty decks |
 | After each phase (P0–P9) | `/docs build <current-folder>` + `/docs hub` |
@@ -320,10 +320,10 @@ The `/docs` hub includes these in its navigation and cross-reference map. The `/
 
 ## Universality
 
-This skill works with **any project**, not just forge builds:
+This skill works with **any project**, not just rapid builds:
 
 - **Partial structures:** If a project only has `00-vision/` and `01-intake/`, only those decks are generated. The hub shows what exists.
-- **Non-forge projects:** If there's no `.forge/` directory, the skill still works. It reads whatever numbered folders exist and generates decks from their markdown content.
+- **Non-rapid projects:** If there's no `.rapid/` directory, the skill still works. It reads whatever numbered folders exist and generates decks from their markdown content.
 - **Custom folders:** Any `NN-*` directory is picked up automatically. The phase breadcrumb renders whatever folders exist.
 - **No hardcoded content:** The skill reads project artifacts and renders them. It never invents content that isn't in the source files.
 - **Idempotent:** Running `/docs build` twice produces the same output. Decks are regenerated from source files, not incrementally patched.

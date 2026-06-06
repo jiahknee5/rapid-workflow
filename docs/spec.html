@@ -145,17 +145,17 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .agent-card .agent-rw { grid-template-columns: 1fr; }
 }
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
   <a href="prd.html">PRD</a>
   <a href="prd-enhanced.html">Enhanced PRD</a>
   <a href="architecture.html">Architecture</a>
@@ -222,7 +222,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <a href="#eval">Evaluation Framework</a>
   <a href="#eval-taxonomy" class="sub">Eval Taxonomy</a>
   <a href="#eval-prompt" class="sub">Dynamic Generation Prompt</a>
-  <a href="#eval-forge-agents" class="sub">EVAL-AGENTS/ (FORGE)</a>
+  <a href="#eval-rapid-agents" class="sub">EVAL-AGENTS/ (RAPID)</a>
   <a href="#eval-per-graph" class="sub">EVAL-{system}/ (Per-Graph)</a>
   <a href="#eval-observability" class="sub">Eval Observability</a>
   <a href="#eval-runtime" class="sub">Runtime: Native vs LangGraph</a>
@@ -237,9 +237,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
 <!-- ═══════ HEADER ═══════ -->
 <header style="margin-bottom: 48px;">
-  <div style="font-size: 2rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em;">RAPID FORGE &mdash; System Specificationmdash; System Specification</div>
+  <div style="font-size: 2rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em;">RAPID RAPID &mdash; System Specificationmdash; System Specification</div>
   <div style="font-size: 0.84rem; color: var(--text-muted); margin-top: 8px; max-width: 700px;">
-    The complete specification for the RAPID autonomous build system: architecture, requirements, observability with realistic build data, documentation protocol, agent prompts, schemas, and configuration. Derived from <code>forge-architecture.html</code> (D0&ndash;D21), <code>SKILL.md</code> (v2.4), <code>FORGE.md</code>, <code>deck.md</code>, <code>CONSTITUTION.md</code>, <code>forge-observe.py</code>, <code>forge-observatory.html</code>, and <code>forge-phase-gate.sh</code>.
+    The complete specification for the RAPID autonomous build system: architecture, requirements, observability with realistic build data, documentation protocol, agent prompts, schemas, and configuration. Derived from <code>rapid-architecture.html</code> (D0&ndash;D21), <code>SKILL.md</code> (v2.4), <code>RAPID.md</code>, <code>deck.md</code>, <code>CONSTITUTION.md</code>, <code>rapid-observe.py</code>, <code>rapid-observatory.html</code>, and <code>rapid-phase-gate.sh</code>.
   </div>
   <div style="font-size: 0.68rem; color: var(--text-dim); margin-top: 8px;">
     Version 2.0 &mdash; 2026-05-27 &mdash; Author: Johnny Chung + Claude
@@ -253,11 +253,11 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 <div class="section" id="arch">
   <div class="section-id">Section 1</div>
   <div class="section-title">Architecture &mdash; the complete system from pipeline to data flow</div>
-  <div class="section-desc">FORGE is a dynamic workflow template that generates a project-specific build system every time it runs. The pipeline structure (12 phases, 4 gates) is the deterministic scaffold. Everything inside &mdash; which panels run, which reviewers are weighted highest, what the tests check, what the Constitution's overridable articles say &mdash; is composed dynamically from the input project and a library of thinking frameworks.</div>
+  <div class="section-desc">RAPID is a dynamic workflow template that generates a project-specific build system every time it runs. The pipeline structure (12 phases, 4 gates) is the deterministic scaffold. Everything inside &mdash; which panels run, which reviewers are weighted highest, what the tests check, what the Constitution's overridable articles say &mdash; is composed dynamically from the input project and a library of thinking frameworks.</div>
 
   <div class="strategy">
     <h3>Governing Principle</h3>
-    <p><strong>Separate the builder from the auditor.</strong> The agent implementing the code must never be the same agent auditing it. When one agent does both, the implementor always wins &mdash; it produces visible progress, while the auditor produces invisible safety. Under pressure, invisible work gets skipped. This is an incentive misalignment that prose instructions cannot fix. Every enforcement mechanism in FORGE exists because of this principle.</p>
+    <p><strong>Separate the builder from the auditor.</strong> The agent implementing the code must never be the same agent auditing it. When one agent does both, the implementor always wins &mdash; it produces visible progress, while the auditor produces invisible safety. Under pressure, invisible work gets skipped. This is an incentive misalignment that prose instructions cannot fix. Every enforcement mechanism in RAPID exists because of this principle.</p>
     <p><strong>The test:</strong> if a step is described in words but not enforced by a hook, a dependency, or a separate agent &mdash; that step will eventually be skipped.</p>
   </div>
 
@@ -310,21 +310,21 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <!-- Agent Topology -->
   <div class="subsection" id="arch-agents">
     <div class="subsection-title">Agent Topology: 10 Roles, 5 Primitives</div>
-    <div class="subsection-desc">FORGE uses 10 specialized agent roles. Each is assigned one of 5 primitives based on isolation requirements and cost. The selection follows a decision tree (D2c).</div>
+    <div class="subsection-desc">RAPID uses 10 specialized agent roles. Each is assigned one of 5 primitives based on isolation requirements and cost. The selection follows a decision tree (D2c).</div>
   </div>
 
   <table class="compare-table">
     <thead><tr><th>Role</th><th>Primitive</th><th>Phase</th><th>Rationale</th><th>Output File</th></tr></thead>
     <tbody>
-      <tr><td>Orchestrator</td><td>Skill</td><td>All</td><td>Needs operator context, approvals, API keys</td><td>.forge/STATE.json</td></tr>
+      <tr><td>Orchestrator</td><td>Skill</td><td>All</td><td>Needs operator context, approvals, API keys</td><td>.rapid/STATE.json</td></tr>
       <tr><td>Panelist</td><td>Skill &times;1 (fast) / Subagent &times;3 (full)</td><td>P2</td><td>Fast: in orchestrator context. Full: 3 parallel, 3x context cost.</td><td>03-panels/*.md</td></tr>
       <tr><td>Researcher</td><td>Subagent</td><td>P3</td><td>Needs WebSearch, 15m timebox per question</td><td>02-grounding/*.md</td></tr>
-      <tr><td>Spec Writer</td><td>Subagent</td><td>P4&ndash;P5</td><td>Derives spec from PRD + research, generates eval harness</td><td>04-spec/*.md, .forge/EVAL/</td></tr>
-      <tr><td>Supervisor</td><td>Terminal (tmux)</td><td>P6</td><td>Long-running, manages task queue and review coordination</td><td>.forge/MEMORY.md</td></tr>
+      <tr><td>Spec Writer</td><td>Subagent</td><td>P4&ndash;P5</td><td>Derives spec from PRD + research, generates eval harness</td><td>04-spec/*.md, .rapid/EVAL/</td></tr>
+      <tr><td>Supervisor</td><td>Terminal (tmux)</td><td>P6</td><td>Long-running, manages task queue and review coordination</td><td>.rapid/MEMORY.md</td></tr>
       <tr><td>Implementor &times;1&ndash;4</td><td>Agent (worktree)</td><td>P6</td><td>Git-isolated parallel code, one task per agent, PR on completion</td><td>Branch git log</td></tr>
-      <tr><td>Reviewer</td><td>Subagent</td><td>P6</td><td>Reads PR + spec, returns verdict. Optional 2nd model (Codex).</td><td>.forge/REVIEW.json</td></tr>
-      <tr><td>Watchdog</td><td>Terminal + /loop 30m</td><td>P6</td><td>Persistent, drift-checks on PR/merge/30m. Never checks WIP.</td><td>.forge/AUDIT.json</td></tr>
-      <tr><td>Tester / Visual QA</td><td>Subagent + Playwright</td><td>P7</td><td>Runs tests, takes screenshots at 3 viewports</td><td>.forge/GAPS.json</td></tr>
+      <tr><td>Reviewer</td><td>Subagent</td><td>P6</td><td>Reads PR + spec, returns verdict. Optional 2nd model (Codex).</td><td>.rapid/REVIEW.json</td></tr>
+      <tr><td>Watchdog</td><td>Terminal + /loop 30m</td><td>P6</td><td>Persistent, drift-checks on PR/merge/30m. Never checks WIP.</td><td>.rapid/AUDIT.json</td></tr>
+      <tr><td>Tester / Visual QA</td><td>Subagent + Playwright</td><td>P7</td><td>Runs tests, takes screenshots at 3 viewports</td><td>.rapid/GAPS.json</td></tr>
       <tr><td>Decision Router</td><td>Prompt injection</td><td>All</td><td>Behavioral rule injected into every agent prompt, zero cost</td><td>MEMORY.md</td></tr>
     </tbody>
   </table>
@@ -372,9 +372,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   </div>
 
   <table class="compare-table">
-    <thead><tr><th>.forge/ File</th><th>Written By</th><th>Read By</th><th>Update Frequency</th></tr></thead>
+    <thead><tr><th>.rapid/ File</th><th>Written By</th><th>Read By</th><th>Update Frequency</th></tr></thead>
     <tbody>
-      <tr><td>STATE.json</td><td>Orchestrator</td><td>All agents, /forge --resume</td><td>After every phase + gate</td></tr>
+      <tr><td>STATE.json</td><td>Orchestrator</td><td>All agents, /rapid-workflow --resume</td><td>After every phase + gate</td></tr>
       <tr><td>MEMORY.md</td><td>All agents (append-only)</td><td>All agents, operator</td><td>On every decision, assignment, escalation</td></tr>
       <tr><td>TASKS.json</td><td>Spec writer (P5), supervisor (P6)</td><td>Supervisor, implementors, operator</td><td>On task assign/complete/block</td></tr>
       <tr><td>AUDIT.json</td><td>Watchdog</td><td>Supervisor, reviewer, operator</td><td>On PR submit, merge, every 30m</td></tr>
@@ -400,7 +400,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <div class="grid-2">
     <div class="card" style="border-top: 3px solid var(--red);">
       <h4>R1: Phase Gate Hook</h4>
-      <p><code>forge-phase-gate.sh</code> blocks STATE.json writes unless required artifacts exist. Phase 2 requires PRD-ENHANCED.md. Phase 6 requires EVAL/ with test files and TASKS.json. Phase 7 requires P6_EXIT.json with all assertions passing. Phase 8 requires WALKTHROUGH.md.</p>
+      <p><code>rapid-phase-gate.sh</code> blocks STATE.json writes unless required artifacts exist. Phase 2 requires PRD-ENHANCED.md. Phase 6 requires EVAL/ with test files and TASKS.json. Phase 7 requires P6_EXIT.json with all assertions passing. Phase 8 requires WALKTHROUGH.md.</p>
     </div>
     <div class="card" style="border-top: 3px solid var(--green);">
       <h4>R2: Separate Watchdog Terminal</h4>
@@ -468,13 +468,13 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <div class="section-title">Pipeline Structure</div>
   <div class="section-desc">Requirements governing the sequencing of work from idea to deployed application. The current reference implementation is 12 phases (P0&ndash;P10) in 4 arcs.</div>
 
-  <div class="req"><div class="req-header"><span class="req-id">PIP-01</span><span class="req-title">The pipeline must decompose work into sequential phases with explicit boundaries</span><span class="req-pri must">MUST</span></div><div class="req-body">Work must flow through discrete phases, each with defined inputs, outputs, and completion criteria. No phase may consume output from a phase that has not completed. <strong>Acceptance:</strong> Every phase writes its output to a designated file before the next phase reads it. STATE.json records the current phase.</div><div class="req-meta"><span><span class="label">Ref:</span> D1, SKILL.md Pipeline</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span><span><span class="label">Impl:</span> STATE.json + forge-phase-gate.sh (R1)</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">PIP-01</span><span class="req-title">The pipeline must decompose work into sequential phases with explicit boundaries</span><span class="req-pri must">MUST</span></div><div class="req-body">Work must flow through discrete phases, each with defined inputs, outputs, and completion criteria. No phase may consume output from a phase that has not completed. <strong>Acceptance:</strong> Every phase writes its output to a designated file before the next phase reads it. STATE.json records the current phase.</div><div class="req-meta"><span><span class="label">Ref:</span> D1, SKILL.md Pipeline</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span><span><span class="label">Impl:</span> STATE.json + rapid-phase-gate.sh (R1)</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">PIP-02</span><span class="req-title">The pipeline must organize into three arcs: Understand, Specify, Execute</span><span class="req-pri must">MUST</span></div><div class="req-body">Work must proceed through three distinct modes: <strong>understanding</strong> requirements, <strong>specifying</strong> the solution, and <strong>executing</strong> the build. The transition between arcs must be gated by human approval. <strong>Acceptance:</strong> Human gates exist at each arc boundary.</div><div class="req-meta"><span><span class="label">Ref:</span> D0, D1, deck.md</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">PIP-03</span><span class="req-title">Phase advancement must be structurally blocked without proof artifacts</span><span class="req-pri must">MUST</span></div><div class="req-body">The system must mechanically prevent advancing to the next phase unless the current phase's required output artifacts exist and are non-empty. Prose instructions are insufficient &mdash; enforcement must be via hooks. <strong>Acceptance:</strong> A shell hook blocks STATE.json writes unless required artifacts exist. <strong>Rationale:</strong> Meridian build showed the orchestrator skipped phases under context pressure despite knowing the rules.</div><div class="req-meta"><span><span class="label">Ref:</span> R1 (Changelog v2.4)</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span><span><span class="label">Impl:</span> forge-phase-gate.sh</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">PIP-03</span><span class="req-title">Phase advancement must be structurally blocked without proof artifacts</span><span class="req-pri must">MUST</span></div><div class="req-body">The system must mechanically prevent advancing to the next phase unless the current phase's required output artifacts exist and are non-empty. Prose instructions are insufficient &mdash; enforcement must be via hooks. <strong>Acceptance:</strong> A shell hook blocks STATE.json writes unless required artifacts exist. <strong>Rationale:</strong> Meridian build showed the orchestrator skipped phases under context pressure despite knowing the rules.</div><div class="req-meta"><span><span class="label">Ref:</span> R1 (Changelog v2.4)</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span><span><span class="label">Impl:</span> rapid-phase-gate.sh</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">PIP-04</span><span class="req-title">The pipeline must support resume from any checkpoint after crash or context exhaustion</span><span class="req-pri must">MUST</span></div><div class="req-body">All pipeline state must be persisted to files, not conversation context. After a crash, context limit, or deliberate pause, the system must resume from the last completed phase by reading state files. <strong>Acceptance:</strong> <code>/forge --resume</code> reads STATE.json and continues from the incomplete phase.</div><div class="req-meta"><span><span class="label">Ref:</span> D13, R5</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> STATE.json exists; not all state files written in practice</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">PIP-04</span><span class="req-title">The pipeline must support resume from any checkpoint after crash or context exhaustion</span><span class="req-pri must">MUST</span></div><div class="req-body">All pipeline state must be persisted to files, not conversation context. After a crash, context limit, or deliberate pause, the system must resume from the last completed phase by reading state files. <strong>Acceptance:</strong> <code>/rapid-workflow --resume</code> reads STATE.json and continues from the incomplete phase.</div><div class="req-meta"><span><span class="label">Ref:</span> D13, R5</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> STATE.json exists; not all state files written in practice</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">PIP-05</span><span class="req-title">The pipeline must support two cadences: full track and fast track</span><span class="req-pri must">MUST</span></div><div class="req-body">Full-track mode: all panels, up to 4 implementors, full test generation. Fast-track mode: 1 panel, 1 implementor, golden-path tests, inline fixes. <strong>Acceptance:</strong> <code>--track fast|full</code> flag controls the configuration.</div><div class="req-meta"><span><span class="label">Ref:</span> deck.md &sect;15, SKILL.md</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
@@ -510,13 +510,13 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
   <div class="req"><div class="req-header"><span class="req-id">DYN-02</span><span class="req-title">Expert panels must be selected by domain, not run generically</span><span class="req-pri must">MUST</span></div><div class="req-body">The system must select which expert panels to run based on the project's domain. A healthcare app gets security-expert-panel weighted highest. A children's education app gets user-panel with child personas. <strong>Acceptance:</strong> Panel selection logged with rationale.</div><div class="req-meta"><span><span class="label">Ref:</span> D19, deck.md &sect;6, SKILL.md P2</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">DYN-03</span><span class="req-title">Reviewer weights must shift by project domain</span><span class="req-pri should">SHOULD</span></div><div class="req-body">The 5+ code reviewer types should have confidence weights that shift based on domain. Security reviewers weighted highest for healthcare/fintech. Performance for real-time systems. <strong>Acceptance:</strong> Reviewer weight configuration in forge.yaml. Domain-appropriate weighting logged.</div><div class="req-meta"><span><span class="label">Ref:</span> D19, D20</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Domain-specific weighting not yet configurable</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">DYN-03</span><span class="req-title">Reviewer weights must shift by project domain</span><span class="req-pri should">SHOULD</span></div><div class="req-body">The 5+ code reviewer types should have confidence weights that shift based on domain. Security reviewers weighted highest for healthcare/fintech. Performance for real-time systems. <strong>Acceptance:</strong> Reviewer weight configuration in rapid.yaml. Domain-appropriate weighting logged.</div><div class="req-meta"><span><span class="label">Ref:</span> D19, D20</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Domain-specific weighting not yet configurable</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">DYN-04</span><span class="req-title">Constitution Articles VI&ndash;X must be tailored per project</span><span class="req-pri should">SHOULD</span></div><div class="req-body">Articles I&ndash;V are inviolable. Articles VI&ndash;X should be tailored to the project's specific safety domain. A COPPA-bound children's app has different overridable rules than a trading platform. <strong>Acceptance:</strong> CONSTITUTION.md generated at P1 with project-specific Articles VI&ndash;X.</div><div class="req-meta"><span><span class="label">Ref:</span> D19, CONSTITUTION.md</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">DYN-05</span><span class="req-title">Agent fan-out count must be derived from the task dependency graph</span><span class="req-pri must">MUST</span></div><div class="req-body">The number of parallel implementors (1&ndash;4) must be determined by analyzing the task dependency graph at P5, not chosen arbitrarily. Cap at 4 to maintain review quality. <strong>Acceptance:</strong> Fan-out count logged with dependency analysis. D7 sizing protocol followed.</div><div class="req-meta"><span><span class="label">Ref:</span> D7, SKILL.md P5</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">DYN-06</span><span class="req-title">The system must define a minimum viable FORGE run</span><span class="req-pri must">MUST</span></div><div class="req-body">The fast track must be a fully specified standalone configuration. Minimum: vision + structure + 1 panel + spec + 1 implementor + test + ship. <strong>Acceptance:</strong> Fast track runs end-to-end without referencing full-track features.</div><div class="req-meta"><span><span class="label">Ref:</span> deck.md &sect;15</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Not independently validated</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">DYN-06</span><span class="req-title">The system must define a minimum viable RAPID run</span><span class="req-pri must">MUST</span></div><div class="req-body">The fast track must be a fully specified standalone configuration. Minimum: vision + structure + 1 panel + spec + 1 implementor + test + ship. <strong>Acceptance:</strong> Fast track runs end-to-end without referencing full-track features.</div><div class="req-meta"><span><span class="label">Ref:</span> deck.md &sect;15</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Not independently validated</span></div></div>
 </div>
 
 <!-- Category 4: Agent Architecture -->
@@ -530,7 +530,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
   <div class="req"><div class="req-header"><span class="req-id">AGT-03</span><span class="req-title">The build phase must use a 3-terminal architecture</span><span class="req-pri must">MUST</span></div><div class="req-body">During P6, three persistent terminals must run: orchestrator, supervisor, and watchdog. <strong>Acceptance:</strong> tmux session with 3 windows. Watchdog spawn is mandatory (R2).</div><div class="req-meta"><span><span class="label">Ref:</span> D0 Arc 3, SKILL.md P6a</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">AGT-04</span><span class="req-title">Implementors must build in git-isolated worktrees</span><span class="req-pri must">MUST</span></div><div class="req-body">Each implementor must work in a separate git worktree. Branch naming: <code>forge/{phase}/{task-slug}</code>. Commits reference <code>[SPEC &sect;X.Y]</code>. <strong>Acceptance:</strong> Each implementor spawned with <code>isolation: "worktree"</code>.</div><div class="req-meta"><span><span class="label">Ref:</span> D2b, SKILL.md P6b</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">AGT-04</span><span class="req-title">Implementors must build in git-isolated worktrees</span><span class="req-pri must">MUST</span></div><div class="req-body">Each implementor must work in a separate git worktree. Branch naming: <code>rapid/{phase}/{task-slug}</code>. Commits reference <code>[SPEC &sect;X.Y]</code>. <strong>Acceptance:</strong> Each implementor spawned with <code>isolation: "worktree"</code>.</div><div class="req-meta"><span><span class="label">Ref:</span> D2b, SKILL.md P6b</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">AGT-05</span><span class="req-title">Code review must be tiered, multi-agent, and mandatory</span><span class="req-pri must">MUST</span></div><div class="req-body">Every PR must be reviewed by multiple specialized subagents (min 3 on fast track, 5&ndash;9 on full track). Any HIGH-confidence objection blocks the PR. <strong>Acceptance:</strong> REVIEW.json written per PR. P7 cannot begin until every task has APPROVE verdict.</div><div class="req-meta"><span><span class="label">Ref:</span> D20, SKILL.md P6b</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
@@ -546,9 +546,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
   <div class="req"><div class="req-header"><span class="req-id">COM-01</span><span class="req-title">Inter-agent messaging must use a typed JSON envelope contract</span><span class="req-pri must">MUST</span></div><div class="req-body">All messages must follow structured JSON with: type, from, timestamp, and payload. 12 message types enumerated. Unrecognized types logged and ignored. <strong>Acceptance:</strong> Every send_message follows the JSON envelope.</div><div class="req-meta"><span><span class="label">Ref:</span> SKILL.md Message Contract</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">COM-02</span><span class="req-title">Messages must be durable &mdash; surviving terminal crashes</span><span class="req-pri must">MUST</span></div><div class="req-body">Every message must be persisted to <code>.forge/MESSAGES.json</code> in addition to the real-time MCP channel. <strong>Acceptance:</strong> MESSAGES.json contains every message sent during P6.</div><div class="req-meta"><span><span class="label">Ref:</span> SKILL.md Message Contract</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> MESSAGES.json not consistently written</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">COM-02</span><span class="req-title">Messages must be durable &mdash; surviving terminal crashes</span><span class="req-pri must">MUST</span></div><div class="req-body">Every message must be persisted to <code>.rapid/MESSAGES.json</code> in addition to the real-time MCP channel. <strong>Acceptance:</strong> MESSAGES.json contains every message sent during P6.</div><div class="req-meta"><span><span class="label">Ref:</span> SKILL.md Message Contract</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> MESSAGES.json not consistently written</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">COM-03</span><span class="req-title">Every agent must broadcast status via set_summary</span><span class="req-pri must">MUST</span></div><div class="req-body">On spawn and on every status change, agents call <code>set_summary</code> with format: <code>[FORGE {role}] {status}: {description}</code>. <strong>Acceptance:</strong> Every spawned agent visible via list_peers.</div><div class="req-meta"><span><span class="label">Ref:</span> SKILL.md Peers Protocol</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">COM-03</span><span class="req-title">Every agent must broadcast status via set_summary</span><span class="req-pri must">MUST</span></div><div class="req-body">On spawn and on every status change, agents call <code>set_summary</code> with format: <code>[RAPID {role}] {status}: {description}</code>. <strong>Acceptance:</strong> Every spawned agent visible via list_peers.</div><div class="req-meta"><span><span class="label">Ref:</span> SKILL.md Peers Protocol</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">COM-04</span><span class="req-title">Terminal shutdown must follow a handshake protocol</span><span class="req-pri must">MUST</span></div><div class="req-body">Orchestrator sends SHUTDOWN, waits for ACK_SHUTDOWN from both supervisor and watchdog (each finishes current atomic action). Timeout: 60s before forced kill. <strong>Acceptance:</strong> ACK_SHUTDOWN received or 60s timeout.</div><div class="req-meta"><span><span class="label">Ref:</span> SKILL.md P6e</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
@@ -584,9 +584,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <div class="section-id">Category 7</div>
   <div class="section-title">Spec &amp; Test Generation</div>
 
-  <div class="req"><div class="req-header"><span class="req-id">TDD-01</span><span class="req-title">The eval harness must be generated from the workflow state machine before code</span><span class="req-pri must">MUST</span></div><div class="req-body">Tests derived from user workflow map (each node's in/proc/out &rarr; arrange/act/assert). Golden paths, edge cases, failure paths. Tests must exist before P6. <strong>Acceptance:</strong> .forge/EVAL/ populated at P5. Sources: Beck TDD (2002), Karpathy autoresearch.</div><div class="req-meta"><span><span class="label">Ref:</span> D7b, deck.md &sect;14</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">TDD-01</span><span class="req-title">The eval harness must be generated from the workflow state machine before code</span><span class="req-pri must">MUST</span></div><div class="req-body">Tests derived from user workflow map (each node's in/proc/out &rarr; arrange/act/assert). Golden paths, edge cases, failure paths. Tests must exist before P6. <strong>Acceptance:</strong> .rapid/EVAL/ populated at P5. Sources: Beck TDD (2002), Karpathy autoresearch.</div><div class="req-meta"><span><span class="label">Ref:</span> D7b, deck.md &sect;14</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">TDD-02</span><span class="req-title">The eval harness must be immutable &mdash; agents cannot modify tests</span><span class="req-pri must">MUST</span></div><div class="req-body">Once generated at P5, locked. Implementing agents can only write code that passes &mdash; they cannot weaken, skip, or modify tests. <strong>Acceptance:</strong> .forge/EVAL/ is read-only during P6. Modification = CRITICAL violation.</div><div class="req-meta"><span><span class="label">Ref:</span> D7b, D16a</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">TDD-02</span><span class="req-title">The eval harness must be immutable &mdash; agents cannot modify tests</span><span class="req-pri must">MUST</span></div><div class="req-body">Once generated at P5, locked. Implementing agents can only write code that passes &mdash; they cannot weaken, skip, or modify tests. <strong>Acceptance:</strong> .rapid/EVAL/ is read-only during P6. Modification = CRITICAL violation.</div><div class="req-meta"><span><span class="label">Ref:</span> D7b, D16a</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">TDD-03</span><span class="req-title">The eval harness must be a blocking dependency in the task graph</span><span class="req-pri must">MUST</span></div><div class="req-body">Test generation must be task-00 in TASKS.json. Every other task depends on it. <strong>Acceptance:</strong> TASKS.json has task-00 as root. Rationale: R4 enforcement from Meridian retro.</div><div class="req-meta"><span><span class="label">Ref:</span> R4 (Changelog v2.4)</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
@@ -603,21 +603,21 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <div class="section-title">Observability &amp; Monitoring</div>
   <div class="section-desc">Three tiers: state files (persistent), event stream (real-time), dashboard (visual). Priority: instrument first, visualize second.</div>
 
-  <div class="req"><div class="req-header"><span class="req-id">OBS-01</span><span class="req-title">All pipeline state must be persisted to .forge/ files</span><span class="req-pri must">MUST</span></div><div class="req-body">STATE.json, MEMORY.md, TASKS.json, AUDIT.json, GAPS.json, COST.json, and EVAL/ must be on disk and current. Any session can reconstruct from files alone. <strong>Acceptance:</strong> /forge --resume works from a fresh session.</div><div class="req-meta"><span><span class="label">Ref:</span> D13a</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> TASKS.json, COST.json, AUDIT.json not consistently populated</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">OBS-01</span><span class="req-title">All pipeline state must be persisted to .rapid/ files</span><span class="req-pri must">MUST</span></div><div class="req-body">STATE.json, MEMORY.md, TASKS.json, AUDIT.json, GAPS.json, COST.json, and EVAL/ must be on disk and current. Any session can reconstruct from files alone. <strong>Acceptance:</strong> /rapid-workflow --resume works from a fresh session.</div><div class="req-meta"><span><span class="label">Ref:</span> D13a</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> TASKS.json, COST.json, AUDIT.json not consistently populated</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">OBS-02</span><span class="req-title">TASKS.json must be the spec-derived source of truth for build progress</span><span class="req-pri must">MUST</span></div><div class="req-body">P5 writes TASKS.json with task IDs, spec refs, dependencies, assigned agents, status. Updated during P6. Dashboard reads it. <strong>Acceptance:</strong> Every task traceable to a spec section.</div><div class="req-meta"><span><span class="label">Ref:</span> D13a, SKILL.md P5</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Not consistently written by running builds</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">OBS-03</span><span class="req-title">Every agent must emit structured events to a per-agent JSONL file</span><span class="req-pri must">MUST</span></div><div class="req-body">Each agent writes to <code>.forge/observe/{agent-name}.jsonl</code>. 16 event types with timestamp, sequence number, agent ID, phase, and detail. <strong>Acceptance:</strong> Running builds produce &ge;50 events per implementor.</div><div class="req-meta"><span><span class="label">Ref:</span> D13, SKILL.md Observability</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span><span><span class="label">Gap:</span> Agents emit only SPAWN/PHASE/GATE in practice</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">OBS-03</span><span class="req-title">Every agent must emit structured events to a per-agent JSONL file</span><span class="req-pri must">MUST</span></div><div class="req-body">Each agent writes to <code>.rapid/observe/{agent-name}.jsonl</code>. 16 event types with timestamp, sequence number, agent ID, phase, and detail. <strong>Acceptance:</strong> Running builds produce &ge;50 events per implementor.</div><div class="req-meta"><span><span class="label">Ref:</span> D13, SKILL.md Observability</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span><span><span class="label">Gap:</span> Agents emit only SPAWN/PHASE/GATE in practice</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">OBS-04</span><span class="req-title">Agent liveness must be trackable via heartbeat during P6</span><span class="req-pri must">MUST</span></div><div class="req-body">Every agent updates HEARTBEAT.json every 5 minutes. Stalls (&gt;10m) trigger escalation. <strong>Acceptance:</strong> HEARTBEAT.json updated per agent. Stall detection triggers nudge &rarr; escalation.</div><div class="req-meta"><span><span class="label">Ref:</span> SKILL.md Heartbeat Protocol</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Not consistently executed</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">OBS-05</span><span class="req-title">The operator must be able to query build status from any terminal</span><span class="req-pri must">MUST</span></div><div class="req-body"><code>/forge status</code> reads all .forge/ state files and produces a structured text dashboard. Works after crash/resume. <strong>Acceptance:</strong> Status dashboard renders with current data.</div><div class="req-meta"><span><span class="label">Ref:</span> D13d, SKILL.md</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">OBS-05</span><span class="req-title">The operator must be able to query build status from any terminal</span><span class="req-pri must">MUST</span></div><div class="req-body"><code>/rapid-workflow status</code> reads all .rapid/ state files and produces a structured text dashboard. Works after crash/resume. <strong>Acceptance:</strong> Status dashboard renders with current data.</div><div class="req-meta"><span><span class="label">Ref:</span> D13d, SKILL.md</span><span><span class="label">Status:</span> <span class="status-dot done"></span> Implemented</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">OBS-06</span><span class="req-title">A live HTML dashboard should display real-time build state</span><span class="req-pri should">SHOULD</span></div><div class="req-body">Web dashboard at localhost:4040, auto-refreshing, merging all agent JSONL files. <strong>Acceptance:</strong> Agent events appear within 2 seconds. Filter by agent or event type.</div><div class="req-meta"><span><span class="label">Ref:</span> D13e, forge-observe.py</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Server + dashboard exist but show minimal data</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">OBS-06</span><span class="req-title">A live HTML dashboard should display real-time build state</span><span class="req-pri should">SHOULD</span></div><div class="req-body">Web dashboard at localhost:4040, auto-refreshing, merging all agent JSONL files. <strong>Acceptance:</strong> Agent events appear within 2 seconds. Filter by agent or event type.</div><div class="req-meta"><span><span class="label">Ref:</span> D13e, rapid-observe.py</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Server + dashboard exist but show minimal data</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">OBS-07</span><span class="req-title">The dashboard should display a task dependency view from TASKS.json</span><span class="req-pri should">SHOULD</span></div><div class="req-body">Task dependency graph with status coloring (pending/in-progress/complete/blocked/failed). Replaces Gantt chart. <strong>Acceptance:</strong> Task view renders from TASKS.json. Status updates from event stream.</div><div class="req-meta"><span><span class="label">Ref:</span> D13e</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">OBS-08</span><span class="req-title">The dashboard could display an agent topology graph and visual themes</span><span class="req-pri could">COULD</span></div><div class="req-body">Live agent topology with communication arrows. 4 visual themes (Linear, Grafana, Bloomberg, Raycast). <strong>Note:</strong> Lower priority than OBS-03. Presentation without data is decoration.</div><div class="req-meta"><span><span class="label">Ref:</span> D13e, forge-observatory.html</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Themes implemented; topology graph not data-backed</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">OBS-08</span><span class="req-title">The dashboard could display an agent topology graph and visual themes</span><span class="req-pri could">COULD</span></div><div class="req-body">Live agent topology with communication arrows. 4 visual themes (Linear, Grafana, Bloomberg, Raycast). <strong>Note:</strong> Lower priority than OBS-03. Presentation without data is decoration.</div><div class="req-meta"><span><span class="label">Ref:</span> D13e, rapid-observatory.html</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span><span><span class="label">Gap:</span> Themes implemented; topology graph not data-backed</span></div></div>
 </div>
 
 <!-- Category 9: Configuration -->
@@ -625,11 +625,11 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <div class="section-id">Category 9</div>
   <div class="section-title">Configuration</div>
 
-  <div class="req"><div class="req-header"><span class="req-id">CFG-01</span><span class="req-title">Configuration must follow a 3-level cascade</span><span class="req-pri should">SHOULD</span></div><div class="req-body"><code>~/.forge/forge.yaml</code> (global) &rarr; <code>.forge/forge.yaml</code> (project) &rarr; CLI flags. Every agent reads merged config on spawn. <strong>Acceptance:</strong> forge.yaml files parsed. CLI flags override.</div><div class="req-meta"><span><span class="label">Ref:</span> D14</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">CFG-01</span><span class="req-title">Configuration must follow a 3-level cascade</span><span class="req-pri should">SHOULD</span></div><div class="req-body"><code>~/.rapid/rapid-workflow.yaml</code> (global) &rarr; <code>.rapid/rapid-workflow.yaml</code> (project) &rarr; CLI flags. Every agent reads merged config on spawn. <strong>Acceptance:</strong> rapid.yaml files parsed. CLI flags override.</div><div class="req-meta"><span><span class="label">Ref:</span> D14</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">CFG-02</span><span class="req-title">Model routing must be configurable per agent role</span><span class="req-pri could">COULD</span></div><div class="req-body">Panels could use Sonnet. Implementors could use Opus. Reviewers could use a second model. <strong>Acceptance:</strong> <code>models.overrides</code> in forge.yaml.</div><div class="req-meta"><span><span class="label">Ref:</span> D14, D16a</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">CFG-02</span><span class="req-title">Model routing must be configurable per agent role</span><span class="req-pri could">COULD</span></div><div class="req-body">Panels could use Sonnet. Implementors could use Opus. Reviewers could use a second model. <strong>Acceptance:</strong> <code>models.overrides</code> in rapid.yaml.</div><div class="req-meta"><span><span class="label">Ref:</span> D14, D16a</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
 
-  <div class="req"><div class="req-header"><span class="req-id">CFG-03</span><span class="req-title">The system must generate CI/CD pipeline configuration from the spec</span><span class="req-pri should">SHOULD</span></div><div class="req-body">At P5, generate GitHub Actions or GitLab CI config baking watchdog checks into permanent infrastructure. <strong>Acceptance:</strong> .github/workflows/forge-ci.yml generated.</div><div class="req-meta"><span><span class="label">Ref:</span> D11</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">CFG-03</span><span class="req-title">The system must generate CI/CD pipeline configuration from the spec</span><span class="req-pri should">SHOULD</span></div><div class="req-body">At P5, generate GitHub Actions or GitLab CI config baking watchdog checks into permanent infrastructure. <strong>Acceptance:</strong> .github/workflows/rapid-workflow-ci.yml generated.</div><div class="req-meta"><span><span class="label">Ref:</span> D11</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">CFG-04</span><span class="req-title">Documentation decks must be generated after every phase</span><span class="req-pri should">SHOULD</span></div><div class="req-body">After every phase, update CHANGELOG.md and regenerate Reveal.js decks via /docs build. At gates, the operator sees docs/hub.html. <strong>Acceptance:</strong> Per-folder decks exist. Hub navigates all folders.</div><div class="req-meta"><span><span class="label">Ref:</span> D18, SKILL.md Documentation Protocol</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span></div></div>
 </div>
@@ -653,7 +653,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <div class="section-id">Category 11</div>
   <div class="section-title">Compound Learning &amp; Post-Ship</div>
 
-  <div class="req"><div class="req-header"><span class="req-id">CMP-01</span><span class="req-title">Each build must capture structured learnings for future builds</span><span class="req-pri should">SHOULD</span></div><div class="req-body">At build end, extract and document: decisions that worked/failed, patterns discovered, recurring review themes. Written to .forge/LEARNINGS.md. <strong>Acceptance:</strong> Each entry has context, learning, evidence, reuse guidance.</div><div class="req-meta"><span><span class="label">Ref:</span> D20, Changelog v2.3</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span></div></div>
+  <div class="req"><div class="req-header"><span class="req-id">CMP-01</span><span class="req-title">Each build must capture structured learnings for future builds</span><span class="req-pri should">SHOULD</span></div><div class="req-body">At build end, extract and document: decisions that worked/failed, patterns discovered, recurring review themes. Written to .rapid/LEARNINGS.md. <strong>Acceptance:</strong> Each entry has context, learning, evidence, reuse guidance.</div><div class="req-meta"><span><span class="label">Ref:</span> D20, Changelog v2.3</span><span><span class="label">Status:</span> <span class="status-dot partial"></span> Partial</span></div></div>
 
   <div class="req"><div class="req-header"><span class="req-id">CMP-02</span><span class="req-title">Future builds must read prior learnings at P0</span><span class="req-pri could">COULD</span></div><div class="req-body">When building the same project again, P0 reads LEARNINGS.md and injects relevant entries into agent prompts. <strong>Acceptance:</strong> P0 checks for prior LEARNINGS.md.</div><div class="req-meta"><span><span class="label">Ref:</span> D20</span><span><span class="label">Status:</span> <span class="status-dot not-started"></span> Not Started</span></div></div>
 
@@ -701,20 +701,20 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
 <div style="font-size: 0.82rem; font-weight: 700; color: var(--navy); margin: 20px 0 10px;">Realistic Event Stream &mdash; expense-tracker build, mid-P6</div>
 <div class="code-block">{"t":"2026-05-27T09:00:02.100Z","seq":1,"agent":"orchestrator","role":"orchestrator","event":"PHASE","detail":"P6 Build starting — 3-terminal architecture","phase":"P6"}
-{"t":"2026-05-27T09:00:14.320Z","seq":2,"agent":"orchestrator","role":"orchestrator","event":"TOOL","detail":"tmux new-session -d -s forge-build","phase":"P6"}
-{"t":"2026-05-27T09:00:18.710Z","seq":3,"agent":"supervisor","role":"supervisor","event":"SPAWN","detail":"forge-supervisor spawned, reading TASKS.json (8 tasks)","task":null,"phase":"P6"}
-{"t":"2026-05-27T09:00:22.001Z","seq":4,"agent":"watchdog","role":"watchdog","event":"SPAWN","detail":"forge-watchdog spawned, starting /loop 30m audit cycle","task":null,"phase":"P6"}
-{"t":"2026-05-27T09:00:30.540Z","seq":5,"agent":"supervisor","role":"supervisor","event":"READ","detail":".forge/TASKS.json (8 tasks, 7 pending, 1 blocking)","phase":"P6"}
+{"t":"2026-05-27T09:00:14.320Z","seq":2,"agent":"orchestrator","role":"orchestrator","event":"TOOL","detail":"tmux new-session -d -s rapid-build","phase":"P6"}
+{"t":"2026-05-27T09:00:18.710Z","seq":3,"agent":"supervisor","role":"supervisor","event":"SPAWN","detail":"rapid-supervisor spawned, reading TASKS.json (8 tasks)","task":null,"phase":"P6"}
+{"t":"2026-05-27T09:00:22.001Z","seq":4,"agent":"watchdog","role":"watchdog","event":"SPAWN","detail":"rapid-watchdog spawned, starting /loop 30m audit cycle","task":null,"phase":"P6"}
+{"t":"2026-05-27T09:00:30.540Z","seq":5,"agent":"supervisor","role":"supervisor","event":"READ","detail":".rapid/TASKS.json (8 tasks, 7 pending, 1 blocking)","phase":"P6"}
 {"t":"2026-05-27T09:00:45.812Z","seq":6,"agent":"supervisor","role":"supervisor","event":"SEND","detail":"TASK_ASSIGNED task-01 init-config to impl-1","target":"orchestrator","phase":"P6"}
-{"t":"2026-05-27T09:00:46.003Z","seq":7,"agent":"impl-1","role":"implementor","event":"SPAWN","detail":"impl-1 spawned in worktree forge/phase-6/init-config","task":"T-01","phase":"P6"}
+{"t":"2026-05-27T09:00:46.003Z","seq":7,"agent":"impl-1","role":"implementor","event":"SPAWN","detail":"impl-1 spawned in worktree rapid/phase-6/init-config","task":"T-01","phase":"P6"}
 {"t":"2026-05-27T09:00:48.120Z","seq":8,"agent":"supervisor","role":"supervisor","event":"SEND","detail":"TASK_ASSIGNED task-02 data-model to impl-2","target":"orchestrator","phase":"P6"}
-{"t":"2026-05-27T09:00:48.440Z","seq":9,"agent":"impl-2","role":"implementor","event":"SPAWN","detail":"impl-2 spawned in worktree forge/phase-6/data-model","task":"T-02","phase":"P6"}
+{"t":"2026-05-27T09:00:48.440Z","seq":9,"agent":"impl-2","role":"implementor","event":"SPAWN","detail":"impl-2 spawned in worktree rapid/phase-6/data-model","task":"T-02","phase":"P6"}
 {"t":"2026-05-27T09:01:12.800Z","seq":10,"agent":"impl-1","role":"implementor","event":"READ","detail":"04-spec/spec.md S2.1 — project configuration (42 lines)","task":"T-01","phase":"P6"}
 {"t":"2026-05-27T09:03:41.220Z","seq":11,"agent":"impl-1","role":"implementor","event":"WRITE","detail":"src/config/index.ts (68 lines)","task":"T-01","phase":"P6","ctx_est":24000}
 {"t":"2026-05-27T09:04:02.900Z","seq":12,"agent":"impl-1","role":"implementor","event":"DECIDE","detail":"TECHNICAL: chose zod for config validation — lighter than joi, typed output","task":"T-01","phase":"P6"}
 {"t":"2026-05-27T09:05:18.330Z","seq":13,"agent":"impl-2","role":"implementor","event":"WRITE","detail":"src/db/schema.ts (112 lines) — expense, category, receipt tables","task":"T-02","phase":"P6","ctx_est":31000}
 {"t":"2026-05-27T09:08:22.010Z","seq":14,"agent":"impl-1","role":"implementor","event":"TOOL","detail":"npm test -- --testPathPattern=config (4 passed, 0 failed)","task":"T-01","phase":"P6"}
-{"t":"2026-05-27T09:09:01.500Z","seq":15,"agent":"supervisor","role":"supervisor","event":"SEND","detail":"PR_SUBMITTED task-01 branch forge/phase-6/init-config","target":"watchdog","phase":"P6"}
+{"t":"2026-05-27T09:09:01.500Z","seq":15,"agent":"supervisor","role":"supervisor","event":"SEND","detail":"PR_SUBMITTED task-01 branch rapid/phase-6/init-config","target":"watchdog","phase":"P6"}
 {"t":"2026-05-27T09:09:44.210Z","seq":16,"agent":"watchdog","role":"watchdog","event":"RECV","detail":"PR_SUBMITTED from supervisor for task-01","from":"supervisor","phase":"P6"}
 {"t":"2026-05-27T09:10:12.880Z","seq":17,"agent":"watchdog","role":"watchdog","event":"READ","detail":"04-spec/spec.md + 04-spec/CONTRACTS.md — checking 7 drift categories","task":"audit-T-01","phase":"P6"}
 {"t":"2026-05-27T09:11:30.100Z","seq":18,"agent":"watchdog","role":"watchdog","event":"SEND","detail":"DRIFT_RESULT CLEAN for task-01 — 0 violations across 7 categories","target":"supervisor","phase":"P6"}
@@ -726,9 +726,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 {"t":"2026-05-27T09:25:00.100Z","seq":24,"agent":"orchestrator","role":"orchestrator","event":"CONTEXT","detail":"Estimated 62k tokens, 31% of window","ctx_est":62000,"ctx_total":184000,"phase":"P6"}
 {"t":"2026-05-27T09:30:12.800Z","seq":25,"agent":"watchdog","role":"watchdog","event":"LOOP_START","detail":"Periodic 30m full-repo audit starting","phase":"P6"}
 {"t":"2026-05-27T09:31:44.500Z","seq":26,"agent":"watchdog","role":"watchdog","event":"LOOP_ITER","detail":"Audit iteration 1: checking main branch, 3 merged PRs","phase":"P6"}
-{"t":"2026-05-27T09:32:18.900Z","seq":27,"agent":"watchdog","role":"watchdog","event":"WRITE","detail":".forge/AUDIT.json — CLEAN verdict, 0 drift across 3 merged PRs","phase":"P6"}
+{"t":"2026-05-27T09:32:18.900Z","seq":27,"agent":"watchdog","role":"watchdog","event":"WRITE","detail":".rapid/AUDIT.json — CLEAN verdict, 0 drift across 3 merged PRs","phase":"P6"}
 {"t":"2026-05-27T09:45:22.100Z","seq":28,"agent":"impl-1","role":"implementor","event":"WRITE","detail":"src/routes/expenses.ts (94 lines) — CRUD endpoints per SPEC S3.2","task":"T-03","phase":"P6","ctx_est":78000}
-{"t":"2026-05-27T09:52:10.300Z","seq":29,"agent":"supervisor","role":"supervisor","event":"SEND","detail":"PR_SUBMITTED task-03 branch forge/phase-6/api-routes","target":"watchdog","phase":"P6"}
+{"t":"2026-05-27T09:52:10.300Z","seq":29,"agent":"supervisor","role":"supervisor","event":"SEND","detail":"PR_SUBMITTED task-03 branch rapid/phase-6/api-routes","target":"watchdog","phase":"P6"}
 {"t":"2026-05-27T09:53:40.800Z","seq":30,"agent":"watchdog","role":"watchdog","event":"SEND","detail":"DRIFT_RESULT DRIFT for task-03 — feature category: unspec'd /expenses/export endpoint","target":"supervisor","phase":"P6"}
 {"t":"2026-05-27T09:54:01.200Z","seq":31,"agent":"supervisor","role":"supervisor","event":"ESCALATE","detail":"Escalating drift on task-03 to impl-1: remove /expenses/export (not in spec S3.2)","phase":"P6"}
 {"t":"2026-05-27T09:58:44.000Z","seq":32,"agent":"impl-1","role":"implementor","event":"WRITE","detail":"src/routes/expenses.ts (82 lines) — removed export endpoint, re-submitted","task":"T-03","phase":"P6"}
@@ -881,10 +881,10 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
 <div style="font-size: 0.82rem; font-weight: 700; color: var(--navy); margin: 16px 0 8px;">MESSAGES.json &mdash; supervisor-watchdog-orchestrator flow</div>
 <div class="code-block">[
-  {"type":"TASK_ASSIGNED","from":"supervisor","ts":"2026-05-27T09:00:45Z","payload":{"task_id":"task-01","agent":"impl-1","branch":"forge/phase-6/init-config"}},
-  {"type":"PR_SUBMITTED","from":"supervisor","ts":"2026-05-27T09:09:01Z","payload":{"task_id":"task-01","branch":"forge/phase-6/init-config","spec_refs":["S2.1"]}},
+  {"type":"TASK_ASSIGNED","from":"supervisor","ts":"2026-05-27T09:00:45Z","payload":{"task_id":"task-01","agent":"impl-1","branch":"rapid/phase-6/init-config"}},
+  {"type":"PR_SUBMITTED","from":"supervisor","ts":"2026-05-27T09:09:01Z","payload":{"task_id":"task-01","branch":"rapid/phase-6/init-config","spec_refs":["S2.1"]}},
   {"type":"DRIFT_RESULT","from":"watchdog","ts":"2026-05-27T09:11:30Z","payload":{"task_id":"task-01","verdict":"CLEAN","categories":{"structural":"pass","interface":"pass","invariant":"pass","feature":"pass","test":"pass","quality":"pass"}}},
-  {"type":"PR_MERGED","from":"supervisor","ts":"2026-05-27T09:12:05Z","payload":{"task_id":"task-01","branch":"forge/phase-6/init-config","commit":"a3f8b21"}},
+  {"type":"PR_MERGED","from":"supervisor","ts":"2026-05-27T09:12:05Z","payload":{"task_id":"task-01","branch":"rapid/phase-6/init-config","commit":"a3f8b21"}},
   {"type":"DRIFT_RESULT","from":"watchdog","ts":"2026-05-27T09:53:40Z","payload":{"task_id":"task-03","verdict":"DRIFT","detail":"Unspec'd /expenses/export endpoint","category":"feature"}}
 ]</div>
 
@@ -906,7 +906,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 <!-- 3.3: Dashboard Spec -->
 <div class="subsection" id="obs-dashboard">
   <div class="subsection-title">Dashboard Spec &mdash; 4 Views</div>
-  <div class="subsection-desc">The live dashboard at localhost:4040 (served by forge-observe.py) has 4 views. The key concept is <strong>&ldquo;dynamic from spec&rdquo;</strong>: when P5 writes TASKS.json, that IS the observability scaffold. The dashboard reads it for the task structure and overlays live events for status.</div>
+  <div class="subsection-desc">The live dashboard at localhost:4040 (served by rapid-observe.py) has 4 views. The key concept is <strong>&ldquo;dynamic from spec&rdquo;</strong>: when P5 writes TASKS.json, that IS the observability scaffold. The dashboard reads it for the task structure and overlays live events for status.</div>
 </div>
 
 <div class="grid-2">
@@ -940,7 +940,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 <table class="compare-table">
   <thead><tr><th>Event Type</th><th>When to Emit</th><th>Example Detail String</th></tr></thead>
   <tbody>
-    <tr><td>SPAWN</td><td>Agent starts (first action)</td><td>"impl-1 spawned in worktree forge/phase-6/init-config"</td></tr>
+    <tr><td>SPAWN</td><td>Agent starts (first action)</td><td>"impl-1 spawned in worktree rapid/phase-6/init-config"</td></tr>
     <tr><td>READ</td><td>Every file read</td><td>"04-spec/spec.md S2.1 (42 lines)"</td></tr>
     <tr><td>WRITE</td><td>Every file write/edit</td><td>"src/config/index.ts (68 lines)"</td></tr>
     <tr><td>TOOL</td><td>Every Bash/MCP call</td><td>"npm test -- --testPathPattern=config (4 passed)"</td></tr>
@@ -959,7 +959,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 
 <div class="key-insight">
   <strong>JSON event format:</strong> <code>{"t":"ISO-8601","seq":int,"agent":"string","role":"string","event":"EVENT_TYPE","detail":"string","target":null,"ctx_est":int,"task":"T-XX","phase":"PX"}</code><br>
-  Events are appended to <code>.forge/observe/{agent-name}.jsonl</code>. The sequence counter is read from and incremented in <code>.forge/observe/seq.txt</code>.
+  Events are appended to <code>.rapid/observe/{agent-name}.jsonl</code>. The sequence counter is read from and incremented in <code>.rapid/observe/seq.txt</code>.
 </div>
 
 
@@ -1023,7 +1023,7 @@ docs/
   </table>
 
   <div class="key-insight">
-    <strong>McKinsey aesthetic:</strong> All generated documentation uses action titles on every section (a sentence that states the conclusion, not a label), exhibit labels on diagrams (numbered, titled, sourced), and the plain-English-first pattern (accessible explanation, then &ldquo;Technically:&rdquo; detail). CSS variables and design patterns are copied from <code>forge-architecture.html</code>.
+    <strong>McKinsey aesthetic:</strong> All generated documentation uses action titles on every section (a sentence that states the conclusion, not a label), exhibit labels on diagrams (numbered, titled, sourced), and the plain-English-first pattern (accessible explanation, then &ldquo;Technically:&rdquo; detail). CSS variables and design patterns are copied from <code>rapid-architecture.html</code>.
   </div>
 
   <div class="subsection" id="docs-prompt">
@@ -1072,7 +1072,7 @@ If the next step is a human gate (<span class="k">{NEXT_IS_GATE}</span>):
 - Action titles on every section (a sentence that states the conclusion, not a label)
 - Plain-English-first: accessible explanation paragraph, then "Technically:" detail
 - Exhibit labels: numbered, titled, sourced
-- CSS from forge-architecture.html (navy headers, clean tables, node diagrams)
+- CSS from rapid-architecture.html (navy headers, clean tables, node diagrams)
 - No emojis. Terse. Evidence over claims.</div>
   </div>
 
@@ -1151,11 +1151,11 @@ If the next step is a human gate (<span class="k">{NEXT_IS_GATE}</span>):
   <div class="agent-meta"><span><span class="dot dot-b"></span> Primitive: Skill</span><span>Phase: All</span></div>
   <div class="agent-desc">The orchestrator is the overall pipeline controller. It runs in the operator's context, has access to approvals and API keys, and manages the lifecycle of all other agents. It is the only agent that persists across all phases.</div>
   <div class="agent-rw">
-    <div><div class="rw-label">Reads</div>forge.yaml, STATE.json, TASKS.json, HEARTBEAT.json, MEMORY.md, COST.json, all docs/ artifacts</div>
-    <div><div class="rw-label">Writes</div>STATE.json, MEMORY.md, COST.json, P6_EXIT.json, LEARNINGS.md, .forge/prompts/*.md</div>
+    <div><div class="rw-label">Reads</div>rapid.yaml, STATE.json, TASKS.json, HEARTBEAT.json, MEMORY.md, COST.json, all docs/ artifacts</div>
+    <div><div class="rw-label">Writes</div>STATE.json, MEMORY.md, COST.json, P6_EXIT.json, LEARNINGS.md, .rapid/prompts/*.md</div>
   </div>
   <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); margin-bottom: 4px;">Example output (successful P6a):</div>
-  <div style="font-size: 0.72rem; color: var(--text-muted);">Generates .forge/prompts/supervisor.md and .forge/prompts/watchdog.md. Spawns tmux session with 3 windows. Verifies both peers appear via list_peers within 30s. Writes SPAWN observe events. Logs to MEMORY.md.</div>
+  <div style="font-size: 0.72rem; color: var(--text-muted);">Generates .rapid/prompts/supervisor.md and .rapid/prompts/watchdog.md. Spawns tmux session with 3 windows. Verifies both peers appear via list_peers within 30s. Writes SPAWN observe events. Logs to MEMORY.md.</div>
 </div>
 
 <!-- Panelist -->
@@ -1194,7 +1194,7 @@ Write results to 03-panels/technical-panel.md.</div>
   <div class="agent-desc">Derives the spec from PRD + panel synthesis + research. Generates the workflow state machine (in/proc/out per node), architecture, interface contracts, task decomposition, and the immutable eval harness.</div>
   <div class="agent-rw">
     <div><div class="rw-label">Reads</div>01-intake/PRD-ENHANCED.md, 03-panels/synthesis.md, 02-grounding/*.md</div>
-    <div><div class="rw-label">Writes</div>04-spec/spec.md, 04-spec/workflow.md, 04-spec/architecture.md, 04-spec/CONTRACTS.md, .forge/TASKS.json, .forge/EVAL/</div>
+    <div><div class="rw-label">Writes</div>04-spec/spec.md, 04-spec/workflow.md, 04-spec/architecture.md, 04-spec/CONTRACTS.md, .rapid/TASKS.json, .rapid/EVAL/</div>
   </div>
 </div>
 
@@ -1204,12 +1204,12 @@ Write results to 03-panels/technical-panel.md.</div>
   <div class="agent-meta"><span><span class="dot dot-r"></span> Primitive: Separate Terminal (tmux)</span><span>Phase: P6</span></div>
   <div class="agent-desc">Long-running terminal that owns the build loop. Reads TASKS.json, assigns tasks in dependency order, runs smoke tests, spawns reviewers, coordinates with the watchdog. Sends P6_COMPLETE when all tasks have APPROVE verdict.</div>
   <div class="agent-rw">
-    <div><div class="rw-label">Reads</div>.forge/TASKS.json, .forge/HEARTBEAT.json, 04-spec/*.md, .forge/EVAL/</div>
-    <div><div class="rw-label">Writes</div>.forge/TASKS.json (status updates), .forge/MEMORY.md, .forge/REVIEW.json, .forge/MESSAGES.json</div>
+    <div><div class="rw-label">Reads</div>.rapid/TASKS.json, .rapid/HEARTBEAT.json, 04-spec/*.md, .rapid/EVAL/</div>
+    <div><div class="rw-label">Writes</div>.rapid/TASKS.json (status updates), .rapid/MEMORY.md, .rapid/REVIEW.json, .rapid/MESSAGES.json</div>
   </div>
-  <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); margin-bottom: 4px;">Example prompt (.forge/prompts/supervisor.md, abbreviated):</div>
-  <div class="code-block" style="font-size: 0.65rem;">You are the FORGE supervisor for the expense-tracker build.
-Tasks: read .forge/TASKS.json (8 tasks, task-00 is root dependency).
+  <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); margin-bottom: 4px;">Example prompt (.rapid/prompts/supervisor.md, abbreviated):</div>
+  <div class="code-block" style="font-size: 0.65rem;">You are the RAPID supervisor for the expense-tracker build.
+Tasks: read .rapid/TASKS.json (8 tasks, task-00 is root dependency).
 For each ready task: spawn worktree agent with spec section + CONTRACTS.md + eval harness.
 After agent returns: run smoke test (npm run build && npm test).
 After smoke passes: spawn 3 reviewer subagents (correctness, spec, security).
@@ -1227,16 +1227,16 @@ When all tasks APPROVE: send P6_COMPLETE to orchestrator.</div>
   <div class="agent-meta"><span><span class="dot dot-t"></span> Primitive: Agent (worktree)</span><span>Phase: P6</span></div>
   <div class="agent-desc">Short-lived worktree agent that builds one task. Git-isolated to prevent conflicts. Commits reference [SPEC &sect;X.Y]. Cannot modify the eval harness. Follows the structured debug protocol on failure.</div>
   <div class="agent-rw">
-    <div><div class="rw-label">Reads</div>04-spec/spec.md (assigned section), 04-spec/CONTRACTS.md, .forge/EVAL/, .forge/LEARNINGS.md</div>
-    <div><div class="rw-label">Writes</div>Source code in worktree branch forge/{phase}/{task-slug}</div>
+    <div><div class="rw-label">Reads</div>04-spec/spec.md (assigned section), 04-spec/CONTRACTS.md, .rapid/EVAL/, .rapid/LEARNINGS.md</div>
+    <div><div class="rw-label">Writes</div>Source code in worktree branch rapid/{phase}/{task-slug}</div>
   </div>
   <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); margin-bottom: 4px;">Example prompt (abbreviated, from supervisor spawn):</div>
   <div class="code-block" style="font-size: 0.65rem;">You are implementing task-03 (api-routes) for the expense-tracker.
 Spec: read 04-spec/spec.md sections S3.1 and S3.2.
 Contracts: read 04-spec/CONTRACTS.md for interface signatures.
-Tests: run .forge/EVAL/routes.test.ts — make them pass. DO NOT modify tests.
+Tests: run .rapid/EVAL/routes.test.ts — make them pass. DO NOT modify tests.
 Commits: reference [SPEC S3.1] or [SPEC S3.2] in every commit message.
-Branch: forge/phase-6/api-routes
+Branch: rapid/phase-6/api-routes
 Keep-or-revert: if tests regress from last passing state, git reset --hard.
 Debug protocol: reproduce > trace > hypothesis > test-first fix > verify. Max 3 attempts.
 Decision Router: tactical=silent, technical=log, architectural=escalate to supervisor.</div>
@@ -1260,17 +1260,17 @@ Decision Router: tactical=silent, technical=log, architectural=escalate to super
   <div class="agent-desc">Persistent tmux terminal whose only job is auditing. Triggered on PR_SUBMITTED, PR_MERGED, and every 30m. Checks 7 drift categories. On CRITICAL: sends DRIFT_CRITICAL directly to orchestrator (bypass supervisor). Never checks work-in-progress.</div>
   <div class="agent-rw">
     <div><div class="rw-label">Reads</div>04-spec/spec.md, 04-spec/CONTRACTS.md, PR diffs, main branch HEAD</div>
-    <div><div class="rw-label">Writes</div>.forge/AUDIT.json, .forge/observe/watchdog.jsonl</div>
+    <div><div class="rw-label">Writes</div>.rapid/AUDIT.json, .rapid/observe/watchdog.jsonl</div>
   </div>
-  <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); margin-bottom: 4px;">Example prompt (.forge/prompts/watchdog.md, abbreviated):</div>
-  <div class="code-block" style="font-size: 0.65rem;">You are the FORGE watchdog for the expense-tracker build.
+  <div style="font-size: 0.72rem; font-weight: 700; color: var(--navy); margin-bottom: 4px;">Example prompt (.rapid/prompts/watchdog.md, abbreviated):</div>
+  <div class="code-block" style="font-size: 0.65rem;">You are the RAPID watchdog for the expense-tracker build.
 On PR_SUBMITTED message: drift-check the PR diff against spec.md and CONTRACTS.md.
 Check 7 categories: structural, interface, invariant, feature, test, quality, visual.
 On PR_MERGED message: check integrated state of full repo on main.
 Run /loop 30m for periodic full-repo audit of main branch.
 Send DRIFT_RESULT to supervisor: CLEAN, DRIFT, or CRITICAL.
 On CRITICAL (invariant violation): send DRIFT_CRITICAL to orchestrator IMMEDIATELY.
-Write all results to .forge/AUDIT.json.
+Write all results to .rapid/AUDIT.json.
 Never check in-progress worktrees — unfinished work always looks broken.</div>
 </div>
 
@@ -1280,8 +1280,8 @@ Never check in-progress worktrees — unfinished work always looks broken.</div>
   <div class="agent-meta"><span><span class="dot dot-b"></span> Primitive: Subagent + Playwright</span><span>Phase: P7</span></div>
   <div class="agent-desc">Runs the actual test suite via Bash (not file audit), takes Playwright screenshots at 3 viewports, sends to Claude vision for analysis. Walks every surface in workflow.md. Fix&rarr;re-screenshot&rarr;re-check loop, max 3.</div>
   <div class="agent-rw">
-    <div><div class="rw-label">Reads</div>.forge/EVAL/, 04-spec/workflow.md, live app at dev server</div>
-    <div><div class="rw-label">Writes</div>.forge/GAPS.json, .forge/TEST_RESULTS.md, .forge/WALKTHROUGH.md, .forge/walkthrough/*.png</div>
+    <div><div class="rw-label">Reads</div>.rapid/EVAL/, 04-spec/workflow.md, live app at dev server</div>
+    <div><div class="rw-label">Writes</div>.rapid/GAPS.json, .rapid/TEST_RESULTS.md, .rapid/WALKTHROUGH.md, .rapid/walkthrough/*.png</div>
   </div>
 </div>
 
@@ -1306,7 +1306,7 @@ Never check in-progress worktrees — unfinished work always looks broken.</div>
 <table class="compare-table">
   <thead><tr><th>Phase</th><th>Skills Used</th><th>Purpose</th></tr></thead>
   <tbody>
-    <tr><td>P0&ndash;P9</td><td><code>/forge</code></td><td>The master orchestrator skill that runs the entire pipeline</td></tr>
+    <tr><td>P0&ndash;P9</td><td><code>/rapid-workflow</code></td><td>The master orchestrator skill that runs the entire pipeline</td></tr>
     <tr><td>P0</td><td><code>/workflow</code></td><td>Methodology reference and project setup</td></tr>
     <tr><td>P2</td><td><code>/grill-me</code></td><td>Stress-test the PRD and spec through relentless questioning</td></tr>
     <tr><td>P2</td><td>Panel skills (business-expert-panel, technical-expert-panel, etc.)</td><td>Domain-specific expert review panels</td></tr>
@@ -1452,13 +1452,13 @@ Never check in-progress worktrees — unfinished work always looks broken.</div>
 </table>
 
 <div class="key-insight">
-  <strong>Durability rule:</strong> Every message is also appended to <code>.forge/MESSAGES.json</code>. If a claude-peers notification is missed, agents check this file on their heartbeat cycle. <strong>Forward compatibility:</strong> Unrecognized message types are logged to MEMORY.md and ignored.
+  <strong>Durability rule:</strong> Every message is also appended to <code>.rapid/MESSAGES.json</code>. If a claude-peers notification is missed, agents check this file on their heartbeat cycle. <strong>Forward compatibility:</strong> Unrecognized message types are logged to MEMORY.md and ignored.
 </div>
 
 <!-- Phase Gate Hook -->
 <div class="subsection" id="schemas-gate">
-  <div class="subsection-title">Phase Gate Hook &mdash; forge-phase-gate.sh</div>
-  <div class="subsection-desc">A shell script installed as a PreToolUse hook on Write/Edit of .forge/STATE.json. It mechanically blocks phase advancement unless required artifacts exist.</div>
+  <div class="subsection-title">Phase Gate Hook &mdash; rapid-phase-gate.sh</div>
+  <div class="subsection-desc">A shell script installed as a PreToolUse hook on Write/Edit of .rapid/STATE.json. It mechanically blocks phase advancement unless required artifacts exist.</div>
 </div>
 
 <table class="compare-table">
@@ -1467,9 +1467,9 @@ Never check in-progress worktrees — unfinished work always looks broken.</div>
     <tr><td>&ge; 2</td><td>01-intake/PRD-ENHANCED.md</td><td>P1b complete &mdash; PRD decomposed into checklist</td></tr>
     <tr><td>&ge; 4</td><td>03-panels/synthesis.md</td><td>P2&ndash;P3 complete &mdash; panels ran and synthesized</td></tr>
     <tr><td>&ge; 5</td><td>04-spec/spec.md</td><td>P4 complete &mdash; spec derived from PRD</td></tr>
-    <tr><td>&ge; 6</td><td>.forge/EVAL/ with test files + .forge/TASKS.json</td><td>P5 complete &mdash; eval harness generated, tasks decomposed (R1 + R4)</td></tr>
-    <tr><td>&ge; 7</td><td>.forge/P6_EXIT.json with all passing assertions</td><td>P6 complete &mdash; all exit assertions passed (R1)</td></tr>
-    <tr><td>&ge; 8</td><td>.forge/WALKTHROUGH.md</td><td>P7 complete &mdash; walkthrough covers every surface (R6)</td></tr>
+    <tr><td>&ge; 6</td><td>.rapid/EVAL/ with test files + .rapid/TASKS.json</td><td>P5 complete &mdash; eval harness generated, tasks decomposed (R1 + R4)</td></tr>
+    <tr><td>&ge; 7</td><td>.rapid/P6_EXIT.json with all passing assertions</td><td>P6 complete &mdash; all exit assertions passed (R1)</td></tr>
+    <tr><td>&ge; 8</td><td>.rapid/WALKTHROUGH.md</td><td>P7 complete &mdash; walkthrough covers every surface (R6)</td></tr>
   </tbody>
 </table>
 
@@ -1489,16 +1489,16 @@ Never check in-progress worktrees — unfinished work always looks broken.</div>
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section" id="config">
   <div class="section-id">Section 7</div>
-  <div class="section-title">Configuration &mdash; forge.yaml schema, cascade, track selection, and budget</div>
+  <div class="section-title">Configuration &mdash; rapid.yaml schema, cascade, track selection, and budget</div>
 </div>
 
 <div class="subsection-title">3-Level Configuration Cascade</div>
 <div class="diagram">
   <div class="diagram-label">Configuration override order</div>
   <div class="hflow" style="gap: 8px;">
-    <div class="n n-primary">~/.forge/forge.yaml<small>Global defaults</small></div>
+    <div class="n n-primary">~/.rapid/rapid-workflow.yaml<small>Global defaults</small></div>
     <span class="arr">&rarr;</span>
-    <div class="n n-blue">.forge/forge.yaml<small>Project overrides</small></div>
+    <div class="n n-blue">.rapid/rapid-workflow.yaml<small>Project overrides</small></div>
     <span class="arr">&rarr;</span>
     <div class="n n-auto">CLI flags<small>Invocation overrides</small></div>
     <span class="arr">&rarr;</span>
@@ -1506,7 +1506,7 @@ Never check in-progress worktrees — unfinished work always looks broken.</div>
   </div>
 </div>
 
-<div style="font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 8px;">forge.yaml &mdash; full schema with all keys</div>
+<div style="font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 8px;">rapid.yaml &mdash; full schema with all keys</div>
 <div class="code-block"># === Code & Design ===
 code:
   typescript: { strict: true, no_any: true }
@@ -1581,12 +1581,12 @@ pulse:
 <div class="section" id="eval">
   <div class="section-id">Section 8</div>
   <div class="section-title">Agent System Evaluation &mdash; observability, traceability, and eval for every agent graph in the project</div>
-  <div class="section-desc">When a FORGE project builds an agentic system (multi-agent orchestration, LLM pipelines, tool-using agents), each agent graph gets its own eval directory with dedicated observability, traceability, token monitoring, and logging. This section defines the taxonomy, the dynamic generation prompt, and provides an illustrative template using AgentForge (adversarial AI security platform) as the example.</div>
+  <div class="section-desc">When a RAPID project builds an agentic system (multi-agent orchestration, LLM pipelines, tool-using agents), each agent graph gets its own eval directory with dedicated observability, traceability, token monitoring, and logging. This section defines the taxonomy, the dynamic generation prompt, and provides an illustrative template using AgentForge (adversarial AI security platform) as the example.</div>
 
   <div class="strategy">
     <h3>Why agent eval is separate from application eval</h3>
     <p><strong>EVAL/</strong> (existing, TDD-01) tests the <em>built application</em> &mdash; does the app work as specified? Tests derived from the workflow state machine.</p>
-    <p><strong>EVAL-AGENTS/</strong> (new) tests the <em>FORGE build agents themselves</em> &mdash; did the orchestrator, supervisor, watchdog, and implementors perform well? Token efficiency, task completion rate, drift frequency, stall patterns.</p>
+    <p><strong>EVAL-AGENTS/</strong> (new) tests the <em>RAPID build agents themselves</em> &mdash; did the orchestrator, supervisor, watchdog, and implementors perform well? Token efficiency, task completion rate, drift frequency, stall patterns.</p>
     <p><strong>EVAL-{system-name}/</strong> (new) tests <em>agent systems the project builds</em> &mdash; if the app contains agent graphs (like AgentForge&rsquo;s Red Team, Judge, Orchestrator), each gets its own eval with its own observability. A project may have 0, 1, or many of these.</p>
   </div>
 </div>
@@ -1597,9 +1597,9 @@ pulse:
   <table class="compare-table">
     <thead><tr><th style="width:180px;">Directory</th><th style="width:120px;">Evaluates</th><th>Naming Convention</th><th>When Generated</th></tr></thead>
     <tbody>
-      <tr><td><code>.forge/EVAL/</code></td><td>The built application</td><td>Fixed name. One per project. Tests from workflow state machine.</td><td>P5 (Task Decomposition) &mdash; always</td></tr>
-      <tr><td><code>.forge/EVAL-AGENTS/</code></td><td>FORGE build agents</td><td>Fixed name. One per project. Metrics on orchestrator, supervisor, watchdog, implementors.</td><td>P6e (Shutdown) &mdash; always</td></tr>
-      <tr><td><code>.forge/EVAL-{system-name}/</code></td><td>An agent system the project builds</td><td>Kebab-case system name from the spec. E.g., <code>EVAL-red-team</code>, <code>EVAL-judge-pipeline</code>, <code>EVAL-doc-generator</code>.</td><td>P5 &mdash; auto-generated when a task involves building an agent system</td></tr>
+      <tr><td><code>.rapid/EVAL/</code></td><td>The built application</td><td>Fixed name. One per project. Tests from workflow state machine.</td><td>P5 (Task Decomposition) &mdash; always</td></tr>
+      <tr><td><code>.rapid/EVAL-AGENTS/</code></td><td>RAPID build agents</td><td>Fixed name. One per project. Metrics on orchestrator, supervisor, watchdog, implementors.</td><td>P6e (Shutdown) &mdash; always</td></tr>
+      <tr><td><code>.rapid/EVAL-{system-name}/</code></td><td>An agent system the project builds</td><td>Kebab-case system name from the spec. E.g., <code>EVAL-red-team</code>, <code>EVAL-judge-pipeline</code>, <code>EVAL-doc-generator</code>.</td><td>P5 &mdash; auto-generated when a task involves building an agent system</td></tr>
     </tbody>
   </table>
 
@@ -1618,7 +1618,7 @@ Scan 04-spec/architecture.md and 04-spec/spec.md for any <span class="c">agent s
 An agent system is identified by: multiple LLM-powered agents communicating, an orchestrator or
 router, tool-using agents, or any multi-step LLM pipeline with branching logic.
 
-For EACH agent system found, generate <span class="k">.forge/EVAL-{system-name}/</span> with these files:
+For EACH agent system found, generate <span class="k">.rapid/EVAL-{system-name}/</span> with these files:
 
 <span class="c">## 1. GRAPH.md — Agent graph definition</span>
 Define every agent node in the graph:
@@ -1679,19 +1679,19 @@ Define what the eval dashboard shows for this graph:
 - Alert thresholds (warn at 80%, halt at 100%)
 - Cost estimation (tokens × model price)
 
-Also generate <span class="k">.forge/EVAL-AGENTS/</span> for the FORGE build agents themselves:
+Also generate <span class="k">.rapid/EVAL-AGENTS/</span> for the RAPID build agents themselves:
 - Metrics: task completion rate, stall frequency, drift count, review pass rate, token spend per phase
 - No graph definition needed (the agent topology is already in D2)
-- Traces: read from .forge/observe/*.jsonl (already exists)</div>
+- Traces: read from .rapid/observe/*.jsonl (already exists)</div>
 </div>
 
-<div class="subsection" id="eval-forge-agents">
-  <div class="subsection-title">EVAL-AGENTS/ &mdash; FORGE Build Agent Evaluation</div>
-  <div class="subsection-desc">Evaluates the FORGE agents themselves after every build. Generated at P6e (shutdown). Reads from existing .forge/ state files.</div>
+<div class="subsection" id="eval-rapid-agents">
+  <div class="subsection-title">EVAL-AGENTS/ &mdash; RAPID Build Agent Evaluation</div>
+  <div class="subsection-desc">Evaluates the RAPID agents themselves after every build. Generated at P6e (shutdown). Reads from existing .rapid/ state files.</div>
 
   <div class="diagram">
-    <div class="diagram-label">Example: .forge/EVAL-AGENTS/METRICS.md (generated at P6e for expense-tracker build)</div>
-    <div class="code-block" style="font-size: 0.65rem;"><span class="c"># FORGE Build Agent Metrics — expense-tracker</span>
+    <div class="diagram-label">Example: .rapid/EVAL-AGENTS/METRICS.md (generated at P6e for expense-tracker build)</div>
+    <div class="code-block" style="font-size: 0.65rem;"><span class="c"># RAPID Build Agent Metrics — expense-tracker</span>
 <span class="c"># Generated: 2026-05-27T16:42:00Z</span>
 
 <span class="c">## Task Execution</span>
@@ -1739,13 +1739,13 @@ Also generate <span class="k">.forge/EVAL-AGENTS/</span> for the FORGE build age
 
   <div class="key-insight">
     <strong>AgentForge example &mdash; 3 agent graphs, 3 eval directories:</strong><br>
-    <code>.forge/EVAL-red-team/</code> &mdash; the adversarial attack agent pipeline<br>
-    <code>.forge/EVAL-judge-pipeline/</code> &mdash; the vulnerability assessment judge<br>
-    <code>.forge/EVAL-doc-generator/</code> &mdash; the report generation agent
+    <code>.rapid/EVAL-red-team/</code> &mdash; the adversarial attack agent pipeline<br>
+    <code>.rapid/EVAL-judge-pipeline/</code> &mdash; the vulnerability assessment judge<br>
+    <code>.rapid/EVAL-doc-generator/</code> &mdash; the report generation agent
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">Example: .forge/EVAL-red-team/GRAPH.md</div>
+    <div class="diagram-label">Example: .rapid/EVAL-red-team/GRAPH.md</div>
     <div class="code-block" style="font-size: 0.65rem;"><span class="c"># Agent Graph: Red Team Pipeline</span>
 <span class="c"># System: AgentForge adversarial AI security platform</span>
 <span class="c"># Spec ref: 04-spec/architecture.md §4.1</span>
@@ -1795,7 +1795,7 @@ rt-jailbreak → rt-orchestrator         (result)
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">Example: .forge/EVAL-red-team/TRACES/2026-05-27T14-30-00-run-001.jsonl</div>
+    <div class="diagram-label">Example: .rapid/EVAL-red-team/TRACES/2026-05-27T14-30-00-run-001.jsonl</div>
     <div class="code-block" style="font-size: 0.63rem;">{"trace_id":"run-001","seq":1,"agent":"rt-orchestrator","input_tokens":2840,"output_tokens":312,"latency_ms":1200,"model":"claude-sonnet-4-6","tools_called":[],"decision":"dispatch: injection, exfil, jailbreak","output_summary":"Dispatching 3 specialist agents for target api.example.com/chat","error":null,"parent_seq":null}
 {"trace_id":"run-001","seq":2,"agent":"rt-prompt-injection","input_tokens":3200,"output_tokens":1890,"latency_ms":4500,"model":"claude-opus-4-6","tools_called":["http_request","http_request","template_render"],"decision":null,"output_summary":"5 injection attempts. 1 successful: system prompt leaked via markdown rendering.","error":null,"parent_seq":1}
 {"trace_id":"run-001","seq":3,"agent":"rt-data-exfil","input_tokens":2900,"output_tokens":1420,"latency_ms":6200,"model":"claude-opus-4-6","tools_called":["http_request","http_request","http_request","file_craft"],"decision":null,"output_summary":"4 exfil attempts. 0 successful. All PII fields properly redacted.","error":null,"parent_seq":1}
@@ -1804,7 +1804,7 @@ rt-jailbreak → rt-orchestrator         (result)
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">Example: .forge/EVAL-red-team/BUDGET.md</div>
+    <div class="diagram-label">Example: .rapid/EVAL-red-team/BUDGET.md</div>
     <div class="code-block" style="font-size: 0.65rem;"><span class="c"># Token Budget: Red Team Pipeline</span>
 
 | Agent              | Model            | Budget (tokens) | Cost/run (est) |
@@ -1828,7 +1828,7 @@ rt-jailbreak → rt-orchestrator         (result)
 
 <div class="subsection" id="eval-observability">
   <div class="subsection-title">Eval Observability &mdash; each agent graph gets its own monitoring</div>
-  <div class="subsection-desc">Every EVAL-{system-name}/ directory includes a DASHBOARD.md that defines what its observability shows. The FORGE live dashboard (localhost:4040) should be extended to show eval-specific views per agent graph.</div>
+  <div class="subsection-desc">Every EVAL-{system-name}/ directory includes a DASHBOARD.md that defines what its observability shows. The RAPID live dashboard (localhost:4040) should be extended to show eval-specific views per agent graph.</div>
 
   <table class="compare-table">
     <thead><tr><th style="width:140px;">View</th><th>Data Source</th><th>What It Shows</th></tr></thead>
@@ -1846,7 +1846,7 @@ rt-jailbreak → rt-orchestrator         (result)
 
 <div class="subsection" id="eval-runtime">
   <div class="subsection-title">Agent Graph Runtime &mdash; native execution vs. LangGraph adapter</div>
-  <div class="subsection-desc">FORGE&rsquo;s eval framework is <strong>runtime-agnostic</strong>: GRAPH.md is the spec, JSONL traces are the contract. The runtime that executes the agent graph is a project-level decision made at P4 (spec) and configured in <code>forge.yaml</code>. Two options are supported. Both produce the same trace format, so the eval dashboard, tests, and observability work identically regardless of choice.</div>
+  <div class="subsection-desc">RAPID&rsquo;s eval framework is <strong>runtime-agnostic</strong>: GRAPH.md is the spec, JSONL traces are the contract. The runtime that executes the agent graph is a project-level decision made at P4 (spec) and configured in <code>rapid.yaml</code>. Two options are supported. Both produce the same trace format, so the eval dashboard, tests, and observability work identically regardless of choice.</div>
 
   <div class="strategy">
     <h3>Decision criteria</h3>
@@ -1859,18 +1859,18 @@ rt-jailbreak → rt-orchestrator         (result)
     <thead><tr><th style="width:160px;">Capability</th><th>Native (default)</th><th>LangGraph Adapter</th></tr></thead>
     <tbody>
       <tr><td><strong>Graph definition</strong></td><td>GRAPH.md &rarr; custom routing code. Orchestrator agent reads the graph spec and dispatches subagents.</td><td>GRAPH.md &rarr; <code>StateGraph</code> compiled from the spec. Nodes are tool-calling functions, edges are conditional.</td></tr>
-      <tr><td><strong>State management</strong></td><td>Manual via .forge/ files. Each agent reads/writes its own state. Resume from TASKS.json + HEARTBEAT.json.</td><td>Built-in <code>StateGraph</code> checkpointing. State persisted at every node. Full replay from any checkpoint.</td></tr>
-      <tr><td><strong>Trace emission</strong></td><td>Each agent appends to <code>EVAL-{name}/TRACES/*.jsonl</code> directly (one line per agent invocation).</td><td>LangGraph callbacks emit traces to LangSmith. A <strong>trace adapter</strong> translates LangSmith traces &rarr; FORGE JSONL format for dashboard compatibility.</td></tr>
+      <tr><td><strong>State management</strong></td><td>Manual via .rapid/ files. Each agent reads/writes its own state. Resume from TASKS.json + HEARTBEAT.json.</td><td>Built-in <code>StateGraph</code> checkpointing. State persisted at every node. Full replay from any checkpoint.</td></tr>
+      <tr><td><strong>Trace emission</strong></td><td>Each agent appends to <code>EVAL-{name}/TRACES/*.jsonl</code> directly (one line per agent invocation).</td><td>LangGraph callbacks emit traces to LangSmith. A <strong>trace adapter</strong> translates LangSmith traces &rarr; RAPID JSONL format for dashboard compatibility.</td></tr>
       <tr><td><strong>Cycles &amp; loops</strong></td><td>Implementor codes the loop manually. Max iterations enforced in the orchestrator agent prompt.</td><td>First-class support. <code>StateGraph</code> handles cycles, conditional edges, and <code>END</code> transitions natively.</td></tr>
-      <tr><td><strong>Visualization</strong></td><td>FORGE eval dashboard reads GRAPH.md + traces. Static graph + animated execution.</td><td>LangSmith provides interactive trace visualization + LangGraph Studio for visual debugging. FORGE dashboard also works (via trace adapter).</td></tr>
-      <tr><td><strong>Eval tooling</strong></td><td>FORGE eval: test cases in TESTS/, metrics in METRICS.md, traces in TRACES/.</td><td>Both: FORGE eval + LangSmith eval datasets, annotation queues, and regression testing. LangSmith gives a web UI for non-engineer reviewers.</td></tr>
+      <tr><td><strong>Visualization</strong></td><td>RAPID eval dashboard reads GRAPH.md + traces. Static graph + animated execution.</td><td>LangSmith provides interactive trace visualization + LangGraph Studio for visual debugging. RAPID dashboard also works (via trace adapter).</td></tr>
+      <tr><td><strong>Eval tooling</strong></td><td>RAPID eval: test cases in TESTS/, metrics in METRICS.md, traces in TRACES/.</td><td>Both: RAPID eval + LangSmith eval datasets, annotation queues, and regression testing. LangSmith gives a web UI for non-engineer reviewers.</td></tr>
       <tr><td><strong>Dependencies</strong></td><td>None. Pure Claude API / Claude Code subagents.</td><td><code>langgraph</code>, <code>langchain-anthropic</code>, optionally <code>langsmith</code> for hosted traces.</td></tr>
       <tr><td><strong>Cost</strong></td><td>Zero additional cost. Token spend is only the LLM calls.</td><td>LangSmith: free tier (5K traces/month), Plus ($39/mo), Enterprise. LangGraph itself is open source.</td></tr>
     </tbody>
   </table>
 
   <div class="diagram">
-    <div class="diagram-label">forge.yaml &mdash; runtime configuration</div>
+    <div class="diagram-label">rapid.yaml &mdash; runtime configuration</div>
     <div class="code-block" style="font-size: 0.65rem;"><span class="c"># Default: native runtime, no dependencies</span>
 <span class="k">agent_graphs:</span>
   <span class="k">runtime:</span> native          <span class="c"># "native" | "langgraph"</span>
@@ -1882,12 +1882,12 @@ rt-jailbreak → rt-orchestrator         (result)
     <span class="k">checkpointing:</span> sqlite   <span class="c"># "memory" | "sqlite" | "postgres"</span>
     <span class="k">langsmith:</span>
       <span class="k">enabled:</span> true
-      <span class="k">project:</span> "forge-{project-name}"
-      <span class="k">trace_adapter:</span> true    <span class="c"># Translate LangSmith traces → FORGE JSONL</span></div>
+      <span class="k">project:</span> "rapid-{project-name}"
+      <span class="k">trace_adapter:</span> true    <span class="c"># Translate LangSmith traces → RAPID JSONL</span></div>
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">Architecture: how the trace adapter bridges LangGraph &rarr; FORGE eval</div>
+    <div class="diagram-label">Architecture: how the trace adapter bridges LangGraph &rarr; RAPID eval</div>
     <div class="hflow" style="gap: 2px; padding: 12px 0; flex-wrap: wrap;">
       <div class="n n-primary">GRAPH.md<small>source of truth</small></div><span class="arr">&rarr;</span>
       <div class="n n-auto">P6 Implementor<small>reads graph spec</small></div><span class="arr">&rarr;</span>
@@ -1895,7 +1895,7 @@ rt-jailbreak → rt-orchestrator         (result)
       <div class="n n-auto">Execute<small>nodes &amp; edges</small></div><span class="arr">&rarr;</span>
       <div class="n n-teal">LangSmith<small>hosted traces</small></div><span class="arr">&rarr;</span>
       <div class="n" style="border-color: var(--amber); color: var(--amber);">Trace Adapter<small>langsmith &rarr; JSONL</small></div><span class="arr">&rarr;</span>
-      <div class="n n-blue">TRACES/*.jsonl<small>FORGE format</small></div><span class="arr">&rarr;</span>
+      <div class="n n-blue">TRACES/*.jsonl<small>RAPID format</small></div><span class="arr">&rarr;</span>
       <div class="n n-out">Eval Dashboard<small>same views for both</small></div>
     </div>
     <div style="text-align: center; margin-top: 8px;">
@@ -1912,8 +1912,8 @@ rt-jailbreak → rt-orchestrator         (result)
 
   <div class="diagram">
     <div class="diagram-label">Example: LangGraph implementation of Red Team graph (generated from GRAPH.md)</div>
-    <div class="code-block" style="font-size: 0.63rem;"><span class="c"># Auto-generated from .forge/EVAL-red-team/GRAPH.md at P6</span>
-<span class="c"># Runtime: langgraph (configured in forge.yaml)</span>
+    <div class="code-block" style="font-size: 0.63rem;"><span class="c"># Auto-generated from .rapid/EVAL-red-team/GRAPH.md at P6</span>
+<span class="c"># Runtime: langgraph (configured in rapid.yaml)</span>
 
 <span class="k">from</span> langgraph.graph <span class="k">import</span> StateGraph, END
 <span class="k">from</span> langchain_anthropic <span class="k">import</span> ChatAnthropic
@@ -1967,13 +1967,13 @@ app = graph.compile(checkpointer=SqliteSaver.from_conn_string("red_team.db"))</d
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">Example: Trace adapter &mdash; LangSmith callback &rarr; FORGE JSONL</div>
-    <div class="code-block" style="font-size: 0.63rem;"><span class="c"># Translates LangSmith run traces to FORGE eval trace format</span>
+    <div class="diagram-label">Example: Trace adapter &mdash; LangSmith callback &rarr; RAPID JSONL</div>
+    <div class="code-block" style="font-size: 0.63rem;"><span class="c"># Translates LangSmith run traces to RAPID eval trace format</span>
 <span class="c"># Runs as a post-execution hook, not inline</span>
 
 <span class="k">from</span> langsmith <span class="k">import</span> Client
 
-<span class="k">def</span> langsmith_to_forge_traces(project_name: str, eval_dir: str):
+<span class="k">def</span> langsmith_to_rapid_traces(project_name: str, eval_dir: str):
     client = Client()
     runs = client.list_runs(project_name=project_name, is_root=True)
 
@@ -1998,7 +1998,7 @@ app = graph.compile(checkpointer=SqliteSaver.from_conn_string("red_team.db"))</d
                 "parent_seq": None  <span class="c"># Resolved from run.parent_run_id</span>
             })
 
-        <span class="c"># Write FORGE-format JSONL</span>
+        <span class="c"># Write RAPID-format JSONL</span>
         outpath = f"{eval_dir}/TRACES/{root_run.start_time:%Y-%m-%dT%H-%M-%S}-{trace_id[:8]}.jsonl"
         <span class="k">with</span> open(outpath, "w") <span class="k">as</span> f:
             <span class="k">for</span> line <span class="k">in</span> lines:
@@ -2015,7 +2015,7 @@ app = graph.compile(checkpointer=SqliteSaver.from_conn_string("red_team.db"))</d
   <div class="subsection-desc">A second agent graph from the same project, showing the pattern scales. The Judge Pipeline receives Red Team results and produces vulnerability assessments.</div>
 
   <div class="diagram">
-    <div class="diagram-label">.forge/EVAL-judge-pipeline/GRAPH.md</div>
+    <div class="diagram-label">.rapid/EVAL-judge-pipeline/GRAPH.md</div>
     <div class="code-block" style="font-size: 0.65rem;"><span class="c"># Agent Graph: Judge Pipeline</span>
 <span class="c"># System: AgentForge — vulnerability assessment and severity scoring</span>
 <span class="c"># Spec ref: 04-spec/architecture.md §4.2</span>
@@ -2053,7 +2053,7 @@ judge-severity → judge-synthesizer (all scored findings collected)
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">.forge/EVAL-judge-pipeline/TESTS/golden-path.json</div>
+    <div class="diagram-label">.rapid/EVAL-judge-pipeline/TESTS/golden-path.json</div>
     <div class="code-block" style="font-size: 0.65rem;">[
   {
     "test_id": "judge-golden-01",
@@ -2081,7 +2081,7 @@ judge-severity → judge-synthesizer (all scored findings collected)
   </div>
 
   <div class="diagram">
-    <div class="diagram-label">.forge/EVAL-judge-pipeline/METRICS.md</div>
+    <div class="diagram-label">.rapid/EVAL-judge-pipeline/METRICS.md</div>
     <div class="code-block" style="font-size: 0.65rem;"><span class="c"># Metrics: Judge Pipeline</span>
 
 | Metric                        | Target        | How Measured                              |
@@ -2101,7 +2101,7 @@ judge-severity → judge-synthesizer (all scored findings collected)
 <!-- FOOTER                                                             -->
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="footnote" style="margin-top: 64px; padding-top: 24px; border-top: 2px solid var(--navy);">
-  RAPID System Specification v2.1 &mdash; 2026-05-27 &mdash; Derived from forge-architecture.html (D0&ndash;D21), SKILL.md (v2.4), FORGE.md, deck.md, CONSTITUTION.md, forge-observe.py, forge-observatory.html, and forge-phase-gate.sh. 65 requirements across 11 categories. 8 sections: architecture, requirements, observability, documentation (with dynamic generation prompt), agent prompts, schemas, configuration, and agent system evaluation (with per-graph eval directories).
+  RAPID System Specification v2.1 &mdash; 2026-05-27 &mdash; Derived from rapid-architecture.html (D0&ndash;D21), SKILL.md (v2.4), RAPID.md, deck.md, CONSTITUTION.md, rapid-observe.py, rapid-observatory.html, and rapid-phase-gate.sh. 65 requirements across 11 categories. 8 sections: architecture, requirements, observability, documentation (with dynamic generation prompt), agent prompts, schemas, configuration, and agent system evaluation (with per-graph eval directories).
 </div>
 
 </div><!-- /main -->

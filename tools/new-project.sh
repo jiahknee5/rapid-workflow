@@ -2,8 +2,8 @@
 # new-project.sh — create a new project using this skill (the deterministic P1 scaffold).
 #
 # This is the non-LLM "Structure" phase extracted as a one-shot command: it lays down
-# everything a FORGE build needs to START — the numbered folder structure, CONSTITUTION,
-# BUILD-AUTONOMY, a locked PRD, .forge/STATE, the self-contained toolset, and the live
+# everything a RAPID build needs to START — the numbered folder structure, CONSTITUTION,
+# BUILD-AUTONOMY, a locked PRD, .rapid/STATE, the self-contained toolset, and the live
 # Atlas deck (via atlas-init.sh). After this, the LLM phases (P1b…P9) fill the docs and
 # build the app; the lifecycle E2E test (tools/lifecycle-e2e.sh) drives those stages.
 #
@@ -42,7 +42,7 @@ mkdir -p "$PROJ" || { echo "new-project: cannot create $PROJ" >&2; exit 2; }
 
 # 1) Numbered folder structure (P1.1)
 for d in 00-vision 01-intake 02-grounding 03-panels 04-spec 04-spec/agents 04-spec/contracts \
-         05-gaps audits decisions panels tests docs src .forge; do
+         05-gaps audits decisions panels tests docs src .rapid; do
   mkdir -p "$PROJ/$d"
 done
 
@@ -50,7 +50,7 @@ done
 if [ -n "$PRD" ] && [ -f "$PRD" ]; then
   cp "$PRD" "$PROJ/01-intake/PRD.md"
 else
-  IDEA="${IDEA:-A small app built to exercise the FORGE pipeline end to end.}"
+  IDEA="${IDEA:-A small app built to exercise the RAPID pipeline end to end.}"
   cat > "$PROJ/01-intake/PRD.md" <<EOF
 # $NAME — PRD
 
@@ -58,7 +58,7 @@ else
 $IDEA
 
 ## Who is this for?
-The operator validating that a FORGE build produces populated docs, a built local app, and a dev deploy.
+The operator validating that a RAPID build produces populated docs, a built local app, and a dev deploy.
 
 ## What should it do?
 - Build a small but real local application.
@@ -88,8 +88,13 @@ if [ -f "$KIT/templates/BUILD-AUTONOMY.md" ]; then
   sed "s/&lt;project&gt;/$NAME/g; s/<project>/$NAME/g" "$KIT/templates/BUILD-AUTONOMY.md" > "$PROJ/BUILD-AUTONOMY.md"
 fi
 
-# 5) .forge/STATE.json (P1.7)
-cat > "$PROJ/.forge/STATE.json" <<EOF
+# 4b) .rapid/INPUTS.json (P1.5) — the human-input ledger, enforced before P6 (B).
+if [ -f "$KIT/templates/INPUTS.json" ]; then
+  sed "s/<project>/$NAME/g" "$KIT/templates/INPUTS.json" > "$PROJ/.rapid/INPUTS.json"
+fi
+
+# 5) .rapid/STATE.json (P1.7)
+cat > "$PROJ/.rapid/STATE.json" <<EOF
 { "project": "$NAME", "phase": 1, "phase_name": "structure", "status": "complete", "track": "fast" }
 EOF
 

@@ -116,12 +116,12 @@ h3 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 6p
 .dot-g { background: var(--green); } .dot-a { background: var(--amber); } .dot-r { background: var(--red); } .dot-t { background: var(--teal); }
 .legend { display: flex; gap: 16px; font-size: 0.6rem; color: var(--text-dim); margin-top: 8px; justify-content: center; }
 @media (max-width: 768px) { body { padding: 28px 20px; } .grid-2,.grid-3,.grid-4 { grid-template-columns: 1fr; } .branch { flex-direction: column; align-items: center; } .metric-row { gap: 16px; } }
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 
 /* --- standard sidebar layout (template-docs-page.html) --- */
 body{min-height:100vh;display:flex;flex-direction:column}
@@ -137,8 +137,8 @@ body{min-height:100vh;display:flex;flex-direction:column}
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
   <a href="prd.html">PRD</a>
   <a href="prd-enhanced.html">Enhanced PRD</a>
   <a href="architecture.html" class="active">Architecture</a>
@@ -181,7 +181,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <a href="#d21">D21 &mdash; Agent &amp; Skill Catalog</a>
   <div class="sidebar-section">Reference Tables</div>
   <a href="#index">Cross-Reference Index</a>
-  <a href="#d22">D22 &mdash; .forge/ File Schemas</a>
+  <a href="#d22">D22 &mdash; .rapid/ File Schemas</a>
   <a href="#d23">D23 &mdash; Inter-Agent Message Contract</a>
   <a href="#d24">D24 &mdash; Observe Event Types</a>
   <a href="#d25">D25 &mdash; Skill Contracts</a>
@@ -285,7 +285,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
       <div class="card" style="border-top: 3px solid var(--red);">
         <h3>R1: Phase Gate Hook</h3>
         <div style="font-size: 0.78rem; color: var(--text-muted);">
-          A shell script that <strong>blocks STATE.json writes</strong> unless required artifacts exist. Mechanically impossible to advance phases without the proof. <code>forge-phase-gate.sh</code> checks: eval harness before build, P6_EXIT.json before test, WALKTHROUGH.md before gaps.
+          A shell script that <strong>blocks STATE.json writes</strong> unless required artifacts exist. Mechanically impossible to advance phases without the proof. <code>rapid-phase-gate.sh</code> checks: eval harness before build, P6_EXIT.json before test, WALKTHROUGH.md before gaps.
         </div>
       </div>
       <div class="card" style="border-top: 3px solid var(--green);">
@@ -322,12 +322,12 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D0 &mdash; Full System Architecture</div>
   <div class="section-title">The complete system: pipeline, agents, safety mechanisms, data flows, and communication &mdash; all in one view</div>
   <div class="plain-english">
-    This is the master map of everything FORGE does. <strong>Read it like an assembly line:</strong> work enters at the top as a product idea, moves through three stages (understand it, plan it, build it), and exits at the bottom as a deployed application. The left column shows which AI agent is working at each step. The middle column shows what that step produces. The right columns show the safety checks and the files created. The three amber rows are where FORGE pauses and asks a human to review before continuing.
+    This is the master map of everything RAPID does. <strong>Read it like an assembly line:</strong> work enters at the top as a product idea, moves through three stages (understand it, plan it, build it), and exits at the bottom as a deployed application. The left column shows which AI agent is working at each step. The middle column shows what that step produces. The right columns show the safety checks and the files created. The three amber rows are where RAPID pauses and asks a human to review before continuing.
   </div>
   <div class="section-desc">Every other diagram (D1&ndash;D16) is a detail view of a region in this diagram. Columns: left = agents, center = pipeline phases, right = safety &amp; data. Read top to bottom.</div>
 
   <div class="diagram" style="padding: 24px; overflow-x: auto;">
-    <div class="diagram-label">D0: Complete Forge Architecture</div>
+    <div class="diagram-label">D0: Complete Rapid Architecture</div>
 
     <!-- Legend -->
     <div style="display: flex; gap: 14px; font-size: 0.58rem; color: var(--text-dim); margin-bottom: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
@@ -356,15 +356,15 @@ body{min-height:100vh;display:flex;flex-direction:column}
             &mdash;
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
-            <div class="n n-primary" style="font-size: 0.65rem;">forge.yaml loaded (D14)</div>
+            <div class="n n-primary" style="font-size: 0.65rem;">rapid.yaml loaded (D14)</div>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
             <span style="color: var(--purple);">&#x25CB;</span> Decision Router (D5)<br>injected into all agents
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border);">
-            <span style="color: var(--blue);">.forge/STATE.json</span><br>
-            <span style="color: var(--blue);">.forge/MEMORY.md</span><br>
-            <span style="color: var(--blue);">.forge/COST.json</span>
+            <span style="color: var(--blue);">.rapid/STATE.json</span><br>
+            <span style="color: var(--blue);">.rapid/MEMORY.md</span><br>
+            <span style="color: var(--blue);">.rapid/COST.json</span>
           </td>
         </tr>
 
@@ -494,7 +494,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
             <span style="color: var(--text-dim);">agents cannot modify tests</span>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
-            .forge/TASKS.json<br>.forge/EVAL/ (immutable)<br>04-spec/agents/*.md<br>.github/workflows/ (D11)
+            .rapid/TASKS.json<br>.rapid/EVAL/ (immutable)<br>04-spec/agents/*.md<br>.github/workflows/ (D11)
           </td>
         </tr>
 
@@ -553,13 +553,13 @@ body{min-height:100vh;display:flex;flex-direction:column}
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
             git branches<br>
-            .forge/AUDIT.json<br>
-            .forge/REVIEW.json<br>
-            .forge/MESSAGES.json<br>
-            .forge/LEARNINGS.md<br>
-            .forge/MEMORY.md<br>
-            .forge/COST.json<br>
-            .forge/prompts/<br>
+            .rapid/AUDIT.json<br>
+            .rapid/REVIEW.json<br>
+            .rapid/MESSAGES.json<br>
+            .rapid/LEARNINGS.md<br>
+            .rapid/MEMORY.md<br>
+            .rapid/COST.json<br>
+            .rapid/prompts/<br>
             TASKS.json (status)
           </td>
         </tr>
@@ -581,7 +581,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
             test results<br>
             screenshot evidence<br>
-            .forge/GAPS.json
+            .rapid/GAPS.json
           </td>
         </tr>
 
@@ -606,8 +606,8 @@ body{min-height:100vh;display:flex;flex-direction:column}
             <span style="color: var(--text-dim);">PRD gaps &rarr; operator</span>
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
-            .forge/GAPS.json (updated)<br>
-            .forge/OPTIMIZE.json<br>
+            .rapid/GAPS.json (updated)<br>
+            .rapid/OPTIMIZE.json<br>
             01-intake/DIFF.md<br>
             04-spec/spec.md (re-derived)
           </td>
@@ -641,7 +641,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
             CI/CD pipeline (D11)<br>runs on final merge
           </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.6rem; color: var(--text-dim);">
-            README.md<br>RUNBOOK.md<br>.forge/RETRO.md<br>.forge/LEARNINGS.md<br>STATE: shipped
+            README.md<br>RUNBOOK.md<br>.rapid/RETRO.md<br>.rapid/LEARNINGS.md<br>STATE: shipped
           </td>
         </tr>
 
@@ -675,12 +675,12 @@ body{min-height:100vh;display:flex;flex-direction:column}
     <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);">
       <div style="font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;">Cross-cutting: Communication &amp; Observability (D13)</div>
       <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-        <div class="n n-blue" style="font-size: 0.6rem;">.forge/MEMORY.md<small>append-only &bull; all agents &bull; persistent</small></div>
+        <div class="n n-blue" style="font-size: 0.6rem;">.rapid/MEMORY.md<small>append-only &bull; all agents &bull; persistent</small></div>
         <div class="n" style="font-size: 0.6rem; border-color: var(--purple); color: var(--purple);">claude-peers MCP<small>12 msg types &bull; 3 terminals &bull; JSON envelope</small></div>
-        <div class="n" style="font-size: 0.6rem; border-color: var(--teal); color: var(--teal);">.forge/LEARNINGS.md<small>compound learning &bull; read at P0 of next build</small></div>
-        <div class="n" style="font-size: 0.6rem; border-color: var(--amber); color: var(--amber);">forge.yaml config (D14)<small>3-level cascade &bull; model routing</small></div>
+        <div class="n" style="font-size: 0.6rem; border-color: var(--teal); color: var(--teal);">.rapid/LEARNINGS.md<small>compound learning &bull; read at P0 of next build</small></div>
+        <div class="n" style="font-size: 0.6rem; border-color: var(--amber); color: var(--amber);">rapid.yaml config (D14)<small>3-level cascade &bull; model routing</small></div>
         <div class="n n-guard" style="font-size: 0.6rem;">CONSTITUTION.md<small>Art. I&ndash;V inviolable &bull; checked every PR</small></div>
-        <div class="n n-blue" style="font-size: 0.6rem;">.forge/observe/*.jsonl<small>live dashboard &bull; localhost:4040</small></div>
+        <div class="n n-blue" style="font-size: 0.6rem;">.rapid/observe/*.jsonl<small>live dashboard &bull; localhost:4040</small></div>
       </div>
     </div>
 
@@ -695,7 +695,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D1 &mdash; Master Pipeline</div>
   <div class="section-title">The complete pipeline: 12 phases, 4 gates, 1 feedback loop, 1 compound loop</div>
   <div class="plain-english">
-    The pipeline is the <strong>sequence of steps FORGE follows to turn an idea into working software</strong>. It has four acts: first, understand what needs to be built (decompose the PRD, consult expert panels, do research). Second, write a detailed plan. Third, build and test the software with a 3-terminal agent team, then fix anything that doesn&rsquo;t work. Fourth, after shipping, monitor how the product is actually used and feed that signal back into the next build. The system stops four times for human approval &mdash; after PRD decomposition, after research, after architecture, and before shipping.
+    The pipeline is the <strong>sequence of steps RAPID follows to turn an idea into working software</strong>. It has four acts: first, understand what needs to be built (decompose the PRD, consult expert panels, do research). Second, write a detailed plan. Third, build and test the software with a 3-terminal agent team, then fix anything that doesn&rsquo;t work. Fourth, after shipping, monitor how the product is actually used and feed that signal back into the next build. The system stops four times for human approval &mdash; after PRD decomposition, after research, after architecture, and before shipping.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> This is the horizontal read of D0&rsquo;s architecture table. Every subsequent diagram (D2&ndash;D21) is a detail view of a specific node or edge in this pipeline.</div>
 
@@ -750,14 +750,14 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D2 &mdash; Agent Topology</div>
   <div class="section-title">10 agents mapped to pipeline phases, each selected for isolation and cost</div>
   <div class="plain-english">
-    FORGE uses <strong>10 specialized AI agents, each with a specific job</strong>. One orchestrates the whole process. Others run expert panels, do research, write the spec, build the code, review it, test it, and watch for problems. They&rsquo;re organized like a small company: there&rsquo;s a manager (supervisor), a team of up to 4 builders working in parallel, a quality inspector (watchdog), and a tester. Each agent only sees and touches what it needs to &mdash; this prevents one agent&rsquo;s mistake from cascading into everything else. <strong>In the Phase&nbsp;6 build (Opus&nbsp;4.8 era), every persistent agent runs in its OWN terminal</strong> &mdash; one tmux window per agent inside a single <code>forge-build</code> session &mdash; replacing the old fixed 3-terminal setup. The terminals form one <strong>agent team</strong> wired together over the claude-peers MCP bus, so each agent can be watched, message its peers, and build continuously rather than being a fire-and-forget subagent. See D2b for the live team topology.
+    RAPID uses <strong>10 specialized AI agents, each with a specific job</strong>. One orchestrates the whole process. Others run expert panels, do research, write the spec, build the code, review it, test it, and watch for problems. They&rsquo;re organized like a small company: there&rsquo;s a manager (supervisor), a team of up to 4 builders working in parallel, a quality inspector (watchdog), and a tester. Each agent only sees and touches what it needs to &mdash; this prevents one agent&rsquo;s mistake from cascading into everything else. <strong>In the Phase&nbsp;6 build (Opus&nbsp;4.8 era), every persistent agent runs in its OWN terminal</strong> &mdash; one tmux window per agent inside a single <code>rapid-build</code> session &mdash; replacing the old fixed 3-terminal setup. The terminals form one <strong>agent team</strong> wired together over the claude-peers MCP bus, so each agent can be watched, message its peers, and build continuously rather than being a fire-and-forget subagent. See D2b for the live team topology.
   </div>
-  <div class="section-desc">References D1 phases. Three primitives: skill (orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). At P6 the persistent roles (orchestrator = team lead, supervisor = build lead, watchdog = R2 auditor, impl-1..impl-N) each occupy their own long-lived terminal keyed by <code>FORGE_ROLE</code>, coordinate over claude-peers, and carry per-terminal status / monitoring / continuous-build hooks. See D2b for terminal team topology and D7 for fan-out sizing.</div>
+  <div class="section-desc">References D1 phases. Three primitives: skill (orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). At P6 the persistent roles (orchestrator = team lead, supervisor = build lead, watchdog = R2 auditor, impl-1..impl-N) each occupy their own long-lived terminal keyed by <code>RAPID_ROLE</code>, coordinate over claude-peers, and carry per-terminal status / monitoring / continuous-build hooks. See D2b for terminal team topology and D7 for fan-out sizing.</div>
 
   <div class="diagram">
     <div class="diagram-label">D2: Agent Topology (references D1 phases)</div>
     <div class="vflow" style="padding: 8px 0;">
-      <div class="n n-primary" style="min-width: 220px;">Forge Orchestrator<small>Skill &bull; persistent &bull; D1 all phases</small></div>
+      <div class="n n-primary" style="min-width: 220px;">Rapid Orchestrator<small>Skill &bull; persistent &bull; D1 all phases</small></div>
       <div class="vline"></div>
       <div class="phase-label">Arc 1: Understand (D1 P0&ndash;P3)</div>
       <div class="hflow" style="gap: 8px;">
@@ -799,18 +799,18 @@ body{min-height:100vh;display:flex;flex-direction:column}
     <table class="compare-table">
       <thead><tr><th>Role</th><th>Primitive</th><th>Rationale</th><th>Observability</th></tr></thead>
       <tbody>
-        <tr><td style="font-weight:700;">Orchestrator</td><td>Skill</td><td>Needs operator context, approvals, API keys</td><td>.forge/STATE.json</td></tr>
+        <tr><td style="font-weight:700;">Orchestrator</td><td>Skill</td><td>Needs operator context, approvals, API keys</td><td>.rapid/STATE.json</td></tr>
         <tr><td style="font-weight:700;">Panelist &times;1&ndash;3</td><td>Skill (fast: 1) / Subagent (full: 3)</td><td>Fast: stays in orchestrator context, no duplication. Full: 3 agents run in parallel, saves wall-clock at cost of 3x context.</td><td>03-panels/*.md</td></tr>
         <tr><td style="font-weight:700;">Researcher</td><td>Subagent</td><td>Needs WebSearch, 15m timebox</td><td>02-grounding/*.md</td></tr>
-        <tr><td style="font-weight:700;">Supervisor</td><td>Terminal</td><td>Long-running, manages task queue</td><td>.forge/MEMORY.md</td></tr>
+        <tr><td style="font-weight:700;">Supervisor</td><td>Terminal</td><td>Long-running, manages task queue</td><td>.rapid/MEMORY.md</td></tr>
         <tr><td style="font-weight:700;">Implementor &times;4</td><td>Agent (worktree)</td><td>Parallel code; git isolation prevents conflicts</td><td>Branch git log</td></tr>
-        <tr><td style="font-weight:700;">Reviewer</td><td>Subagent</td><td>Reads PR + spec, returns verdict. Optional 2nd model (Codex).</td><td>.forge/MEMORY.md</td></tr>
-        <tr><td style="font-weight:700;">Watchdog</td><td>Terminal (tmux) + /loop 30m</td><td>Persistent tmux session, spawned P6a, killed P6e. Drift-checks on PR_SUBMITTED + PR_MERGED (claude-peers push), full-repo audit every 30m. Never checks WIP.</td><td>.forge/AUDIT.json</td></tr>
-        <tr><td style="font-weight:700;">Tester</td><td>Subagent + Playwright</td><td>Runs tests + screenshots</td><td>.forge/GAPS.json</td></tr>
+        <tr><td style="font-weight:700;">Reviewer</td><td>Subagent</td><td>Reads PR + spec, returns verdict. Optional 2nd model (Codex).</td><td>.rapid/MEMORY.md</td></tr>
+        <tr><td style="font-weight:700;">Watchdog</td><td>Terminal (tmux) + /loop 30m</td><td>Persistent tmux session, spawned P6a, killed P6e. Drift-checks on PR_SUBMITTED + PR_MERGED (claude-peers push), full-repo audit every 30m. Never checks WIP.</td><td>.rapid/AUDIT.json</td></tr>
+        <tr><td style="font-weight:700;">Tester</td><td>Subagent + Playwright</td><td>Runs tests + screenshots</td><td>.rapid/GAPS.json</td></tr>
         <tr><td style="font-weight:700;">Decision Router</td><td>Prompt injection</td><td>Behavioral rule, no tools, all agents</td><td>MEMORY.md</td></tr>
       </tbody>
     </table>
-    <div class="diagram-ref">Communication: .forge/MEMORY.md (append-only, all agents) + claude-peers MCP (real-time nudges between terminals). Naming: forge/{phase}/{task-slug} branches, [SPEC &sect;X.Y] commits.</div>
+    <div class="diagram-ref">Communication: .rapid/MEMORY.md (append-only, all agents) + claude-peers MCP (real-time nudges between terminals). Naming: rapid/{phase}/{task-slug} branches, [SPEC &sect;X.Y] commits.</div>
   </div>
 
   <div class="diagram" style="margin-top: 12px;">
@@ -914,23 +914,23 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D2b &mdash; Terminal Team Topology</div>
   <div class="section-title">Each persistent agent runs in its own terminal, wired into one team over the claude-peers bus, with per-terminal hooks</div>
   <div class="plain-english">
-    In the Phase&nbsp;6 build, the old fixed 3-terminal layout is replaced by <strong>one terminal per agent</strong> &mdash; a single tmux session (<code>forge-build</code>) with one window each for the orchestrator (team lead), supervisor (build lead), watchdog (R2 auditor), and every implementor (impl-1..impl-N, fan-out &le; 4). The terminals form a single <strong>agent team</strong> over the claude-peers MCP bus: each agent announces itself (<code>set_summary</code> + <code>list_peers</code>) and coordinates by shoulder-tap messaging. Each terminal carries three per-role hooks &mdash; <strong>status</strong> (statusline + HEARTBEAT), <strong>monitoring</strong> (observe events + stall flag), and <strong>continuous build</strong> (the R7 Stop hook that won&rsquo;t let a terminal quit while phase work remains).
+    In the Phase&nbsp;6 build, the old fixed 3-terminal layout is replaced by <strong>one terminal per agent</strong> &mdash; a single tmux session (<code>rapid-build</code>) with one window each for the orchestrator (team lead), supervisor (build lead), watchdog (R2 auditor), and every implementor (impl-1..impl-N, fan-out &le; 4). The terminals form a single <strong>agent team</strong> over the claude-peers MCP bus: each agent announces itself (<code>set_summary</code> + <code>list_peers</code>) and coordinates by shoulder-tap messaging. Each terminal carries three per-role hooks &mdash; <strong>status</strong> (statusline + HEARTBEAT), <strong>monitoring</strong> (observe events + stall flag), and <strong>continuous build</strong> (the R7 Stop hook that won&rsquo;t let a terminal quit while phase work remains).
   </div>
-  <div class="section-desc">Spawned at P6a, torn down at P6 end. Addressing and hook behavior derive from <code>FORGE_ROLE</code> per terminal. Implementors still build in their own git worktree for isolation; the terminal is long-lived so it can be monitored, message peers, and build continuously. References D2 (roles), D4 (watchdog), D5 (shoulder-tap / nudge), D8 (fan-out + heartbeat), D13 (observability), R7 (Stop hook).</div>
+  <div class="section-desc">Spawned at P6a, torn down at P6 end. Addressing and hook behavior derive from <code>RAPID_ROLE</code> per terminal. Implementors still build in their own git worktree for isolation; the terminal is long-lived so it can be monitored, message peers, and build continuously. References D2 (roles), D4 (watchdog), D5 (shoulder-tap / nudge), D8 (fan-out + heartbeat), D13 (observability), R7 (Stop hook).</div>
 
   <div class="diagram">
-    <div class="diagram-label">D2b: tmux session &lsquo;forge-build&rsquo; &mdash; one window per agent, all on the claude-peers team bus</div>
+    <div class="diagram-label">D2b: tmux session &lsquo;rapid-build&rsquo; &mdash; one window per agent, all on the claude-peers team bus</div>
     <div class="vflow" style="padding: 8px 0;">
 
       <!-- The shared team bus -->
       <div class="n n-blue" style="min-width: 380px;">claude-peers MCP &mdash; team bus<small>set_summary + list_peers on start &bull; shoulder-tap send_message / check_messages &bull; answer peers immediately</small></div>
       <div class="vline"></div>
-      <div style="font-size: 0.58rem; color: var(--text-dim); margin-bottom: 6px;">One tmux session <code>forge-build</code> &bull; one window per agent &bull; addressing derives from <code>FORGE_ROLE</code></div>
+      <div style="font-size: 0.58rem; color: var(--text-dim); margin-bottom: 6px;">One tmux session <code>rapid-build</code> &bull; one window per agent &bull; addressing derives from <code>RAPID_ROLE</code></div>
 
       <!-- Team lead row -->
       <div class="branch no-bar" style="gap: 18px;">
         <div>
-          <div class="n n-primary" style="min-width: 220px;">Terminal: orchestrator<small>FORGE_ROLE=orchestrator &bull; TEAM LEAD</small></div>
+          <div class="n n-primary" style="min-width: 220px;">Terminal: orchestrator<small>RAPID_ROLE=orchestrator &bull; TEAM LEAD</small></div>
           <div class="vline"></div>
           <div class="branch no-bar" style="gap: 5px;">
             <div class="n n-auto" style="font-size: 0.55rem;">status: statusline + HEARTBEAT</div>
@@ -948,7 +948,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
         <!-- Supervisor = build lead -->
         <div>
-          <div class="n n-auto" style="min-width: 200px; font-weight: 800;">Terminal: supervisor<small>FORGE_ROLE=supervisor &bull; BUILD LEAD</small></div>
+          <div class="n n-auto" style="min-width: 200px; font-weight: 800;">Terminal: supervisor<small>RAPID_ROLE=supervisor &bull; BUILD LEAD</small></div>
           <div class="vline"></div>
           <div class="branch no-bar" style="gap: 5px;">
             <div class="n n-auto" style="font-size: 0.55rem;">status</div>
@@ -962,7 +962,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
           <div class="phase-label">impl terminals (fan-out &le; 4)</div>
           <div class="branch no-bar" style="gap: 8px;">
             <div>
-              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-1<small>FORGE_ROLE=impl-1 &bull; worktree</small></div>
+              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-1<small>RAPID_ROLE=impl-1 &bull; worktree</small></div>
               <div class="vline"></div>
               <div class="branch no-bar" style="gap: 3px;">
                 <div class="n n-auto" style="font-size: 0.52rem;">status</div>
@@ -971,7 +971,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
               </div>
             </div>
             <div>
-              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-2<small>FORGE_ROLE=impl-2 &bull; worktree</small></div>
+              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-2<small>RAPID_ROLE=impl-2 &bull; worktree</small></div>
               <div class="vline"></div>
               <div class="branch no-bar" style="gap: 3px;">
                 <div class="n n-auto" style="font-size: 0.52rem;">status</div>
@@ -980,7 +980,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
               </div>
             </div>
             <div>
-              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-N<small>FORGE_ROLE=impl-N &bull; worktree</small></div>
+              <div class="n n-auto" style="min-width: 110px;">Terminal: impl-N<small>RAPID_ROLE=impl-N &bull; worktree</small></div>
               <div class="vline"></div>
               <div class="branch no-bar" style="gap: 3px;">
                 <div class="n n-auto" style="font-size: 0.52rem;">status</div>
@@ -993,7 +993,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
         <!-- Watchdog = R2 auditor -->
         <div>
-          <div class="n n-guard" style="min-width: 190px; font-weight: 800;">Terminal: watchdog<small>FORGE_ROLE=watchdog &bull; R2 AUDITOR</small></div>
+          <div class="n n-guard" style="min-width: 190px; font-weight: 800;">Terminal: watchdog<small>RAPID_ROLE=watchdog &bull; R2 AUDITOR</small></div>
           <div class="vline"></div>
           <div class="branch no-bar" style="gap: 5px;">
             <div class="n n-auto" style="font-size: 0.55rem;">status</div>
@@ -1006,10 +1006,10 @@ body{min-height:100vh;display:flex;flex-direction:column}
     </div>
 
     <div style="margin-top: 14px; font-size: 0.64rem; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 8px;">
-      <strong>Per-terminal hooks (keyed by <code>FORGE_ROLE</code>):</strong>
-      &bull; <span style="color: var(--green);">STATUS</span> &mdash; a statusline / SessionStart hook stamps the terminal&rsquo;s role + summary; each agent refreshes <code>.forge/HEARTBEAT.json</code> (per role) every &le;5&nbsp;min.
-      &bull; <span style="color: var(--teal);">MONITORING</span> &mdash; events stream to <code>.forge/observe/&lt;role&gt;.jsonl</code> (SPAWN / PROGRESS / &hellip;); <code>/forge status</code> and the observatory read every terminal, and a monitor flags a stalled terminal (heartbeat past threshold) for restart.
-      &bull; <span style="color: var(--amber);">CONTINUOUS BUILD</span> &mdash; the R7 Stop / SubagentStop hook (<code>tools/stop-hook.sh</code>) blocks a terminal from halting while phase work remains; <code>FORGE_ROLE</code> attributes continuation + observe; after 5 same-phase nudges it escalates to the operator.
+      <strong>Per-terminal hooks (keyed by <code>RAPID_ROLE</code>):</strong>
+      &bull; <span style="color: var(--green);">STATUS</span> &mdash; a statusline / SessionStart hook stamps the terminal&rsquo;s role + summary; each agent refreshes <code>.rapid/HEARTBEAT.json</code> (per role) every &le;5&nbsp;min.
+      &bull; <span style="color: var(--teal);">MONITORING</span> &mdash; events stream to <code>.rapid/observe/&lt;role&gt;.jsonl</code> (SPAWN / PROGRESS / &hellip;); <code>/rapid-workflow status</code> and the observatory read every terminal, and a monitor flags a stalled terminal (heartbeat past threshold) for restart.
+      &bull; <span style="color: var(--amber);">CONTINUOUS BUILD</span> &mdash; the R7 Stop / SubagentStop hook (<code>tools/stop-hook.sh</code>) blocks a terminal from halting while phase work remains; <code>RAPID_ROLE</code> attributes continuation + observe; after 5 same-phase nudges it escalates to the operator.
     </div>
     <div class="diagram-ref">Lifecycle: session created at P6a, torn down at P6 end. Coordination: orchestrator = team lead, supervisor = build lead (owns impl-1..impl-N), watchdog = R2 auditor reporting to orchestrator. Deterministic fan-out (implementors, tiered reviewers, doc-review agents) is orchestrated via the Workflow tool / parallel subagents under Opus&nbsp;4.8&rsquo;s 1M context. Cross-refs: D2 (roles + primitives), D4 (watchdog loop), D5 (shoulder-tap / nudge protocol), D8 (fan-out + heartbeat), D13 (observability layers), D20 (tiered review + learning), R7 (Stop hook).</div>
   </div>
@@ -1022,7 +1022,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D3 &mdash; Human Gates</div>
   <div class="section-title">4 decision points where the pipeline pauses for operator input &mdash; each pre-screened by document review agents</div>
   <div class="plain-english">
-    FORGE works autonomously, but it <strong>stops four times to ask you for approval</strong>. Before each stop, document review agents (feasibility, scope guardian, coherence, adversarial) pre-screen the artifacts so you see higher-quality material. The first stop is after decomposing the PRD into a checklist &mdash; &ldquo;did I understand the requirements correctly?&rdquo; The second is after expert panels and research &mdash; &ldquo;here&rsquo;s the direction, should I write the spec?&rdquo; The third is after the full spec &mdash; &ldquo;here&rsquo;s the architecture, should I start building?&rdquo; (point of no return). The fourth is after building and testing &mdash; &ldquo;should I ship?&rdquo;
+    RAPID works autonomously, but it <strong>stops four times to ask you for approval</strong>. Before each stop, document review agents (feasibility, scope guardian, coherence, adversarial) pre-screen the artifacts so you see higher-quality material. The first stop is after decomposing the PRD into a checklist &mdash; &ldquo;did I understand the requirements correctly?&rdquo; The second is after expert panels and research &mdash; &ldquo;here&rsquo;s the direction, should I write the spec?&rdquo; The third is after the full spec &mdash; &ldquo;here&rsquo;s the architecture, should I start building?&rdquo; (point of no return). The fourth is after building and testing &mdash; &ldquo;should I ship?&rdquo;
   </div>
   <div class="section-desc"><strong>D0 context:</strong> The four amber rows in D0. References D1 G0, G1, G2, G3. Escalation format enforced: every question includes options, recommendation, reversibility. See D5 for how non-gate decisions are routed.</div>
 
@@ -1217,7 +1217,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="explain">
     <strong>Three review lenses:</strong> Technical (benchmarks, not intuition), Business (TAM, unit economics, regulatory), Domain SME (what tech panels miss: microstructure, clinical safety, cultural sensitivity). Domain errors = BLOCKER severity.
   </div>
-  <div class="footnote">Lesson from ASL project: research assumed 200 training clips available; actual was 52. Forge verifies data availability in P3, not P6.</div>
+  <div class="footnote">Lesson from ASL project: research assumed 200 training clips available; actual was 52. Rapid verifies data availability in P3, not P6.</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -1227,7 +1227,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D7 &mdash; Fan-Out Sizing</div>
   <div class="section-title">How the system determines implementor count during P5 (Task Decomposition)</div>
   <div class="plain-english">
-    FORGE can run <strong>up to four builders working at the same time</strong>, but it doesn&rsquo;t always use all four. A small project with five simple tasks gets one builder. A medium project with a dozen tasks gets two. A complex project gets three or four. The cap at four exists because someone has to review all the work &mdash; and reviewing more than four parallel streams honestly is impossible. If a project needs more parallelism, FORGE runs two sequential rounds of four rather than fanning out to eight.
+    RAPID can run <strong>up to four builders working at the same time</strong>, but it doesn&rsquo;t always use all four. A small project with five simple tasks gets one builder. A medium project with a dozen tasks gets two. A complex project gets three or four. The cap at four exists because someone has to review all the work &mdash; and reviewing more than four parallel streams honestly is impossible. If a project needs more parallelism, RAPID runs two sequential rounds of four rather than fanning out to eight.
   </div>
   <div class="section-desc">References D1 P5, D2 implementor row. Based on task count, dependency parallelism, and reviewer capacity. Cap: &le;4 (beyond 4, review quality degrades).</div>
 
@@ -1255,7 +1255,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D7b &mdash; Test-Driven Development</div>
   <div class="section-title">Tests generated from workflow state machine before any code is written</div>
   <div class="plain-english">
-    Before any code is written, <strong>FORGE generates a set of tests that define what &ldquo;working&rdquo; looks like</strong>. These tests come from the user workflow map &mdash; each step in the user&rsquo;s journey becomes a test case. The critical rule: the building agents are not allowed to change these tests. They can only write code that passes them. This prevents a common failure mode where an AI &ldquo;fixes&rdquo; a failing test by weakening the test instead of fixing the code.
+    Before any code is written, <strong>RAPID generates a set of tests that define what &ldquo;working&rdquo; looks like</strong>. These tests come from the user workflow map &mdash; each step in the user&rsquo;s journey becomes a test case. The critical rule: the building agents are not allowed to change these tests. They can only write code that passes them. This prevents a common failure mode where an AI &ldquo;fixes&rdquo; a failing test by weakening the test instead of fixing the code.
   </div>
   <div class="section-desc">References D1 P4&ndash;P5. The eval harness is immutable once generated &mdash; implementing agents cannot weaken, skip, or modify tests. This is the TDD red-green-refactor cycle, enforced structurally rather than by discipline. <em>Sources: Kent Beck, TDD (2002); Karpathy autoresearch "prepare.py is read-only."</em></div>
 
@@ -1284,7 +1284,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
         </div>
       </div>
       <div class="vline"></div>
-      <div class="n n-guard" style="min-width: 280px;">Lock eval harness &rarr; .forge/EVAL/<small>immutable &mdash; agents cannot modify</small></div>
+      <div class="n n-guard" style="min-width: 280px;">Lock eval harness &rarr; .rapid/EVAL/<small>immutable &mdash; agents cannot modify</small></div>
     </div>
     <div class="diagram-ref">The eval harness is the contract between spec and implementation. Tests fail red before code exists (TDD). Code must make them green. Agents refactor freely as long as tests stay green. Regressions trigger git reset (D8 keep-or-revert).</div>
   </div>
@@ -1361,7 +1361,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D9 &mdash; Gap Loop + Optimization</div>
   <div class="section-title">The convergence mechanism: classify failures, re-derive spec, rebuild &mdash; plus parallel optimization experiments for performance gaps</div>
   <div class="plain-english">
-    After building and testing, problems are inevitable. The gap loop is how FORGE <strong>turns failures into fixes systematically</strong>. Each problem gets classified: is this a spec issue (the plan was wrong) or a PRD issue (the requirements were ambiguous)? Spec issues get auto-fixed by re-deriving the affected spec section and rebuilding. PRD issues get surfaced to the operator &mdash; FORGE doesn&rsquo;t guess. For performance/UX gaps (it works but could be better), FORGE runs up to 3 parallel experiments, measures each, and keeps the winner.
+    After building and testing, problems are inevitable. The gap loop is how RAPID <strong>turns failures into fixes systematically</strong>. Each problem gets classified: is this a spec issue (the plan was wrong) or a PRD issue (the requirements were ambiguous)? Spec issues get auto-fixed by re-deriving the affected spec section and rebuilding. PRD issues get surfaced to the operator &mdash; RAPID doesn&rsquo;t guess. For performance/UX gaps (it works but could be better), RAPID runs up to 3 parallel experiments, measures each, and keeps the winner.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> The amber-bordered P8 row in Arc 3. References D1 P7&ndash;P8, the feedback arrow. Max 3 gap loop iterations; optimization runs once.</div>
 
@@ -1457,9 +1457,9 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D11 &mdash; CI/CD Pipeline</div>
   <div class="section-title">Auto-generated pipeline that makes the watchdog permanent infrastructure &mdash; drift checking survives the build</div>
   <div class="plain-english">
-    The watchdog (D4) runs during the build, but what happens after FORGE finishes? The CI/CD pipeline <strong>bakes the watchdog checks into permanent infrastructure</strong>. Every future PR and merge &mdash; even those made by humans months later &mdash; runs through the same drift detection, constitution checks, and visual QA that FORGE used during the build.
+    The watchdog (D4) runs during the build, but what happens after RAPID finishes? The CI/CD pipeline <strong>bakes the watchdog checks into permanent infrastructure</strong>. Every future PR and merge &mdash; even those made by humans months later &mdash; runs through the same drift detection, constitution checks, and visual QA that RAPID used during the build.
   </div>
-  <div class="section-desc"><strong>D0 context:</strong> Generated during P5, runs during P6+, survives after P9. Platform: GitHub Actions or GitLab CI (configurable in forge.yaml).</div>
+  <div class="section-desc"><strong>D0 context:</strong> Generated during P5, runs during P6+, survives after P9. Platform: GitHub Actions or GitLab CI (configurable in rapid.yaml).</div>
 
   <div class="diagram">
     <div class="diagram-label">D11: CI/CD pipeline (generated at D1 P5, runs during D1 P6+)</div>
@@ -1484,7 +1484,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D12 &mdash; Economics</div>
   <div class="section-title">Three cost layers tracked at different timescales &mdash; with a circuit-breaker that stops the build before it blows the budget</div>
   <div class="plain-english">
-    AI builds can get expensive fast. FORGE tracks three cost layers: <strong>build tokens</strong> (what it costs to run the agents), <strong>runtime infrastructure</strong> (what it costs to deploy), and <strong>per-request effectiveness</strong> (what each AI call costs when users use the product). Each layer gets surfaced at the appropriate gate so the operator can make informed cost decisions. If build spending hits 80% of the budget cap, a circuit-breaker automatically pauses the build and alerts the operator.
+    AI builds can get expensive fast. RAPID tracks three cost layers: <strong>build tokens</strong> (what it costs to run the agents), <strong>runtime infrastructure</strong> (what it costs to deploy), and <strong>per-request effectiveness</strong> (what each AI call costs when users use the product). Each layer gets surfaced at the appropriate gate so the operator can make informed cost decisions. If build spending hits 80% of the budget cap, a circuit-breaker automatically pauses the build and alerts the operator.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> The cost breaker appears in the P6 Safety column. COST.json is in the Data column. References D3 gates for when costs are surfaced.</div>
 
@@ -1524,17 +1524,17 @@ body{min-height:100vh;display:flex;flex-direction:column}
   <div class="section-id">D13 &mdash; Observability</div>
   <div class="section-title">Every agent writes structured events to a shared state layer, visible in a live dashboard with 4 visual themes</div>
   <div class="plain-english">
-    Every action every agent takes &mdash; every file read, every write, every message sent, every decision made &mdash; gets <strong>logged as a structured event</strong> to a JSONL file. A live dashboard at <code>localhost:4040</code> merges all agent logs and shows them in real time: a health summary (&ldquo;should I be worried?&rdquo;), an agent topology graph, a Gantt timeline aligned to the pipeline arcs, and a filterable event stream. The dashboard has a <strong>Basic mode</strong> (health view only, human-readable descriptions) and an <strong>Expert mode</strong> (all views, raw data, context numbers). Four visual themes: Linear (clean white), Grafana (dark panels), Bloomberg Terminal (maximum density), Raycast (glass effects). Because every agent now runs in <strong>its own terminal</strong> (see D2b), observability is per-terminal: each agent stamps its role via a status hook, refreshes <code>.forge/HEARTBEAT.json</code> every &le;5&nbsp;min, and streams events to its own <code>.forge/observe/&lt;role&gt;.jsonl</code> &mdash; so the dashboard, <code>/forge status</code>, and the observatory all read across the full team and a monitor can flag any terminal whose heartbeat goes stale.
+    Every action every agent takes &mdash; every file read, every write, every message sent, every decision made &mdash; gets <strong>logged as a structured event</strong> to a JSONL file. A live dashboard at <code>localhost:4040</code> merges all agent logs and shows them in real time: a health summary (&ldquo;should I be worried?&rdquo;), an agent topology graph, a Gantt timeline aligned to the pipeline arcs, and a filterable event stream. The dashboard has a <strong>Basic mode</strong> (health view only, human-readable descriptions) and an <strong>Expert mode</strong> (all views, raw data, context numbers). Four visual themes: Linear (clean white), Grafana (dark panels), Bloomberg Terminal (maximum density), Raycast (glass effects). Because every agent now runs in <strong>its own terminal</strong> (see D2b), observability is per-terminal: each agent stamps its role via a status hook, refreshes <code>.rapid/HEARTBEAT.json</code> every &le;5&nbsp;min, and streams events to its own <code>.rapid/observe/&lt;role&gt;.jsonl</code> &mdash; so the dashboard, <code>/rapid-workflow status</code>, and the observatory all read across the full team and a monitor can flag any terminal whose heartbeat goes stale.
   </div>
-  <div class="section-desc">References all diagrams. Three data layers: .forge/ state files (persistent), .forge/observe/*.jsonl (per-terminal event stream, one file per FORGE_ROLE), claude-peers MCP (real-time team bus across terminals). Per-terminal hooks (D2b) drive the signals: status (statusline + HEARTBEAT), monitoring (observe + stall flag), continuous build (R7 Stop hook). The operator queries state via the dashboard or from any terminal at any time.</div>
+  <div class="section-desc">References all diagrams. Three data layers: .rapid/ state files (persistent), .rapid/observe/*.jsonl (per-terminal event stream, one file per RAPID_ROLE), claude-peers MCP (real-time team bus across terminals). Per-terminal hooks (D2b) drive the signals: status (statusline + HEARTBEAT), monitoring (observe + stall flag), continuous build (R7 Stop hook). The operator queries state via the dashboard or from any terminal at any time.</div>
 
   <div class="diagram">
     <div class="diagram-label">D13a: Data flow — who writes what, who reads what</div>
     <div style="padding: 8px 0;">
       <table class="compare-table" style="font-size: 0.7rem;">
-        <thead><tr><th style="width:140px;">.forge/ file</th><th>Written by</th><th>Read by</th><th>Update frequency</th><th>Diagram ref</th></tr></thead>
+        <thead><tr><th style="width:140px;">.rapid/ file</th><th>Written by</th><th>Read by</th><th>Update frequency</th><th>Diagram ref</th></tr></thead>
         <tbody>
-          <tr><td style="font-weight:700;">STATE.json</td><td>Orchestrator</td><td>All agents, /forge --resume</td><td>After every phase + gate</td><td>D1 all phases</td></tr>
+          <tr><td style="font-weight:700;">STATE.json</td><td>Orchestrator</td><td>All agents, /rapid-workflow --resume</td><td>After every phase + gate</td><td>D1 all phases</td></tr>
           <tr><td style="font-weight:700;">MEMORY.md</td><td>All agents (append-only)</td><td>All agents, operator</td><td>On every decision, assignment, escalation</td><td>D2, D5, D8</td></tr>
           <tr><td style="font-weight:700;">TASKS.json</td><td>Spec writer (P5), supervisor (P6)</td><td>Supervisor, implementors, operator</td><td>On task assign/complete/block</td><td>D7, D8</td></tr>
           <tr><td style="font-weight:700;">AUDIT.json</td><td>Watchdog</td><td>Supervisor, reviewer, operator</td><td>On PR submit, merge, and every 30m</td><td>D4</td></tr>
@@ -1562,7 +1562,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
     <div class="vflow" style="padding: 8px 0;">
       <div class="branch no-bar" style="gap: 24px;">
         <div>
-          <div class="n n-primary" style="min-width: 180px;">State files (.forge/)<small>persistent &bull; survives crashes</small></div>
+          <div class="n n-primary" style="min-width: 180px;">State files (.rapid/)<small>persistent &bull; survives crashes</small></div>
           <div class="vline"></div>
           <div class="branch no-bar" style="gap: 6px;">
             <div class="n n-auto" style="font-size: 0.58rem;">MEMORY.md</div>
@@ -1605,7 +1605,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
     <div class="diagram-label">D13c: Health signal flow — how the system surfaces problems</div>
     <div class="vflow" style="padding: 8px 0;">
       <div class="hflow" style="gap: 2px;">
-        <div class="n n-auto">Agent writes to .forge/</div><span class="arr">&rarr;</span>
+        <div class="n n-auto">Agent writes to .rapid/</div><span class="arr">&rarr;</span>
         <div class="n n-primary">Monitor checks</div><span class="arr">&rarr;</span>
         <div class="n n-blue">Classify health</div>
       </div>
@@ -1640,19 +1640,19 @@ body{min-height:100vh;display:flex;flex-direction:column}
     <div class="grid-2" style="gap: 12px;">
       <div>
         <div class="code-block"><span class="comment"># Current phase and status</span>
-cat .forge/STATE.json | jq '.phase, .status'
+cat .rapid/STATE.json | jq '.phase, .status'
 
 <span class="comment"># Any blockers or escalations?</span>
-grep "ESCALATE\|BLOCKED\|STALL" .forge/MEMORY.md
+grep "ESCALATE\|BLOCKED\|STALL" .rapid/MEMORY.md
 
 <span class="comment"># Incomplete tasks</span>
-cat .forge/TASKS.json | jq '[.[]|select(.status!="done")]'
+cat .rapid/TASKS.json | jq '[.[]|select(.status!="done")]'
 
 <span class="comment"># Latest drift report</span>
-cat .forge/AUDIT.json | jq '.latest'
+cat .rapid/AUDIT.json | jq '.latest'
 
 <span class="comment"># Token spend so far</span>
-cat .forge/COST.json | jq '.total, .by_phase'</div>
+cat .rapid/COST.json | jq '.total, .by_phase'</div>
       </div>
       <div>
         <div class="code-block"><span class="comment"># Who's running? (inter-terminal)</span>
@@ -1661,13 +1661,13 @@ claude-peers list_peers --scope repo
 <span class="comment"># What's each terminal doing?</span>
 <span class="comment"># (each agent calls set_summary on spawn)</span>
 <span class="comment"># Example output:</span>
-<span class="comment">#  forge-orchestrator: P6, 5/8 tasks done</span>
-<span class="comment">#  forge-impl-1: [SPEC §S8] order book</span>
-<span class="comment">#  forge-watchdog: CLEAN, last 2m ago</span>
-<span class="comment">#  forge-supervisor: assigning task-06</span>
+<span class="comment">#  rapid-orchestrator: P6, 5/8 tasks done</span>
+<span class="comment">#  rapid-impl-1: [SPEC §S8] order book</span>
+<span class="comment">#  rapid-watchdog: CLEAN, last 2m ago</span>
+<span class="comment">#  rapid-supervisor: assigning task-06</span>
 
 <span class="comment"># Resume after crash or context limit</span>
-/forge --resume</div>
+/rapid-workflow --resume</div>
       </div>
     </div>
   </div>
@@ -1698,11 +1698,11 @@ claude-peers list_peers --scope repo
         </div>
       </div>
     </div>
-    <div class="diagram-ref">Source: <code>tools/dashboard.html</code> + <code>forge-observe.py</code>. Dashboard polls every 2s. Agent events auto-merge and sort by timestamp. Filter by clicking any agent. &ldquo;N new since last visit&rdquo; badge persists via localStorage.</div>
+    <div class="diagram-ref">Source: <code>tools/dashboard.html</code> + <code>rapid-observe.py</code>. Dashboard polls every 2s. Agent events auto-merge and sort by timestamp. Filter by clicking any agent. &ldquo;N new since last visit&rdquo; badge persists via localStorage.</div>
   </div>
 
   <div class="footnote">
-    Cross-refs: D4 (writes AUDIT.json), D5 (writes decisions to MEMORY.md), D7b (writes EVAL/), D8 (reads EVAL/, triggers on AUDIT), D9 (writes GAPS.json), D12 (writes COST.json, reads budget from forge.yaml).
+    Cross-refs: D4 (writes AUDIT.json), D5 (writes decisions to MEMORY.md), D7b (writes EVAL/), D8 (reads EVAL/, triggers on AUDIT), D9 (writes GAPS.json), D12 (writes COST.json, reads budget from rapid.yaml).
   </div>
 </div>
 
@@ -1711,17 +1711,17 @@ claude-peers list_peers --scope repo
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d14">
   <div class="section-id">D14 &mdash; Configuration</div>
-  <div class="section-title">forge.yaml: 3-level override cascade controlling all agent and build behavior</div>
+  <div class="section-title">rapid.yaml: 3-level override cascade controlling all agent and build behavior</div>
   <div class="plain-english">
-    FORGE is configured through a single file &mdash; <code>forge.yaml</code> &mdash; that controls everything from which AI model each agent uses to how many implementors run in parallel to the budget cap. There are <strong>three layers</strong>: global defaults (in <code>~/.forge/</code>), project overrides (in the repo&rsquo;s <code>.forge/</code>), and CLI flags that override both. Every agent reads the config on spawn, so you can change settings mid-build.
+    RAPID is configured through a single file &mdash; <code>rapid.yaml</code> &mdash; that controls everything from which AI model each agent uses to how many implementors run in parallel to the budget cap. There are <strong>three layers</strong>: global defaults (in <code>~/.rapid/</code>), project overrides (in the repo&rsquo;s <code>.rapid/</code>), and CLI flags that override both. Every agent reads the config on spawn, so you can change settings mid-build.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> The Config row at the top of D0&rsquo;s architecture table. Referenced by D2 (model routing per agent), D7 (implementor count), D12 (budget cap).</div>
 
   <div class="diagram">
     <div class="diagram-label">D14: Configuration cascade</div>
     <div class="hflow" style="gap: 2px; padding: 8px 0;">
-      <div class="n n-auto">~/.forge/forge.yaml<small>global defaults</small></div><span class="arr">&rarr;</span>
-      <div class="n n-auto">.forge/forge.yaml<small>project overrides</small></div><span class="arr">&rarr;</span>
+      <div class="n n-auto">~/.rapid/rapid-workflow.yaml<small>global defaults</small></div><span class="arr">&rarr;</span>
+      <div class="n n-auto">.rapid/rapid-workflow.yaml<small>project overrides</small></div><span class="arr">&rarr;</span>
       <div class="n n-auto">CLI flags<small>invocation overrides</small></div><span class="arr">&rarr;</span>
       <div class="n n-primary">Merged config<small>read by all agents on spawn</small></div>
     </div>
@@ -1755,14 +1755,14 @@ claude-peers list_peers --scope repo
   <div class="section-id">D15 &mdash; Trust Model</div>
   <div class="section-title">Why the operator can walk away between gates: every autonomous phase has a catch mechanism</div>
   <div class="plain-english">
-    The point of FORGE is that <strong>you don&rsquo;t need to watch the build</strong>. Between gates, the system runs autonomously. But why should you trust it? Because every autonomous phase has a specific mechanism that catches failure before it compounds. The watchdog catches drift. The keep-or-revert ratchet prevents regressions. The phase gate hook prevents advancement without proof. When you check in at a gate, you see evidence &mdash; not claims.
+    The point of RAPID is that <strong>you don&rsquo;t need to watch the build</strong>. Between gates, the system runs autonomously. But why should you trust it? Because every autonomous phase has a specific mechanism that catches failure before it compounds. The watchdog catches drift. The keep-or-revert ratchet prevents regressions. The phase gate hook prevents advancement without proof. When you check in at a gate, you see evidence &mdash; not claims.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> The Safety &amp; Guards column in D0 maps every mechanism to its phase. This section explains why those mechanisms earn the operator&rsquo;s trust.</div>
 
   <div class="diagram">
     <div class="diagram-label">D15: Trust chain — what replaces human effort, what catches failure</div>
     <table class="compare-table" style="font-size: 0.7rem;">
-      <thead><tr><th style="width:150px;">Previously manual</th><th style="width:150px;">Forge mechanism</th><th style="width:170px;">What catches failure</th><th>Operator sees at gate</th></tr></thead>
+      <thead><tr><th style="width:150px;">Previously manual</th><th style="width:150px;">Rapid mechanism</th><th style="width:170px;">What catches failure</th><th>Operator sees at gate</th></tr></thead>
       <tbody>
         <tr>
           <td>Synthesize 3 panel outputs</td>
@@ -1834,19 +1834,19 @@ claude-peers list_peers --scope repo
   <div class="section-id">D16 &mdash; Methodology Provenance</div>
   <div class="section-title">Where each borrowed mechanism lives in the pipeline, and what it prevents</div>
   <div class="plain-english">
-    FORGE isn&rsquo;t invented from scratch &mdash; it <strong>assembles proven mechanisms from multiple sources</strong>: Karpathy&rsquo;s autoresearch (eval-first, keep-or-revert), Beck&rsquo;s TDD (tests before code), Zaharia&rsquo;s Compound AI Systems (inter-stage assertions), Every Inc.&rsquo;s Compound Engineering (tiered review, learning capture), and lessons from real FORGE build failures (R1&ndash;R6 enforcement). This table traces every mechanism to its source so you know why it exists and what breaks if you remove it.
+    RAPID isn&rsquo;t invented from scratch &mdash; it <strong>assembles proven mechanisms from multiple sources</strong>: Karpathy&rsquo;s autoresearch (eval-first, keep-or-revert), Beck&rsquo;s TDD (tests before code), Zaharia&rsquo;s Compound AI Systems (inter-stage assertions), Every Inc.&rsquo;s Compound Engineering (tiered review, learning capture), and lessons from real RAPID build failures (R1&ndash;R6 enforcement). This table traces every mechanism to its source so you know why it exists and what breaks if you remove it.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> Every cell in D0&rsquo;s Safety column traces to a row in this table. Every mechanism exists because a specific failure mode was observed or predicted.</div>
 
   <div class="diagram">
     <div class="diagram-label">D16a: Incorporated mechanisms — active in the current system</div>
     <table class="compare-table" style="font-size: 0.68rem;">
-      <thead><tr><th style="width:90px;">Source</th><th style="width:150px;">Principle</th><th>Where in Forge</th><th>Failure mode prevented</th></tr></thead>
+      <thead><tr><th style="width:90px;">Source</th><th style="width:150px;">Principle</th><th>Where in Rapid</th><th>Failure mode prevented</th></tr></thead>
       <tbody>
         <tr>
           <td style="font-weight:700; color: var(--purple);">Karpathy<br><span style="font-weight:400; font-size:0.6rem;">autoresearch</span></td>
           <td>Immutable eval harness<br><span style="color:var(--text-dim);">"prepare.py is read-only"</span></td>
-          <td><strong>D7b</strong> (TDD) &rarr; .forge/EVAL/<br><strong>D8</strong> (build loop) reads it</td>
+          <td><strong>D7b</strong> (TDD) &rarr; .rapid/EVAL/<br><strong>D8</strong> (build loop) reads it</td>
           <td><strong>Metric gaming.</strong> Agents cannot weaken tests to make code pass. The eval surface is locked after P5; only implementation is mutable.</td>
         </tr>
         <tr>
@@ -1876,7 +1876,7 @@ claude-peers list_peers --scope repo
         <tr>
           <td style="font-weight:700; color: var(--blue);">Compound AI</td>
           <td>Multi-model routing<br><span style="color:var(--text-dim);">route by cost/capability</span></td>
-          <td><strong>D14</strong> (forge.yaml)<br>models.overrides per role</td>
+          <td><strong>D14</strong> (rapid.yaml)<br>models.overrides per role</td>
           <td><strong>Uniform cost for non-uniform tasks.</strong> Panels (review work) use Sonnet. Implementors (code generation) use Opus. Optional Codex as 2nd reviewer. Saves budget for where reasoning depth matters.</td>
         </tr>
         <tr>
@@ -1892,19 +1892,19 @@ claude-peers list_peers --scope repo
           <td><strong>Tests that drift to match implementation.</strong> Tests are derived from the spec's state machine, not written by the implementing agent. They can't be shaped to match buggy code.</td>
         </tr>
         <tr>
-          <td style="font-weight:700; color: var(--green);">Forge-native</td>
+          <td style="font-weight:700; color: var(--green);">Rapid-native</td>
           <td>Gap loop as convergence mechanism<br><span style="color:var(--text-dim);">spec re-derivation from failures</span></td>
           <td><strong>D9</strong> (gap loop)<br>P7&ndash;P8 feedback to P4</td>
           <td><strong>One-shot builds with no feedback.</strong> Standard builds ship whatever came out. The gap loop classifies failures, re-derives the spec section that caused them, and rebuilds. Quality converges over iterations.</td>
         </tr>
         <tr>
-          <td style="font-weight:700; color: var(--green);">Forge-native</td>
+          <td style="font-weight:700; color: var(--green);">Rapid-native</td>
           <td>Constitution as pre-merge gate<br><span style="color:var(--text-dim);">Articles I&ndash;V inviolable</span></td>
           <td><strong>D4</strong> (drift check: constitution stage)<br><strong>D11</strong> (CI/CD: constitution stage)</td>
           <td><strong>Agents rationalizing away safety rules.</strong> Hard guardrails that no agent can override. Truthfulness, data handling, scope discipline checked on every PR and merge.</td>
         </tr>
         <tr>
-          <td style="font-weight:700; color: var(--green);">Forge-native</td>
+          <td style="font-weight:700; color: var(--green);">Rapid-native</td>
           <td>Vision-as-lens, not artifact<br><span style="color:var(--text-dim);">pillars sit above PRD</span></td>
           <td><strong>D1</strong> P0 &rarr; P2 (panels review through pillars)</td>
           <td><strong>Generic advice.</strong> Without project-specific pillars, panels produce boilerplate. Pillars force every finding to cite the specific project criteria it serves.</td>
@@ -1913,13 +1913,13 @@ claude-peers list_peers --scope repo
         <tr>
           <td style="font-weight:700; color: var(--teal);">Compound Eng.<br><span style="font-weight:400; font-size:0.6rem;">Every Inc.</span></td>
           <td>Tiered multi-agent code review<br><span style="color:var(--text-dim);">5 parallel specialized reviewers + confidence gating + dedup</span></td>
-          <td><strong>D20</strong> (CE integration)<br><strong>D8</strong> P6b step 4<br>.forge/REVIEW.json</td>
+          <td><strong>D20</strong> (CE integration)<br><strong>D8</strong> P6b step 4<br>.rapid/REVIEW.json</td>
           <td><strong>Single-reviewer blind spots.</strong> One reviewer misses what it&rsquo;s not looking for. 5 lenses (correctness, spec, security, performance, maintainability) with confidence-gated synthesis catch more, independently.</td>
         </tr>
         <tr>
           <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
           <td>Compound learning capture<br><span style="color:var(--text-dim);">&ldquo;each unit of work should make the next one easier&rdquo;</span></td>
-          <td><strong>D20</strong> (CE integration)<br>P6e &rarr; .forge/LEARNINGS.md<br>Read at P0 of next build</td>
+          <td><strong>D20</strong> (CE integration)<br>P6e &rarr; .rapid/LEARNINGS.md<br>Read at P0 of next build</td>
           <td><strong>Rediscovering known solutions.</strong> Without structured capture, agents re-derive the same gotchas, patterns, and debug traces from scratch every build. Learnings compound across builds.</td>
         </tr>
         <tr>
@@ -1943,7 +1943,7 @@ claude-peers list_peers --scope repo
         <tr>
           <td style="font-weight:700; color: var(--teal);">Compound Eng.</td>
           <td>Optimization loops<br><span style="color:var(--text-dim);">3&times; parallel experiments, measure, keep best</span></td>
-          <td><strong>D9</strong> P8 (gap loop)<br>.forge/OPTIMIZE.json</td>
+          <td><strong>D9</strong> P8 (gap loop)<br>.rapid/OPTIMIZE.json</td>
           <td><strong>First-try-is-final.</strong> For performance/UX gaps, the first approach may not be best. Parallel experiments with measurement find the optimal solution, not just a working one.</td>
         </tr>
         <tr>
@@ -1954,27 +1954,27 @@ claude-peers list_peers --scope repo
         </tr>
         <!-- R1-R6 ENFORCEMENT -->
         <tr>
-          <td style="font-weight:700; color: var(--red);">Forge retro<br><span style="font-weight:400; font-size:0.6rem;">R1&ndash;R6</span></td>
+          <td style="font-weight:700; color: var(--red);">Rapid retro<br><span style="font-weight:400; font-size:0.6rem;">R1&ndash;R6</span></td>
           <td>Phase gate hook<br><span style="color:var(--text-dim);">blocks STATE.json without artifacts</span></td>
-          <td><strong>Core Principle</strong><br>forge-phase-gate.sh<br>PreToolUse hook on Write</td>
+          <td><strong>Core Principle</strong><br>rapid-phase-gate.sh<br>PreToolUse hook on Write</td>
           <td><strong>Phase skipping under pressure.</strong> The implementor skips invisible safety steps (tests, reviews, assertions) and does the exciting visible step instead. A hook makes advancement mechanically impossible without proof.</td>
         </tr>
         <tr>
-          <td style="font-weight:700; color: var(--red);">Forge retro</td>
+          <td style="font-weight:700; color: var(--red);">Rapid retro</td>
           <td>Eval harness as task-00<br><span style="color:var(--text-dim);">blocking dependency, not prose reminder</span></td>
           <td><strong>D7b</strong> P5<br>task-00 in TASKS.json<br>Every task depends on it</td>
           <td><strong>Eval step skipped under time pressure.</strong> As a &ldquo;step the orchestrator performs,&rdquo; it gets skipped. As task-00 with every task depending on it, the build literally cannot start without tests.</td>
         </tr>
         <tr>
-          <td style="font-weight:700; color: var(--red);">Forge retro</td>
+          <td style="font-weight:700; color: var(--red);">Rapid retro</td>
           <td>Context-long checkpoint<br><span style="color:var(--text-dim);">forced pause at ~200k tokens</span></td>
           <td><strong>D1</strong> pipeline header<br>R5 protocol</td>
           <td><strong>Urgency bias at context limit.</strong> At ~200k tokens the agent feels pressure to finish fast, skipping steps. The checkpoint forces a deliberate pause: write state, run checklist, log skips.</td>
         </tr>
         <tr>
-          <td style="font-weight:700; color: var(--red);">Forge retro</td>
+          <td style="font-weight:700; color: var(--red);">Rapid retro</td>
           <td>Concrete walkthrough commands<br><span style="color:var(--text-dim);">not &ldquo;run walkthrough&rdquo; but exact steps</span></td>
-          <td><strong>D10</strong> P7 step 4<br>.forge/WALKTHROUGH.md<br>Phase gate requires it</td>
+          <td><strong>D10</strong> P7 step 4<br>.rapid/WALKTHROUGH.md<br>Phase gate requires it</td>
           <td><strong>Vague instructions interpreted as &ldquo;skip.&rdquo;</strong> &ldquo;Run agent walkthrough&rdquo; = vague = skipped. &ldquo;Navigate S1&ndash;S10, screenshot each, pass/fail per surface&rdquo; = concrete = followed.</td>
         </tr>
       </tbody>
@@ -1996,19 +1996,19 @@ claude-peers list_peers --scope repo
           <td style="font-weight:700; color: var(--blue);">Compound AI</td>
           <td>Pipeline-level optimization<br><span style="color:var(--text-dim);">optimize end-to-end, not per-agent</span></td>
           <td>Requires persistence across builds to measure which configurations work</td>
-          <td>Track build outcomes in ~/.forge/history.json. Over N builds, identify which model/prompt combos produced fewer gaps. Requires 5+ builds to be meaningful.</td>
+          <td>Track build outcomes in ~/.rapid/history.json. Over N builds, identify which model/prompt combos produced fewer gaps. Requires 5+ builds to be meaningful.</td>
         </tr>
         <tr>
           <td style="font-weight:700; color: var(--blue);">Compound AI</td>
           <td>Few-shot example banks<br><span style="color:var(--text-dim);">DSPy BootstrapFewShot</span></td>
           <td>Requires curated examples per role. Cold-start problem on first build.</td>
-          <td>After each build, retro (P9) extracts best agent outputs per role into ~/.forge/examples/. Orchestrator selects relevant examples for next build.</td>
+          <td>After each build, retro (P9) extracts best agent outputs per role into ~/.rapid/examples/. Orchestrator selects relevant examples for next build.</td>
         </tr>
         <tr>
           <td style="font-weight:700; color: var(--purple);">Karpathy</td>
           <td>Structured experiment log<br><span style="color:var(--text-dim);">TSV of every attempt, survives git reset</span></td>
           <td>MEMORY.md partially covers this but isn't structured for machine parsing</td>
-          <td>Add .forge/EXPERIMENTS.tsv (untracked): commit hash, test result, status (keep/discard/crash), description. Survives git resets.</td>
+          <td>Add .rapid/EXPERIMENTS.tsv (untracked): commit hash, test result, status (keep/discard/crash), description. Survives git resets.</td>
         </tr>
       </tbody>
     </table>
@@ -2020,10 +2020,10 @@ claude-peers list_peers --scope repo
     &bull; <strong>Karpathy Guidelines</strong> &mdash; ~/.claude/plugins/karpathy-skills/CLAUDE.md. Step-verify chains, explicit assumptions, verifiable success criteria.<br>
     &bull; <strong>Zaharia, M. et al.</strong> &ldquo;The Shift from Models to Compound AI Systems&rdquo; (Berkeley AI Research, 2024). Inter-stage assertions, pipeline optimization, programmatic routing, DSPy Assert/Suggest.<br>
     &bull; <strong>Every Inc.</strong> Compound Engineering plugin (2025) &mdash; github.com/everyinc/compound-engineering-plugin. Tiered review, compound learning, doc review agents, product pulse, session intelligence, structured debug, optimization loops. &ldquo;Each unit of engineering work should make subsequent units easier, not harder.&rdquo;<br>
-    &bull; <strong>SiWarlock</strong> Claude Agent-Team Scaffolding &mdash; github.com/SiWarlock/claude-code-tdd-agent-crew-scaffold. 3-role agent team, 10-step TDD walker, Step-9 hot routing, cross-doc invariants, close-out gating. Comparison: forge-comparison.html.<br>
+    &bull; <strong>SiWarlock</strong> Claude Agent-Team Scaffolding &mdash; github.com/SiWarlock/claude-code-tdd-agent-crew-scaffold. 3-role agent team, 10-step TDD walker, Step-9 hot routing, cross-doc invariants, close-out gating. Comparison: rapid-comparison.html.<br>
     &bull; <strong>Beck, K.</strong> Test-Driven Development by Example (2002). Red-green-refactor. Test surface owned by separate concern.<br>
-    &bull; <strong>Forge-native</strong> &mdash; gap loop, constitution, vision-as-lens, bounded fan-out. Developed across 5 gauntlet builds (589 commits).<br>
-    &bull; <strong>Forge retro (R1&ndash;R6)</strong> &mdash; enforcement mechanisms discovered through real build failures. Core insight: the orchestrator knew the rules and skipped them because the implementor role produces visible progress. Fix is structural, not behavioral.
+    &bull; <strong>Rapid-native</strong> &mdash; gap loop, constitution, vision-as-lens, bounded fan-out. Developed across 5 gauntlet builds (589 commits).<br>
+    &bull; <strong>Rapid retro (R1&ndash;R6)</strong> &mdash; enforcement mechanisms discovered through real build failures. Core insight: the orchestrator knew the rules and skipped them because the implementor role produces visible progress. Fix is structural, not behavioral.
   </div>
 </div>
 
@@ -2034,7 +2034,7 @@ claude-peers list_peers --scope repo
   <div class="section-id">D17 &mdash; Panel Documentation Corpus</div>
   <div class="section-title">Every expert panel invocation produces a persistent, navigable record &mdash; organized by expert and by topic</div>
   <div class="plain-english">
-    When FORGE runs expert panels (business, technical, SME), the output isn&rsquo;t just a summary that gets consumed and forgotten. Every panel invocation produces a <strong>structured, searchable record</strong> organized two ways: by expert (what did the security engineer flag across all reviews?) and by topic (what did all experts say about the auth module?). This lets you spot systemic patterns &mdash; &ldquo;Marcus flagged touch targets in 4 of 6 reviews, this is a systemic issue.&rdquo;
+    When RAPID runs expert panels (business, technical, SME), the output isn&rsquo;t just a summary that gets consumed and forgotten. Every panel invocation produces a <strong>structured, searchable record</strong> organized two ways: by expert (what did the security engineer flag across all reviews?) and by topic (what did all experts say about the auth module?). This lets you spot systemic patterns &mdash; &ldquo;Marcus flagged touch targets in 4 of 6 reviews, this is a systemic issue.&rdquo;
   </div>
   <div class="section-desc"><strong>D0 context:</strong> Generated during P2 (Expert Panels) in Arc 1. References D6 (research protocol). Records stored in <code>panels/</code>.</div>
 
@@ -2124,7 +2124,7 @@ claude-peers list_peers --scope repo
   <div class="section-id">D18 &mdash; Documentation Deck System</div>
   <div class="section-title">Every numbered folder gets a navigable Reveal.js deck &mdash; one hub ties them all together with honest change tracking</div>
   <div class="plain-english">
-    Documentation that&rsquo;s written at the end of a project is always wrong &mdash; it describes what people remember, not what happened. FORGE generates <strong>documentation as it builds</strong>, one deck per folder, updated after every phase. Each deck uses McKinsey-style action titles (sentences, not labels), inline SVG diagrams, and a shared CSS vocabulary. A master hub provides one-click navigation to every deck, and an honest change log tracks what actually changed and when.
+    Documentation that&rsquo;s written at the end of a project is always wrong &mdash; it describes what people remember, not what happened. RAPID generates <strong>documentation as it builds</strong>, one deck per folder, updated after every phase. Each deck uses McKinsey-style action titles (sentences, not labels), inline SVG diagrams, and a shared CSS vocabulary. A master hub provides one-click navigation to every deck, and an honest change log tracks what actually changed and when.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> Part of P9 (Deploy + Document). Generated by <code>/docs</code> skill. Universal &mdash; works with any project structure that follows the numbered-folder pattern.</div>
 
@@ -2203,7 +2203,7 @@ claude-peers list_peers --scope repo
   <div class="section-id">D19 &mdash; Dynamic Composition</div>
   <div class="section-title">The pipeline is a fixed scaffold &mdash; everything inside is composed dynamically per project from a library of thinking frameworks</div>
   <div class="plain-english">
-    FORGE doesn&rsquo;t run the same way twice. Each project gets a <strong>custom-built system</strong> assembled from reusable frameworks. A healthcare security project gets security-weighted reviewers, a children&rsquo;s ed-tech project gets accessibility-weighted reviewers. The pipeline order never changes, but the agents, panels, pillars, tests, and review criteria are all selected at runtime based on what the project needs. The orchestrator&rsquo;s job is to pick the right frameworks for this specific build.
+    RAPID doesn&rsquo;t run the same way twice. Each project gets a <strong>custom-built system</strong> assembled from reusable frameworks. A healthcare security project gets security-weighted reviewers, a children&rsquo;s ed-tech project gets accessibility-weighted reviewers. The pipeline order never changes, but the agents, panels, pillars, tests, and review criteria are all selected at runtime based on what the project needs. The orchestrator&rsquo;s job is to pick the right frameworks for this specific build.
   </div>
   <div class="section-desc">No two RAPID builds produce the same architecture. The pipeline (D1) is the deterministic scaffold. The content is composed from a framework library. When a project needs a capability that doesn&rsquo;t map to an existing framework, the orchestrator logs it as a gap and uses the closest available framework with documented adaptations.</div>
 
@@ -2249,12 +2249,12 @@ claude-peers list_peers --scope repo
   <div class="section-desc">Inspired by the <a href="https://github.com/everyinc/compound-engineering-plugin">Compound Engineering plugin</a> by Every Inc. &mdash; &ldquo;Each unit of engineering work should make subsequent units easier, not harder.&rdquo;</div>
 
   <div class="diagram">
-    <div class="diagram-label">D20a: Seven compound capabilities mapped to FORGE phases</div>
+    <div class="diagram-label">D20a: Seven compound capabilities mapped to RAPID phases</div>
     <table class="compare-table">
       <thead><tr><th style="width:50px;">#</th><th style="width:180px;">Capability</th><th style="width:80px;">Phase</th><th>What it does</th></tr></thead>
       <tbody>
         <tr><td>1</td><td>Tiered multi-agent review</td><td>P6b</td><td>5 parallel specialized reviewers (correctness, spec, security, performance, maintainability) with confidence gating + dedup synthesis</td></tr>
-        <tr><td>2</td><td>Compound learning capture</td><td>P6e, P9</td><td>Structured <code>.forge/LEARNINGS.md</code>: decisions, patterns, gotchas, debug traces. Future builds read at P0.</td></tr>
+        <tr><td>2</td><td>Compound learning capture</td><td>P6e, P9</td><td>Structured <code>.rapid/LEARNINGS.md</code>: decisions, patterns, gotchas, debug traces. Future builds read at P0.</td></tr>
         <tr><td>3</td><td>Document review agents</td><td>G0, G1, G2</td><td>Feasibility, Scope Guardian, Coherence, Adversarial pre-screen before operator reviews gate artifacts</td></tr>
         <tr><td>4</td><td>Product Pulse</td><td>P10</td><td>Post-ship monitoring: usage, perf, errors, feedback. Time-windowed reports feed next build&rsquo;s P0.</td></tr>
         <tr><td>5</td><td>Session intelligence</td><td>P6d</td><td>Searches past session logs for crashed agent&rsquo;s context. Re-spawn gets continuity, not cold start.</td></tr>
@@ -2278,7 +2278,7 @@ claude-peers list_peers --scope repo
       <div class="n n-primary">Build N</div><span class="arr">&rarr;</span>
       <div class="n n-auto">Ship</div><span class="arr">&rarr;</span>
       <div class="n" style="border-color: var(--teal); color: var(--teal);">P10: Pulse<small>usage + errors + feedback</small></div><span class="arr">&rarr;</span>
-      <div class="n n-blue">.forge/LEARNINGS.md<small>decisions + patterns + gotchas</small></div><span class="arr">&rarr;</span>
+      <div class="n n-blue">.rapid/LEARNINGS.md<small>decisions + patterns + gotchas</small></div><span class="arr">&rarr;</span>
       <div class="n n-primary">Build N+1<small>reads learnings + pulse at P0</small></div>
     </div>
     <div class="implication" style="text-align: center;">Each build starts where the last one left off, not from scratch</div>
@@ -2326,7 +2326,7 @@ claude-peers list_peers --scope repo
   <div class="section-id">D21 &mdash; Agent &amp; Skill Catalog</div>
   <div class="section-title">Every agent and skill in RAPID, with its source file, invocation point, inputs, outputs, and the pattern for creating new ones</div>
   <div class="plain-english">
-    FORGE uses two types of reusable components: <strong>skills</strong> (slash commands with stable definitions that don&rsquo;t change between projects) and <strong>agents</strong> (spawned by skills during a build, configured per project). This catalog maps every component to its source file and shows when it&rsquo;s invoked, what it receives, and what it produces. The pattern for each type is stable &mdash; new panels, new reviewers, and new agent roles all follow the same template.
+    RAPID uses two types of reusable components: <strong>skills</strong> (slash commands with stable definitions that don&rsquo;t change between projects) and <strong>agents</strong> (spawned by skills during a build, configured per project). This catalog maps every component to its source file and shows when it&rsquo;s invoked, what it receives, and what it produces. The pattern for each type is stable &mdash; new panels, new reviewers, and new agent roles all follow the same template.
   </div>
   <div class="section-desc"><strong>D0 context:</strong> The Agents column in D0. Every agent listed here appears in at least one row of D0&rsquo;s architecture table. Skills are the stable definitions in <code>~/.claude/skills/</code>; agents are the runtime instances they spawn.</div>
 
@@ -2335,7 +2335,7 @@ claude-peers list_peers --scope repo
     <table class="compare-table" style="font-size: 0.68rem;">
       <thead><tr><th style="width:160px;">Skill</th><th style="width:80px;">Phase</th><th>Purpose</th><th style="width:120px;">Source</th></tr></thead>
       <tbody>
-        <tr><td>/forge</td><td>All</td><td>Orchestrator &mdash; runs the 12-phase pipeline, spawns all agents</td><td>skills/forge/</td></tr>
+        <tr><td>/rapid-workflow</td><td>All</td><td>Orchestrator &mdash; runs the 12-phase pipeline, spawns all agents</td><td>skills/rapid-workflow/</td></tr>
         <tr><td>/technical-expert-panel</td><td>P2</td><td>8-person technical review panel (frontend, iPad, test, a11y, perf, DevEx, security, skeptic)</td><td>skills/technical-expert-panel/</td></tr>
         <tr><td>/business-expert-panel</td><td>P2</td><td>Business review panel (VC, growth, sales, pricing, unit economics, regulatory, moats)</td><td>skills/business-expert-panel/</td></tr>
         <tr><td>/security-expert-panel</td><td>P2</td><td>Security-focused panel (red team, CISO, pentester, compliance, adversarial ML)</td><td>skills/security-expert-panel/</td></tr>
@@ -2358,7 +2358,7 @@ claude-peers list_peers --scope repo
     <table class="compare-table" style="font-size: 0.68rem;">
       <thead><tr><th style="width:140px;">Agent</th><th style="width:80px;">Primitive</th><th style="width:80px;">Phase</th><th>Receives</th><th>Produces</th></tr></thead>
       <tbody>
-        <tr><td>Orchestrator</td><td>Skill</td><td>All</td><td>PRD, operator input</td><td>All .forge/ state, coordination</td></tr>
+        <tr><td>Orchestrator</td><td>Skill</td><td>All</td><td>PRD, operator input</td><td>All .rapid/ state, coordination</td></tr>
         <tr><td>Supervisor</td><td>Terminal (tmux)</td><td>P6</td><td>TASKS.json, spec, prompts/supervisor.md</td><td>Task assignments, smoke tests, PR coordination</td></tr>
         <tr><td>Watchdog</td><td>Terminal (tmux)</td><td>P6</td><td>spec.md, CONTRACTS.md, prompts/watchdog.md</td><td>AUDIT.json, DRIFT_RESULT messages</td></tr>
         <tr><td>Implementor &times;1&ndash;4</td><td>Agent (worktree)</td><td>P6</td><td>Spec section, contracts, eval harness, Decision Router</td><td>Code, commits, PR</td></tr>
@@ -2471,7 +2471,7 @@ claude-peers list_peers --scope repo
   <div class="diagram">
     <div class="diagram-label">D21d: Prompt template structure &mdash; the contract for generated prompt files</div>
     <div class="plain-english" style="margin-bottom: 12px;">
-      When FORGE spawns the supervisor and watchdog at P6a, it generates prompt files in <code>.forge/prompts/</code>. These are filled-in templates &mdash; the structure is constant, the content is project-specific. Here is what each prompt file must contain.
+      When RAPID spawns the supervisor and watchdog at P6a, it generates prompt files in <code>.rapid/prompts/</code>. These are filled-in templates &mdash; the structure is constant, the content is project-specific. Here is what each prompt file must contain.
     </div>
     <div class="grid-2" style="gap: 12px;">
       <div class="card" style="border-top: 2px solid var(--green);">
@@ -2562,13 +2562,13 @@ claude-peers list_peers --scope repo
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!-- D22 — .forge/ FILE SCHEMAS                                      -->
+<!-- D22 — .rapid/ FILE SCHEMAS                                      -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d22">
-  <div class="section-id">D22 &mdash; .forge/ File Schemas</div>
-  <div class="section-title">Every file in the .forge/ directory, with complete field-level schemas, who writes it, and when it&rsquo;s read</div>
+  <div class="section-id">D22 &mdash; .rapid/ File Schemas</div>
+  <div class="section-title">Every file in the .rapid/ directory, with complete field-level schemas, who writes it, and when it&rsquo;s read</div>
   <div class="plain-english">
-    The <code>.forge/</code> directory is the build&rsquo;s durable state layer. <strong>Every piece of information that matters survives conversation compression</strong> because it lives on disk, not in context. If a session crashes and restarts, <code>/forge --resume</code> reads these files and continues from the last checkpoint.
+    The <code>.rapid/</code> directory is the build&rsquo;s durable state layer. <strong>Every piece of information that matters survives conversation compression</strong> because it lives on disk, not in context. If a session crashes and restarts, <code>/rapid-workflow --resume</code> reads these files and continues from the last checkpoint.
   </div>
 
   <div class="diagram">
@@ -2576,7 +2576,7 @@ claude-peers list_peers --scope repo
 
     <h3>STATE.json</h3>
     <div class="explain">Current pipeline position. Written by orchestrator after every phase and gate. Guarded by <code>phase-gate-hook.sh</code> (R1).</div>
-    <div class="code-block">{ <span class="str">"phase"</span>: <span class="num">6</span>, <span class="str">"status"</span>: <span class="str">"in_progress"</span>, <span class="str">"track"</span>: <span class="str">"full"</span>, <span class="str">"started"</span>: <span class="str">"2026-05-27T08:30:01Z"</span>, <span class="str">"last_gate"</span>: <span class="str">"G2"</span>, <span class="str">"build_id"</span>: <span class="str">"forge-agentforge-20260527"</span> }
+    <div class="code-block">{ <span class="str">"phase"</span>: <span class="num">6</span>, <span class="str">"status"</span>: <span class="str">"in_progress"</span>, <span class="str">"track"</span>: <span class="str">"full"</span>, <span class="str">"started"</span>: <span class="str">"2026-05-27T08:30:01Z"</span>, <span class="str">"last_gate"</span>: <span class="str">"G2"</span>, <span class="str">"build_id"</span>: <span class="str">"rapid-agentforge-20260527"</span> }
 <span class="comment">// status: "complete" | "in_progress" | "blocked" | "shipped"</span>
 <span class="comment">// track: "fast" | "full"</span></div>
 
@@ -2584,7 +2584,7 @@ claude-peers list_peers --scope repo
     <div class="explain">Task dependency graph. Written by spec-writer at P5; updated by supervisor during P6.</div>
     <div class="code-block">{ <span class="str">"id"</span>: <span class="str">"task-01"</span>, <span class="str">"name"</span>: <span class="str">"red-team-agent"</span>, <span class="str">"spec_ref"</span>: <span class="str">"S3.1"</span>, <span class="str">"depends_on"</span>: [<span class="str">"task-00"</span>],
   <span class="str">"estimated_lines"</span>: <span class="num">400</span>, <span class="str">"agent_slot"</span>: <span class="num">1</span>, <span class="str">"status"</span>: <span class="str">"done"</span>, <span class="str">"assigned_to"</span>: <span class="str">"impl-1"</span>,
-  <span class="str">"branch"</span>: <span class="str">"forge/phase-6/red-team-agent"</span>, <span class="str">"reviewer_verdict"</span>: <span class="str">"APPROVE"</span> }
+  <span class="str">"branch"</span>: <span class="str">"rapid/phase-6/red-team-agent"</span>, <span class="str">"reviewer_verdict"</span>: <span class="str">"APPROVE"</span> }
 <span class="comment">// status: "pending" | "assigned" | "coding" | "review" | "done" | "blocked"</span>
 <span class="comment">// task-00 (eval-harness) is ALWAYS the dependency root (R4)</span></div>
 
@@ -2669,7 +2669,7 @@ claude-peers list_peers --scope repo
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d24">
   <div class="section-id">D24 &mdash; Observe Event Types</div>
-  <div class="section-title">16 event types written to .forge/observe/*.jsonl &mdash; the raw feed for the observatory dashboard</div>
+  <div class="section-title">16 event types written to .rapid/observe/*.jsonl &mdash; the raw feed for the observatory dashboard</div>
 
   <div class="diagram">
     <div class="diagram-label">D24a: Event Schema + Types</div>
@@ -2713,9 +2713,9 @@ claude-peers list_peers --scope repo
     <table class="compare-table">
       <thead><tr><th>Skill</th><th>Invocation</th><th>Phase</th><th>Writes</th></tr></thead>
       <tbody>
-        <tr><td>/forge</td><td><code>/forge &lt;idea|PRD&gt; [--track] [--resume] [--gap-loop]</code></td><td>P0&ndash;P10</td><td>All .forge/, all docs/, code</td></tr>
-        <tr><td>/forge status</td><td><code>/forge status</code></td><td>Any</td><td>&mdash; (terminal output)</td></tr>
-        <tr><td>/forge pulse</td><td><code>/forge pulse [--window]</code></td><td>P10</td><td>docs/pulse-reports/YYYY-MM-DD.md</td></tr>
+        <tr><td>/rapid-workflow</td><td><code>/rapid-workflow &lt;idea|PRD&gt; [--track] [--resume] [--gap-loop]</code></td><td>P0&ndash;P10</td><td>All .rapid/, all docs/, code</td></tr>
+        <tr><td>/rapid-workflow status</td><td><code>/rapid-workflow status</code></td><td>Any</td><td>&mdash; (terminal output)</td></tr>
+        <tr><td>/rapid-workflow pulse</td><td><code>/rapid-workflow pulse [--window]</code></td><td>P10</td><td>docs/pulse-reports/YYYY-MM-DD.md</td></tr>
         <tr><td>/decision log</td><td><code>/decision log [context]</code></td><td>Any</td><td>decisions/D-{NN}.md + deck.html</td></tr>
         <tr><td>/decision panel</td><td><code>/decision panel [context]</code></td><td>P2</td><td>panels/P-{NN}.md + deck.html</td></tr>
         <tr><td>/docs build</td><td><code>/docs build [folder]</code></td><td>P9 + after each phase</td><td>{folder}/deck.html + docs/hub.html</td></tr>
@@ -2805,7 +2805,7 @@ claude-peers list_peers --scope repo
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div class="section" id="d28">
   <div class="section-id">D28 &mdash; Configuration Keys</div>
-  <div class="section-title">Every forge.yaml setting &mdash; cascade: global (~/.forge/) &rarr; project (.forge/) &rarr; CLI flags</div>
+  <div class="section-title">Every rapid.yaml setting &mdash; cascade: global (~/.rapid/) &rarr; project (.rapid/) &rarr; CLI flags</div>
 
   <div class="diagram">
     <div class="diagram-label">D28a: Configuration Reference</div>
@@ -2849,7 +2849,7 @@ claude-peers list_peers --scope repo
         <tr><td>P0</td><td>Derive evaluation pillars</td><td>Project risks + goals</td><td>3&ndash;5 project-specific pillars (generic prohibited)</td><td>&mdash;</td></tr>
         <tr><td>P0</td><td>Write vision artifacts</td><td>Pillars + north star</td><td>00-vision/VISION.md, PILLARS.md</td><td>&mdash;</td></tr>
         <tr><td>P0</td><td>Compound refresh (CE #9)</td><td>Prior LEARNINGS.md</td><td>Stale entries marked, non-stale injected</td><td>&mdash;</td></tr>
-        <tr><td>P1</td><td>Create folder structure</td><td>&mdash;</td><td>00-vision/ through 05-gaps/ + .forge/</td><td>&mdash;</td></tr>
+        <tr><td>P1</td><td>Create folder structure</td><td>&mdash;</td><td>00-vision/ through 05-gaps/ + .rapid/</td><td>&mdash;</td></tr>
         <tr><td>P1</td><td>Lock PRD (immutable)</td><td>Stakeholder PRD</td><td>01-intake/PRD.md</td><td>&mdash;</td></tr>
         <tr><td>P1</td><td>Generate Constitution</td><td>Project risks from pillars</td><td>CONSTITUTION.md (I&ndash;V inviolable, VI&ndash;X tailored)</td><td>&mdash;</td></tr>
         <tr><td>P1b</td><td>Decompose PRD</td><td>PRD + VISION + PILLARS</td><td>01-intake/PRD-ENHANCED.md (MUST/SHOULD/COULD)</td><td>Assertion: every item tagged</td></tr>
@@ -2869,8 +2869,8 @@ claude-peers list_peers --scope repo
         <tr><td>P4</td><td>Derive spec with traceability</td><td>PRD + panels + research</td><td>04-spec/spec.md [FROM PRD]/[DERIVED]/[OPEN]</td><td>Every PRD req mapped</td></tr>
         <tr><td>P4</td><td>Build workflow state machine</td><td>Spec requirements</td><td>04-spec/workflow.md (in/proc/out per node)</td><td>&mdash;</td></tr>
         <tr><td>P4</td><td>Define interface contracts</td><td>Architecture</td><td>04-spec/CONTRACTS.md</td><td>Used by drift checker</td></tr>
-        <tr><td>P5</td><td>Generate eval harness (task-00)</td><td>workflow.md state machine</td><td>.forge/EVAL/ (immutable)</td><td>R4: blocking dependency</td></tr>
-        <tr><td>P5</td><td>Decompose into tasks</td><td>Spec sections</td><td>.forge/TASKS.json</td><td>No cycles; all sections covered</td></tr>
+        <tr><td>P5</td><td>Generate eval harness (task-00)</td><td>workflow.md state machine</td><td>.rapid/EVAL/ (immutable)</td><td>R4: blocking dependency</td></tr>
+        <tr><td>P5</td><td>Decompose into tasks</td><td>Spec sections</td><td>.rapid/TASKS.json</td><td>No cycles; all sections covered</td></tr>
         <tr><td>P5</td><td>Deliverable coverage (R3)</td><td>PRD deliverables + tasks</td><td>Every deliverable &rarr; task</td><td>Missing = create task</td></tr>
         <tr><td>P5b</td><td>Spec flow analysis (CE #15)</td><td>Workflow state machine</td><td>Unreachable states, missing error paths</td><td>&mdash;</td></tr>
         <tr><td>P5b</td><td>Confidence rating</td><td>Each spec section</td><td>HIGH/MEDIUM/LOW per section</td><td>All sections must be rated</td></tr>
@@ -2971,7 +2971,7 @@ claude-peers list_peers --scope repo
 </div>
 
   <div class="footnote" style="margin-top:48px; padding-top: 16px; border-top: 2.5px solid var(--navy);">
-    <strong>D0&ndash;D31 exhaustive reference.</strong> 13+ .forge/ file schemas (D22), 12 inter-agent messages (D23), 16 observe events (D24), 8 skill contracts (D25), 12 inter-stage assertions (D26), 8 doc-review agents across 3 gates (D27), 16 config keys (D28), every phase in atomic sub-steps (D29), 7 drift categories (D30), 9 reviewer tiers (D31).
+    <strong>D0&ndash;D31 exhaustive reference.</strong> 13+ .rapid/ file schemas (D22), 12 inter-agent messages (D23), 16 observe events (D24), 8 skill contracts (D25), 12 inter-stage assertions (D26), 8 doc-review agents across 3 gates (D27), 16 config keys (D28), every phase in atomic sub-steps (D29), 7 drift categories (D30), 9 reviewer tiers (D31).
   </div>
 
 <div class="section" id="d32">
@@ -2990,7 +2990,7 @@ claude-peers list_peers --scope repo
       <thead><tr><th>Piece</th><th>Artifact</th><th>Role</th></tr></thead>
       <tbody>
         <tr><td style="font-weight:700;">Map (one source)</td><td><code>docs/workflows.json</code></td><td>Per node: <code>in</code>/<code>proc</code>/<code>out</code> + golden assertion + <code>view</code> + a bounded <code>exec</code>. Generated in P4/P5. Drives the diagram, the breakdown, and the test.</td></tr>
-        <tr><td style="font-weight:700;">Runner</td><td><code>tools/workflow-runner.py</code></td><td>Live-drives a workflow node by node, threads each node&rsquo;s data-out into the next node&rsquo;s data-in, streams <code>.forge/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl</code>, publishes <code>docs/testruns.json</code>.</td></tr>
+        <tr><td style="font-weight:700;">Runner</td><td><code>tools/workflow-runner.py</code></td><td>Live-drives a workflow node by node, threads each node&rsquo;s data-out into the next node&rsquo;s data-in, streams <code>.rapid/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl</code>, publishes <code>docs/testruns.json</code>.</td></tr>
         <tr><td style="font-weight:700;">Endpoints</td><td><code>observe-server.py</code></td><td><code>GET /api/runs</code> (log), <code>GET /api/run</code> (live-tail), <code>POST /api/run</code> (trigger).</td></tr>
         <tr><td style="font-weight:700;">Page</td><td><code>docs/testsuite.html</code></td><td>Renders the diagram; per node and in sync, shows the user-facing surface (left) and the actual declared-vs-runtime data flow (right); lists the run log.</td></tr>
       </tbody>
@@ -3005,7 +3005,7 @@ claude-peers list_peers --scope repo
                                                    │  runs each node's exec against the LIVE build
                                                    │  threads data-out ──► next node's data-in
                                                    ▼
-                              .forge/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl   (streamed trace = real-time feed)
+                              .rapid/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl   (streamed trace = real-time feed)
                                                    │
                  testsuite.html ◄── live-tail ─────┘     and ──► docs/testruns.json (published run log)
                  (diagram lights up node-by-node; left = what the user sees, right = data in/out)</div>
@@ -3013,7 +3013,7 @@ claude-peers list_peers --scope repo
       <strong>Two halves (the deploy rule, D13 / P9).</strong> The diagram + the replay of the last published run are <em>static</em> &mdash; they ride
       along in the <code>/_atlas</code> deck and work offline. The live <strong>&#9654; Run</strong> button drives the real build through
       <code>observe-server</code> and stays <em>local</em>. With no server, the page silently falls back to replaying <code>testruns.json</code> &mdash;
-      never a dead screen. <strong>Bounded by construction:</strong> no node triggers a real <code>/forge</code> build or spends money &mdash; execs are the
+      never a dead screen. <strong>Bounded by construction:</strong> no node triggers a real <code>/rapid-workflow</code> build or spends money &mdash; execs are the
       project&rsquo;s own seconds-scale test/scan commands and live-state reads.
     </div>
   </div>

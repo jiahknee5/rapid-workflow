@@ -107,15 +107,15 @@ def documentation_sections():
 
 def observatory_sections():
     """The observatory is a live dashboard; for a static deck render the build state from
-    .forge/STATE.json so the page is never a stub (live events stream when observe-server runs)."""
+    .rapid/STATE.json so the page is never a stub (live events stream when observe-server runs)."""
     try:
-        st = json.load(open(os.path.join(PROJ, ".forge", "STATE.json")))
+        st = json.load(open(os.path.join(PROJ, ".rapid", "STATE.json")))
     except Exception:
         st = {}
     rows = "".join('<li><strong>%s</strong>: %s</li>' % (esc(k), esc(v)) for k, v in st.items())
     return ('<div class="section" id="build-state"><div class="section-id">Observatory</div>'
             '<div class="section-title">Build state</div>'
-            '<div class="section-desc">Current build state from <code>.forge/STATE.json</code>. '
+            '<div class="section-desc">Current build state from <code>.rapid/STATE.json</code>. '
             'Live agent events stream here when <code>observe-server</code> is running.</div>'
             '<ul>%s</ul></div>' % (rows or "<li>no state recorded yet</li>"))
 
@@ -163,7 +163,7 @@ def _md(path, section_id):
 
 def main():
     # Hard guard: never run against the kit itself (its docs are hand-curated, not stubs).
-    if os.path.isfile(os.path.join(PROJ, "skills", "forge", "SKILL.md")):
+    if os.path.isfile(os.path.join(PROJ, "skills", "rapid", "SKILL.md")):
         print("populate-deck: refusing to run against the kit root (%s)" % PROJ, file=sys.stderr)
         sys.exit(2)
     jobs = [

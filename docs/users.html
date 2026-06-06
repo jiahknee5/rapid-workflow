@@ -129,16 +129,16 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 }
 
 /* Top cross-page nav */
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html" class="active">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="testsuite.html">Test Suite</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
+<nav class="rapid-nav"><span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html" class="active">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="testsuite.html">Test Suite</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
 <div class="spec-layout">
 <nav class="sidebar">
   <div class="sidebar-brand">RAPID</div>
@@ -162,8 +162,8 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 <!-- ============================== OVERVIEW ============================== -->
 <section class="section" id="overview">
   <div class="section-id">Users · 00</div>
-  <h2 class="section-title">Every user of RAPID/FORGE at a glance</h2>
-  <p class="section-desc">FORGE turns a product idea or PRD into a shipped, tested, documented application using a team of AI agents, with the human checking in at four decision points. The people below are the humans in that loop. The agents that do the building are not in this table — see the system-actor note at the end of this section.</p>
+  <h2 class="section-title">Every user of RAPID/RAPID at a glance</h2>
+  <p class="section-desc">RAPID turns a product idea or PRD into a shipped, tested, documented application using a team of AI agents, with the human checking in at four decision points. The people below are the humans in that loop. The agents that do the building are not in this table — see the system-actor note at the end of this section.</p>
 
   <table class="compare-table">
     <thead>
@@ -173,7 +173,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       <tr>
         <td>AI Engineering Lead / Operator</td>
         <td>Primary — starts and runs the build</td>
-        <td><code>/forge "&lt;idea&gt;"</code> or a PRD; the live dashboard; the four decision points</td>
+        <td><code>/rapid-workflow "&lt;idea&gt;"</code> or a PRD; the live dashboard; the four decision points</td>
         <td>A deployed app, a documentation site, a test report, and a timeline of the build</td>
       </tr>
       <tr>
@@ -190,7 +190,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       </tr>
       <tr>
         <td>End User of the built product</td>
-        <td>Downstream — uses whatever FORGE built</td>
+        <td>Downstream — uses whatever RAPID built</td>
         <td>The shipped application itself (project-specific)</td>
         <td>The working product (e.g. a math tutor) — placeholder, defined per project</td>
       </tr>
@@ -211,7 +211,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <h4>Goals</h4>
     <p>Start a build from one line or a PRD, walk away, and come back to a deployed app plus a complete doc site, test report, and build timeline. Stay in control at the four decision points without micromanaging every task.</p>
     <h4 style="margin-top:14px;">Context</h4>
-    <p>Runs <code>/forge "build a math tutor for kids"</code> from Claude Code, with the live dashboard open in a browser. The build runs autonomously across its phases; the operator checks in at the four gates.</p>
+    <p>Runs <code>/rapid-workflow "build a math tutor for kids"</code> from Claude Code, with the live dashboard open in a browser. The build runs autonomously across its phases; the operator checks in at the four gates.</p>
     <h4 style="margin-top:14px;">Needs</h4>
     <p>A prepopulated dashboard (the full plan visible from the start, not an empty screen). Real-time phase, agent, and test status. Documentation that updates as each phase completes. One combined view at each decision point.</p>
     <h4 style="margin-top:14px;">Frustrations</h4>
@@ -257,19 +257,19 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 <section class="section" id="user-enduser">
   <div class="section-id">Users · Persona 4 (template placeholder)</div>
   <h2 class="section-title">End User of the Built Product</h2>
-  <p class="section-desc">The downstream person who uses whatever FORGE shipped. This persona is project-specific and is a template placeholder — for the example build <code>/forge "build a math tutor for kids"</code>, this would be a child (and their parent or teacher) using the math tutor.</p>
+  <p class="section-desc">The downstream person who uses whatever RAPID shipped. This persona is project-specific and is a template placeholder — for the example build <code>/rapid-workflow "build a math tutor for kids"</code>, this would be a child (and their parent or teacher) using the math tutor.</p>
   <div class="card">
     <h4>Goals</h4>
     <p>Use a working, deployed product that does what the original idea promised. (Defined per project — fill in for the specific app being built.)</p>
     <h4 style="margin-top:14px;">Context</h4>
-    <p>Never touches FORGE itself. Touches only the shipped application after deploy. The build's golden assertions are ultimately about this person's experience working.</p>
+    <p>Never touches RAPID itself. Touches only the shipped application after deploy. The build's golden assertions are ultimately about this person's experience working.</p>
     <h4 style="margin-top:14px;">Needs</h4>
     <p>An app that behaves as specified, with the features the PRD described actually present and functioning. (Project-specific.)</p>
     <h4 style="margin-top:14px;">Frustrations</h4>
     <p>Features that were planned but never shipped; behavior that doesn't match the promise. These should surface as failing golden assertions before the end user ever sees them.</p>
   </div>
   <div class="key-insight">
-    <strong>Reminder.</strong> This persona is a placeholder. Each concrete FORGE build replaces it with the real downstream user(s) of that specific product.
+    <strong>Reminder.</strong> This persona is a placeholder. Each concrete RAPID build replaces it with the real downstream user(s) of that specific product.
   </div>
 </section>
 
@@ -285,7 +285,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       <div class="lane">
         <div class="lane-label">Actor</div>
         <div class="lane-body">
-          <span class="n n-primary">Types <code>/forge "&lt;idea&gt;"</code></span>
+          <span class="n n-primary">Types <code>/rapid-workflow "&lt;idea&gt;"</code></span>
           <span class="arr">→</span>
           <span class="n n-gate">Approve plan (gate 1)</span>
           <span class="arr">→</span>
@@ -318,7 +318,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <table class="step-table">
     <thead><tr><th>Step</th><th>Data in</th><th>Processing</th><th>Data out</th></tr></thead>
     <tbody>
-      <tr><td>1. Start</td><td>One-line idea (<code>/forge "build a math tutor for kids"</code>)</td><td>Consult expert panels, do research, understand what to build</td><td>Understanding of scope + full build plan, prepopulated in the dashboard</td></tr>
+      <tr><td>1. Start</td><td>One-line idea (<code>/rapid-workflow "build a math tutor for kids"</code>)</td><td>Consult expert panels, do research, understand what to build</td><td>Understanding of scope + full build plan, prepopulated in the dashboard</td></tr>
       <tr><td>2. Plan (gate 1)</td><td>Build plan + tests generated from the plan</td><td>Operator reviews and approves the plan before any code is written</td><td>Approved plan; "done" defined up front via tests-first</td></tr>
       <tr><td>3. Build</td><td>Approved plan, task assignments</td><td>Team of AI agents builds in parallel; docs update as each phase completes</td><td>Code merged after multi-lens review; docs current through the latest completed phase</td></tr>
       <tr><td>4. Test</td><td>Built code + criteria from the plan</td><td>Run everything against the generated criteria; auto-fix when possible, flag when not</td><td>Test pass/fail visible in dashboard, docs, and at decision points</td></tr>
@@ -327,7 +327,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   </table>
 
   <div class="key-insight">
-    <strong>Expected outcome (golden assertion):</strong> after <code>/forge "build a math tutor for kids"</code> and approval at the four decision points, the operator has a deployed application, a documentation site handoff-ready with no manual cleanup, a test report, and a timeline of the entire build.
+    <strong>Expected outcome (golden assertion):</strong> after <code>/rapid-workflow "build a math tutor for kids"</code> and approval at the four decision points, the operator has a deployed application, a documentation site handoff-ready with no manual cleanup, a test report, and a timeline of the entire build.
   </div>
 </section>
 
@@ -431,12 +431,12 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 <section class="section" id="wf-monitor">
   <div class="section-id">Workflow · WF-4</div>
   <h2 class="section-title">Operator monitors a live build and handles a drift/stall alert</h2>
-  <p class="section-desc">The operator watches a running build through the dashboard and handles a stalled terminal. Under the terminal-per-agent model, every persistent agent runs in its own tmux window inside one <code>forge-build</code> session, so a stall is localized to a single terminal and visible by role.</p>
+  <p class="section-desc">The operator watches a running build through the dashboard and handles a stalled terminal. Under the terminal-per-agent model, every persistent agent runs in its own tmux window inside one <code>rapid-build</code> session, so a stall is localized to a single terminal and visible by role.</p>
 
   <div class="strategy">
     <h3>Build execution model — terminal-per-agent</h3>
-    <p>Every persistent agent runs in its OWN terminal (tmux window/pane) inside one <code>forge-build</code> session, created at P6a and torn down at P6 end — replacing the old fixed 3-terminal setup. Agents: <strong>orchestrator</strong> (team lead), <strong>supervisor</strong> (task assignment + smoke tests, owns the implementors), <strong>watchdog</strong> (R2 auditor, reports to orchestrator), and each <strong>implementor</strong> impl-1..impl-N (fan-out ≤ 4). Each implementor uses its own git worktree for isolation; the terminal is long-lived so it can be monitored, message peers, and build continuously — not a fire-and-forget subagent.</p>
-    <p>The terminals form ONE agent team over the claude-peers MCP bus. On start each agent calls <code>set_summary(role + task)</code> and <code>list_peers</code> to discover teammates; coordination is structured <code>send_message</code>/<code>check_messages</code> (shoulder-tap protocol — answer peer messages immediately). Addressing derives from <code>FORGE_ROLE</code> per terminal.</p>
+    <p>Every persistent agent runs in its OWN terminal (tmux window/pane) inside one <code>rapid-build</code> session, created at P6a and torn down at P6 end — replacing the old fixed 3-terminal setup. Agents: <strong>orchestrator</strong> (team lead), <strong>supervisor</strong> (task assignment + smoke tests, owns the implementors), <strong>watchdog</strong> (R2 auditor, reports to orchestrator), and each <strong>implementor</strong> impl-1..impl-N (fan-out ≤ 4). Each implementor uses its own git worktree for isolation; the terminal is long-lived so it can be monitored, message peers, and build continuously — not a fire-and-forget subagent.</p>
+    <p>The terminals form ONE agent team over the claude-peers MCP bus. On start each agent calls <code>set_summary(role + task)</code> and <code>list_peers</code> to discover teammates; coordination is structured <code>send_message</code>/<code>check_messages</code> (shoulder-tap protocol — answer peer messages immediately). Addressing derives from <code>RAPID_ROLE</code> per terminal.</p>
   </div>
 
   <div class="diagram">
@@ -445,7 +445,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       <div class="lane">
         <div class="lane-label">Actor</div>
         <div class="lane-body">
-          <span class="n n-primary">Opens dashboard / <code>/forge status</code></span>
+          <span class="n n-primary">Opens dashboard / <code>/rapid-workflow status</code></span>
           <span class="arr">→</span>
           <span class="n n-guard">Sees stall alert (impl-2)</span>
           <span class="arr">→</span>
@@ -455,7 +455,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       <div class="lane">
         <div class="lane-label">System</div>
         <div class="lane-body">
-          <span class="n n-auto">Each role → <code>.forge/observe/&lt;role&gt;.jsonl</code></span>
+          <span class="n n-auto">Each role → <code>.rapid/observe/&lt;role&gt;.jsonl</code></span>
           <span class="arr">→</span>
           <span class="n n-auto">HEARTBEAT.json per role ≤5 min</span>
           <span class="arr">→</span>
@@ -470,16 +470,16 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   <table class="step-table">
     <thead><tr><th>Step</th><th>Data in</th><th>Processing</th><th>Data out</th></tr></thead>
     <tbody>
-      <tr><td>1. Observe</td><td>Live build; per-role terminals emitting SPAWN/PROGRESS events</td><td>Each agent writes <code>.forge/observe/&lt;role&gt;.jsonl</code> keyed by <code>FORGE_ROLE</code>; status hook stamps role + summary on the terminal</td><td><code>/forge status</code> and the observatory read all terminals at once</td></tr>
-      <tr><td>2. Heartbeat</td><td>Each agent's current task</td><td>Every agent updates <code>.forge/HEARTBEAT.json</code> (per role) every ≤5 min</td><td>A live per-role liveness signal on the dashboard</td></tr>
+      <tr><td>1. Observe</td><td>Live build; per-role terminals emitting SPAWN/PROGRESS events</td><td>Each agent writes <code>.rapid/observe/&lt;role&gt;.jsonl</code> keyed by <code>RAPID_ROLE</code>; status hook stamps role + summary on the terminal</td><td><code>/rapid-workflow status</code> and the observatory read all terminals at once</td></tr>
+      <tr><td>2. Heartbeat</td><td>Each agent's current task</td><td>Every agent updates <code>.rapid/HEARTBEAT.json</code> (per role) every ≤5 min</td><td>A live per-role liveness signal on the dashboard</td></tr>
       <tr><td>3. Stall detect</td><td>Heartbeat timestamps per role</td><td>Monitor compares each heartbeat to the threshold; impl-2's is older than the threshold</td><td>A stall alert flagging the impl-2 terminal for restart</td></tr>
-      <tr><td>4. Continuous build</td><td>A terminal trying to halt while phase work remains</td><td>R7 Stop/SubagentStop hook (<code>tools/stop-hook.sh</code>) blocks the halt, attributes continuation + observe by <code>FORGE_ROLE</code>; after 5 same-phase nudges escalates to the operator</td><td>Live terminals keep building; persistent stalls reach the operator</td></tr>
+      <tr><td>4. Continuous build</td><td>A terminal trying to halt while phase work remains</td><td>R7 Stop/SubagentStop hook (<code>tools/stop-hook.sh</code>) blocks the halt, attributes continuation + observe by <code>RAPID_ROLE</code>; after 5 same-phase nudges escalates to the operator</td><td>Live terminals keep building; persistent stalls reach the operator</td></tr>
       <tr><td>5. Handle</td><td>The stall alert + escalation</td><td>Operator restarts the flagged terminal (its worktree is isolated, so peers continue)</td><td>impl-2 resumes; the team re-converges over the peers bus</td></tr>
     </tbody>
   </table>
 
   <div class="key-insight">
-    <strong>Expected outcome (golden assertion):</strong> when a per-role terminal's heartbeat goes older than the threshold, the monitor flags that exact terminal (e.g. impl-2) for restart in <code>/forge status</code> and the observatory, the Stop-hook keeps the other live terminals building, and after 5 same-phase nudges the operator is escalated to — so a stall is localized and surfaced, never silent.
+    <strong>Expected outcome (golden assertion):</strong> when a per-role terminal's heartbeat goes older than the threshold, the monitor flags that exact terminal (e.g. impl-2) for restart in <code>/rapid-workflow status</code> and the observatory, the Stop-hook keeps the other live terminals building, and after 5 same-phase nudges the operator is escalated to — so a stall is localized and surfaced, never silent.
   </div>
 </section>
 
@@ -487,15 +487,15 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 <section class="section" id="golden-tests">
   <div class="section-id">Tests · From workflows to golden tests</div>
   <h2 class="section-title">From workflows to golden tests</h2>
-  <p class="section-desc">Each workflow above declares an expected data-out. That expected data-out is exactly what becomes an acceptance assertion. The workflow map is the source; the test stubs in <code>08-tests</code> and the immutable suite in <code>.forge/EVAL</code> are derived from it. The expected outcome of a workflow IS its golden assertion.</p>
+  <p class="section-desc">Each workflow above declares an expected data-out. That expected data-out is exactly what becomes an acceptance assertion. The workflow map is the source; the test stubs in <code>08-tests</code> and the immutable suite in <code>.rapid/EVAL</code> are derived from it. The expected outcome of a workflow IS its golden assertion.</p>
 
   <table class="compare-table">
     <thead><tr><th>Workflow</th><th>Golden assertion (expected data-out)</th></tr></thead>
     <tbody>
-      <tr><td>WF-1 — idea → app</td><td>After <code>/forge "&lt;idea&gt;"</code> and four approvals, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.</td></tr>
+      <tr><td>WF-1 — idea → app</td><td>After <code>/rapid-workflow "&lt;idea&gt;"</code> and four approvals, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.</td></tr>
       <tr><td>WF-2 — gated build + gap loop</td><td>A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point.</td></tr>
       <tr><td>WF-3 — stakeholder docs</td><td>After deploy, the stakeholder can open and navigate the documentation site — phases and test coverage included — with no manual cleanup required.</td></tr>
-      <tr><td>WF-4 — live monitoring</td><td>A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in <code>/forge status</code> and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges.</td></tr>
+      <tr><td>WF-4 — live monitoring</td><td>A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in <code>/rapid-workflow status</code> and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges.</td></tr>
     </tbody>
   </table>
 

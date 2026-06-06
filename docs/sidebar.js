@@ -8,13 +8,13 @@
  *      greyed "not set" placeholders. (The top-nav cluster from env-links.js
  *      stays too; this is the always-visible home for the same links.)
  *   2) Pages — every page THIS project renders. The list is derived from the
- *      top forge-nav links (no hardcoded page set), so it works for any
+ *      top rapid-nav links (no hardcoded page set), so it works for any
  *      project. The current page is highlighted and its detail lives in the
  *      authored menu below; every OTHER page is eager-fetched once and its
  *      sections nested as deep links (page.html#id), so the menu shows ALL
  *      pages and ALL their sections.
  *
- * Standard across every FORGE project. Ships ALONGSIDE env-links.js — any
+ * Standard across every RAPID project. Ships ALONGSIDE env-links.js — any
  * builder/generator that emits these pages must copy BOTH next to each other.
  * One line per page, after env-links.js:
  *   <script src="sidebar.js" defer></script>
@@ -23,10 +23,10 @@
   var sidebar = document.querySelector('.sidebar');
   if (!sidebar) return;
 
-  // Page list is DERIVED from the top forge-nav links that {{NAV}} injects into
+  // Page list is DERIVED from the top rapid-nav links that {{NAV}} injects into
   // every generated page — so it reflects whatever pages THIS project renders,
   // not the default kit. The hardcoded list is only a fallback for a page with
-  // no forge-nav (e.g. one rendered outside the template).
+  // no rapid-nav (e.g. one rendered outside the template).
   var FALLBACK_PAGES = [
     ['home.html', 'Home'], ['prd.html', 'PRD'], ['prd-enhanced.html', 'Enhanced PRD'],
     ['architecture.html', 'Architecture'], ['workflow.html', 'Workflow'], ['users.html', 'Users'],
@@ -35,7 +35,7 @@
   ];
 
   function pagesFromNav() {
-    var nav = document.querySelector('.forge-nav');
+    var nav = document.querySelector('.rapid-nav');
     if (!nav) return null;
     var out = [], seen = {};
     var add = function (href, label) {

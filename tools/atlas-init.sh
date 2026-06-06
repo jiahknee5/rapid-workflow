@@ -13,15 +13,19 @@
 #   docs/env-links.js, docs/sidebar.js, docs/home.html   (copied from the kit)
 #   docs/env.json, docs/regen.json             (per-project config, placeholders)
 #   docs/<page>.html  x10                       (deck shell: nav + sidebar + stub)
-#   .vscode/tasks.json                          (Atlas serve + forge-team)
+#   .vscode/tasks.json                          (Atlas serve + rapid-team)
 # The live view is served by tools/observe-server.py from the project root.
 set -uo pipefail
 
 PROJECT="${1:-$PWD}"
 PROJECT="$(cd "$PROJECT" 2>/dev/null && pwd)" || { echo "atlas-init: bad project path" >&2; exit 2; }
 KIT="$(cd "$(dirname "$0")/.." && pwd)"           # rapid-workflow root (the kit)
-TPL="$KIT/templates/template-docs-page.html"
+# Theme: set ATLAS_TEMPLATE to a template file to re-skin the deck (e.g. the v2 dark
+# "Constellation" theme). Accepts an absolute path or a name under templates/. Default v1.
+TPL="${ATLAS_TEMPLATE:-$KIT/templates/template-docs-page.html}"
+[ -f "$TPL" ] || TPL="$KIT/templates/$ATLAS_TEMPLATE"
 [ -f "$TPL" ] || { echo "atlas-init: kit template not found ($TPL)" >&2; exit 2; }
+echo "atlas-init: theme template = $(basename "$TPL")" >&2
 
 mkdir -p "$PROJECT/docs" "$PROJECT/.vscode"
 
@@ -49,7 +53,7 @@ NAV = [("prd.html","PRD"),("prd-enhanced.html","Enhanced PRD"),("architecture.ht
 BRAND = os.path.basename(os.path.normpath(project))   # the project's own name, not the kit's
 
 def nav_html(active):
-    out = [f'<nav class="forge-nav"><span class="forge-nav-brand">{BRAND} <span style="font-weight:400;opacity:0.5;font-size:10px;">/ Atlas</span><span class="forge-nav-sub">developer view</span></span>']
+    out = [f'<nav class="rapid-nav"><span class="rapid-nav-brand">{BRAND} <span style="font-weight:400;opacity:0.5;font-size:10px;">/ Atlas</span><span class="rapid-nav-sub">developer view</span></span>']
     for href, label in NAV:
         cls = ' class="active"' if href == active else ''
         out.append(f'<a href="{href}"{cls}>{label}</a>')
@@ -111,11 +115,11 @@ if os.path.isfile(home):
           .replace("Rapid Autonomous Pipeline for Iterative Development", "developer view"))
     open(home, "w").write(s)
 
-# env.json — per-project link config (placeholders; filled from forge.yaml at deploy)
+# env.json — per-project link config (placeholders; filled from rapid.yaml at deploy)
 env_path = os.path.join(docs, "env.json")
 if not os.path.exists(env_path):
     json.dump({
-      "_note":"Atlas per-project links. Fill product/source/atlas from forge.yaml deploy targets (atlas-init/atlas-deploy).",
+      "_note":"Atlas per-project links. Fill product/source/atlas from rapid.yaml deploy targets (atlas-init/atlas-deploy).",
       "local":{"url":"http://localhost:3000","launch":"<your dev server, e.g. npm run dev>"},
       "dev":{"url":""},"prod":{"url":""},
       "source":{"github":""},
@@ -132,15 +136,15 @@ if not os.path.exists(regen_path):
       "observatory.html":{"kind":"live","note":"live dashboard — no regen"}
     }, open(regen_path,"w"), indent=2)
 
-# .vscode/tasks.json — serve Atlas (observe-server) + launch the forge-team
+# .vscode/tasks.json — serve Atlas (observe-server) + launch the rapid-team
 vs = os.path.join(project, ".vscode", "tasks.json")
 if not os.path.exists(vs):
     json.dump({"version":"2.0.0","tasks":[
       {"label":"Atlas: serve","type":"shell",
        "command":f"python3 {kit}/tools/observe-server.py --port 4040",
        "presentation":{"panel":"dedicated","reveal":"always"},"problemMatcher":[],"isBackground":True},
-      {"label":"FORGE: launch team","type":"shell",
-       "command":f"bash {kit}/tools/forge-team.sh","problemMatcher":[]}
+      {"label":"RAPID: launch team","type":"shell",
+       "command":f"bash {kit}/tools/rapid-team.sh","problemMatcher":[]}
     ]}, open(vs,"w"), indent=2)
 
 print(f"atlas-init: scaffolded {len(made)} deck stub(s): {', '.join(made) or '(all pages already had content)'}")

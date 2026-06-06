@@ -7,19 +7,19 @@
 
 ## 1. What this repo is
 
-`rapid-workflow` is **not a product repo** — it contains no shipped application. It is the home of **FORGE**, Johnny's operationalized methodology for autonomous, AI-driven product builds. The repo holds the *method* (skills, hooks, tools, templates, docs); when you actually run FORGE, it generates the build artifacts (specs, tests, decks) **inside the target project's repo**, not here.
+`rapid-workflow` is **not a product repo** — it contains no shipped application. It is the home of **RAPID**, Johnny's operationalized methodology for autonomous, AI-driven product builds. The repo holds the *method* (skills, hooks, tools, templates, docs); when you actually run RAPID, it generates the build artifacts (specs, tests, decks) **inside the target project's repo**, not here.
 
 The one-line thesis behind everything:
 
-> **The agent that writes the code must never be the agent that audits it.** When one agent does both, visible progress (a working app) always beats invisible safety (tests, reviews). FORGE separates those roles *structurally* — via hooks, separate terminals, and tiered reviewers — not with prose instructions that fail under pressure.
+> **The agent that writes the code must never be the agent that audits it.** When one agent does both, visible progress (a working app) always beats invisible safety (tests, reviews). RAPID separates those roles *structurally* — via hooks, separate terminals, and tiered reviewers — not with prose instructions that fail under pressure.
 
-FORGE turns a vague idea or a PRD into a tested, deployed system through a deterministic, gate-enforced pipeline. Its design draws on Karpathy (eval-first, keep-or-revert), Beck (TDD), Zaharia et al. (Compound AI Systems), and Every Inc. (Compound Engineering — tiered review, learning capture, doc agents, optimization loops).
+RAPID turns a vague idea or a PRD into a tested, deployed system through a deterministic, gate-enforced pipeline. Its design draws on Karpathy (eval-first, keep-or-revert), Beck (TDD), Zaharia et al. (Compound AI Systems), and Every Inc. (Compound Engineering — tiered review, learning capture, doc agents, optimization loops).
 
 ---
 
 ## 2. The pipeline at a glance
 
-FORGE runs as **12 phases** punctuated by **4 human gates**, organized into three arcs:
+RAPID runs as **12 phases** punctuated by **4 human gates**, organized into three arcs:
 
 ```
 IDEA / PRD
@@ -65,8 +65,8 @@ rapid-workflow/
 ├── docs.json              docs registry snapshot
 │
 ├── skills/                the four Claude Code skills (symlinked to ~/.claude/skills/)
-│   ├── forge/SKILL.md       orchestrator — runs the 12-phase pipeline
-│   ├── workflow/SKILL.md     alias → /forge
+│   ├── rapid/SKILL.md       orchestrator — runs the 12-phase pipeline
+│   ├── workflow/SKILL.md     alias → /rapid-workflow
 │   ├── decision/SKILL.md     /decision — decision + panel documentation
 │   └── docs/SKILL.md         /docs — generates Reveal.js documentation decks
 │
@@ -75,7 +75,7 @@ rapid-workflow/
 │   ├── phase-gate-hook.sh    PreToolUse hook — BLOCKS phase advance w/o artifacts
 │   ├── post-write-hook.sh    PostToolUse hook — updates registry + CHANGES.md
 │   ├── build-docs-registry.sh helper for the post-write hook
-│   └── forge-spec.html       large HTML reference (superseded by docs/architecture.html)
+│   └── rapid-spec.html       large HTML reference (superseded by docs/architecture.html)
 │
 ├── observatory/           Vite + React 19 + XYFlow live dashboard (consumes observe-server)
 │   ├── src/components/       EventStream, AgentGraph, AgentNode, HealthView
@@ -89,9 +89,9 @@ rapid-workflow/
 │
 ├── docs/                  the methodology, as HTML decks + markdown reference
 │   ├── CONSTITUTION.md       10 governance articles
-│   ├── PRD.md                FORGE's own product requirements
+│   ├── PRD.md                RAPID's own product requirements
 │   ├── methodology-deck.md   18-slide methodology walkthrough (source)
-│   ├── forge-reference.md    text version of the system reference (D0–D16)
+│   ├── rapid-reference.md    text version of the system reference (D0–D16)
 │   ├── architecture.html     interactive system reference (D0–D21)
 │   ├── workflow.html, specification.html, prd.html, prd-enhanced.html,
 │   ├── eval.html, users.html, documentation.html, observatory.html
@@ -106,12 +106,12 @@ rapid-workflow/
 
 All four live in `skills/` (the source of truth) and are symlinked into `~/.claude/skills/` so Claude Code can find them. Editing here and committing tracks the change in git.
 
-### `/forge` — the orchestrator
-`skills/forge/SKILL.md` (~1100+ lines). Runs the full pipeline.
+### `/rapid-workflow` — the orchestrator
+`skills/rapid-workflow/SKILL.md` (~1100+ lines). Runs the full pipeline.
 
 ```
-/forge <idea or PRD path> [--track fast|full] [--resume] [--gap-loop]
-/forge status
+/rapid-workflow <idea or PRD path> [--track fast|full] [--resume] [--gap-loop]
+/rapid-workflow status
 ```
 
 It separates **deterministic** components (same every run — the 12 phases, 4 gates, 4 safety mechanisms) from **dynamic** components composed per project:
@@ -126,7 +126,7 @@ It separates **deterministic** components (same every run — the 12 phases, 4 g
 | Eval harness | generated from the workflow state machine, then locked |
 
 ### `/workflow` — alias
-`skills/workflow/SKILL.md`. Passes all arguments straight through to `/forge`.
+`skills/workflow/SKILL.md`. Passes all arguments straight through to `/rapid-workflow`.
 
 ### `/decision` — decision & panel documentation
 `skills/decision/SKILL.md`. Two corpora in one skill: resolved **decisions** and expert **panel findings**. Each decision is a `D-NN.md` file with YAML frontmatter (question, phase, pillars, options w/ pros/cons, rationale + sources, panel input, cascade impacts). Regenerates McKinsey-style Reveal.js decks (`decisions/deck.html`, `panels/deck.html`).
@@ -147,13 +147,21 @@ It separates **deterministic** components (same every run — the 12 phases, 4 g
 
 ## 5. The enforcement layer (tools + hooks)
 
-This is where FORGE's safety thesis becomes mechanical. Prose can be ignored under pressure; hooks cannot.
+This is where RAPID's safety thesis becomes mechanical. Prose can be ignored under pressure; hooks cannot.
 
-- **`tools/phase-gate-hook.sh`** — Installed as a **PreToolUse** hook on writes to `.forge/STATE.json`. It *blocks* a phase transition unless that phase's required artifacts already exist. E.g. you cannot enter Phase 6 (Build) without `.forge/EVAL/` containing ≥1 test file and `.forge/TASKS.json`; you cannot enter Phase 7 without `.forge/P6_EXIT.json` showing all assertions passing.
+- **`tools/phase-gate-hook.sh`** — Installed as a **PreToolUse** hook on writes to `.rapid/STATE.json`. It *blocks* a phase transition unless that phase's required artifacts already exist. E.g. you cannot enter Phase 6 (Build) without `.rapid/EVAL/` containing ≥1 test file, `.rapid/TASKS.json`, **and a `.rapid/INPUTS.json` whose every required human input is resolved**; you cannot enter Phase 7 without `.rapid/P6_EXIT.json` showing all assertions passing.
+
+- **`tools/inputs-check.sh`** — The fail-closed human-input gate (B). Reads the `.rapid/INPUTS.json` ledger and blocks P6 entry until every required input (credentials, deploy target, spend ceiling, resolved undecidables) is `resolved`/`waived` — a credential row only counts resolved once its `.env:KEY` actually exists. Run at GATE 2; the phase-gate hook runs the same check independently. This is what makes "gather all human input up front, then run to completion" mechanical instead of hoped-for.
+
+- **`tools/worktree-check.sh`** — Worktree-isolation verifier (C). Run at P6 exit: reads the observe log and asserts every parallel build writer ran in its own declared git worktree (no missing worktree, no two writers sharing one), merging a `build_writers_isolated` assertion into `.rapid/P6_EXIT.json` — so a build that fanned writers into the shared tree mechanically fails the phase gate. Verifies what the skill only instructed.
+
+- **`tools/cost-summary.sh`** — Token/cost monitor. Parses real billed tokens from Claude Code transcripts per step/session/project, **and attributes them per RAPID phase** by bucketing each step into the phase active in the observe timeline, plus **human touchpoints per phase** (GATE + ESCALATE events, + needs-real-human flags). Writes `.rapid/COST.json` and regenerates `docs/cost.html`. The two metrics you optimize a build on — $ per phase and how often it stopped you — come from here.
+
+- **`tools/mock-init.sh`** — Plan-phase design scaffolder (E). Run at P4 for UI projects: lays down a design-token system (`04-spec/mocks/_tokens.css`), a hi-fi screen template, a gallery, and the `04-spec/screens.md` inventory. Hi-fi comps of every screen are built before architecture; the DOM/API/data seam contracts are derived from the screens, so the backend is built to serve real screens. The comps are approved at GATE 2 and become P7's visual target.
 
 - **`tools/post-write-hook.sh`** — A **PostToolUse** hook. On a `STATE.json` write it refreshes the docs registry; on writes to numbered folders / `decisions/` / `panels/` / `tests/` it appends a timestamped row to `CHANGES.md`. Keeps docs and changelog live, with no post-build cleanup.
 
-- **`tools/observe-server.py`** — A Python HTTP server (default `:4040`). Agents emit JSONL events to `.forge/observe/{agent}.jsonl`; the server merges/sorts them and serves a dashboard plus a REST API (`/api/events`, `/api/agents`, `/api/meta`). Event types include SPAWN, PHASE, GATE, READ, WRITE, TOOL, SEND/RECV, LOOP_*, DECIDE, ESCALATE, ERROR, CONTEXT, COMPLETE.
+- **`tools/observe-server.py`** — A Python HTTP server (default `:4040`). Agents emit JSONL events to `.rapid/observe/{agent}.jsonl`; the server merges/sorts them and serves a dashboard plus a REST API (`/api/events`, `/api/agents`, `/api/meta`). Event types include SPAWN, PHASE, GATE, READ, WRITE, TOOL, SEND/RECV, LOOP_*, DECIDE, ESCALATE, ERROR, CONTEXT, COMPLETE.
 
 - **`observatory/`** — A React 19 + Vite + XYFlow front-end that consumes the observe-server API to draw the live agent topology, an event stream, and a health view (phase / tasks / tests / doc staleness). Components are scaffolded; the data layer (`observe-server.py`) is the working source.
 
@@ -175,25 +183,27 @@ The four safety mechanisms operating here:
 | Mechanism | What it does |
 |---|---|
 | Separate auditor (R2) | Watchdog ≠ implementor — builder can't skip its own safety checks |
-| Immutable eval harness (R4) | `.forge/EVAL/` is locked after P5 — tests are the spec, code follows |
+| Immutable eval harness (R4) | `.rapid/EVAL/` is locked after P5 — tests are the spec, code follows |
 | Keep-or-revert ratchet | On any regression after a merge, `git reset --hard` — only improvements survive |
+| Worktree isolation, verified (C) | Each parallel writer records its `worktree`/`branch` on SPAWN; `tools/worktree-check.sh` fails the P6 exit gate if any writer skipped isolation or two shared one |
 | Cost breaker | Pauses at 80% of token budget, forcing an explicit human choice |
 
 ---
 
 ## 7. State & persistence
 
-A running build keeps its state in a `.forge/` directory inside the *target* project:
+A running build keeps its state in a `.rapid/` directory inside the *target* project:
 
 | File | Role |
 |---|---|
-| `.forge/STATE.json` | current phase + progress (the file the phase-gate hook guards) |
-| `.forge/TASKS.json` | task graph + per-task status |
-| `.forge/EVAL/` | test files, immutable after P5 |
-| `.forge/MEMORY.md` | append-only decisions / blockers / learnings (all agents) |
-| `.forge/COST.json` | token spend per agent vs. budget |
-| `.forge/observe/{agent}.jsonl` | per-agent event stream (→ observe-server) |
-| `.forge/AUDIT.json`, `GAPS.json`, `P6_EXIT.json`, `WALKTHROUGH.md`, `LEARNINGS.md` | watchdog findings, gap classification, build-exit assertions, walkthrough notes, compound learnings |
+| `.rapid/STATE.json` | current phase + progress (the file the phase-gate hook guards) |
+| `.rapid/TASKS.json` | task graph + per-task status |
+| `.rapid/EVAL/` | test files, immutable after P5 |
+| `.rapid/MEMORY.md` | append-only decisions / blockers / learnings (all agents) |
+| `.rapid/COST.json` | token spend per agent, **per phase**, + **human touchpoints per phase** vs. budget |
+| `.rapid/INPUTS.json` | human-input ledger — blocks P6 entry until every required input is resolved (B) |
+| `.rapid/observe/{agent}.jsonl` | per-agent event stream (→ observe-server); build-writer SPAWNs carry `worktree`/`branch` (C) |
+| `.rapid/AUDIT.json`, `GAPS.json`, `P6_EXIT.json`, `WALKTHROUGH.md`, `LEARNINGS.md` | watchdog findings, gap classification, build-exit assertions, walkthrough notes, compound learnings |
 
 Phase folders (`00-vision/` … `07-gaps/`, `tests/`) hold the human-readable artifacts that the gates and `/docs` consume.
 
@@ -216,12 +226,12 @@ A copy also exists at each generated project's root so agents are checked agains
 |---|---|
 | The pitch in 5 minutes | `README.md` |
 | The full methodology narrative | `docs/methodology-deck.md` (or `docs/workflow.html`) |
-| The system reference (agents, phases, primitives) | `docs/forge-reference.md` / `docs/architecture.html` |
-| How a build is actually orchestrated | `skills/forge/SKILL.md` |
-| What FORGE itself still needs | `docs/PRD.md` |
+| The system reference (agents, phases, primitives) | `docs/rapid-reference.md` / `docs/architecture.html` |
+| How a build is actually orchestrated | `skills/rapid-workflow/SKILL.md` |
+| What RAPID itself still needs | `docs/PRD.md` |
 | A concrete example of a vision + pillars | `examples/vision/` |
 | What changed and when | `CHANGELOG.md` |
 
 ---
 
-*RAPID = the repo; FORGE = the methodology; `/forge` = the skill that runs it; the 12-phase pipeline + 4 gates + 3-terminal swarm + 4 safety mechanisms = the machine.*
+*RAPID = the repo; RAPID = the methodology; `/rapid-workflow` = the skill that runs it; the 12-phase pipeline + 4 gates + 3-terminal swarm + 4 safety mechanisms = the machine.*

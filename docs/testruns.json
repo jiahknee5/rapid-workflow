@@ -1,7 +1,7 @@
 {
   "generated": "2026-06-01T01:40:23Z",
   "generated_by": "tools/workflow-runner.py",
-  "note": "Published run log + latest full trace per workflow. The testsuite page replays this when observe-server is not running (static /_atlas deploy); when the server is up it live-tails .forge/RUNS/<wf>/<run>.jsonl instead.",
+  "note": "Published run log + latest full trace per workflow. The testsuite page replays this when observe-server is not running (static /_atlas deploy); when the server is up it live-tails .rapid/RUNS/<wf>/<run>.jsonl instead.",
   "workflows": {
     "WF-1": {
       "runs": [
@@ -16,7 +16,7 @@
           "fail": 0,
           "info": 1,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -32,7 +32,7 @@
           "fail": 0,
           "info": 0,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -48,7 +48,7 @@
           "fail": 0,
           "info": 1,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -64,7 +64,7 @@
           "fail": 0,
           "info": 1,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -80,7 +80,7 @@
           "fail": 0,
           "info": 0,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -96,7 +96,7 @@
           "fail": 0,
           "info": 0,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -112,7 +112,7 @@
           "fail": 0,
           "info": 0,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -128,7 +128,7 @@
           "fail": 0,
           "info": 0,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -144,7 +144,7 @@
           "fail": 0,
           "info": 0,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -160,7 +160,7 @@
           "fail": 0,
           "info": 0,
           "total": 5,
-          "golden": "After /forge \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
           "input": {
             "idea": "build a math tutor for kids"
           }
@@ -200,7 +200,7 @@
               "src": "prd-enhanced.html"
             },
             "declared": {
-              "in": "One-line idea (/forge \"<idea>\")",
+              "in": "One-line idea (/rapid-workflow \"<idea>\")",
               "proc": "Consult panels + research, read the locked requirement register",
               "out": "Scope understood; requirement count + current phase, prepopulated"
             },
@@ -234,7 +234,7 @@
             "declared": {
               "in": "Build plan + tests generated from the plan",
               "proc": "Decompose into tasks; lock the immutable eval harness as the dependency root",
-              "out": "Task graph + .forge/EVAL/ test files exist before any code"
+              "out": "Task graph + .rapid/EVAL/ test files exist before any code"
             },
             "data_in": {
               "path": "01-intake/PRD-ENHANCED.md",
@@ -242,7 +242,7 @@
               "pattern": "^### (BR|FR|TR|NFR)-"
             },
             "data_out": {
-              "pattern": ".forge/EVAL/*.test.sh",
+              "pattern": ".rapid/EVAL/*.test.sh",
               "count": 1,
               "sample": [
                 "hooks.smoke.test.sh"
@@ -273,14 +273,14 @@
               "out": "Tasks merged; conformance audit current"
             },
             "data_in": {
-              "pattern": ".forge/EVAL/*.test.sh",
+              "pattern": ".rapid/EVAL/*.test.sh",
               "count": 1,
               "sample": [
                 "hooks.smoke.test.sh"
               ]
             },
             "data_out": {
-              "path": ".forge/TASKS.json",
+              "path": ".rapid/TASKS.json",
               "extract": "tasks.$len",
               "value": 15
             }
@@ -309,7 +309,7 @@
               "out": "Codex verdict {status, evidence}; pass only if the eval gate is green"
             },
             "data_in": {
-              "path": ".forge/TASKS.json",
+              "path": ".rapid/TASKS.json",
               "extract": "tasks.$len",
               "value": 15
             },
@@ -398,7 +398,7 @@
           "total": 4,
           "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
           "input": {
-            "source": ".forge/GAPS.json"
+            "source": ".rapid/GAPS.json"
           }
         },
         {
@@ -414,7 +414,7 @@
           "total": 4,
           "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
           "input": {
-            "source": ".forge/GAPS.json"
+            "source": ".rapid/GAPS.json"
           }
         },
         {
@@ -430,7 +430,7 @@
           "total": 4,
           "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
           "input": {
-            "source": ".forge/GAPS.json"
+            "source": ".rapid/GAPS.json"
           }
         },
         {
@@ -446,7 +446,7 @@
           "total": 4,
           "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
           "input": {
-            "source": ".forge/GAPS.json"
+            "source": ".rapid/GAPS.json"
           }
         },
         {
@@ -462,7 +462,7 @@
           "total": 4,
           "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
           "input": {
-            "source": ".forge/GAPS.json"
+            "source": ".rapid/GAPS.json"
           }
         }
       ],
@@ -505,10 +505,10 @@
               "out": "Build plan with locked acceptance criteria (immutable EVAL)"
             },
             "data_in": {
-              "source": ".forge/GAPS.json"
+              "source": ".rapid/GAPS.json"
             },
             "data_out": {
-              "pattern": ".forge/EVAL/*",
+              "pattern": ".rapid/EVAL/*",
               "count": 1,
               "sample": [
                 "hooks.smoke.test.sh"
@@ -539,7 +539,7 @@
               "out": "Failing-gate signal: the gaps, surfaced not buried"
             },
             "data_in": {
-              "pattern": ".forge/EVAL/*",
+              "pattern": ".rapid/EVAL/*",
               "count": 1,
               "sample": [
                 "hooks.smoke.test.sh"
@@ -584,7 +584,7 @@
               "tail": ""
             },
             "data_out": {
-              "path": ".forge/GAPS.json",
+              "path": ".rapid/GAPS.json",
               "extract": "$len",
               "value": 9
             }
@@ -613,7 +613,7 @@
               "out": "Codex verdict {status, evidence}; pass means the same locked criteria are green again"
             },
             "data_in": {
-              "path": ".forge/GAPS.json",
+              "path": ".rapid/GAPS.json",
               "extract": "$len",
               "value": 9
             },
@@ -880,9 +880,9 @@
           "fail": 0,
           "info": 0,
           "total": 4,
-          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /forge status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
           "input": {
-            "source": ".forge/observe"
+            "source": ".rapid/observe"
           }
         },
         {
@@ -896,9 +896,9 @@
           "fail": 0,
           "info": 0,
           "total": 4,
-          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /forge status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
           "input": {
-            "source": ".forge/observe"
+            "source": ".rapid/observe"
           }
         },
         {
@@ -912,9 +912,9 @@
           "fail": 0,
           "info": 0,
           "total": 4,
-          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /forge status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
           "input": {
-            "source": ".forge/observe"
+            "source": ".rapid/observe"
           }
         },
         {
@@ -928,9 +928,9 @@
           "fail": 0,
           "info": 0,
           "total": 4,
-          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /forge status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
           "input": {
-            "source": ".forge/observe"
+            "source": ".rapid/observe"
           }
         }
       ],
@@ -969,14 +969,14 @@
             },
             "declared": {
               "in": "Live build; per-role terminals emitting events",
-              "proc": "Each agent writes .forge/observe/<role>.jsonl; the dashboard reads all at once",
-              "out": "/forge status + observatory read every terminal"
+              "proc": "Each agent writes .rapid/observe/<role>.jsonl; the dashboard reads all at once",
+              "out": "/rapid-workflow status + observatory read every terminal"
             },
             "data_in": {
-              "source": ".forge/observe"
+              "source": ".rapid/observe"
             },
             "data_out": {
-              "pattern": ".forge/observe/*.jsonl",
+              "pattern": ".rapid/observe/*.jsonl",
               "count": 9,
               "sample": [
                 "impl-2.jsonl",
@@ -1008,11 +1008,11 @@
             },
             "declared": {
               "in": "Each agent's current task",
-              "proc": "Every agent updates .forge/HEARTBEAT.json every \u22645 min",
+              "proc": "Every agent updates .rapid/HEARTBEAT.json every \u22645 min",
               "out": "A live per-role liveness signal"
             },
             "data_in": {
-              "pattern": ".forge/observe/*.jsonl",
+              "pattern": ".rapid/observe/*.jsonl",
               "count": 9,
               "sample": [
                 "impl-2.jsonl",
@@ -1024,7 +1024,7 @@
               ]
             },
             "data_out": {
-              "path": ".forge/observe/seq.txt",
+              "path": ".rapid/observe/seq.txt",
               "exists": true
             }
           },
@@ -1052,7 +1052,7 @@
               "out": "A stall alert flagging the exact terminal (e.g. impl-2)"
             },
             "data_in": {
-              "path": ".forge/observe/seq.txt",
+              "path": ".rapid/observe/seq.txt",
               "exists": true
             },
             "data_out": {
@@ -1243,7 +1243,7 @@
             },
             "declared": {
               "in": "A project name + one-line idea",
-              "proc": "Run the deterministic P1 scaffold (new-project.sh \u2192 atlas-init): structure + CONSTITUTION + BUILD-AUTONOMY + .forge + the Atlas deck",
+              "proc": "Run the deterministic P1 scaffold (new-project.sh \u2192 atlas-init): structure + CONSTITUTION + BUILD-AUTONOMY + .rapid + the Atlas deck",
               "out": "A scaffolded project with the full structure and a live (stub) doc deck"
             },
             "data_in": {
@@ -1367,7 +1367,7 @@
             "data_out": {
               "role": "human",
               "engine": "fallback (agents=off)",
-              "path": ".forge/E2E.json",
+              "path": ".rapid/E2E.json",
               "extract": "summary",
               "value": {
                 "pass": 3,
@@ -1401,7 +1401,7 @@
             "data_in": {
               "role": "human",
               "engine": "fallback (agents=off)",
-              "path": ".forge/E2E.json",
+              "path": ".rapid/E2E.json",
               "extract": "summary",
               "value": {
                 "pass": 3,
@@ -1414,7 +1414,7 @@
               "exit": 0,
               "expect_exit": 0,
               "elapsed_s": 0.22,
-              "tail": "STAGE deploy \u2014 local/staging dev deploy (app + /_atlas)\n  [PASS] dev deployed \u2192 /tmp/rapid_workflow_test_1-dev (app + /_atlas), env.json dev.url=http://localhost:4173\nSTAGE verify \u2014 assert the three deliverables + write E2E.json\n  wrote /Users/johnny/projects/rapid-workflow/.forge/E2E.json\n  [PASS] documentation populated\n  [PASS] local app built\n  [PASS] dev deployed\nLIFECYCLE E2E GREEN: rapid_workflow_test_1 created, documented, built, and dev-deployed.",
+              "tail": "STAGE deploy \u2014 local/staging dev deploy (app + /_atlas)\n  [PASS] dev deployed \u2192 /tmp/rapid_workflow_test_1-dev (app + /_atlas), env.json dev.url=http://localhost:4173\nSTAGE verify \u2014 assert the three deliverables + write E2E.json\n  wrote /Users/johnny/projects/rapid-workflow/.rapid/E2E.json\n  [PASS] documentation populated\n  [PASS] local app built\n  [PASS] dev deployed\nLIFECYCLE E2E GREEN: rapid_workflow_test_1 created, documented, built, and dev-deployed.",
               "parsed": {
                 "pass": 3,
                 "fail": 0,

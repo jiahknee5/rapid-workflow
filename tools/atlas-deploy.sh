@@ -11,12 +11,12 @@
 #     --out   the product's build/deploy output dir (e.g. dist, build, public/.next out)
 #     --url   the product's deployed base URL (so atlas.url = <url>/_atlas)
 #
-# Run from the project root (needs .forge/STATE.json). The static deck = docs/
+# Run from the project root (needs .rapid/STATE.json). The static deck = docs/
 # (pages fetch env.json/regen.json at runtime — works statically; live /api bits
 # no-op gracefully off-server).
 set -uo pipefail
 
-[ -f ".forge/STATE.json" ] || { echo "atlas-deploy: not a FORGE build (no .forge/STATE.json)" >&2; exit 2; }
+[ -f ".rapid/STATE.json" ] || { echo "atlas-deploy: not a RAPID build (no .rapid/STATE.json)" >&2; exit 2; }
 OUT=""; URL=""; DEV=""; PROD=""
 while [ $# -gt 0 ]; do
   case "$1" in

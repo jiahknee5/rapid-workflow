@@ -3,9 +3,9 @@
   "updated": "2026-05-30",
   "generated_by": "tools/build-docs-registry.sh",
   "categories": {
-    "forge": {
-      "label": "FORGE System",
-      "description": "How the FORGE autonomous build system works"
+    "rapid": {
+      "label": "RAPID System",
+      "description": "How the RAPID autonomous build system works"
     },
     "workflow": {
       "label": "AI Build Workflow",
@@ -69,9 +69,9 @@
       "generated": true
     },
     {
-      "file": "docs/forge-reference.md",
-      "title": "FORGE Reference",
-      "category": "forge",
+      "file": "docs/rapid-reference.md",
+      "title": "RAPID Reference",
+      "category": "rapid",
       "description": "Markdown reference: core principle, dynamic composition, phase summary",
       "status": "current"
     },
@@ -85,7 +85,7 @@
     {
       "file": "docs/observatory.html",
       "title": "Observatory",
-      "category": "forge",
+      "category": "rapid",
       "description": "",
       "status": "current",
       "generated": true
@@ -162,8 +162,8 @@
       "generated": true
     },
     {
-      "file": "skills/forge/SKILL.md",
-      "title": "Forge Skill",
+      "file": "skills/rapid-workflow/SKILL.md",
+      "title": "Rapid Skill",
       "category": "skill",
       "description": "",
       "status": "current",
@@ -215,9 +215,9 @@
       "generated": true
     },
     {
-      "file": "tools/forge-spec.html",
-      "title": "FORGE System Specification",
-      "category": "forge",
+      "file": "tools/rapid-spec.html",
+      "title": "RAPID System Specification",
+      "category": "rapid",
       "description": "Complete spec: 65 requirements across 11 categories, agent prompts, schemas, configuration",
       "status": "current"
     },
@@ -247,15 +247,15 @@
     },
     {
       "file": "tools/observe-server.py",
-      "title": "FORGE Observer Script",
-      "category": "forge",
+      "title": "RAPID Observer Script",
+      "category": "rapid",
       "description": "Python script that feeds live build data to the observatory dashboard",
       "status": "current"
     },
     {
       "file": "tools/phase-gate-hook.sh",
-      "title": "FORGE Phase Gate Script",
-      "category": "forge",
+      "title": "RAPID Phase Gate Script",
+      "category": "rapid",
       "description": "Shell script enforcing phase gate approvals during autonomous builds",
       "status": "current"
     },
@@ -303,21 +303,21 @@
       "file": "tools/workflow-runner.py",
       "title": "Workflow Runner",
       "category": "workflow",
-      "description": "Live-drives a user workflow as an executable test: runs each node's exec against the live build, threads data-out→data-in, streams .forge/RUNS/<wf>/<run>.jsonl, publishes docs/testruns.json. Codex tester + simulated-operator nodes.",
+      "description": "Live-drives a user workflow as an executable test: runs each node's exec against the live build, threads data-out→data-in, streams .rapid/RUNS/<wf>/<run>.jsonl, publishes docs/testruns.json. Codex tester + simulated-operator nodes.",
       "status": "new"
     },
     {
       "file": "tools/new-project.sh",
       "title": "New Project",
       "category": "workflow",
-      "description": "Create a new project using this skill — the deterministic P1 scaffold (structure + CONSTITUTION + BUILD-AUTONOMY + locked PRD + .forge/STATE + self-contained toolset + atlas-init)",
+      "description": "Create a new project using this skill — the deterministic P1 scaffold (structure + CONSTITUTION + BUILD-AUTONOMY + locked PRD + .rapid/STATE + self-contained toolset + atlas-init)",
       "status": "new"
     },
     {
       "file": "tools/lifecycle-e2e.sh",
       "title": "Lifecycle E2E",
       "category": "workflow",
-      "description": "End-to-end acceptance test of the skill: create a new project → populate docs → build local app → deploy dev, asserting each deliverable and writing .forge/E2E.json. Surfaced as WF-5 in the Test Suite.",
+      "description": "End-to-end acceptance test of the skill: create a new project → populate docs → build local app → deploy dev, asserting each deliverable and writing .rapid/E2E.json. Surfaced as WF-5 in the Test Suite.",
       "status": "new"
     },
     {
@@ -336,27 +336,27 @@
       "superseded_by": "docs/methodology-deck.html"
     },
     {
-      "file": "archive/forge-dashboard.html",
-      "title": "FORGE Observatory v1",
-      "category": "forge",
+      "file": "archive/rapid-dashboard.html",
+      "title": "RAPID Observatory v1",
+      "category": "rapid",
       "superseded_by": "tools/dashboard.html"
     },
     {
-      "file": "archive/forge-comparison.html",
-      "title": "FORGE vs TDD Scaffold",
-      "category": "forge",
+      "file": "archive/rapid-comparison.html",
+      "title": "RAPID vs TDD Scaffold",
+      "category": "rapid",
       "superseded_by": null
     },
     {
-      "file": "docs/forge-architecture.html",
-      "title": "FORGE Architecture",
-      "category": "forge",
+      "file": "docs/rapid-architecture.html",
+      "title": "RAPID Architecture",
+      "category": "rapid",
       "status": "missing"
     },
     {
       "file": "tools/dashboard.html",
-      "title": "FORGE Observatory",
-      "category": "forge",
+      "title": "RAPID Observatory",
+      "category": "rapid",
       "status": "missing"
     },
     {

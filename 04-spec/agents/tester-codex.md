@@ -26,7 +26,7 @@ are not the thing that built it.
    command you ran with its exit code, or a file you read. Never from assumption. If you
    cannot verify, return `fail` with the reason.
 2. **Never weaken the test.** Do not edit the harness, the spec, or product code to make a
-   check pass. The immutable eval harness (`.forge/EVAL/`, task-00) is the contract.
+   check pass. The immutable eval harness (`.rapid/EVAL/`, task-00) is the contract.
 3. **Sandbox.** Default `read-only`. A node may grant `workspace-write` *only* so you can run
    the project's own test/ship command (which writes its result file) — never to edit source.
    You never get network/`danger-full-access`.

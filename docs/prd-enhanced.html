@@ -129,16 +129,16 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 }
 
 /* Top cross-page nav */
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-<nav class="forge-nav"><span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html" class="active">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="testsuite.html">Test Suite</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
+<nav class="rapid-nav"><span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span><a href="prd.html">PRD</a><a href="prd-enhanced.html" class="active">Enhanced PRD</a><a href="architecture.html">Architecture</a><a href="workflow.html">Workflow</a><a href="users.html">Users</a><a href="spec.html">Spec</a><a href="observatory.html">Observatory</a><a href="eval.html">Eval</a><a href="testsuite.html">Test Suite</a><a href="cost.html">Cost</a><a href="documentation.html">Documentation</a></nav>
 <div class="spec-layout">
 <nav class="sidebar">
   <div class="sidebar-brand">RAPID</div>
@@ -169,8 +169,8 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="section-id">Enhanced PRD &middot; Requirements Register</div>
     <div class="section-title">A machine-traceable requirements register with change tracking</div>
     <div class="section-desc">
-      Derived from <strong>docs/PRD.md</strong> + <strong>skills/forge/SKILL.md</strong>. This is the requirements doc
-      that <code>04-spec/spec.md</code> and <code>.forge/TASKS.json</code> reference; the HTML deck is its developer-view presentation.
+      Derived from <strong>docs/PRD.md</strong> + <strong>skills/rapid-workflow/SKILL.md</strong>. This is the requirements doc
+      that <code>04-spec/spec.md</code> and <code>.rapid/TASKS.json</code> reference; the HTML deck is its developer-view presentation.
     </div>
 
     <div class="grid-3">
@@ -288,7 +288,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <span class="req-title">Concrete walkthrough</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">P7 runs an explicit step-by-step walkthrough across every surface and records <code>.forge/WALKTHROUGH.md</code>.</div>
+      <div class="req-body">P7 runs an explicit step-by-step walkthrough across every surface and records <code>.rapid/WALKTHROUGH.md</code>.</div>
       <div class="req-meta">
         <span><span class="label">Trace</span> &#8593; BR-2</span>
         <span><span class="label">Changed</span> 2026-05-30 created (was R-06)</span>
@@ -386,7 +386,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <span class="req-title">Independent watchdog</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">A separate auditing agent (no implementation incentive) is spawned automatically at P6a and writes <code>.forge/AUDIT.json</code>; P6 cannot exit without it.</div>
+      <div class="req-body">A separate auditing agent (no implementation incentive) is spawned automatically at P6a and writes <code>.rapid/AUDIT.json</code>; P6 cannot exit without it.</div>
       <div class="req-meta">
         <span><span class="label">Trace</span> &#8593; BR-2 &middot; &#8595; S-02</span>
         <span><span class="label">Changed</span> 2026-05-30 created (was R-02)</span>
@@ -451,7 +451,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <span class="req-title">Terminal-per-agent + agent teams</span>
         <span class="req-pri must">Must</span>
       </div>
-      <div class="req-body">Each persistent agent runs in its own terminal, connected as one team over the claude-peers bus, with per-terminal status/monitoring/continuous-build hooks keyed by FORGE_ROLE.</div>
+      <div class="req-body">Each persistent agent runs in its own terminal, connected as one team over the claude-peers bus, with per-terminal status/monitoring/continuous-build hooks keyed by RAPID_ROLE.</div>
       <div class="req-meta">
         <span><span class="label">Trace</span> &#8593; FR-1 &middot; &#8595; S-02</span>
         <span><span class="label">Changed</span> 2026-05-30 added (terminal-per-agent + agent teams + per-terminal hooks, operator)</span>
@@ -464,7 +464,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <span class="req-title">Context-checkpoint protocol</span>
         <span class="req-pri should">Should</span>
       </div>
-      <div class="req-body">Above ~200k tokens the skill checkpoints all state to <code>.forge/</code> and runs a phase-completion checklist before continuing.</div>
+      <div class="req-body">Above ~200k tokens the skill checkpoints all state to <code>.rapid/</code> and runs a phase-completion checklist before continuing.</div>
       <div class="req-meta">
         <span><span class="label">Trace</span> &#8593; BR-2</span>
         <span><span class="label">Changed</span> 2026-05-30 created (was R-05)</span>
@@ -477,7 +477,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <span class="req-title">Configurable artifact paths</span>
         <span class="req-pri could">Could</span>
       </div>
-      <div class="req-body">The enforcement hooks' artifact paths (<code>01-intake/</code>, <code>03-panels/</code>, <code>04-spec/</code>) should be configurable so a repo can dogfood FORGE without root-level numbered folders.</div>
+      <div class="req-body">The enforcement hooks' artifact paths (<code>01-intake/</code>, <code>03-panels/</code>, <code>04-spec/</code>) should be configurable so a repo can dogfood RAPID without root-level numbered folders.</div>
       <div class="req-meta">
         <span><span class="label">Trace</span> &#8593; FR-5</span>
         <span><span class="label">Changed</span> 2026-05-30 created (was R-14)</span>
@@ -561,7 +561,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       <thead><tr><th>ID</th><th>Deliverable</th><th>Requirements</th></tr></thead>
       <tbody>
         <tr><td>D1</td><td>Enforcement hook suite</td><td>TR-1, TR-4, TR-5, TR-6</td></tr>
-        <tr><td>D2</td><td>FORGE skill orchestration + agent-team build</td><td>FR-1, TR-2, TR-3, TR-7, TR-8</td></tr>
+        <tr><td>D2</td><td>RAPID skill orchestration + agent-team build</td><td>FR-1, TR-2, TR-3, TR-7, TR-8</td></tr>
         <tr><td>D3</td><td>Observatory dashboard</td><td>FR-4, FR-6</td></tr>
         <tr><td>D4</td><td>Documentation system / developer view</td><td>FR-5</td></tr>
         <tr><td>D5</td><td>Integration layer + combined gate; cost visibility</td><td>FR-7, FR-8</td></tr>
@@ -574,7 +574,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="section-id">Change Log</div>
     <div class="section-title">Append-only audit of requirement changes, aligned with the GitHub issue tracker</div>
     <div class="section-desc">
-      A requirement change originates from the gap loop: <code>.forge/GAPS.json</code> &#8594; <code>tools/gaps-to-issues.sh</code> &#8594; GitHub issues.
+      A requirement change originates from the gap loop: <code>.rapid/GAPS.json</code> &#8594; <code>tools/gaps-to-issues.sh</code> &#8594; GitHub issues.
       Each entry records the source/issue that drove it and the requirement(s) it updated, so any GitHub issue traces to exactly where the PRD changed &mdash; and back.
       A change is logged when <strong>requested</strong> (status: requested &#8594; accepted &#8594; implemented).
     </div>

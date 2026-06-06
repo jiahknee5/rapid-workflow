@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""FORGE Workflow Runner — live-drive a user workflow as an executable test.
+"""RAPID Workflow Runner — live-drive a user workflow as an executable test.
 
 Reads docs/workflows.json, runs one workflow's nodes in sequence against the
-LIVE build, and streams a node-by-node trace to .forge/RUNS/<wf>/<run-id>.jsonl
+LIVE build, and streams a node-by-node trace to .rapid/RUNS/<wf>/<run-id>.jsonl
 (tailable while it runs — that is the "real-time" feed the testsuite page reads).
 Each node threads its data-out into the next node's data-in, so the trace shows
 the inputs and outputs at every node end-to-end. On completion it appends a row
-to .forge/RUNS/<wf>/index.json and republishes docs/testruns.json (the static
+to .rapid/RUNS/<wf>/index.json and republishes docs/testruns.json (the static
 snapshot the page replays when no server is running).
 
 Usage:
@@ -16,8 +16,8 @@ Usage:
     python3 tools/workflow-runner.py --publish-only  # just rebuild testruns.json
 
 Design note: bounded by construction. The `cmd` execs in workflows.json for this
-project are the real (seconds-scale) FORGE tools (ship-gate, stub-scan); no node
-runs a `/forge` build or spends money. For a built project, P5 generates the
+project are the real (seconds-scale) RAPID tools (ship-gate, stub-scan); no node
+runs a `/rapid-workflow` build or spends money. For a built project, P5 generates the
 node execs to point at that project's own test/e2e commands.
 """
 
@@ -34,7 +34,7 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORKFLOWS_PATH = os.path.join(ROOT, "docs", "workflows.json")
-RUNS_DIR = os.path.join(ROOT, ".forge", "RUNS")
+RUNS_DIR = os.path.join(ROOT, ".rapid", "RUNS")
 TESTRUNS_PATH = os.path.join(ROOT, "docs", "testruns.json")
 PUBLISH_LIMIT = 25            # max runs kept per workflow in testruns.json
 CMD_TIMEOUT = 180             # hard ceiling on any single node command (s)
@@ -65,7 +65,7 @@ TESTER_SCHEMA = {
 }
 
 OPERATOR_SIM_PERSONA = (
-    "You are a SIMULATED OPERATOR — a stand-in for the human decision-maker at a FORGE gate, used ONLY "
+    "You are a SIMULATED OPERATOR — a stand-in for the human decision-maker at a RAPID gate, used ONLY "
     "to dry-run / test the workflow. You are NOT a real human and must never be treated as approval for a "
     "real irreversible action. GUARDRAILS, in order of priority:\n"
     "1. FAIL-SAFE DEFAULT: if the evidence is insufficient, ambiguous, or you are unsure — return decision "
@@ -404,12 +404,12 @@ def append_index(summary):
 
 
 def publish_testruns():
-    """Rebuild docs/testruns.json from every .forge/RUNS/<wf>/index.json + latest trace."""
+    """Rebuild docs/testruns.json from every .rapid/RUNS/<wf>/index.json + latest trace."""
     doc = load_workflows()
     out = {"generated": now_iso(), "generated_by": "tools/workflow-runner.py",
            "note": "Published run log + latest full trace per workflow. The testsuite page "
                    "replays this when observe-server is not running (static /_atlas deploy); "
-                   "when the server is up it live-tails .forge/RUNS/<wf>/<run>.jsonl instead.",
+                   "when the server is up it live-tails .rapid/RUNS/<wf>/<run>.jsonl instead.",
            "workflows": {}}
     for wf in doc.get("workflows", []):
         wf_id = wf["id"]
@@ -476,7 +476,7 @@ def resolve_input(wf, preset_id, raw_input):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="FORGE workflow runner — live-drive a workflow as a test")
+    ap = argparse.ArgumentParser(description="RAPID workflow runner — live-drive a workflow as a test")
     ap.add_argument("--wf", help="workflow id (e.g. WF-1)")
     ap.add_argument("--preset", help="preset id from workflows.json")
     ap.add_argument("--input", help="raw JSON input (overrides --preset)")

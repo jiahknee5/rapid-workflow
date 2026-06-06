@@ -1,16 +1,16 @@
-# FORGE — Autonomous Build System Reference
+# RAPID — Autonomous Build System Reference
 
 ## The Core Principle: Separate the Builder from the Auditor
 
 The agent implementing the code must never be the same agent auditing the code. When one agent does both, the implementor always wins — it produces visible progress, while the auditor produces invisible safety. Under pressure, invisible work gets skipped. Every time. This isn't a discipline problem. It's an incentive misalignment that prose instructions cannot fix.
 
-Every enforcement mechanism in FORGE exists because of this principle: hooks that block advancement (R1), a separate watchdog terminal (R2), blocking task dependencies (R4), tiered reviewers as independent subagents, and document review agents that pre-screen before the operator sees anything. If a step is described in words but not enforced structurally — that step will eventually be skipped.
+Every enforcement mechanism in RAPID exists because of this principle: hooks that block advancement (R1), a separate watchdog terminal (R2), blocking task dependencies (R4), tiered reviewers as independent subagents, and document review agents that pre-screen before the operator sees anything. If a step is described in words but not enforced structurally — that step will eventually be skipped.
 
 ---
 
-FORGE is not a fixed system — it's a **template that generates a project-specific build system** every time it runs. The pipeline structure (12 phases, 4 gates) is constant, but everything inside is derived dynamically from the input: the pillars come from the project's risks, the panels come from the project's domain, the agent count comes from the task graph's parallelism, the tests come from the workflow state machine, and the Constitution's Articles VI–X are tailored to the project's specific safety concerns.
+RAPID is not a fixed system — it's a **template that generates a project-specific build system** every time it runs. The pipeline structure (12 phases, 4 gates) is constant, but everything inside is derived dynamically from the input: the pillars come from the project's risks, the panels come from the project's domain, the agent count comes from the task graph's parallelism, the tests come from the workflow state machine, and the Constitution's Articles VI–X are tailored to the project's specific safety concerns.
 
-This means no two FORGE builds produce the same architecture. A healthcare AI security platform generates different pillars, different panels (security-expert-panel, not user-panel), different reviewer configurations (Security reviewer weighted highest), and different Constitution overridables than a children's math tutor. The pipeline is the scaffold; the project fills it.
+This means no two RAPID builds produce the same architecture. A healthcare AI security platform generates different pillars, different panels (security-expert-panel, not user-panel), different reviewer configurations (Security reviewer weighted highest), and different Constitution overridables than a children's math tutor. The pipeline is the scaffold; the project fills it.
 
 **Technically:** A 12-phase autonomous build pipeline with 4 human gates, 4 safety mechanisms, a 3-terminal architecture during build phase, tiered multi-agent code review, compound learning capture, and document review agents at every gate. Takes a product idea or PRD, produces a deployed, spec-compliant application. Start with D0 (full architecture), then drill into D1–D19 for detail.
 
@@ -48,7 +48,7 @@ Legend: 🟢 Autonomous phase · 🟡 Human gate · 🔴 Safety / guard · 🔵 
 
 | Agents | Pipeline Phase | Safety & Guards | Data Written |
 |---|---|---|---|
-| — | forge.yaml loaded (D14) | ⚪ Decision Router (D5) injected into all agents | .forge/STATE.json, .forge/MEMORY.md, .forge/COST.json |
+| — | rapid.yaml loaded (D14) | ⚪ Decision Router (D5) injected into all agents | .rapid/STATE.json, .rapid/MEMORY.md, .rapid/COST.json |
 
 ### Arc 1: Understand
 
@@ -64,24 +64,24 @@ Legend: 🟢 Autonomous phase · 🟡 Human gate · 🔴 Safety / guard · 🔵 
 | Agents | Pipeline Phase | Safety & Guards | Data Written |
 |---|---|---|---|
 | **Spec Writer** (subagent) | P4: Spec Derivation | 🔴 Inter-stage assertion: every PRD req → spec section | 04-spec/spec.md, 04-spec/workflow.md, 04-spec/architecture.md, 04-spec/CONTRACTS.md |
-| **Spec Writer** (continues) | P5: Tasks + Eval + CI | 🔴 Assertion: tasks cover spec · 🔴 Eval harness LOCKED (D7b) — agents cannot modify tests | .forge/TASKS.json, .forge/EVAL/ (immutable), 04-spec/agents/*.md, .github/workflows/ (D11) |
+| **Spec Writer** (continues) | P5: Tasks + Eval + CI | 🔴 Assertion: tasks cover spec · 🔴 Eval harness LOCKED (D7b) — agents cannot modify tests | .rapid/TASKS.json, .rapid/EVAL/ (immutable), 04-spec/agents/*.md, .github/workflows/ (D11) |
 | ⏸ **OPERATOR** (point of no return) | **G2: Architecture (D3)** | Approve / Modify / Rescope · Provide API keys + .env | .env (gitignored) |
 
 ### Arc 3: Execute + Converge
 
 | Agents | Pipeline Phase | Safety & Guards | Data Written |
 |---|---|---|---|
-| **Orchestrator** (monitors, tmux manager) · **Supervisor** (tmux terminal, spawned P6a, killed P6e) → **Impl 1–4** (worktree agents, fan-out 1–4, D7) · **Watchdog** (tmux terminal, spawned P6a, killed P6e, /loop 30m) | P6: Build (D8) — 3-terminal architecture: orchestrator monitors, supervisor assigns tasks + runs smoke tests, watchdog drift-checks on PR/merge/30m. Communication via claude-peers (11 message types). Shutdown handshake at P6 end. | 🔴 Watchdog (D4) on PR_SUBMITTED + PR_MERGED + /loop 30m · 🔴 Reviewer: spec + constitution per PR · 🔴 Keep-or-revert: regression = git reset · 🔴 Cost breaker (D12): pause at 80% · 🔴 DRIFT_CRITICAL → orchestrator (emergency halt) | git branches, .forge/AUDIT.json, .forge/MEMORY.md, .forge/COST.json, .forge/MESSAGES.json, .forge/prompts/, TASKS.json (status) |
-| **Tester** (subagent + Playwright), **Visual QA** (screenshots + vision) | P7: Test + Visual QA (D10) | 🔴 Immutable eval harness · 🔴 Visual: 3 viewports · fix → screenshot → check ×3 | test results, screenshot evidence, .forge/GAPS.json |
-| **Orchestrator** (classifies gaps) | P8: Gap Loop (D9) — classify by pillar + severity · spec-level: re-derive § → rebuild · PRD-level: queue for G3 · 🔄 loop to P6 (×3 max) | 🔴 Auto re-derivation (spec-level only) · PRD gaps → operator | .forge/GAPS.json (updated), 01-intake/DIFF.md, 04-spec/spec.md (re-derived) |
+| **Orchestrator** (monitors, tmux manager) · **Supervisor** (tmux terminal, spawned P6a, killed P6e) → **Impl 1–4** (worktree agents, fan-out 1–4, D7) · **Watchdog** (tmux terminal, spawned P6a, killed P6e, /loop 30m) | P6: Build (D8) — 3-terminal architecture: orchestrator monitors, supervisor assigns tasks + runs smoke tests, watchdog drift-checks on PR/merge/30m. Communication via claude-peers (11 message types). Shutdown handshake at P6 end. | 🔴 Watchdog (D4) on PR_SUBMITTED + PR_MERGED + /loop 30m · 🔴 Reviewer: spec + constitution per PR · 🔴 Keep-or-revert: regression = git reset · 🔴 Cost breaker (D12): pause at 80% · 🔴 DRIFT_CRITICAL → orchestrator (emergency halt) | git branches, .rapid/AUDIT.json, .rapid/MEMORY.md, .rapid/COST.json, .rapid/MESSAGES.json, .rapid/prompts/, TASKS.json (status) |
+| **Tester** (subagent + Playwright), **Visual QA** (screenshots + vision) | P7: Test + Visual QA (D10) | 🔴 Immutable eval harness · 🔴 Visual: 3 viewports · fix → screenshot → check ×3 | test results, screenshot evidence, .rapid/GAPS.json |
+| **Orchestrator** (classifies gaps) | P8: Gap Loop (D9) — classify by pillar + severity · spec-level: re-derive § → rebuild · PRD-level: queue for G3 · 🔄 loop to P6 (×3 max) | 🔴 Auto re-derivation (spec-level only) · PRD gaps → operator | .rapid/GAPS.json (updated), 01-intake/DIFF.md, 04-spec/spec.md (re-derived) |
 | ⏸ **OPERATOR** | **G3: Ship Decision (D3)** | Evidence: app, audit, gaps, tests, screenshots, cost | Ship / Loop / Redirect / Kill |
-| **Orchestrator** (deploys) | P9: Deploy + Document | CI/CD pipeline (D11) runs on final merge | README.md, RUNBOOK.md, .forge/RETRO.md, STATE: shipped |
+| **Orchestrator** (deploys) | P9: Deploy + Document | CI/CD pipeline (D11) runs on final merge | README.md, RUNBOOK.md, .rapid/RETRO.md, STATE: shipped |
 
 ### Cross-cutting: Communication & Observability (D13)
 
-- **.forge/MEMORY.md** — append-only · all agents · persistent
+- **.rapid/MEMORY.md** — append-only · all agents · persistent
 - **claude-peers MCP** — real-time nudges · inter-terminal
-- **forge.yaml config (D14)** — 3-level cascade · model routing
+- **rapid.yaml config (D14)** — 3-level cascade · model routing
 - **CONSTITUTION.md** — Art. I–V inviolable · checked every PR
 
 ---
@@ -118,7 +118,7 @@ Legend: 🟢 Autonomous · 🟡 Human gate · 🔄 Gap loop (×3 max)
 Three primitives: skill (orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). See D7 for fan-out sizing.
 
 ```
-                    Forge Orchestrator (Skill · persistent · all phases)
+                    Rapid Orchestrator (Skill · persistent · all phases)
                                     │
               ─────────── Arc 1: Understand (P0–P3) ───────────
               │                                                │
@@ -147,17 +147,17 @@ Three primitives: skill (orchestrator's context), agent/subagent (own context), 
 
 | Role | Primitive | Rationale | Observability |
 |---|---|---|---|
-| Orchestrator | Skill | Needs operator context, approvals, API keys | .forge/STATE.json |
+| Orchestrator | Skill | Needs operator context, approvals, API keys | .rapid/STATE.json |
 | Panelist ×1–3 | Skill (fast: 1) / Subagent (full: 3) | Fast: stays in orchestrator context. Full: 3 agents parallel, 3x context cost. | 03-panels/*.md |
 | Researcher | Subagent | Needs WebSearch, 15m timebox | 02-grounding/*.md |
-| Supervisor | Terminal | Long-running, manages task queue | .forge/MEMORY.md |
+| Supervisor | Terminal | Long-running, manages task queue | .rapid/MEMORY.md |
 | Implementor ×4 | Agent (worktree) | Parallel code; git isolation prevents conflicts | Branch git log |
-| Reviewer | Subagent | Reads PR + spec, returns verdict. Optional 2nd model (Codex). | .forge/MEMORY.md |
-| Watchdog | Event + /loop 30m | On PR submit, on merge, every 30m on main. Never checks WIP. | .forge/AUDIT.json |
-| Tester | Subagent + Playwright | Runs tests + screenshots | .forge/GAPS.json |
+| Reviewer | Subagent | Reads PR + spec, returns verdict. Optional 2nd model (Codex). | .rapid/MEMORY.md |
+| Watchdog | Event + /loop 30m | On PR submit, on merge, every 30m on main. Never checks WIP. | .rapid/AUDIT.json |
+| Tester | Subagent + Playwright | Runs tests + screenshots | .rapid/GAPS.json |
 | Decision Router | Prompt injection | Behavioral rule, no tools, all agents | MEMORY.md |
 
-Communication: .forge/MEMORY.md (append-only, all agents) + claude-peers MCP (real-time nudges between terminals). Naming: forge/{phase}/{task-slug} branches, [SPEC §X.Y] commits.
+Communication: .rapid/MEMORY.md (append-only, all agents) + claude-peers MCP (real-time nudges between terminals). Naming: rapid/{phase}/{task-slug} branches, [SPEC §X.Y] commits.
 
 ### D2c: Primitive decision tree
 
@@ -286,7 +286,7 @@ Panel flags question → Spawn researcher → WebSearch + docs → 3+ options + 
 
 **Three review lenses:** Technical (benchmarks, not intuition), Business (TAM, unit economics, regulatory), Domain SME (what tech panels miss: microstructure, clinical safety, cultural sensitivity). Domain errors = BLOCKER severity.
 
-*Lesson from ASL project: research assumed 200 training clips available; actual was 52. Forge verifies data availability in P3, not P6.*
+*Lesson from ASL project: research assumed 200 training clips available; actual was 52. Rapid verifies data availability in P3, not P6.*
 
 ---
 
@@ -325,13 +325,13 @@ Generate eval harness
     └── Each failure path (recovery) → failure → retry → fallback → verify recovery state
     │
     ▼
-Lock eval harness → .forge/EVAL/ (immutable — agents cannot modify)
+Lock eval harness → .rapid/EVAL/ (immutable — agents cannot modify)
 ```
 
 The eval harness is the contract between spec and implementation. Tests fail red before code exists (TDD). Code must make them green. Agents refactor freely as long as tests stay green. Regressions trigger git reset (D8 keep-or-revert).
 
 **P5 exit gate (blocking):** Before P5 completes, the orchestrator must verify:
-1. Every node in workflow.md has at least one test function in `.forge/EVAL/` or the project test directory.
+1. Every node in workflow.md has at least one test function in `.rapid/EVAL/` or the project test directory.
 2. Every spec section (S1, S2, ...) is referenced by at least one test.
 3. If a workflow node or spec section has no test, the orchestrator generates the missing test stub and flags it — P5 does not complete until coverage is verified.
 
@@ -373,7 +373,7 @@ Tests pass?
 
 **The convergence mechanism: classify failures, re-derive spec, rebuild.**
 
-The core mechanism that separates Forge from a one-shot build. Spec-level gaps auto-rederive. PRD-level gaps surface at G3 (D3). Max 3 iterations.
+The core mechanism that separates Rapid from a one-shot build. Spec-level gaps auto-rederive. PRD-level gaps surface at G3 (D3). Max 3 iterations.
 
 ```
 Build (P6) → Test + Walk (P7) → Extract gaps → Classify by pillar + severity
@@ -451,9 +451,9 @@ Two communication channels: file-based (persistent, survives crashes) and claude
 
 ### D13a: Data flow
 
-| .forge/ file | Written by | Read by | Update frequency |
+| .rapid/ file | Written by | Read by | Update frequency |
 |---|---|---|---|
-| STATE.json | Orchestrator | All agents, /forge --resume | After every phase + gate |
+| STATE.json | Orchestrator | All agents, /rapid-workflow --resume | After every phase + gate |
 | MEMORY.md | All agents (append-only) | All agents, operator | On every decision, assignment, escalation |
 | TASKS.json | Spec writer (P5), supervisor (P6) | Supervisor, implementors, operator | On task assign/complete/block |
 | AUDIT.json | Watchdog | Supervisor, reviewer, operator | On PR submit, merge, and every 30m |
@@ -465,13 +465,13 @@ Two communication channels: file-based (persistent, survives crashes) and claude
 
 **When a background agent completes, the orchestrator MUST write its full result to the designated docs/ file BEFORE consuming it for decisions or proceeding to the next phase.** This is a blocking invariant, not a best practice.
 
-Rationale: Agent results returned to the orchestrator live only in the conversation context. Context is compressible, losable, and invisible to future sessions. Files are the record. If a panel ran but its findings aren't in `03-panels/`, the panel effectively didn't run — the gap loop, the operator at gates, and future `/forge --resume` runs all read from files, not from conversation history.
+Rationale: Agent results returned to the orchestrator live only in the conversation context. Context is compressible, losable, and invisible to future sessions. Files are the record. If a panel ran but its findings aren't in `03-panels/`, the panel effectively didn't run — the gap loop, the operator at gates, and future `/rapid-workflow --resume` runs all read from files, not from conversation history.
 
 Enforcement: After every agent spawn/return, the orchestrator checks that the designated output file exists and is non-empty. If not, the orchestrator writes it immediately. This is logged to MEMORY.md.
 
 ### D13c: Communication channels
 
-**File-based (.forge/)** — persistent, survives crashes
+**File-based (.rapid/)** — persistent, survives crashes
 - MEMORY.md: append-only, timestamped
 - Contents: Decisions, Assignments, Escalations, Drift reports
 - All agents read before acting. All agents write under own heading. No overwrites, no deletions.
@@ -495,35 +495,35 @@ Enforcement: After every agent spawn/return, the orchestrator checks that the de
 
 ```bash
 # Current phase and status
-cat .forge/STATE.json | jq '.phase, .status'
+cat .rapid/STATE.json | jq '.phase, .status'
 
 # Any blockers or escalations?
-grep "ESCALATE\|BLOCKED\|STALL" .forge/MEMORY.md
+grep "ESCALATE\|BLOCKED\|STALL" .rapid/MEMORY.md
 
 # Incomplete tasks
-cat .forge/TASKS.json | jq '[.[]|select(.status!="done")]'
+cat .rapid/TASKS.json | jq '[.[]|select(.status!="done")]'
 
 # Latest drift report
-cat .forge/AUDIT.json | jq '.latest'
+cat .rapid/AUDIT.json | jq '.latest'
 
 # Token spend so far
-cat .forge/COST.json | jq '.total, .by_phase'
+cat .rapid/COST.json | jq '.total, .by_phase'
 
 # Who's running? (inter-terminal)
 claude-peers list_peers --scope repo
 
 # Resume after crash or context limit
-/forge --resume
+/rapid-workflow --resume
 ```
 
 ---
 
 ## D14 — Configuration
 
-**forge.yaml: 3-level override cascade controlling all agent and build behavior.**
+**rapid.yaml: 3-level override cascade controlling all agent and build behavior.**
 
 ```
-~/.forge/forge.yaml (global defaults) → .forge/forge.yaml (project overrides) → CLI flags (invocation overrides) → Merged config (read by all agents on spawn)
+~/.rapid/rapid-workflow.yaml (global defaults) → .rapid/rapid-workflow.yaml (project overrides) → CLI flags (invocation overrides) → Merged config (read by all agents on spawn)
 ```
 
 ```yaml
@@ -551,7 +551,7 @@ models:
 
 Each row shows what was previously manual, what replaces it, what catches failure, and what evidence the operator sees.
 
-| Previously manual | Forge mechanism | What catches failure | Operator sees at gate |
+| Previously manual | Rapid mechanism | What catches failure | Operator sees at gate |
 |---|---|---|---|
 | Synthesize 3 panel outputs | Auto-synthesis (P2) | Inter-stage assertion: every PRD req → spec section | G1: synthesis with flagged divergences |
 | Research trade-offs | Research agents with required format (D6) | VERIFIED / UNVERIFIED / OPEN classification | G1: trade-off matrices with sources |
@@ -573,28 +573,28 @@ Each row shows what was previously manual, what replaces it, what catches failur
 
 ### D16a: Incorporated mechanisms
 
-| Source | Principle | Where in Forge | Failure mode prevented |
+| Source | Principle | Where in Rapid | Failure mode prevented |
 |---|---|---|---|
-| **Karpathy** (autoresearch) | Immutable eval harness ("prepare.py is read-only") | D7b (TDD) → .forge/EVAL/ · D8 reads it | **Metric gaming.** Agents cannot weaken tests to make code pass. |
+| **Karpathy** (autoresearch) | Immutable eval harness ("prepare.py is read-only") | D7b (TDD) → .rapid/EVAL/ · D8 reads it | **Metric gaming.** Agents cannot weaken tests to make code pass. |
 | **Karpathy** | Keep-or-revert ratchet ("improvements advance; regressions reset") | D8 (build loop) git reset --hard on regression | **Regression accumulation.** Branch only moves forward on verified improvement. |
 | **Karpathy** | Never stop, never ask ("when stuck, think harder") | D5 (decision router) Tactical + technical: decide, don't ask | **Analysis paralysis.** Only strategic/irreversible decisions pause the build. |
 | **Karpathy** | Surgical changes + explicit assumptions | D8 (implementor prompt) Each task → one spec section | **Silent assumptions becoming bugs.** Every change traces to a spec section. |
 | **Compound AI** (Zaharia et al.) | Inter-stage assertions (DSPy Assert/Suggest) | D1 between P4, P5, P6 | **Silent contract violations.** Bad output caught at boundary before it propagates. |
-| **Compound AI** | Multi-model routing | D14 (forge.yaml) models.overrides per role | **Uniform cost for non-uniform tasks.** Panels use Sonnet; implementors use Opus. |
+| **Compound AI** | Multi-model routing | D14 (rapid.yaml) models.overrides per role | **Uniform cost for non-uniform tasks.** Panels use Sonnet; implementors use Opus. |
 | **Compound AI** | Program logic between model calls | D4 (watchdog), D12 (cost), D5 (routing) | **Over-reliance on LLM judgment.** Drift checks use programmatic rules. |
 | **Beck** (TDD, 2002) | Red-green-refactor | D7b → D8 Tests from workflow, fail red, code makes green | **Tests drift to match implementation.** Tests derived from spec, not by implementing agent. |
-| **Forge-native** | Gap loop as convergence | D9 P7–P8 feedback to P4 | **One-shot builds with no feedback.** Quality converges over iterations. |
-| **Forge-native** | Constitution as pre-merge gate | D4 (drift check), D11 (CI/CD) | **Agents rationalizing away safety rules.** Hard guardrails on every PR. |
-| **Forge-native** | Vision-as-lens, not artifact | D1 P0 → P2 (panels review through pillars) | **Generic advice.** Pillars force every finding to cite project criteria. |
+| **Rapid-native** | Gap loop as convergence | D9 P7–P8 feedback to P4 | **One-shot builds with no feedback.** Quality converges over iterations. |
+| **Rapid-native** | Constitution as pre-merge gate | D4 (drift check), D11 (CI/CD) | **Agents rationalizing away safety rules.** Hard guardrails on every PR. |
+| **Rapid-native** | Vision-as-lens, not artifact | D1 P0 → P2 (panels review through pillars) | **Generic advice.** Pillars force every finding to cite project criteria. |
 
 ### D16b: Acknowledged gaps (not yet implemented)
 
 | Source | Principle | Why not in v1 | Implementation path |
 |---|---|---|---|
 | Karpathy | Simplicity criterion ("equal perf + less code wins") | Requires judgment call — hard to make deterministic | Add to reviewer prompt |
-| Compound AI | Pipeline-level optimization | Requires persistence across builds | Track outcomes in ~/.forge/history.json over N builds |
+| Compound AI | Pipeline-level optimization | Requires persistence across builds | Track outcomes in ~/.rapid/history.json over N builds |
 | Compound AI | Few-shot example banks (DSPy BootstrapFewShot) | Cold-start on first build | After each build, retro extracts best outputs per role |
-| Karpathy | Structured experiment log (TSV) | MEMORY.md partially covers but isn't machine-parseable | Add .forge/EXPERIMENTS.tsv (untracked) |
+| Karpathy | Structured experiment log (TSV) | MEMORY.md partially covers but isn't machine-parseable | Add .rapid/EXPERIMENTS.tsv (untracked) |
 
 ---
 
@@ -623,4 +623,4 @@ Each row shows what was previously manual, what replaces it, what catches failur
 
 ---
 
-*Validated across 589 commits, 5 projects. Sources: Karpathy autoresearch (2025), Beck TDD (2002), Zaharia et al. Compound AI Systems (2024), Karpathy Guidelines, Forge-native (gap loop, constitution, vision-as-lens, bounded fan-out).*
+*Validated across 589 commits, 5 projects. Sources: Karpathy autoresearch (2025), Beck TDD (2002), Zaharia et al. Compound AI Systems (2024), Karpathy Guidelines, Rapid-native (gap loop, constitution, vision-as-lens, bounded fan-out).*

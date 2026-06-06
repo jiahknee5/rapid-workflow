@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FORGE Observe — lightweight server for the live observability dashboard.
+"""RAPID Observe — lightweight server for the live observability dashboard.
 
 Usage:
     cd <project-root>
@@ -7,7 +7,7 @@ Usage:
 
 Serves:
     /                    → dashboard HTML
-    /api/events          → merged, sorted JSONL from .forge/observe/*.jsonl
+    /api/events          → merged, sorted JSONL from .rapid/observe/*.jsonl
     /api/agents          → current agent summary (latest state per agent)
     /api/meta            → phase, totals, config
 """
@@ -25,7 +25,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 DASHBOARD_PATH = Path(__file__).parent.parent / "docs" / "observatory.html"
-OBSERVE_DIR = ".forge/observe"
+OBSERVE_DIR = ".rapid/observe"
 
 
 def read_all_events(observe_dir, since_seq=0):
@@ -107,8 +107,8 @@ def get_meta(events, observe_dir):
         agent_count.add(evt.get("agent", ""))
     # Cross-system status (R-12/R-13): eval test gate + docs currency, so the
     # dashboard surfaces test pass/fail and doc freshness alongside the build.
-    forge_dir = os.path.dirname(observe_dir) or "."
-    root = os.path.dirname(forge_dir) or "."
+    rapid_dir = os.path.dirname(observe_dir) or "."
+    root = os.path.dirname(rapid_dir) or "."
 
     def _load(p):
         try:
@@ -117,7 +117,7 @@ def get_meta(events, observe_dir):
         except Exception:
             return None
 
-    exitj = _load(os.path.join(forge_dir, "P6_EXIT.json"))
+    exitj = _load(os.path.join(rapid_dir, "P6_EXIT.json"))
     eval_status = {"present": exitj is not None, "pass": 0, "fail": 0}
     if exitj is not None:
         asserts = exitj if isinstance(exitj, list) else exitj.get("assertions", [])
@@ -203,8 +203,8 @@ class ObserveHandler(SimpleHTTPRequestHandler):
                              "reason": (entry or {}).get("note", "no generator for this page") if isinstance(entry, dict) else "no generator for this page"})
             return
         try:
-            os.makedirs(".forge", exist_ok=True)
-            logf = open(os.path.join(".forge", "regen-" + page.replace("/", "_") + ".log"), "ab")
+            os.makedirs(".rapid", exist_ok=True)
+            logf = open(os.path.join(".rapid", "regen-" + page.replace("/", "_") + ".log"), "ab")
             subprocess.Popen(["bash", "-lc", cmd], stdout=logf, stderr=logf, cwd=os.getcwd())
             self.serve_json({"ok": True, "started": True, "page": page, "cmd": cmd, "kind": kind})
         except Exception as e:
@@ -213,8 +213,8 @@ class ObserveHandler(SimpleHTTPRequestHandler):
     # --- Workflow Test Theater (live-drive) -------------------------------
     # The testsuite page reads these to (1) list past runs, (2) live-tail a run
     # currently executing, and (3) trigger a new live-drive run. Runs are streamed
-    # to .forge/RUNS/<wf>/<run>.jsonl by tools/workflow-runner.py.
-    RUNS_DIR = ".forge/RUNS"
+    # to .rapid/RUNS/<wf>/<run>.jsonl by tools/workflow-runner.py.
+    RUNS_DIR = ".rapid/RUNS"
 
     def list_runs(self, wf):
         base = os.path.join(os.getcwd(), self.RUNS_DIR)
@@ -274,8 +274,8 @@ class ObserveHandler(SimpleHTTPRequestHandler):
         elif payload.get("preset"):
             cmd += ["--preset", str(payload["preset"])]
         try:
-            os.makedirs(".forge", exist_ok=True)
-            logf = open(os.path.join(".forge", "run-" + wf + ".log"), "ab")
+            os.makedirs(".rapid", exist_ok=True)
+            logf = open(os.path.join(".rapid", "run-" + wf + ".log"), "ab")
             subprocess.Popen(cmd, stdout=logf, stderr=logf, cwd=os.getcwd())
             self.serve_json({"ok": True, "started": True, "wf": wf, "run_id": run_id})
         except Exception as e:
@@ -357,7 +357,7 @@ class ObserveHandler(SimpleHTTPRequestHandler):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="FORGE Observe dashboard server")
+    parser = argparse.ArgumentParser(description="RAPID Observe dashboard server")
     parser.add_argument("--port", type=int, default=4040, help="Port (default: 4040)")
     args = parser.parse_args()
 

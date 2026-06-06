@@ -4,8 +4,14 @@
 # Layered, per the design decision:
 #   REAL      — actual token usage parsed from Claude Code session transcripts
 #               (~/.claude/projects/<encoded-cwd>/*.jsonl), broken down per STEP
-#               (each real user prompt), per SESSION, and for the WHOLE PROJECT.
-#   ESTIMATE  — FORGE per-phase / per-agent breakdown from .forge/observe/*.jsonl
+#               (each real user prompt), per SESSION, for the WHOLE PROJECT, and
+#               per PHASE (each step's billed tokens attributed to the RAPID phase
+#               that was active in the observe timeline at the step's timestamp).
+#   TOUCHPTS  — human touchpoints per phase: GATE (a human gate was reached) and
+#               ESCALATE (a decision was escalated to the human) observe events,
+#               plus needs_real_human flags from .rapid/RUNS/*. The two metrics
+#               you optimize a build on: $ per phase, and how often it stopped you.
+#   ESTIMATE  — RAPID per-phase / per-agent breakdown from .rapid/observe/*.jsonl
 #               (ctx_est — a context-size estimate, not billed tokens).
 #
 # Token counts are exact. Dollar figures are computed from a rate table (no cost
@@ -15,7 +21,7 @@
 #   cost-summary.sh                 summarize the current project (cwd)
 #   cost-summary.sh /path/to/proj   summarize a specific project dir
 #   cost-summary.sh --json          emit machine JSON only (no table)
-# Side effect: writes .forge/COST.json when a .forge/ dir exists.
+# Side effect: writes .rapid/COST.json when a .rapid/ dir exists.
 #
 # Rate overrides (USD per 1M tokens), defaults = Claude Opus 4.8 standard rates:
 #   OPUS_IN=5  OPUS_OUT=25  OPUS_CACHE_READ=0.50  OPUS_CW5=6.25  OPUS_CW1=10
@@ -159,43 +165,118 @@ for sid, s in sessions.items(): s["cost"] = round(cost(s["in"], s["out"], s["cr"
 tot = {k: sum(st[k] for st in steps) for k in ("in","out","cr","cw5","cw1","turns")}
 tot["cost"] = round(cost(tot["in"], tot["out"], tot["cr"], tot["cw5"], tot["cw1"]), 4)
 
-# --- ESTIMATE layer: FORGE observe ctx_est per phase / per agent --------------
-forge = {"by_phase": {}, "by_agent": {}, "total_ctx_est": 0, "available": False}
-obs = sorted(glob.glob(os.path.join(PROJECT, ".forge", "observe", "*.jsonl")))
-for fp in obs:
+# --- observe layer: load every event once (timeline + ctx_est + touchpoints) --
+import bisect
+
+def norm_phase(p):
+    if p is None: return None
+    s = str(p).strip()
+    if not s or s == "?": return None
+    return s if s[0] in ("P", "p") else "P" + s
+
+obs_events = []
+for fp in sorted(glob.glob(os.path.join(PROJECT, ".rapid", "observe", "*.jsonl"))):
     try:
         for line in open(fp):
             line = line.strip()
             if not line: continue
             try: d = json.loads(line)
             except Exception: continue
-            ce = d.get("ctx_est")
-            if ce is None: continue
-            forge["available"] = True
-            ph = "P" + str(d.get("phase", "?")).lstrip("P")
-            ag = d.get("agent", "?")
-            forge["by_phase"][ph] = forge["by_phase"].get(ph, 0) + ce
-            forge["by_agent"][ag] = forge["by_agent"].get(ag, 0) + ce
-            forge["total_ctx_est"] += ce
+            if isinstance(d, dict): obs_events.append(d)
     except Exception:
         continue
+obs_events.sort(key=lambda d: (str(d.get("t") or ""), d.get("seq") or 0))
+
+# ESTIMATE: ctx_est per phase / per agent (context-size, not billed) — unchanged semantics
+rapid = {"by_phase": {}, "by_agent": {}, "total_ctx_est": 0, "available": False}
+for d in obs_events:
+    ce = d.get("ctx_est")
+    if ce is None: continue
+    rapid["available"] = True
+    ph = norm_phase(d.get("phase")) or "P?"
+    ag = d.get("agent", "?")
+    rapid["by_phase"][ph] = rapid["by_phase"].get(ph, 0) + ce
+    rapid["by_agent"][ag] = rapid["by_agent"].get(ag, 0) + ce
+    rapid["total_ctx_est"] += ce
+
+# Phase timeline: phase active as a step-function of wall-clock time. Every observe
+# event carries `phase`, so the phase at any timestamp is the phase of the most
+# recent event at/before it. PHASE-transition events are the canonical markers but
+# any event refines the timeline.
+timeline = [(str(d.get("t")), norm_phase(d.get("phase"))) for d in obs_events
+            if d.get("t") and norm_phase(d.get("phase"))]
+tl_ts = [t for t, _ in timeline]
+def phase_at(ts):
+    if not timeline or not ts: return None
+    i = bisect.bisect_right(tl_ts, str(ts)) - 1
+    if i < 0: return timeline[0][1]   # step ran before the first observe event
+    return timeline[i][1]
+
+# REAL billed tokens attributed to the phase active at each step's START timestamp.
+# A step that straddles a phase boundary is booked whole to its starting phase — an
+# honest approximation, noted in the output. No timeline → no attribution (degrades
+# to the ctx_est estimate only).
+real_by_phase = {}
+phase_timeline_available = bool(timeline)
+if phase_timeline_available:
+    for st in steps:
+        if st["n"] == 0: continue
+        ph = phase_at(st["ts"]) or "P?"
+        b = real_by_phase.setdefault(ph, {"in":0,"out":0,"cr":0,"cw5":0,"cw1":0,"turns":0,"steps":0,"cost":0.0})
+        for kk in ("in","out","cr","cw5","cw1","turns"): b[kk] += st[kk]
+        b["steps"] += 1
+    for ph, b in real_by_phase.items():
+        b["cost"] = round(cost(b["in"], b["out"], b["cr"], b["cw5"], b["cw1"]), 4)
+
+# Human touchpoints per phase: GATE (a human gate was reached) + ESCALATE (a
+# decision was kicked to the human). Both observe events carry `phase`.
+touch = {"by_phase": {}, "total": {"gate": 0, "escalate": 0, "needs_real_human": 0}}
+def touch_bucket(ph): return touch["by_phase"].setdefault(ph, {"gate": 0, "escalate": 0})
+for d in obs_events:
+    ev = str(d.get("event") or "").upper()
+    if ev not in ("GATE", "ESCALATE"): continue
+    ph = norm_phase(d.get("phase")) or "P?"
+    key = "gate" if ev == "GATE" else "escalate"
+    touch_bucket(ph)[key] += 1
+    touch["total"][key] += 1
+# Escalations flagged as needing a REAL human (from workflow-test runs, project-wide).
+for fp in glob.glob(os.path.join(PROJECT, ".rapid", "RUNS", "*", "*.jsonl")):
+    try:
+        for line in open(fp):
+            line = line.strip()
+            if not line: continue
+            try: d = json.loads(line)
+            except Exception: continue
+            if not isinstance(d, dict): continue
+            v = (d.get("data_out") or {}).get("verdict") or {}
+            if isinstance(v, dict) and v.get("needs_real_human") is True:
+                touch["total"]["needs_real_human"] += 1
+    except Exception:
+        continue
+
+# Canonical RAPID phase order for any phase-keyed display (HTML + console).
+PHASE_ORDER = ["P0","P1","P1b","P2","P3","P4","P4b","P5","P5b","P6","P7","P8","P9","P10"]
+def phase_sort_key(p):
+    return (PHASE_ORDER.index(p) if p in PHASE_ORDER else len(PHASE_ORDER), p)
 
 out_obj = {
     "project": PROJECT,
     "rates_usd_per_mtok": R,
     "real": {"sessions": len(files), "steps": steps,
-             "by_session": sessions, "total": tot},
-    "forge_estimate": forge,
+             "by_session": sessions, "total": tot,
+             "by_phase": real_by_phase, "phase_timeline_available": phase_timeline_available},
+    "touchpoints": touch,
+    "rapid_estimate": rapid,
 }
 
-# --- write .forge/COST.json when a build dir exists ---------------------------
+# --- write .rapid/COST.json when a build dir exists ---------------------------
 wrote = None
-fdir = os.path.join(PROJECT, ".forge")
+fdir = os.path.join(PROJECT, ".rapid")
 if os.path.isdir(fdir):
     try:
         with open(os.path.join(fdir, "COST.json"), "w") as f:
             json.dump(out_obj, f, indent=2)
-        wrote = os.path.join(".forge", "COST.json")
+        wrote = os.path.join(".rapid", "COST.json")
     except Exception:
         pass
 
@@ -208,7 +289,7 @@ if HTML_OUT:
     import html as _h
     def esc(s): return _h.escape(s or "")
     _root = PROJECT or os.getcwd()          # the project's own name, not the kit's
-    BRAND = "RAPID" if os.path.isfile(os.path.join(_root, "skills", "forge", "SKILL.md")) \
+    BRAND = "RAPID" if os.path.isfile(os.path.join(_root, "skills", "rapid", "SKILL.md")) \
             else os.path.basename(os.path.normpath(_root))
     NAV = [("prd.html","PRD"),("prd-enhanced.html","Enhanced PRD"),("architecture.html","Architecture"),
            ("workflow.html","Workflow"),("users.html","Users"),("spec.html","Spec"),
@@ -238,11 +319,11 @@ td.prompt{color:var(--text);max-width:420px;overflow:hidden;text-overflow:ellips
 td.cost{font-weight:700;color:var(--green)}
 tr.total td{border-top:2px solid var(--border);border-bottom:none;font-weight:800;color:var(--navy);padding-top:9px}
 .foot{font-size:.72rem;color:var(--text-dim);margin-top:28px}
-.forge-nav{display:flex;align-items:center;background:#1A2744;padding:0 20px;overflow-x:auto;position:sticky;top:0;z-index:1000}
-.forge-nav-brand{display:flex;flex-direction:column;font-size:12px;font-weight:800;color:#fff;letter-spacing:-0.02em;padding:6px 16px 6px 0;margin-right:8px;border-right:1px solid rgba(255,255,255,.15);line-height:1.2}
-.forge-nav-brand .forge-nav-sub{font-size:7px;font-weight:500;color:rgba(255,255,255,.45);letter-spacing:.06em;text-transform:uppercase}
-.forge-nav a{font-size:9.5px;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;padding:10px 12px;letter-spacing:.3px;white-space:nowrap;border-bottom:2px solid transparent}
-.forge-nav a:hover{color:rgba(255,255,255,.85)}.forge-nav a.active{color:#fff;border-bottom-color:#fff}
+.rapid-nav{display:flex;align-items:center;background:#1A2744;padding:0 20px;overflow-x:auto;position:sticky;top:0;z-index:1000}
+.rapid-nav-brand{display:flex;flex-direction:column;font-size:12px;font-weight:800;color:#fff;letter-spacing:-0.02em;padding:6px 16px 6px 0;margin-right:8px;border-right:1px solid rgba(255,255,255,.15);line-height:1.2}
+.rapid-nav-brand .rapid-nav-sub{font-size:7px;font-weight:500;color:rgba(255,255,255,.45);letter-spacing:.06em;text-transform:uppercase}
+.rapid-nav a{font-size:9.5px;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;padding:10px 12px;letter-spacing:.3px;white-space:nowrap;border-bottom:2px solid transparent}
+.rapid-nav a:hover{color:rgba(255,255,255,.85)}.rapid-nav a.active{color:#fff;border-bottom-color:#fff}
 body{min-height:100vh;display:flex;flex-direction:column}
 .spec-layout{display:flex;flex:1}
 .docpage-content{flex:1;min-width:0}
@@ -254,7 +335,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
 .sidebar a:hover{background:var(--surface-alt);color:var(--text)}
 h1,h2{scroll-margin-top:48px}
 </style></head><body>"""
-    nav = '<nav class="forge-nav"><span class="forge-nav-brand">' + esc(BRAND) + ' <span style="font-weight:400;opacity:0.5;font-size:10px;">/ Atlas</span><span class="forge-nav-sub">developer view</span></span>'
+    nav = '<nav class="rapid-nav"><span class="rapid-nav-brand">' + esc(BRAND) + ' <span style="font-weight:400;opacity:0.5;font-size:10px;">/ Atlas</span><span class="rapid-nav-sub">developer view</span></span>'
     for href, label in NAV:
         cls = ' class="active"' if href == "cost.html" else ""
         nav += f'<a href="{href}"{cls}>{label}</a>'
@@ -276,19 +357,54 @@ h1,h2{scroll-margin-top:48px}
                       f'<td class="r">{k(s["cr"])}</td><td class="r">{k(cw)}</td>'
                       f'<td class="r cost">${s["cost"]:.2f}</td></tr>')
     tcw = tot["cw5"] + tot["cw1"]
-    forge_html = ""
-    if forge["available"]:
-        ph = "".join(f'<tr><td class="mono">{p}</td><td class="r">{k(forge["by_phase"][p])}</td></tr>'
-                     for p in sorted(forge["by_phase"]))
-        forge_html = ('<h2 id="forge-estimate">FORGE phase estimate<span class="tag">ctx_est · approximate · not billed</span></h2>'
+
+    # Per-phase REAL billed tokens + human touchpoints (the build-optimization view)
+    phase_html = ""
+    phases_seen = sorted(set(list(real_by_phase) + list(touch["by_phase"])), key=phase_sort_key)
+    if phases_seen:
+        rows = ""
+        pt = {"in":0,"out":0,"cr":0,"cw5":0,"cw1":0,"cost":0.0,"gate":0,"escalate":0}
+        for p in phases_seen:
+            b  = real_by_phase.get(p, {})
+            tb = touch["by_phase"].get(p, {})
+            cw = b.get("cw5",0) + b.get("cw1",0)
+            tp = tb.get("gate",0) + tb.get("escalate",0)
+            rows += (f'<tr><td class="mono">{p}</td>'
+                     f'<td class="r">{k(b.get("in",0))}</td><td class="r">{k(b.get("out",0))}</td>'
+                     f'<td class="r">{k(b.get("cr",0))}</td><td class="r">{k(cw)}</td>'
+                     f'<td class="r cost">${b.get("cost",0):.2f}</td>'
+                     f'<td class="r">{tp or ""}</td></tr>')
+            for kk in ("in","out","cr","cw5","cw1","cost"): pt[kk] += b.get(kk,0)
+            pt["gate"] += tb.get("gate",0); pt["escalate"] += tb.get("escalate",0)
+        tcw2 = pt["cw5"] + pt["cw1"]; ttp = pt["gate"] + pt["escalate"]
+        nrh = touch["total"].get("needs_real_human", 0)
+        attr_tag = ('attributed by observe phase timeline' if phase_timeline_available
+                    else 'no phase timeline — touchpoints only, tokens unattributed')
+        nrh_note = (f' · {nrh} flagged needs-real-human' if nrh else '')
+        phase_html = ('<h2 id="per-phase">Per phase<span class="tag">real billed · ' + attr_tag + '</span></h2>'
+                      '<p class="sub" style="margin:-6px 0 14px">Billed tokens booked to the phase active at each step, '
+                      'and the human touchpoints (gates + escalations) that phase cost you' + nrh_note + '.</p>'
+                      '<table class="t"><thead><tr><th>phase</th><th class="r">in</th><th class="r">out</th>'
+                      '<th class="r">cache-rd</th><th class="r">cache-wr</th><th class="r">$</th>'
+                      '<th class="r">touchpts</th></tr></thead><tbody>' + rows
+                      + f'<tr class="total"><td>total</td><td class="r">{k(pt["in"])}</td><td class="r">{k(pt["out"])}</td>'
+                      f'<td class="r">{k(pt["cr"])}</td><td class="r">{k(tcw2)}</td><td class="r cost">${pt["cost"]:.2f}</td>'
+                      f'<td class="r">{ttp or ""}</td></tr></tbody></table>')
+
+    rapid_html = ""
+    if rapid["available"]:
+        ph = "".join(f'<tr><td class="mono">{p}</td><td class="r">{k(rapid["by_phase"][p])}</td></tr>'
+                     for p in sorted(rapid["by_phase"]))
+        rapid_html = ('<h2 id="rapid-estimate">RAPID phase estimate<span class="tag">ctx_est · approximate · not billed</span></h2>'
                       '<table class="t"><thead><tr><th>phase</th><th class="r">ctx_est</th></tr></thead><tbody>'
-                      + ph + f'<tr class="total"><td>total</td><td class="r">{k(forge["total_ctx_est"])}</td></tr></tbody></table>')
+                      + ph + f'<tr class="total"><td>total</td><td class="r">{k(rapid["total_ctx_est"])}</td></tr></tbody></table>')
     nsteps = len([s for s in steps if s["n"] > 0])
     data_through = short_ts(max((st["ts"] for st in steps), default=""))
     sidebar = ('<nav class="sidebar"><div class="sidebar-brand">' + esc(BRAND) + '</div><div class="sidebar-sub">Cost</div>'
                '<div class="sidebar-section">On this page</div>'
                '<a href="#overview">Overview</a><a href="#per-step">Per step</a><a href="#per-session">Per session</a>'
-               + ('<a href="#forge-estimate">FORGE phase estimate</a>' if forge["available"] else '')
+               + ('<a href="#per-phase">Per phase</a>' if phases_seen else '')
+               + ('<a href="#rapid-estimate">RAPID phase estimate</a>' if rapid["available"] else '')
                + '</nav>')
     body = (f'<div class="spec-layout">{sidebar}<div class="docpage-content"><main class="main">'
             f'<h1 id="overview">Cost &amp; Token Burn</h1>'
@@ -307,7 +423,8 @@ h1,h2{scroll-margin-top:48px}
             f'<td class="r">{k(tot["cr"])}</td><td class="r">{k(tcw)}</td><td class="r cost">${tot["cost"]:.2f}</td></tr></tbody></table>'
             f'<h2 id="per-session">Per session</h2><table class="t"><thead><tr><th>session</th><th class="r">turns</th><th class="r">in</th>'
             f'<th class="r">out</th><th class="r">cache-rd</th><th class="r">cache-wr</th><th class="r">$</th></tr></thead><tbody>{sess_rows}</tbody></table>'
-            f'{forge_html}'
+            f'{phase_html}'
+            f'{rapid_html}'
             f'<p class="foot">Generated by <code>tools/cost-summary.sh --html</code> — regenerate to refresh.</p>'
             f'</main></div></div>'
             f'<script src="env-links.js" defer></script>'
@@ -350,14 +467,32 @@ print("\nWHOLE PROJECT")
 print(f"  input(fresh) {k(tot['in'])}   output {k(tot['out'])}   cache-read {k(tot['cr'])}   cache-write {k(cw)}")
 print(f"  >> output is the dominant $ driver.   TOTAL ESTIMATED COST: ${tot['cost']:.2f}")
 
-if forge["available"]:
-    print("\nFORGE PHASE ESTIMATE — ctx_est from .forge/observe (approximate, context-size not billed tokens)")
-    for ph in sorted(forge["by_phase"]):
-        print(f"  {ph:<5} ctx_est {k(forge['by_phase'][ph])}")
-    print(f"  agents: " + "  ".join(f"{a}={k(v)}" for a, v in sorted(forge["by_agent"].items())))
-    print(f"  total ctx_est {k(forge['total_ctx_est'])}  (estimate only)")
+phases_seen = sorted(set(list(real_by_phase) + list(touch["by_phase"])), key=phase_sort_key)
+if phases_seen:
+    src = "billed tokens attributed via observe phase timeline" if phase_timeline_available \
+          else "no phase timeline — touchpoints only (tokens unattributed)"
+    print(f"\nREAL BURN — per phase ({src})")
+    print(f"  {'phase':<6} {'in':>7} {'out':>7} {'cache-rd':>9} {'cache-wr':>9} {'$':>8}  touchpoints")
+    for p in phases_seen:
+        b  = real_by_phase.get(p, {})
+        tb = touch["by_phase"].get(p, {})
+        cw = b.get("cw5",0) + b.get("cw1",0)
+        tp = tb.get("gate",0) + tb.get("escalate",0)
+        tpd = (f"{tp} ({tb.get('gate',0)} gate/{tb.get('escalate',0)} esc)" if tp else "")
+        print(f"  {p:<6} {k(b.get('in',0)):>7} {k(b.get('out',0)):>7} {k(b.get('cr',0)):>9} "
+              f"{k(cw):>9} {('$'+format(b.get('cost',0),'.2f')):>8}  {tpd}")
+    tt = touch["total"]
+    print(f"  TOUCHPOINTS total: {tt['gate']} gate, {tt['escalate']} escalate"
+          + (f", {tt['needs_real_human']} flagged needs-real-human" if tt['needs_real_human'] else ""))
+
+if rapid["available"]:
+    print("\nFORGE PHASE ESTIMATE — ctx_est from .rapid/observe (approximate, context-size not billed tokens)")
+    for ph in sorted(rapid["by_phase"]):
+        print(f"  {ph:<5} ctx_est {k(rapid['by_phase'][ph])}")
+    print(f"  agents: " + "  ".join(f"{a}={k(v)}" for a, v in sorted(rapid["by_agent"].items())))
+    print(f"  total ctx_est {k(rapid['total_ctx_est'])}  (estimate only)")
 else:
-    print("\nFORGE PHASE ESTIMATE — no ctx_est observe data found (.forge/observe/*.jsonl)")
+    print("\nFORGE PHASE ESTIMATE — no ctx_est observe data found (.rapid/observe/*.jsonl)")
 
 if wrote: print(f"\nwrote {wrote}")
 if html_path: print(f"wrote {html_path}")

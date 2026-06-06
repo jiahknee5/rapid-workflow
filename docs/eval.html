@@ -103,17 +103,17 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 }
 
 /* Top cross-page nav */
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
   <a href="prd.html">PRD</a>
   <a href="prd-enhanced.html">Enhanced PRD</a>
   <a href="architecture.html">Architecture</a>
@@ -142,7 +142,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="section-id">Evaluation · Overview</div>
     <div class="section-title">How RAPID evaluates a build</div>
     <div class="section-desc">
-      RAPID's evaluation system has two jobs. First, it proves that the FORGE enforcement
+      RAPID's evaluation system has two jobs. First, it proves that the RAPID enforcement
       hooks themselves still work — that is the immutable <strong>task-00 smoke test</strong>.
       Second, at the end of the build it runs a <strong>ship gate</strong> that refuses to
       let the build advance to walkthrough while stub or conformance gaps remain open. Both
@@ -151,10 +151,10 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     </div>
     <div class="strategy">
       <h3>The two evaluation surfaces</h3>
-      <p><strong>task-00 harness</strong> (<code>.forge/EVAL/hooks.smoke.test.sh</code>) — an
-      immutable smoke test that builds a throwaway <code>.forge</code> tree in a temp directory
+      <p><strong>task-00 harness</strong> (<code>.rapid/EVAL/hooks.smoke.test.sh</code>) — an
+      immutable smoke test that builds a throwaway <code>.rapid</code> tree in a temp directory
       and asserts the hooks for R1, R7, R8 and R9 behave correctly.</p>
-      <p><strong>Ship gate</strong> (<code>.forge/P6_EXIT.json</code>) — the exit assertions
+      <p><strong>Ship gate</strong> (<code>.rapid/P6_EXIT.json</code>) — the exit assertions
       written at P6 that the phase gate (S-01) reads to decide whether P7 (walkthrough) may
       begin.</p>
     </div>
@@ -164,11 +164,11 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="section-id">Evaluation · Harness</div>
     <div class="section-title">The eval harness — task-00, the immutable smoke test</div>
     <div class="section-desc">
-      <code>.forge/EVAL/hooks.smoke.test.sh</code> is the dependency root of the build
+      <code>.rapid/EVAL/hooks.smoke.test.sh</code> is the dependency root of the build
       (per spec section S-04: "task-00 eval-harness is the dependency root in
-      <code>.forge/TASKS.json</code>"). It is re-runnable: it locates the repo's
+      <code>.rapid/TASKS.json</code>"). It is re-runnable: it locates the repo's
       <code>tools/</code> directory, makes a temporary build skeleton
-      (<code>.forge</code>, <code>01-intake</code>, <code>04-spec</code>, <code>src</code>),
+      (<code>.rapid</code>, <code>01-intake</code>, <code>04-spec</code>, <code>src</code>),
       seeds it with <code>{"phase":1}</code>, and exercises each enforcement hook against it.
       It exits non-zero if any assertion fails.
     </div>
@@ -201,7 +201,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <h4>R9 — Stub detection</h4>
         <div>A source file containing <code>// TODO implement</code> must cause the
         stub-detect hook to <strong>file a stub gap</strong> — a <code>GAP-STUB</code>
-        entry must appear in <code>.forge/GAPS.json</code>.</div>
+        entry must appear in <code>.rapid/GAPS.json</code>.</div>
       </div>
       <div class="card">
         <h4>R8 — Conformance plumbing</h4>
@@ -217,17 +217,17 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="code-block">set -uo pipefail
 TOOLS="$(cd "$(dirname "$0")/../../tools" &amp;&amp; pwd)"
 B="$(mktemp -d)"; trap 'rm -rf "$B"' EXIT
-cd "$B"; mkdir -p .forge 01-intake 04-spec src
-printf '{"phase":1}\n' &gt; .forge/STATE.json
+cd "$B"; mkdir -p .rapid 01-intake 04-spec src
+printf '{"phase":1}\n' &gt; .rapid/STATE.json
 fail=0
 assert(){ [ "$1" = "$2" ] || { echo "FAIL: $3 (got '$1' want '$2')"; fail=1; }; }
 
 # R1: block phase advance without artifact, allow with it
-printf '{"tool_input":{"file_path":".forge/STATE.json","content":"{\\"phase\\":2}"}}' \
+printf '{"tool_input":{"file_path":".rapid/STATE.json","content":"{\\"phase\\":2}"}}' \
   | bash "$TOOLS/phase-gate-hook.sh" &gt;/dev/null 2&gt;&amp;1
 assert "$?" "2" "R1 blocks P2 without PRD-ENHANCED"
 printf '# prd\n' &gt; 01-intake/PRD-ENHANCED.md
-printf '{"tool_input":{"file_path":".forge/STATE.json","content":"{\\"phase\\":2}"}}' \
+printf '{"tool_input":{"file_path":".rapid/STATE.json","content":"{\\"phase\\":2}"}}' \
   | bash "$TOOLS/phase-gate-hook.sh" &gt;/dev/null 2&gt;&amp;1
 assert "$?" "0" "R1 allows P2 with PRD-ENHANCED"
 
@@ -241,11 +241,11 @@ printf '04-spec/spec.md\n# s\n## S1\n' &gt; 04-spec/spec.md
 printf 'function f(){ // TODO implement\n}\n' &gt; src/a.js
 printf '{"tool_input":{"file_path":"src/a.js"}}' \
   | bash "$TOOLS/stub-detect-hook.sh" &gt;/dev/null 2&gt;&amp;1
-grep -q 'GAP-STUB' .forge/GAPS.json 2&gt;/dev/null; assert "$?" "0" "R9 files stub gap"
+grep -q 'GAP-STUB' .rapid/GAPS.json 2&gt;/dev/null; assert "$?" "0" "R9 files stub gap"
 
 echo "task-00 smoke: $([ $fail -eq 0 ] &amp;&amp; echo PASS || echo FAIL)"
 exit $fail</div>
-    <div class="footnote">Source: .forge/EVAL/hooks.smoke.test.sh. The harness is "immutable" — it is the fixed reference the build is measured against, not a test that gets rewritten to pass. The live status box above shows the result of actually running the harness (recorded in <code>eval.json</code> by the ship gate); the cards describe what it asserts.</div>
+    <div class="footnote">Source: .rapid/EVAL/hooks.smoke.test.sh. The harness is "immutable" — it is the fixed reference the build is measured against, not a test that gets rewritten to pass. The live status box above shows the result of actually running the harness (recorded in <code>eval.json</code> by the ship gate); the cards describe what it asserts.</div>
   </div>
 
   <div class="section" id="ship-gate">
@@ -253,14 +253,14 @@ exit $fail</div>
     <div class="section-title">The ship gate — P6 exit assertions</div>
     <div class="section-desc">
       At P6 the ship gate (<code>tools/ship-gate.sh</code>, spec S-09) merges the stub and
-      conformance assertions into <code>.forge/P6_EXIT.json</code>. The phase-gate hook
+      conformance assertions into <code>.rapid/P6_EXIT.json</code>. The phase-gate hook
       (S-01) reads that file and blocks P7 (walkthrough) if any assertion fails. The table
       below shows the assertions <strong>exactly as recorded in the current
-      <code>.forge/P6_EXIT.json</code></strong>.
+      <code>.rapid/P6_EXIT.json</code></strong>.
     </div>
 
     <div id="eval-gate"><div class="key-insight">Loading exit assertions from <code>eval.json</code>…</div></div>
-    <div class="footnote">Source: <code>docs/eval.json</code>, published by <code>tools/ship-gate.sh</code> from the live <code>.forge/P6_EXIT.json</code>. The table and counts above are rendered from that file at load time — they reflect the recorded values, not a hardcoded claim. Use ↻ Regenerate (or run the ship gate) to refresh.</div>
+    <div class="footnote">Source: <code>docs/eval.json</code>, published by <code>tools/ship-gate.sh</code> from the live <code>.rapid/P6_EXIT.json</code>. The table and counts above are rendered from that file at load time — they reflect the recorded values, not a hardcoded claim. Use ↻ Regenerate (or run the ship gate) to refresh.</div>
   </div>
 
   <div class="section" id="keep-revert">
@@ -278,7 +278,7 @@ exit $fail</div>
       <p>The smoke test is re-runnable against a throwaway tree, so it can be run before and
       after any change to the hooks or the build. If a change breaks an assertion, the harness
       exits non-zero and the change does not survive.</p>
-      <p>At ship time the same discipline applies through <code>.forge/P6_EXIT.json</code>: a
+      <p>At ship time the same discipline applies through <code>.rapid/P6_EXIT.json</code>: a
       build only ships forward when no open MAJOR+ stub or conformance gaps remain and no stub
       markers are found in the tree. A regression flips an assertion to
       <code>"pass": false</code> and the gate holds.</p>
@@ -323,15 +323,15 @@ exit $fail</div>
       </div>
       <div class="req-body">
         Spec S-04: the <strong>task-00 eval-harness is the dependency root</strong> in
-        <code>.forge/TASKS.json</code>, and the phase gate <strong>refuses P6 until
-        <code>.forge/EVAL/</code> holds test files</strong>. This makes the smoke test a
+        <code>.rapid/TASKS.json</code>, and the phase gate <strong>refuses P6 until
+        <code>.rapid/EVAL/</code> holds test files</strong>. This makes the smoke test a
         prerequisite of the build rather than an afterthought — there is no path to the ship
         gate that skips the eval harness.
       </div>
       <div class="req-meta">
         <span><span class="label">Spec</span> S-04</span>
         <span><span class="label">Root task</span> task-00</span>
-        <span><span class="label">Gate</span> P6 requires .forge/EVAL/</span>
+        <span><span class="label">Gate</span> P6 requires .rapid/EVAL/</span>
       </div>
     </div>
 
@@ -346,7 +346,7 @@ exit $fail</div>
 </div>
   <script src="env-links.js" defer></script><script src="sidebar.js" defer></script>
   <!-- Live eval state: rendered from docs/eval.json (published by tools/ship-gate.sh
-       from the real .forge/P6_EXIT.json + an actual run of .forge/EVAL/*.test.sh).
+       from the real .rapid/P6_EXIT.json + an actual run of .rapid/EVAL/*.test.sh).
        Works under observe-server and on a static /_atlas deploy; degrades to an
        honest "not run yet" note when the file is absent. -->
   <script>
@@ -364,7 +364,7 @@ exit $fail</div>
             return '<div class="key-insight">' + dot(h.pass) + ' &nbsp;<strong>' + esc(h.name) + '</strong> — ' + esc(h.output || '') + '</div>';
           }).join('');
         } else if (d) {
-          hs.innerHTML = '<div class="key-insight">No harness tests found in <code>.forge/EVAL/</code>.</div>';
+          hs.innerHTML = '<div class="key-insight">No harness tests found in <code>.rapid/EVAL/</code>.</div>';
         } else {
           hs.innerHTML = '<div class="key-insight">Live status unavailable — run <code>tools/ship-gate.sh</code> (or serve via observe-server) to publish <code>eval.json</code>.</div>';
         }
@@ -378,14 +378,14 @@ exit $fail</div>
           var s = d.summary || {}, fail = s.fail || 0, total = s.total || d.assertions.length, pass = (s.pass != null ? s.pass : total - fail);
           ge.innerHTML =
             '<table class="compare-table"><thead><tr><th>Status</th><th>Assertion</th><th>Detail (from file)</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-            '<div class="key-insight"><strong>' + pass + '/' + total + ' P6 exit assertion(s) passing</strong> in <code>.forge/P6_EXIT.json</code>. ' +
+            '<div class="key-insight"><strong>' + pass + '/' + total + ' P6 exit assertion(s) passing</strong> in <code>.rapid/P6_EXIT.json</code>. ' +
             (fail === 0
               ? 'No assertion fails, so the phase gate (S-01) does not block advancement to P7.'
               : fail + ' assertion(s) fail — S-01 refuses the walkthrough phase until the underlying gaps are resolved.') +
             (d.generated ? ' <span style="opacity:.6;">Generated ' + esc(d.generated) + '.</span>' : '') +
             '</div>';
         } else {
-          ge.innerHTML = '<div class="key-insight">No exit assertions recorded yet — run <code>tools/ship-gate.sh</code> at P6 to generate <code>.forge/P6_EXIT.json</code> and <code>eval.json</code>. This page reflects the file; it does not fabricate results.</div>';
+          ge.innerHTML = '<div class="key-insight">No exit assertions recorded yet — run <code>tools/ship-gate.sh</code> at P6 to generate <code>.rapid/P6_EXIT.json</code> and <code>eval.json</code>. This page reflects the file; it does not fabricate results.</div>';
         }
       }
     });

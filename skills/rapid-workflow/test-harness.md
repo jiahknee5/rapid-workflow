@@ -1,7 +1,7 @@
-# Forge Test Harness
+# Rapid Test Harness
 
 > Run after any SKILL.md change to verify the 6 fixes still prevent the 5 gaps.
-> Invoke: `/forge test` or read this file and execute each check.
+> Invoke: `/rapid-workflow test` or read this file and execute each check.
 
 ## How to use
 
@@ -15,14 +15,14 @@ Each test below has a **Check** (grep/read the SKILL.md) and a **Fail condition*
 
 **Check:**
 ```bash
-grep -c "Reference project protocol" ~/.claude/skills/forge/SKILL.md
+grep -c "Reference project protocol" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 **Fail:** 0 — the protocol was removed or renamed. Agents will follow reference code blindly.
 
 **Also verify content:**
 ```bash
-grep -A3 "Reference project protocol" ~/.claude/skills/forge/SKILL.md | grep -c "spec is the authority"
+grep -A3 "Reference project protocol" ~/.claude/skills/rapid-workflow/SKILL.md | grep -c "spec is the authority"
 ```
 **Pass:** Count >= 1
 
@@ -34,13 +34,13 @@ grep -A3 "Reference project protocol" ~/.claude/skills/forge/SKILL.md | grep -c 
 
 **Check:**
 ```bash
-grep -c "Smoke test (mandatory, not skippable)" ~/.claude/skills/forge/SKILL.md
+grep -c "Smoke test (mandatory, not skippable)" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
 **Also verify it says orchestrator runs it:**
 ```bash
-grep -c "orchestrator (not the agent) runs" ~/.claude/skills/forge/SKILL.md
+grep -c "orchestrator (not the agent) runs" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
@@ -52,13 +52,13 @@ grep -c "orchestrator (not the agent) runs" ~/.claude/skills/forge/SKILL.md
 
 **Check:**
 ```bash
-grep -c "Code review (mandatory, not skippable)" ~/.claude/skills/forge/SKILL.md
+grep -c "Code review (mandatory, not skippable)" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
 **Also verify blocking language:**
 ```bash
-grep -c "Phase 7 cannot begin until every task has a reviewer verdict of APPROVE" ~/.claude/skills/forge/SKILL.md
+grep -c "Phase 7 cannot begin until every task has a reviewer verdict of APPROVE" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
@@ -70,13 +70,13 @@ grep -c "Phase 7 cannot begin until every task has a reviewer verdict of APPROVE
 
 **Check:**
 ```bash
-grep -c "Secret Scanning" ~/.claude/skills/forge/SKILL.md
+grep -c "Secret Scanning" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
 **Also verify the grep command is specified:**
 ```bash
-grep -c "api-key.*api_key.*apikey" ~/.claude/skills/forge/SKILL.md
+grep -c "api-key.*api_key.*apikey" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
@@ -88,13 +88,13 @@ grep -c "api-key.*api_key.*apikey" ~/.claude/skills/forge/SKILL.md
 
 **Check:**
 ```bash
-grep -c "not a file audit, not a markdown review" ~/.claude/skills/forge/SKILL.md
+grep -c "not a file audit, not a markdown review" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
 **Also verify TEST_RESULTS.md is required:**
 ```bash
-grep -c "TEST_RESULTS.md" ~/.claude/skills/forge/SKILL.md
+grep -c "TEST_RESULTS.md" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 2 (once in Phase 7, once in State Files table)
 
@@ -106,13 +106,13 @@ grep -c "TEST_RESULTS.md" ~/.claude/skills/forge/SKILL.md
 
 **Check:**
 ```bash
-grep -c "P6_EXIT.json" ~/.claude/skills/forge/SKILL.md
+grep -c "P6_EXIT.json" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 3 (exit assertion section, enforcement paragraph, state files table)
 
 **Also verify the three new assertions exist:**
 ```bash
-grep -c "reviewer verdict of APPROVE" ~/.claude/skills/forge/SKILL.md
+grep -c "reviewer verdict of APPROVE" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 2 (one in step 4, one in exit assertions)
 
@@ -124,7 +124,7 @@ grep -c "reviewer verdict of APPROVE" ~/.claude/skills/forge/SKILL.md
 
 **Check:**
 ```bash
-grep -c "HEARTBEAT.json" ~/.claude/skills/forge/SKILL.md
+grep -c "HEARTBEAT.json" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 3
 
@@ -136,19 +136,19 @@ grep -c "HEARTBEAT.json" ~/.claude/skills/forge/SKILL.md
 
 **Check:**
 ```bash
-grep -c "claude-peers Protocol (mandatory" ~/.claude/skills/forge/SKILL.md
+grep -c "claude-peers Protocol (mandatory" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 1
 
 ---
 
-## Test 9: `/forge status` dashboard exists
+## Test 9: `/rapid-workflow status` dashboard exists
 
 **Gap it prevents:** Operator has to read 10+ individual files to understand build state.
 
 **Check:**
 ```bash
-grep -c "forge status" ~/.claude/skills/forge/SKILL.md
+grep -c "rapid status" ~/.claude/skills/rapid-workflow/SKILL.md
 ```
 **Pass:** Count >= 3 (invocation, observability section, dashboard section)
 
@@ -160,13 +160,13 @@ grep -c "forge status" ~/.claude/skills/forge/SKILL.md
 
 **Check:**
 ```bash
-test -f ~/.claude/skills/forge/CHANGELOG.md && echo "EXISTS" || echo "MISSING"
+test -f ~/.claude/skills/rapid-workflow/CHANGELOG.md && echo "EXISTS" || echo "MISSING"
 ```
 **Pass:** EXISTS
 
 **Also verify it mentions the Meridian retro:**
 ```bash
-grep -c "Meridian" ~/.claude/skills/forge/CHANGELOG.md
+grep -c "Meridian" ~/.claude/skills/rapid-workflow/CHANGELOG.md
 ```
 **Pass:** Count >= 1
 
@@ -175,18 +175,18 @@ grep -c "Meridian" ~/.claude/skills/forge/CHANGELOG.md
 ## Run all tests at once
 
 ```bash
-echo "=== FORGE SKILL TEST HARNESS ===" && \
+echo "=== RAPID SKILL TEST HARNESS ===" && \
 echo "" && \
-echo "T1 Reference protocol: $(grep -c 'Reference project protocol' ~/.claude/skills/forge/SKILL.md) (need >=1)" && \
-echo "T2 Smoke test mandatory: $(grep -c 'Smoke test (mandatory' ~/.claude/skills/forge/SKILL.md) (need >=1)" && \
-echo "T3 Review mandatory: $(grep -c 'Code review (mandatory' ~/.claude/skills/forge/SKILL.md) (need >=1)" && \
-echo "T4 Secret scanning: $(grep -c 'Secret Scanning' ~/.claude/skills/forge/SKILL.md) (need >=1)" && \
-echo "T5 Execute not audit: $(grep -c 'not a file audit' ~/.claude/skills/forge/SKILL.md) (need >=1)" && \
-echo "T6 P6_EXIT proof: $(grep -c 'P6_EXIT.json' ~/.claude/skills/forge/SKILL.md) (need >=3)" && \
-echo "T7 Heartbeat: $(grep -c 'HEARTBEAT.json' ~/.claude/skills/forge/SKILL.md) (need >=3)" && \
-echo "T8 Peers mandatory: $(grep -c 'claude-peers Protocol' ~/.claude/skills/forge/SKILL.md) (need >=1)" && \
-echo "T9 Status dashboard: $(grep -c 'forge status' ~/.claude/skills/forge/SKILL.md) (need >=3)" && \
-echo "T10 Changelog: $(test -f ~/.claude/skills/forge/CHANGELOG.md && echo 'EXISTS' || echo 'MISSING')" && \
+echo "T1 Reference protocol: $(grep -c 'Reference project protocol' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=1)" && \
+echo "T2 Smoke test mandatory: $(grep -c 'Smoke test (mandatory' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=1)" && \
+echo "T3 Review mandatory: $(grep -c 'Code review (mandatory' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=1)" && \
+echo "T4 Secret scanning: $(grep -c 'Secret Scanning' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=1)" && \
+echo "T5 Execute not audit: $(grep -c 'not a file audit' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=1)" && \
+echo "T6 P6_EXIT proof: $(grep -c 'P6_EXIT.json' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=3)" && \
+echo "T7 Heartbeat: $(grep -c 'HEARTBEAT.json' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=3)" && \
+echo "T8 Peers mandatory: $(grep -c 'claude-peers Protocol' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=1)" && \
+echo "T9 Status dashboard: $(grep -c 'rapid status' ~/.claude/skills/rapid-workflow/SKILL.md) (need >=3)" && \
+echo "T10 Changelog: $(test -f ~/.claude/skills/rapid-workflow/CHANGELOG.md && echo 'EXISTS' || echo 'MISSING')" && \
 echo "" && \
 echo "=== DONE ==="
 ```

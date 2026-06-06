@@ -5,7 +5,7 @@ move items to [CHANGELOG.md](CHANGELOG.md) when shipped. Newest at the top of ea
 
 ## Workflow Test Theater (`docs/testsuite.html`)
 
-- **Full live `/forge` E2E tier.** Today the lifecycle suite (WF-5) runs the deterministic plumbing (scaffold → populate → build → local deploy). Add an opt-in tier that runs a real multi-agent `/forge` build to completion + a real cloud dev deploy. Gated: spends money, hours, outward-facing.
+- **Full live `/rapid-workflow` E2E tier.** Today the lifecycle suite (WF-5) runs the deterministic plumbing (scaffold → populate → build → local deploy). Add an opt-in tier that runs a real multi-agent `/rapid-workflow` build to completion + a real cloud dev deploy. Gated: spends money, hours, outward-facing.
 - **Playwright-backed `codex` exec kind.** The Codex tester currently runs bounded shell commands. Add an exec kind that drives the real app UI (Playwright) so the tester can assert user-visible behavior, not just command exit codes.
 - **Perspective-diverse verifiers.** For high-stakes nodes, run N Codex testers with distinct lenses (correctness / security / repro) and require a majority, instead of a single verdict.
 
@@ -18,7 +18,7 @@ move items to [CHANGELOG.md](CHANGELOG.md) when shipped. Newest at the top of ea
 
 - **`cost.html` section markup.** The cost page is project-branded but still a raw data-table layout. Wrap Overview / Per-step / Per-session in `.section[id]` blocks so the sidebar TOC lists them like the prose pages.
 - **`home.html` static sections.** The hub renders its cards at runtime from JSON. Add static `.section[id]` fallbacks so it degrades gracefully with JS off / slow fetches.
-- **Auto-fill nav source links.** Populate `env.json` `source.github` (and dev/prod) from the project's `forge.yaml` / git remote during `atlas-init`, instead of leaving placeholders.
+- **Auto-fill nav source links.** Populate `env.json` `source.github` (and dev/prod) from the project's `rapid.yaml` / git remote during `atlas-init`, instead of leaving placeholders.
 
 ---
 

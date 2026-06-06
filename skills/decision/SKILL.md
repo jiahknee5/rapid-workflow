@@ -3,8 +3,8 @@
 Two corpora in one skill: **decisions** (resolved choices) and **panel findings** (expert reviews). Both produce McKinsey-style Reveal.js decks with auto-regenerating navigation.
 
 > Reference template: `~/projects/workflow/templates/template-decision-deck.html`
-> System reference: `~/projects/workflow/docs/forge-architecture.html` (D5 decisions, D17 panel corpus)
-> Integrated with `/forge` Decision Router (D5) and all expert panel skills.
+> System reference: `~/projects/workflow/docs/rapid-architecture.html` (D5 decisions, D17 panel corpus)
+> Integrated with `/rapid-workflow` Decision Router (D5) and all expert panel skills.
 > Documentation style: McKinsey aesthetic (action titles, exhibit labels, source lines) + plain-English-first pattern. Every decision summary leads with an accessible explanation, then "**Technically:**" for the precise detail.
 
 ## Invocation
@@ -21,7 +21,7 @@ Two corpora in one skill: **decisions** (resolved choices) and **panel findings*
 
 ## First Actions on Invocation
 
-1. **Find the project root.** Walk up from cwd looking for `.forge/`, `decisions/`, or `CONSTITUTION.md`. Fall back to cwd.
+1. **Find the project root.** Walk up from cwd looking for `.rapid/`, `decisions/`, or `CONSTITUTION.md`. Fall back to cwd.
 2. **Ensure `decisions/` directory exists.** Create it if missing.
 3. **Read existing decisions.** Parse all `decisions/D-*.md` files to determine next ID and current state.
 
@@ -31,10 +31,10 @@ Two corpora in one skill: **decisions** (resolved choices) and **panel findings*
 
 ### Step 1 — Collect Decision Data
 
-If invoked with context (e.g., from a forge build where a decision was just resolved), extract the details from conversation context. Otherwise, use AskUserQuestion to collect:
+If invoked with context (e.g., from a rapid build where a decision was just resolved), extract the details from conversation context. Otherwise, use AskUserQuestion to collect:
 
 - **Question**: The decision being made (phrased as a question)
-- **Phase**: Which forge phase (0–9) this decision belongs to
+- **Phase**: Which rapid phase (0–9) this decision belongs to
 - **Pillars**: Which project pillars this affects (from `00-vision/PILLARS.md`)
 - **Options**: 2–3 options, each with name, description, pros, cons
 - **Chosen option**: Which option was selected (or mark as `open`/`blocked`)
@@ -205,15 +205,15 @@ Read all `decisions/D-*.md`, parse frontmatter, print a markdown table sorted by
 
 ---
 
-## Integration with Forge
+## Integration with Rapid
 
-This skill is invoked automatically by the forge Decision Router (D5) when an **Architectural** or **Strategic** decision is resolved. The forge orchestrator or supervisor calls `/decision log` with the decision context after resolution.
+This skill is invoked automatically by the rapid Decision Router (D5) when an **Architectural** or **Strategic** decision is resolved. The rapid orchestrator or supervisor calls `/decision log` with the decision context after resolution.
 
-**Tactical** and **Technical** decisions are logged to `.forge/MEMORY.md` only — they are too frequent and too small for deck slides.
+**Tactical** and **Technical** decisions are logged to `.rapid/MEMORY.md` only — they are too frequent and too small for deck slides.
 
-## When to Log a Decision (outside of Forge)
+## When to Log a Decision (outside of Rapid)
 
-Even outside a forge build, invoke `/decision log` whenever:
+Even outside a rapid build, invoke `/decision log` whenever:
 - A technology choice is made (framework, library, service, model)
 - An architecture direction is set (monolith vs micro, client vs server, sync vs async)
 - A scope decision is made (feature cut, MVP boundary, out-of-scope declaration)
@@ -235,7 +235,7 @@ After any expert panel skill finishes (technical-expert-panel, business-expert-p
 
 - **Panel type**: which panel skill (technical, business, SME, user, etc.)
 - **Topic**: what was reviewed (1-line description)
-- **Phase**: which forge phase (typically 2 for panels)
+- **Phase**: which rapid phase (typically 2 for panels)
 - **Pillars**: which project pillars this review touched
 - **Each expert's findings**: name, lens, verdict, finding (1–3 bullets), asks (concrete action items)
 - **Synthesis**: convergent findings, divergent findings, recommended action
@@ -398,7 +398,7 @@ Read all `panels/P-*.md`, parse frontmatter, print two tables:
 2. Panel skill invokes `/decision panel` with the full output as context
 3. The decision skill writes `panels/P-{NN}.md` and regenerates `panels/deck.html`
 
-For panels invoked during a `/forge` build (Phase 2), the forge orchestrator handles this automatically. For ad-hoc panel invocations outside a build, the panel skill itself should invoke the logging.
+For panels invoked during a `/rapid-workflow` build (Phase 2), the rapid orchestrator handles this automatically. For ad-hoc panel invocations outside a build, the panel skill itself should invoke the logging.
 
 ## Cross-References
 

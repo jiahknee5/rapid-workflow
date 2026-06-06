@@ -9,11 +9,11 @@
  *     specific `claude -p`)
  *   - renders a PRODUCT cluster linking to the finished product per environment
  *     (Local / Dev / Production from docs/env.json; Local has a launch command).
- * Standard across every FORGE project. One line per page:
+ * Standard across every RAPID project. One line per page:
  *   <script src="env-links.js" defer></script>
  */
 (function () {
-  var nav = document.querySelector('.forge-nav');
+  var nav = document.querySelector('.rapid-nav');
   if (!nav) return;
 
   var st = document.createElement('style');
@@ -36,7 +36,7 @@
   document.head.appendChild(st);
 
   // 1) Tag the harness as the developer view (once).
-  var brand = nav.querySelector('.forge-nav-brand');
+  var brand = nav.querySelector('.rapid-nav-brand');
   if (brand && !nav.querySelector('.dev-view-tag')) {
     var tag = document.createElement('a');
     tag.className = 'dev-view-tag';

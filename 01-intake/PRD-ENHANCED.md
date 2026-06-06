@@ -1,7 +1,7 @@
-# FORGE — Enhanced PRD (requirements register)
+# RAPID — Enhanced PRD (requirements register)
 
-> Derived from `docs/PRD.md` + `skills/forge/SKILL.md`. The machine-traceable
-> requirements doc that `04-spec/spec.md` and `.forge/TASKS.json` reference.
+> Derived from `docs/PRD.md` + `skills/rapid-workflow/SKILL.md`. The machine-traceable
+> requirements doc that `04-spec/spec.md` and `.rapid/TASKS.json` reference.
 > The HTML deck under `docs/` is the developer-view presentation of this content.
 >
 > **Organization (layered pyramid):** requirements live at one of three altitudes —
@@ -55,7 +55,7 @@ Given an idea or PRD, the system understands (panels + research), plans for appr
 Every MUST deliverable in the PRD maps to at least one task; an unmapped deliverable is a blocking gap.
 
 ### FR-3 — Concrete walkthrough  [MUST] ↑BR-2
-P7 runs an explicit step-by-step walkthrough across every surface and records `.forge/WALKTHROUGH.md`.
+P7 runs an explicit step-by-step walkthrough across every surface and records `.rapid/WALKTHROUGH.md`.
 
 ### FR-4 — Prepopulated live dashboard  [MUST] ↑BR-4
 The observability dashboard shows the full build plan the moment a build starts (phase, agents, blockers, plan completion, timeline) and updates in real time.
@@ -73,10 +73,10 @@ Build status, docs, test results, and dashboard update together on phase complet
 Token/cost burn is tracked and shown per step, per phase/section, and per project; the developer view surfaces it.
 
 ### FR-10 — Project lifecycle acceptance test  [SHOULD] ↑BR-1, BR-2
-The skill is itself testable end-to-end: a harness creates a new project via the skill, populates its documentation, builds the local app, and deploys dev — asserting each of the three outcomes. Runnable repeatably against a fresh project (deterministic, local/staging deploy, no paid services); the full multi-agent `/forge` build + real cloud deploy is the opt-in live tier. *(proves BR-1's "shipped, tested, documented app" actually comes out the other end, and BR-2's trustworthy autonomy)* ↓S-15
+The skill is itself testable end-to-end: a harness creates a new project via the skill, populates its documentation, builds the local app, and deploys dev — asserting each of the three outcomes. Runnable repeatably against a fresh project (deterministic, local/staging deploy, no paid services); the full multi-agent `/rapid-workflow` build + real cloud deploy is the opt-in live tier. *(proves BR-1's "shipped, tested, documented app" actually comes out the other end, and BR-2's trustworthy autonomy)* ↓S-15
 
 ### FR-9 — Runnable workflow test theater  [SHOULD] ↑BR-4, BR-5
-Each user workflow is executable as a test the operator can drive in real time: pick an input (preset or custom), run it, and follow the workflow diagram node by node with two synchronized panels — what the user sees, and the actual data-in/processing/data-out at that node, threaded end-to-end. Every run is recorded to a per-workflow log. Built dynamically from the project's own workflow map (`docs/workflows.json`, derived in P4/P5), so it generalizes to any project FORGE builds — not just FORGE itself. *(makes FR-6's "visible everywhere" walkable, and feeds BR-5 by recording every run)* ↓S-14
+Each user workflow is executable as a test the operator can drive in real time: pick an input (preset or custom), run it, and follow the workflow diagram node by node with two synchronized panels — what the user sees, and the actual data-in/processing/data-out at that node, threaded end-to-end. Every run is recorded to a per-workflow log. Built dynamically from the project's own workflow map (`docs/workflows.json`, derived in P4/P5), so it generalizes to any project RAPID builds — not just RAPID itself. *(makes FR-6's "visible everywhere" walkable, and feeds BR-5 by recording every run)* ↓S-14
 
 ---
 
@@ -88,7 +88,7 @@ How it works + constraints. Each traces ↑ to a Functional Requirement and ↓ 
 STATE.json cannot advance to a phase whose required artifacts are missing — a PreToolUse hook blocks on exit 2.
 
 ### TR-2 — Independent watchdog  [MUST] ↑BR-2 ↓S-02
-A separate auditing agent (no implementation incentive) is spawned automatically at P6a and writes `.forge/AUDIT.json`; P6 cannot exit without it.
+A separate auditing agent (no implementation incentive) is spawned automatically at P6a and writes `.rapid/AUDIT.json`; P6 cannot exit without it.
 
 ### TR-3 — Blocking dependency graph (eval-first)  [MUST] ↑FR-1 ↓S-04
 Safety steps are nodes in the dependency graph; the immutable eval harness (`task-00`) is the root everything depends on.
@@ -103,13 +103,13 @@ As each module completes, its `spec_ref`/`prd_ref`/`arch_ref` must resolve to re
 Placeholder code is detected at write time; the ship gate blocks release on any open stub gap in a MUST module.
 
 ### TR-7 — Terminal-per-agent + agent teams  [MUST] ↑FR-1 ↓S-02
-Each persistent agent runs in its own terminal, connected as one team over the claude-peers bus, with per-terminal status/monitoring/continuous-build hooks keyed by FORGE_ROLE.
+Each persistent agent runs in its own terminal, connected as one team over the claude-peers bus, with per-terminal status/monitoring/continuous-build hooks keyed by RAPID_ROLE.
 
 ### TR-8 — Context-checkpoint protocol  [SHOULD] ↑BR-2
-Above ~200k tokens the skill checkpoints all state to `.forge/` and runs a phase-completion checklist before continuing.
+Above ~200k tokens the skill checkpoints all state to `.rapid/` and runs a phase-completion checklist before continuing.
 
 ### TR-9 — Configurable artifact paths  [COULD] ↑FR-5
-The enforcement hooks' artifact paths (`01-intake/`, `03-panels/`, `04-spec/`) should be configurable so a repo can dogfood FORGE without root-level numbered folders.
+The enforcement hooks' artifact paths (`01-intake/`, `03-panels/`, `04-spec/`) should be configurable so a repo can dogfood RAPID without root-level numbered folders.
 
 ### NFR — Constraints  [MUST]
 - **NFR-1:** No external dependencies beyond Python 3 and Claude Code.
@@ -135,7 +135,7 @@ The enforcement hooks' artifact paths (`01-intake/`, `03-panels/`, `04-spec/`) s
 ## Deliverables (MUST)
 
 - D1: Enforcement hook suite (TR-1, TR-4, TR-5, TR-6)
-- D2: FORGE skill orchestration + agent-team build (FR-1, TR-2, TR-3, TR-7, TR-8)
+- D2: RAPID skill orchestration + agent-team build (FR-1, TR-2, TR-3, TR-7, TR-8)
 - D3: Observatory dashboard (FR-4, FR-6)
 - D4: Documentation system / developer view (FR-5)
 - D5: Integration layer + combined gate (FR-7), cost visibility (FR-8)
@@ -162,7 +162,7 @@ The pre-pyramid register used `R-01..R-14`. Mapping (no requirement lost):
 ## Change Log
 
 Append-only audit of requirement changes, **aligned with the GitHub issue tracker**.
-A requirement change originates from the gap loop: `.forge/GAPS.json` → `tools/gaps-to-issues.sh`
+A requirement change originates from the gap loop: `.rapid/GAPS.json` → `tools/gaps-to-issues.sh`
 → GitHub issues. Each entry records the **source/issue** that drove it and the **requirement(s)**
 it updated, so any GitHub issue traces to exactly where the PRD changed — and back. A change is
 logged when **requested** (status: requested → accepted → implemented).

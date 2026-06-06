@@ -1,0 +1,29 @@
+{
+  "_doc": "Human-input ledger. Seeded at P1, populated at GATE 1 / GATE 2, and CHECKED before the build can enter P6. Every input the build needs from a human — credentials, deploy target, spend ceiling, and the resolved undecidable decisions — is one row here. tools/inputs-check.sh (and the phase-gate hook on STATE.json -> phase 6) refuse to start the build until every required:true row is resolved (or explicitly waived). This is what makes 'gather all human input up front, then run to completion' a mechanical guarantee instead of a hope. Store POINTERS in value_ref (e.g. '.env:STRIPE_KEY', 'BUILD-AUTONOMY.md#decision-1') — never the secret value itself.",
+  "project": "<project>",
+  "updated": "",
+  "schema": {
+    "kind": ["env", "secret", "credential", "deploy_target", "decision", "account", "choice"],
+    "status": ["unresolved", "resolved", "waived", "n/a"]
+  },
+  "inputs": [
+    {
+      "id": "deploy_target",
+      "kind": "deploy_target",
+      "label": "Where does this ship? (Vercel / Railway / devnet / none-yet)",
+      "required": true,
+      "status": "unresolved",
+      "value_ref": "BUILD-AUTONOMY.md#signature",
+      "gate": "G2"
+    },
+    {
+      "id": "spend_ceiling",
+      "kind": "decision",
+      "label": "Build spend ceiling (USD) before the build must stop and ask",
+      "required": true,
+      "status": "unresolved",
+      "value_ref": "BUILD-AUTONOMY.md#signature",
+      "gate": "G1"
+    }
+  ]
+}

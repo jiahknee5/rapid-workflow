@@ -1,27 +1,27 @@
-# FORGE — AI Build Workflow
+# RAPID — AI Build Workflow
 
 A repeatable methodology for turning stakeholder ambiguity into tested, audited AI systems. Built over ~50 projects across AI agents, trading, climate, and education. Operationalized as Claude Code skills — every phase has a tool behind it.
 
 ## Core Principle
 
-The agent implementing the code must never be the same agent auditing the code. When one agent does both, the implementor always wins — it produces visible progress while the auditor produces invisible safety. Under pressure, invisible work gets skipped. Every enforcement mechanism in FORGE exists because prose instructions fail under pressure.
+The agent implementing the code must never be the same agent auditing the code. When one agent does both, the implementor always wins — it produces visible progress while the auditor produces invisible safety. Under pressure, invisible work gets skipped. Every enforcement mechanism in RAPID exists because prose instructions fail under pressure.
 
 ## What This Repo Contains
 
-This repo defines **the methodology** — how FORGE works. It does NOT contain project-specific output. When FORGE runs, it generates artifacts (specs, tests, panel records, documentation decks) in the **project repo**, not here.
+This repo defines **the methodology** — how RAPID works. It does NOT contain project-specific output. When RAPID runs, it generates artifacts (specs, tests, panel records, documentation decks) in the **project repo**, not here.
 
 ```
 workflow/
 ├── skills/                            Claude Code skills (source of truth, symlinked)
-│   ├── forge/SKILL.md                 The FORGE orchestrator (1125 lines)
+│   ├── rapid/SKILL.md                 The RAPID orchestrator (1125 lines)
 │   ├── decision/SKILL.md              Decision & panel documentation
 │   ├── docs/SKILL.md                  Documentation deck generator
 │   └── workflow/SKILL.md              AI Build Workflow entry point
 │
 ├── docs/                              Documentation of the methodology
-│   ├── forge-architecture.html        D0–D21 interactive architecture reference
-│   ├── forge-reference.md             Text reference (all diagrams as markdown)
-│   ├── forge-comparison.html          FORGE vs TDD Agent-Crew Scaffold
+│   ├── rapid-architecture.html        D0–D21 interactive architecture reference
+│   ├── rapid-reference.md             Text reference (all diagrams as markdown)
+│   ├── rapid-comparison.html          RAPID vs TDD Agent-Crew Scaffold
 │   ├── methodology-deck.md            18-slide methodology walkthrough (source)
 │   ├── methodology-deck.html          18-slide methodology walkthrough (presentation)
 │   └── constitution.md                Articles I–X governance
@@ -49,7 +49,7 @@ workflow/
 The `skills/` directory is the source of truth for all skill definitions. Each is symlinked into `~/.claude/skills/` so Claude Code finds them:
 
 ```bash
-ln -sf ~/projects/workflow/skills/forge    ~/.claude/skills/forge
+ln -sf ~/projects/workflow/skills/rapid-workflow    ~/.claude/skills/rapid-workflow
 ln -sf ~/projects/workflow/skills/decision ~/.claude/skills/decision
 ln -sf ~/projects/workflow/skills/docs     ~/.claude/skills/docs
 ln -sf ~/projects/workflow/skills/workflow  ~/.claude/skills/workflow
@@ -78,7 +78,7 @@ P9:Deploy → P10:Pulse ↻
 
 ### View the architecture
 ```bash
-open docs/forge-architecture.html
+open docs/rapid-architecture.html
 ```
 
 ### Run the live dashboard during a build
@@ -101,7 +101,7 @@ Add to your project's `.claude/settings.json`:
 
 ### Start a build
 ```
-/forge "your product idea or PRD path"
+/rapid-workflow "your product idea or PRD path"
 ```
 
 ### Run the test suite (Workflow Test Theater)
@@ -116,7 +116,7 @@ python3 tools/workflow-runner.py --all --agents off              # all, determin
 
 ### End-to-end acceptance test (create a new project, prove it ships)
 WF-5 / `tools/lifecycle-e2e.sh` creates a fresh project via the skill, then asserts the three
-deliverables — **docs populated, local app built, dev deployed** — writing `.forge/E2E.json`.
+deliverables — **docs populated, local app built, dev deployed** — writing `.rapid/E2E.json`.
 ```bash
 tools/new-project.sh --name myproj --idea "..."                 # scaffold (deterministic P1)
 tools/lifecycle-e2e.sh --stage all --name myproj                # create→docs→build→deploy→verify
@@ -140,7 +140,7 @@ tools/lifecycle-e2e.sh --stage all --name myproj                # create→docs�
 - **Zaharia et al.** Compound AI Systems (2024) — inter-stage assertions, model routing
 - **Every Inc.** [Compound Engineering](https://github.com/everyinc/compound-engineering-plugin) — 15 integrated capabilities
 - **SiWarlock** [TDD Agent-Crew Scaffold](https://github.com/SiWarlock/claude-code-tdd-agent-crew-scaffold) — cross-pollination comparison
-- **Forge retro (R1–R6)** — enforcement mechanisms from real build failures
+- **Rapid retro (R1–R6)** — enforcement mechanisms from real build failures
 
 ## Version
 

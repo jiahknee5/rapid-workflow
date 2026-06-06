@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# FORGE Module-Completion Conformance hook (R8).
+# RAPID Module-Completion Conformance hook (R8).
 #
 # PostToolUse hook (registered async on Write|Edit globally). When a task in
-# .forge/TASKS.json transitions to a done state, it verifies the module traces
+# .rapid/TASKS.json transitions to a done state, it verifies the module traces
 # back to the spec, PRD, and (optionally) architecture: each of the task's
 # spec_ref / prd_ref / arch_ref must resolve to a real anchor in the
 # corresponding doc. Non-blocking by design (operator's choice): it records a
-# row in .forge/CONFORMANCE.md and, on an orphan/dangling ref, files a
-# .forge/GAPS.json entry so the gap loop / GitHub ticketing picks it up.
+# row in .rapid/CONFORMANCE.md and, on an orphan/dangling ref, files a
+# .rapid/GAPS.json entry so the gap loop / GitHub ticketing picks it up.
 #
 # Defensive: no `set -e`, every path exits 0, fails SAFE (no-op) if it can't
 # read its input. Fires on every Write/Edit on this machine; guards hard on
-# .forge/TASKS.json + an active build before doing anything.
+# .rapid/TASKS.json + an active build before doing anything.
 
 INPUT=$(cat 2>/dev/null || true)
 
@@ -23,13 +23,13 @@ ti=d.get('tool_input') or {}
 print(ti.get('file_path','') or '')" 2>/dev/null || true)
 
 # ---- Guards: only on TASKS.json writes inside an active build -------------
-case "$FILE_PATH" in *".forge/TASKS.json") : ;; *) exit 0 ;; esac
-[ -f ".forge/STATE.json" ] || exit 0
-[ -f ".forge/TASKS.json" ] || exit 0
+case "$FILE_PATH" in *".rapid/TASKS.json") : ;; *) exit 0 ;; esac
+[ -f ".rapid/STATE.json" ] || exit 0
+[ -f ".rapid/TASKS.json" ] || exit 0
 
 TS=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "")
 PHASE=$(python3 -c "import json
-try: print('P'+str(json.load(open('.forge/STATE.json')).get('phase','?')))
+try: print('P'+str(json.load(open('.rapid/STATE.json')).get('phase','?')))
 except Exception: print('P?')" 2>/dev/null || echo "P?")
 
 # ---- All deterministic work happens in python (file resolution + ledgers) -
@@ -50,10 +50,10 @@ def tasks_list(obj):
     if isinstance(obj, dict): return obj.get("tasks", [])
     return []
 
-tasks = tasks_list(load(".forge/TASKS.json", []))
+tasks = tasks_list(load(".rapid/TASKS.json", []))
 
 # seen ledger so each task is conformance-checked exactly once
-seen_path = ".forge/.conformance_seen"
+seen_path = ".rapid/.conformance_seen"
 seen = set()
 if os.path.exists(seen_path):
     seen = set(l.strip() for l in open(seen_path) if l.strip())
@@ -123,7 +123,7 @@ if not newly_seen:
     sys.exit(0)
 
 # --- write CONFORMANCE.md ledger ---
-conf = ".forge/CONFORMANCE.md"
+conf = ".rapid/CONFORMANCE.md"
 if not os.path.exists(conf):
     with open(conf, "w") as f:
         f.write("# Module Conformance Ledger\n\n"
@@ -135,7 +135,7 @@ with open(conf, "a") as f:
 
 # --- append GAPS.json entries (preserve existing shape: list or {gaps:[]}) ---
 if new_gaps:
-    gaps_obj = load(".forge/GAPS.json", [])
+    gaps_obj = load(".rapid/GAPS.json", [])
     if isinstance(gaps_obj, dict):
         arr = gaps_obj.setdefault("gaps", [])
         existing = {g.get("id") for g in arr if isinstance(g, dict)}
@@ -146,18 +146,18 @@ if new_gaps:
         existing = {g.get("id") for g in arr if isinstance(g, dict)}
         arr.extend(g for g in new_gaps if g["id"] not in existing)
         out = arr
-    with open(".forge/GAPS.json", "w") as f:
+    with open(".rapid/GAPS.json", "w") as f:
         json.dump(out, f, indent=2)
 
 # --- observe event ---
 try:
-    os.makedirs(".forge/observe", exist_ok=True)
+    os.makedirs(".rapid/observe", exist_ok=True)
     seq = 0
-    for fn in os.listdir(".forge/observe"):
+    for fn in os.listdir(".rapid/observe"):
         if fn.endswith(".jsonl"):
-            seq += sum(1 for _ in open(os.path.join(".forge/observe", fn)))
+            seq += sum(1 for _ in open(os.path.join(".rapid/observe", fn)))
     orphans = len(new_gaps)
-    with open(".forge/observe/conformance.jsonl", "a") as f:
+    with open(".rapid/observe/conformance.jsonl", "a") as f:
         f.write(json.dumps({
             "t": ts, "seq": seq + 1, "agent": "conformance", "role": "conformance",
             "event": "CONFORMANCE",
@@ -174,7 +174,7 @@ with open(seen_path, "a") as f:
 # --- concise stdout summary (visible in transcript; non-blocking) ---
 orphans = len(new_gaps)
 if orphans:
-    print(f"[R8 conformance] {len(newly_seen)} module(s) completed; {orphans} ORPHAN(s) filed to GAPS.json — see .forge/CONFORMANCE.md")
+    print(f"[R8 conformance] {len(newly_seen)} module(s) completed; {orphans} ORPHAN(s) filed to GAPS.json — see .rapid/CONFORMANCE.md")
 else:
     print(f"[R8 conformance] {len(newly_seen)} module(s) completed; all traceable to spec/PRD")
 PY

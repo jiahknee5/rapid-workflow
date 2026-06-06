@@ -120,17 +120,17 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
   .main { padding: 28px 20px; }
   .theater-grid { grid-template-columns: 1fr; }
 }
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
   <a href="prd.html">PRD</a>
   <a href="prd-enhanced.html">Enhanced PRD</a>
   <a href="architecture.html">Architecture</a>
@@ -198,7 +198,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <span class="arr">→</span>
         <span class="n n-blue" style="cursor:default">workflow-runner.py<small>drives nodes live</small></span>
         <span class="arr">→</span>
-        <span class="n n-auto" style="cursor:default">.forge/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl<small>streamed trace</small></span>
+        <span class="n n-auto" style="cursor:default">.rapid/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl<small>streamed trace</small></span>
         <span class="arr">→</span>
         <span class="n n-primary" style="cursor:default">This page<small>live-tail + replay</small></span>
         <span class="arr">→</span>
@@ -266,7 +266,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="section-title">Every run of the selected workflow</div>
     <div class="section-desc">Newest first. Click a run to load its trace into the theater above and replay it.</div>
     <div id="runlog-body"><div class="key-insight">Loading run log…</div></div>
-    <div class="footnote">Source: <code>/api/runs</code> when a server is up, else <code>docs/testruns.json</code> (published by <code>tools/workflow-runner.py</code> from <code>.forge/RUNS/&lt;wf&gt;/index.json</code>).</div>
+    <div class="footnote">Source: <code>/api/runs</code> when a server is up, else <code>docs/testruns.json</code> (published by <code>tools/workflow-runner.py</code> from <code>.rapid/RUNS/&lt;wf&gt;/index.json</code>).</div>
   </div>
 
   <div class="section" id="how">
@@ -280,10 +280,10 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     </div>
     <div class="strategy">
       <h3>Bounded by construction</h3>
-      <p>No node triggers a real <span class="code-inline">/forge</span> build or spends money. For this
-      project the execs are FORGE's own seconds-scale tools — <span class="code-inline">ship-gate.sh</span>
+      <p>No node triggers a real <span class="code-inline">/rapid-workflow</span> build or spends money. For this
+      project the execs are RAPID's own seconds-scale tools — <span class="code-inline">ship-gate.sh</span>
       (re-runs the eval harness), <span class="code-inline">stub-scan.sh</span> (scans the tree) — and
-      reads of live state files (<span class="code-inline">.forge/STATE.json</span>,
+      reads of live state files (<span class="code-inline">.rapid/STATE.json</span>,
       <span class="code-inline">TASKS.json</span>, <span class="code-inline">GAPS.json</span>). For a built
       project, Phase 5 generates these execs to point at <em>that</em> project's own test / e2e commands
       and UI surfaces. The map is generated; the theater is generic.</p>
@@ -314,8 +314,8 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
       it <strong>creates a new project</strong> (<code>tools/new-project.sh</code>), <strong>populates its docs</strong>
       from the project's own artifacts, <strong>builds the local app</strong> (Codex tester judges it), and
       <strong>deploys dev</strong> to a local/staging dir (the simulated operator approves the local deploy, but would
-      hold a real cloud one) — asserting all three deliverables and writing <code>.forge/E2E.json</code>. Driven by
-      <code>tools/lifecycle-e2e.sh</code>; bounded (local, no paid services). The full multi-agent <code>/forge</code>
+      hold a real cloud one) — asserting all three deliverables and writing <code>.rapid/E2E.json</code>. Driven by
+      <code>tools/lifecycle-e2e.sh</code>; bounded (local, no paid services). The full multi-agent <code>/rapid-workflow</code>
       build + real cloud deploy is the opt-in live tier.
     </div>
     <div class="key-insight">
