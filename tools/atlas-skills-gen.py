@@ -659,28 +659,34 @@ def load_skill_file(name):
     return open(p).read() if os.path.exists(p) else ""
 
 def topnav(active):
-    # Slim, high-level developer destinations — phases live in the left nav + hub stepper.
-    # active="index" highlights Plan (every Skills-Atlas page is part of the plan).
-    DEST = [
-        ("Plan", "index.html", True, None),
-        ("Build &amp; Observatory", "../observatory.html", False, None),
-        ("Test Suite", "../testsuite.html", False, None),
-        ("Documentation", "../documentation.html", False, None),
-        ("Local&nbsp;▶", "../home.html#product", False, "local"),
-        ("Deployed", "../home.html#product", False, "deployed"),
-        ("Source", "../home.html#source", False, "source"),
+    # Unified cross-surface destinations — kept IDENTICAL to docs/rapid-nav.js so the
+    # header is the same on the Atlas and on every other surface (method → design
+    # references → run → verify → docs). Phases live in the left nav + hub stepper.
+    LEFT = [
+        ("Skills Atlas", "index.html", True),          # the Atlas itself (active on every Atlas page)
+        ("Workflow", "../workflow.html", False),
+        ("Architecture", "../architecture.html", False),
+        ("Build &amp; Observatory", "../observatory.html", False),
+        ("Test Suite", "../testsuite.html", False),
+        ("Documentation", "../documentation.html", False),
+    ]
+    RIGHT = [
+        ("Local&nbsp;▶", "../home.html#product", "local"),
+        ("Deployed", "../home.html#product", "deployed"),
+        ("Source", "../home.html#source", "source"),
     ]
     out = []
-    for t,h,a,d in DEST:
-        da = f' data-dest="{d}"' if d else ''
-        out.append(f'<a class="dest{" active" if a else ""}"{da} href="{h}">{t}</a>')
+    for t,h,a in LEFT:
+        out.append(f'<a class="dest{" active" if a else ""}" href="{h}">{t}</a>')
+    out.append('<span class="top-spacer"></span>')
+    for t,h,d in RIGHT:
+        out.append(f'<a class="dest" data-dest="{d}" href="{h}">{t}</a>')
         if d=="local":
             out.append('<button class="copy-launch" type="button" hidden>⧉</button>')
+    out.append('<a class="top-link" href="../how-it-works.html">How it works ↗</a>')
     links = "".join(out)
     return ('<nav class="top-nav"><a class="top-brand" href="index.html">RAPID<span class="sub">Skills Atlas</span></a>'
-            '<span class="dest-sep"></span>' + links +
-            '<span class="top-spacer"></span>'
-            '<a class="top-link" href="../how-it-works.html">How it works ↗</a></nav>')
+            '<span class="dest-sep"></span>' + links + '</nav>')
 
 def sidebar(active):
     rows = ['<div class="sidebar-section">The package</div>',

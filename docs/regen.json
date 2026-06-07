@@ -1,14 +1,33 @@
 {
   "_note": "Per-page regenerate commands run by observe-server: POST /api/regen?page=<file>. Each page regenerates ITSELF from its source. kind=instant -> deterministic script (fast). kind=agent -> page-specific `claude -p` (requires the claude CLI; spends API, ~minutes; reload when done). kind=manual/live -> no auto-regen. Edit per project; for a built app, point these at that project's generators.",
-  "cost.html": { "kind": "instant", "cmd": "bash tools/cost-summary.sh --html" },
-  "documentation.html": { "kind": "agent", "cmd": "claude -p 'Regenerate docs/documentation.html as the full, organized product description from docs/PRD.md + 04-spec/spec.md + 01-intake/PRD-ENHANCED.md, using the style of templates/template-docs-page.html. No change logs. Overwrite the file.'" },
-  "prd.html": { "kind": "agent", "cmd": "claude -p 'Regenerate docs/prd.html from docs/PRD.md using templates/template-docs-page.html (top nav + left sidebar TOC + sections). Overwrite the file.'" },
-  "prd-enhanced.html": { "kind": "agent", "cmd": "claude -p 'Regenerate docs/prd-enhanced.html from 01-intake/PRD-ENHANCED.md using templates/template-docs-page.html. Keep the Business/Functional/Technical pyramid, per-requirement change history, the issue-aligned Change Log (GitHub issue links), traceability matrix, and id map. Overwrite the file.'" },
-  "users.html": { "kind": "agent", "cmd": "claude -p 'Regenerate docs/users.html from docs/PRD.md: all user personas + detailed workflows with diagrams + workflow-to-golden-test mapping, using templates/template-docs-page.html. Overwrite the file.'" },
-  "eval.html": { "kind": "instant", "cmd": "bash tools/ship-gate.sh", "note": "Re-runs the eval harness + ship gate, republishing docs/eval.json; the page re-fetches it on reload. (eval.html is a stable data-driven template — the data, not the HTML, is what regenerates.)" },
-  "testsuite.html": { "kind": "instant", "cmd": "python3 tools/workflow-runner.py --all --agents off", "note": "Bulk-republish docs/testruns.json by live-driving every workflow once with the DETERMINISTIC fallback (--agents off) so a page refresh stays free/fast. The agent-backed run (codex tester + simulated operator) happens on an explicit ▶ Run via observe-server (which passes --agents auto), not on every regen." },
-  "architecture.html": { "kind": "manual", "note": "Large diagram-curated reference — regenerate via /rapid-workflow or the diagram workflow, not a one-shot prompt." },
-  "spec.html": { "kind": "manual", "note": "Implementation spec — regenerate via /rapid-workflow." },
-  "workflow.html": { "kind": "manual", "note": "Reveal.js deck — regenerate via /docs build." },
-  "observatory.html": { "kind": "live", "note": "Live dashboard — auto-polls observe-server, no regeneration needed." }
+  "cost.html": {
+    "kind": "instant",
+    "cmd": "bash tools/cost-summary.sh --html"
+  },
+  "documentation.html": {
+    "kind": "agent",
+    "cmd": "claude -p 'Regenerate docs/documentation.html as the full, organized product description from docs/PRD.md + 04-spec/spec.md + 01-intake/PRD-ENHANCED.md, using the style of templates/template-docs-page.html. No change logs. Overwrite the file.'"
+  },
+  "eval.html": {
+    "kind": "instant",
+    "cmd": "bash tools/ship-gate.sh",
+    "note": "Re-runs the eval harness + ship gate, republishing docs/eval.json; the page re-fetches it on reload. (eval.html is a stable data-driven template \u2014 the data, not the HTML, is what regenerates.)"
+  },
+  "testsuite.html": {
+    "kind": "instant",
+    "cmd": "python3 tools/workflow-runner.py --all --agents off",
+    "note": "Bulk-republish docs/testruns.json by live-driving every workflow once with the DETERMINISTIC fallback (--agents off) so a page refresh stays free/fast. The agent-backed run (codex tester + simulated operator) happens on an explicit \u25b6 Run via observe-server (which passes --agents auto), not on every regen."
+  },
+  "architecture.html": {
+    "kind": "manual",
+    "note": "Large diagram-curated reference \u2014 regenerate via /rapid-workflow or the diagram workflow, not a one-shot prompt."
+  },
+  "workflow.html": {
+    "kind": "manual",
+    "note": "Reveal.js deck \u2014 regenerate via /docs build."
+  },
+  "observatory.html": {
+    "kind": "live",
+    "note": "Live dashboard \u2014 auto-polls observe-server, no regeneration needed."
+  }
 }

@@ -26,7 +26,8 @@
     '<span class="rn-spacer"></span>' +
     dest('Local&nbsp;▶', P + 'home.html#product', false, ' data-rn="local"') +
     dest('Deployed',     P + 'home.html#product', false, ' data-rn="deployed"') +
-    dest('Source',       P + 'home.html#source',  false, ' data-rn="source"');
+    dest('Source',       P + 'home.html#source',  false, ' data-rn="source"') +
+    dest('How&nbsp;it&nbsp;works&nbsp;↗', P + 'how-it-works.html', file === 'how-it-works.html');
 
   var css =
     '.rn-topnav{position:sticky;top:0;z-index:9999;display:flex;align-items:center;gap:0;' +

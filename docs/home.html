@@ -276,13 +276,15 @@ code { background: var(--surface-alt); color: #cbd3e1; padding: 1px 5px; border-
     cards.forEach(function (c) { box.appendChild(c); });
   }
 
-  // The standard 10 deck pages — fallback when docs.json is absent.
+  // The current surface pages — fallback when docs.json is absent.
+  // (The flat PRD/Spec/Users decks were retired to archive/; the Atlas is the doc source.)
   var DECK = [
-    ['PRD', 'prd.html'], ['Enhanced PRD', 'prd-enhanced.html'],
-    ['Architecture', 'architecture.html'], ['Workflow', 'workflow.html'],
-    ['Users', 'users.html'], ['Spec', 'spec.html'],
-    ['Observatory', 'observatory.html'], ['Eval', 'eval.html'],
-    ['Cost', 'cost.html'], ['Documentation', 'documentation.html']
+    ['Skills Atlas', 'atlas-v2/index.html'],
+    ['Workflow', 'workflow.html'], ['Architecture', 'architecture.html'],
+    ['Build & Observatory', 'observatory.html'], ['Test Suite', 'testsuite.html'],
+    ['Documentation', 'documentation.html'],
+    ['Eval', 'eval.html'], ['Cost', 'cost.html'],
+    ['How it works', 'how-it-works.html']
   ];
 
   Promise.all([getJSON('env.json'), getJSON('docs.json')]).then(function (res) {
