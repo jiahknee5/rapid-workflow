@@ -201,7 +201,7 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
             <div class="fileflow"><span class="io">reads</span><span class="fchip ">01-intake/PRD-ENHANCED.md</span><span class="fchip ">00-vision/PILLARS.md</span></div>
             <div class="fileflow"><span class="io">writes</span><span class="fchip out">03-panels/synthesis.md</span></div></div></div>
         </div>
-        <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">A healthcare build weights the <code>security-expert-panel</code> heaviest; a kids' app convenes a <code>user-panel</code> of kids, parents, and teachers in voice plus <code>asl-expert-panel</code>. The synthesis — not the transcripts — is what you read at G1.</div></div>
+        <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">A healthcare build weights the <b>Technical / Security</b> lens heaviest; a kids' app leads with the <b>Users</b> lens (kids, parents, teachers in voice) plus an <b>SME</b> panel for the domain. The synthesis — not the transcripts — is what you read at G1.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Tiered, in-voice domain challenge surfaces objections a generalist gate misses — and it runs after the cheap faithfulness gate, so panel cost is never wasted. Its output sets priority at G1.</div></div>
         <details class="srctext"><summary>▸ Real skill text — P2 Expert Panels (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 2 — Expert Panels [AUTO]
 
@@ -573,6 +573,53 @@ raising it and from what distance.
 
 ---
 
+## Panel observability — the roster, the cuts, and the contributions
+
+Paring is a decision, and decisions must be **auditable**. Alongside the synthesis, the panel
+emits a **roster record** so you can see, after the fact: **who survived, who was cut and why,**
+and — for each survivor — **what they asked and how it changed the spec/design.** A panel that
+can&#x27;t show its cuts is roster theater; a survivor whose ask changed nothing was a wasted seat.
+
+**Output:** `03-panels/roster.json` (one block per area), beside `synthesis.md`.
+
+```json
+{
+  &quot;area&quot;: &quot;Business&quot;,
+  &quot;candidates&quot;: [
+    { &quot;order&quot;: 1, &quot;archetype&quot;: &quot;Unit-economics owner&quot;,
+      &quot;scores&quot;: {&quot;pillar&quot;:2,&quot;coverage&quot;:2,&quot;ask&quot;:2,&quot;distance&quot;:0}, &quot;total&quot;: 6,
+      &quot;kept&quot;: true,  &quot;reason&quot;: &quot;covers the unit-economics pillar; concrete, falsifiable ask&quot; },
+    { &quot;order&quot;: 2, &quot;archetype&quot;: &quot;Category analyst&quot;,
+      &quot;scores&quot;: {&quot;pillar&quot;:1,&quot;coverage&quot;:0,&quot;ask&quot;:1,&quot;distance&quot;:1}, &quot;total&quot;: 3,
+      &quot;kept&quot;: false, &quot;reason&quot;: &quot;lens fully covered by the VC — wasted seat (dedup)&quot; }
+  ],
+  &quot;panel&quot;: [
+    { &quot;archetype&quot;: &quot;Unit-economics owner&quot;, &quot;persona&quot;: &quot;…&quot;, &quot;order&quot;: 1,
+      &quot;ask&quot;: &quot;tie pricing to a CAC-payback under 6 months&quot;,
+      &quot;changed&quot;: [
+        { &quot;what&quot;: &quot;added pricing-guardrail requirement&quot;, &quot;ref&quot;: &quot;01-intake/PRD-ENHANCED.md#FR-12&quot; },
+        { &quot;what&quot;: &quot;spec section now caps trial length&quot;,   &quot;ref&quot;: &quot;04-spec/spec.md#S-07&quot; }
+      ] }
+  ]
+}
+```
+
+**Visible live in the Observatory** (`.rapid/observe/*.jsonl` → the dashboard):
+- **`DECIDE` per candidate** — `kept` / `cut` + the one-line reason, so every cut is on the
+  timeline, not buried in a file. (`detail: &quot;cut: Category analyst — overlaps the VC&quot;`.)
+- **`DECIDE` per survivor ask that lands a change** — `basis:&quot;panel&quot;`, pointing at the
+  spec / PRD / mock anchor it changed, so a panelist&#x27;s *influence on the build* is traceable.
+
+**The two questions it answers, by construction:**
+1. *Who survived, who was cut, and why?* → `candidates[]` with `kept` + `reason` (and the score breakdown).
+2. *For survivors, what did they contribute and how did it improve the design/spec?* →
+   `panel[].ask` + `panel[].changed[]` with refs into the actual spec/PRD/mock.
+
+This makes the panel&#x27;s value **measurable**: a survivor with an empty `changed[]` is a flag (did
+the panel cost buy anything?), and a high-scoring cut candidate is a note for next time.
+
+---
+
 ## Tracks
 
 | | Panels run | Experts each | Orders required |
@@ -660,6 +707,15 @@ project&#x27;s `03-panels/`, never in this file.*
     <div class="deep-sec">
       <div class="deep-title">Output &amp; integration</div>
       <div class="deep-sub">The deliverable is the <b>synthesis</b> (convergent / divergent / risks / open) — not the transcripts — read by the operator at <b>Gate 1</b>. The same generic skill serves any product; a built project's <i>instantiated</i> panel (with named personas) lives in that project's <code>03-panels/</code>, never in the skill. The full skill text is embedded below.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Panel observability — the roster, the cuts, the contributions</div>
+      <div class="deep-sub">Paring is a decision, so it's <b>recorded</b>: <code>03-panels/roster.json</code> logs every candidate with its score, <code>kept</code> / <code>cut</code>, and the reason — and for each survivor, their ask and the spec/design changes it produced (with refs). Cuts and contributions are also <code>DECIDE</code> events in the Observatory, so a panel's influence on the build is visible live, not buried in a file.</div>
+      <div class="lens-grid">
+        <div class="lens blue"><h5>Who survived &amp; who was cut — why</h5><p><code>candidates[]</code> — order, score breakdown, <code>kept</code>, and a one-line reason ("overlaps the VC — wasted seat").</p></div>
+        <div class="lens green"><h5>What each survivor changed</h5><p><code>panel[].ask</code> + <code>panel[].changed[]</code> with refs into the spec / PRD / mock — a panelist's influence on the build is traceable.</p></div>
+      </div>
+      <div class="deep-note">Makes the panel's value <b>measurable</b>: a survivor with an empty <code>changed[]</code> is a flag (did the panel cost buy anything?), and a high-scoring <i>cut</i> is a note for next time.</div>
     </div>
    
     <div class="pagernav"><a class="pager" href="g0.html">← G0 Faithful decomposition</a><span style="flex:1"></span><a class="pager" href="p3-research.html">P3 Grounding Research →</a></div>

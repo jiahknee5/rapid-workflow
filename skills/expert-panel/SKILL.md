@@ -354,6 +354,53 @@ raising it and from what distance.
 
 ---
 
+## Panel observability — the roster, the cuts, and the contributions
+
+Paring is a decision, and decisions must be **auditable**. Alongside the synthesis, the panel
+emits a **roster record** so you can see, after the fact: **who survived, who was cut and why,**
+and — for each survivor — **what they asked and how it changed the spec/design.** A panel that
+can't show its cuts is roster theater; a survivor whose ask changed nothing was a wasted seat.
+
+**Output:** `03-panels/roster.json` (one block per area), beside `synthesis.md`.
+
+```json
+{
+  "area": "Business",
+  "candidates": [
+    { "order": 1, "archetype": "Unit-economics owner",
+      "scores": {"pillar":2,"coverage":2,"ask":2,"distance":0}, "total": 6,
+      "kept": true,  "reason": "covers the unit-economics pillar; concrete, falsifiable ask" },
+    { "order": 2, "archetype": "Category analyst",
+      "scores": {"pillar":1,"coverage":0,"ask":1,"distance":1}, "total": 3,
+      "kept": false, "reason": "lens fully covered by the VC — wasted seat (dedup)" }
+  ],
+  "panel": [
+    { "archetype": "Unit-economics owner", "persona": "…", "order": 1,
+      "ask": "tie pricing to a CAC-payback under 6 months",
+      "changed": [
+        { "what": "added pricing-guardrail requirement", "ref": "01-intake/PRD-ENHANCED.md#FR-12" },
+        { "what": "spec section now caps trial length",   "ref": "04-spec/spec.md#S-07" }
+      ] }
+  ]
+}
+```
+
+**Visible live in the Observatory** (`.rapid/observe/*.jsonl` → the dashboard):
+- **`DECIDE` per candidate** — `kept` / `cut` + the one-line reason, so every cut is on the
+  timeline, not buried in a file. (`detail: "cut: Category analyst — overlaps the VC"`.)
+- **`DECIDE` per survivor ask that lands a change** — `basis:"panel"`, pointing at the
+  spec / PRD / mock anchor it changed, so a panelist's *influence on the build* is traceable.
+
+**The two questions it answers, by construction:**
+1. *Who survived, who was cut, and why?* → `candidates[]` with `kept` + `reason` (and the score breakdown).
+2. *For survivors, what did they contribute and how did it improve the design/spec?* →
+   `panel[].ask` + `panel[].changed[]` with refs into the actual spec/PRD/mock.
+
+This makes the panel's value **measurable**: a survivor with an empty `changed[]` is a flag (did
+the panel cost buy anything?), and a high-scoring cut candidate is a note for next time.
+
+---
+
 ## Tracks
 
 | | Panels run | Experts each | Orders required |

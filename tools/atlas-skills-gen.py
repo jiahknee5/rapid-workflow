@@ -13,7 +13,7 @@ PH = [
    what="Reads the idea or PRD and extracts the <b>north star, success signals, and objective</b>, then derives <b>3–5 project pillars</b> — the lens every later prompt and spec section cites by name. Also <b>compound-refreshes</b> prior <code>LEARNINGS.md</code> so each build starts smarter.",
    fixed="3–5 pillars; the pillar-derivation protocol; the compound-refresh step.",
    dynamic="Pillar <i>content</i> — derived from this project's specific risks and goals.",
-   example="For a kids' ASL tutor the pillars resolve to <b>[Deaf-community trust · recognition accuracy · sub-200ms latency · COPPA-safe]</b>. From here on every panel is prompted “review through these pillars,” and a requirement that violates one is sent back before panels run.",
+   example="For a kids' tutoring app the pillars resolve to <b>[learner-safety · feedback latency &lt;100ms · measurable mastery · COPPA-safe]</b>. From here on every panel is prompted “review through these pillars,” and a requirement that violates one is sent back before panels run.",
    value="Panels prompted without a lens give <b>generic best-practice advice</b>; prompted through pillars, they give advice you can use. Vision-first is the cheapest move that prevents drift downstream.",
    reads=["idea / PRD","LEARNINGS.md"], writes=["00-vision/VISION.md","00-vision/PILLARS.md"], exemplar=True,
    deep='''
@@ -141,7 +141,7 @@ PH = [
    what="Convenes <b>1 (fast) or 3 (full) expert panels</b> — business, technical, SME / users — that review the decomposed PRD <b>through the pillars</b>, each panelist in voice, then synthesizes <b>convergent / divergent / risks / open</b> with sources.",
    fixed="1–3 panels; the synthesis protocol; 2nd-order panels only on escalation.",
    dynamic="Which panels (by domain), which panelists (named), reviewer weights.",
-   example="A healthcare build weights the <code>security-expert-panel</code> heaviest; a kids' app convenes a <code>user-panel</code> of kids, parents, and teachers in voice plus <code>asl-expert-panel</code>. The synthesis — not the transcripts — is what you read at G1.",
+   example="A healthcare build weights the <b>Technical / Security</b> lens heaviest; a kids' app leads with the <b>Users</b> lens (kids, parents, teachers in voice) plus an <b>SME</b> panel for the domain. The synthesis — not the transcripts — is what you read at G1.",
    value="Tiered, in-voice domain challenge surfaces objections a generalist gate misses — and it runs after the cheap faithfulness gate, so panel cost is never wasted. Its output sets priority at G1.",
    reads=["01-intake/PRD-ENHANCED.md","00-vision/PILLARS.md"], writes=["03-panels/synthesis.md"], exemplar=True, extra_skill="expert-panel",
    deep='''
@@ -199,13 +199,22 @@ PH = [
       <div class="deep-title">Output &amp; integration</div>
       <div class="deep-sub">The deliverable is the <b>synthesis</b> (convergent / divergent / risks / open) — not the transcripts — read by the operator at <b>Gate 1</b>. The same generic skill serves any product; a built project's <i>instantiated</i> panel (with named personas) lives in that project's <code>03-panels/</code>, never in the skill. The full skill text is embedded below.</div>
     </div>
+    <div class="deep-sec">
+      <div class="deep-title">Panel observability — the roster, the cuts, the contributions</div>
+      <div class="deep-sub">Paring is a decision, so it's <b>recorded</b>: <code>03-panels/roster.json</code> logs every candidate with its score, <code>kept</code> / <code>cut</code>, and the reason — and for each survivor, their ask and the spec/design changes it produced (with refs). Cuts and contributions are also <code>DECIDE</code> events in the Observatory, so a panel's influence on the build is visible live, not buried in a file.</div>
+      <div class="lens-grid">
+        <div class="lens blue"><h5>Who survived &amp; who was cut — why</h5><p><code>candidates[]</code> — order, score breakdown, <code>kept</code>, and a one-line reason ("overlaps the VC — wasted seat").</p></div>
+        <div class="lens green"><h5>What each survivor changed</h5><p><code>panel[].ask</code> + <code>panel[].changed[]</code> with refs into the spec / PRD / mock — a panelist's influence on the build is traceable.</p></div>
+      </div>
+      <div class="deep-note">Makes the panel's value <b>measurable</b>: a survivor with an empty <code>changed[]</code> is a flag (did the panel cost buy anything?), and a high-scoring <i>cut</i> is a note for next time.</div>
+    </div>
    '''),
 
  dict(slug="p3-research", ph="P3", name="Grounding Research", arc="Arc 1 · Understand", kind="phase",
    what="Resolves the <code>[OPEN]</code> questions surfaced by decomposition and panels, and <b>verifies external data availability</b> under a VERIFIED / UNVERIFIED protocol.",
    fixed="The VERIFIED/UNVERIFIED protocol; cite-on-demand into the spec, not a separate doc.",
    dynamic="Which questions get researched; which sources are pulled.",
-   example="“Is there a free ASL handshape dataset with a usable license?” → a grounding note with options, evidence, a recommendation, a fallback, and a VERIFIED/UNVERIFIED tag.",
+   example="“Is there a license-clean dataset for the model this build needs?” → a grounding note with options, evidence, a recommendation, a fallback, and a VERIFIED/UNVERIFIED tag.",
    value="Front-loaded knowledge gets read once and ignored; cite-on-demand grounding lands in the spec where it supports a decision, every time it's needed.",
    reads=["[OPEN] questions"], writes=["02-grounding/{question}.md"], exemplar=False,
    deep='''
