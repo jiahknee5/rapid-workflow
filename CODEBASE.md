@@ -99,7 +99,7 @@ rapid-workflow/
 │   ├── PRD.md                RAPID's own product requirements
 │   ├── methodology-deck.md   18-slide methodology walkthrough (source)
 │   ├── rapid-reference.md    text version of the system reference (D0–D16)
-│   ├── architecture.html     interactive system reference (D0–D21)
+│   ├── architecture.html     interactive system reference (D0–D32)
 │   ├── workflow.html, specification.html, prd.html, prd-enhanced.html,
 │   ├── eval.html, users.html, documentation.html, observatory.html
 │

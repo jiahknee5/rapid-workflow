@@ -21,7 +21,7 @@ rapid-workflow/
 │   └── workflow/SKILL.md              Alias → /rapid-workflow
 │
 ├── docs/                              Documentation of the methodology
-│   ├── architecture.html              D0–D21 interactive architecture reference
+│   ├── architecture.html              D0–D32 interactive architecture reference
 │   ├── rapid-reference.md             Text reference (all diagrams as markdown)
 │   ├── rapid-comparison.html          RAPID vs TDD Agent-Crew Scaffold
 │   ├── methodology-deck.md            18-slide methodology walkthrough (source)
