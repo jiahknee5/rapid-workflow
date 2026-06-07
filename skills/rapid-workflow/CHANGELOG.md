@@ -1,5 +1,18 @@
 # Rapid Changelog
 
+## v2.6.1 — 2026-06-07 (Five-lead reconciliation — body matches the declared model)
+
+### Fixed — internal consistency
+- **P6b–P6e running protocol + the 12-message contract had drifted.** The team-setup section (P6a) and this changelog already declared the five-lead model (planner/coder/tester/reviewer/watchdog), but the detailed sub-protocol still read as orchestrator + supervisor + implementors. Reconciled every role attribution: build verbs → **coder**, coordination/monitoring/shutdown → **planner**, review synthesis → **reviewer**; message-contract endpoints remapped (TASK_ASSIGNED planner→coder, PR_SUBMITTED coder→reviewer/watchdog, P6_COMPLETE coder→planner, etc.). All mechanics, thresholds, paths, JSON shapes, and message names preserved.
+- **Panels now read as five areas everywhere.** SKILL.md still said "1–3 panels (technical/business/SME)"; brought it in line with the `/expert-panel` skill's **five areas — Business · Technical · Design · SME · Users** (rostered 1st/2nd/3rd-order, then pared). Fast track = one area, full = all five.
+- **Fan-out + role files + config.** "implementor count / implementor.md" → coder-subagent count / `planner.md, coder.md, tester.md, reviewer.md, watchdog.md`; config key `build.max_implementors` → `build.max_coders`.
+
+### Downstream
+- The Atlas generator (`tools/atlas-skills-gen.py`) and the `coder.md` role brief carried the same stale terms and were fixed; the Atlas was regenerated. Repo-wide there are now **0 stale build-team refs** outside historical changelog entries.
+
+### Preserved
+- No behavioral change — this is a documentation-consistency fix bringing the SKILL body in line with the model P6a already ran. R1–R9, gap loop, autonomy charter, and verification gates unchanged.
+
 ## v2.6.0 — 2026-05-30 (Build-run lessons — run-to-completion autonomy + e2e-required)
 
 ### Added — 5 build-run hardenings
