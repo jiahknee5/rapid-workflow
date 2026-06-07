@@ -2,19 +2,19 @@
 
 ## The Core Principle: Separate the Builder from the Auditor
 
-The single most important design decision in RAPID is that **the agent implementing the code must never be the same agent auditing the code.** When one agent does both, the implementor always wins — it produces visible progress (working app, screenshots, deploy), while the auditor produces invisible safety (tests, assertions, coverage checks). Under time pressure or context pressure, invisible work gets skipped. Every time.
+The single most important design decision in RAPID is that **the agent implementing the code must never be the same agent auditing the code.** When one agent does both, the coder always wins — it produces visible progress (working app, screenshots, deploy), while the auditor produces invisible safety (tests, assertions, coverage checks). Under time pressure or context pressure, invisible work gets skipped. Every time.
 
 This isn't a discipline problem. It's an incentive misalignment:
 1. The protocol says "do X before proceeding"
 2. X doesn't produce visible output (tests, reviews, assertions)
 3. The next step DOES produce visible output (working code, deploy)
-4. The implementor skips X and does the exciting thing instead
+4. The coder skips X and does the exciting thing instead
 
 The fix is structural, not behavioral:
 - **Hooks (R1)** make it mechanically impossible to advance without artifacts
 - **A separate watchdog (R2)** whose only job is auditing — no implementation incentive
 - **Blocking dependencies (R4)** make safety steps tasks in the dependency graph, not prose reminders
-- **Tiered reviewers (CE)** run as separate subagents that can't be pressured by the implementor's context
+- **Tiered reviewers (CE)** run as separate subagents that can't be pressured by the coder's context
 - **A continuation hook (R7)** makes it mechanically impossible to *stop early* — the inverse of R1
 - **A conformance hook (R8)** traces every *completed* module back to spec → PRD → architecture, filing a gap on any break
 - **A stub scanner (R9)** detects placeholder code as it's written and the ship gate blocks release on unresolved stubs in required modules
@@ -43,7 +43,7 @@ The orchestrator must understand which parts of the system are fixed and which a
 | **Terminal architecture** | Five-lead build team during P6: one long-lived terminal per lead (planner, coder, tester, reviewer, watchdog), connected via claude-peers; the writer is never the auditor (coder ≠ tester/reviewer/watchdog) | Track: full = all 5 leads, fast = planner+coder+reviewer+watchdog (tester folds into coder), tiny = whole loop as subagents under the planner. Coder may run 1–4 coder terminals only for long, interdependent tasks; otherwise fans out coding subagents. Addressing derives from `RAPID_ROLE` per terminal |
 | **Pillars** | 3–5 pillars derived at P0 | Content: from project risks + goals. Framework: pillar derivation protocol. |
 | **Constitution** | Articles I–V inviolable | Articles VI–X: tailored to project's specific safety domain |
-| **Panels** | 1–3 panels, synthesis protocol | Which panels: selected from skill library by domain. Which panelists: named per project. |
+| **Panels** | five panel areas (Business · Technical · Design · SME · Users), rostered then pared, synthesis protocol | Which areas run depth/subagents: selected by domain. Which panelists: named per project. |
 | **Reviewer tiers** | 5 reviewer types, confidence gating, dedup | Reviewer weights: shift by domain (security heaviest for healthcare, performance for real-time, correctness for financial) |
 | **Debug protocol** | reproduce→trace→hypothesis→test-first-fix | How to trace: depends on stack (browser devtools vs. server logs vs. on-chain explorer) |
 | **Optimization strategy** | 3 parallel experiments, measure, keep best | What to measure: from the project's performance pillars (LCP for web, TPS for blockchain, latency for API) |
@@ -75,8 +75,8 @@ A RAPID build runs to completion on its own. Once the operator has approved the 
 ```
 
 - **idea**: Free text describing the product, or a file path to a PRD
-- **--track fast**: 1 panel, 1 implementor, golden-path tests, inline gap fixes (default)
-- **--track full**: 3 panels, up to 4 implementors, full test generation, spec re-derivation
+- **--track fast**: 1 panel area, 1 coder subagent, golden-path tests, inline gap fixes (default)
+- **--track full**: all five panel areas (Business · Technical · Design · SME · Users), up to 4 coder subagents, full test generation, spec re-derivation
 - **--resume**: Read .rapid/STATE.json, continue from last checkpoint
 - **--gap-loop**: Re-enter from .rapid/GAPS.json, re-derive affected spec sections
 - **status**: Read all `.rapid/` state files + claude-peers and produce a structured dashboard (see Observability)
@@ -101,15 +101,15 @@ Every agent writes structured events to `.rapid/observe/{agent-name}.jsonl`. A l
 Every line in a `.jsonl` file is one event:
 
 ```json
-{"t":"2026-05-27T14:08:12.123Z","seq":42,"agent":"impl-1","role":"implementor","event":"WRITE","detail":"src/App.tsx (47 lines)","target":null,"ctx_est":62000,"ctx_total":184000,"task":"T-03","phase":"P6"}
+{"t":"2026-05-27T14:08:12.123Z","seq":42,"agent":"coder-1","role":"coder","event":"WRITE","detail":"src/App.tsx (47 lines)","target":null,"ctx_est":62000,"ctx_total":184000,"task":"T-03","phase":"P6"}
 ```
 
 | Field | Type | Description |
 |---|---|---|
 | `t` | ISO-8601 | Timestamp (UTC) |
 | `seq` | int | Global sequence number (monotonic across all agents) |
-| `agent` | string | Agent identifier (orchestrator, supervisor, impl-1, watchdog, etc.) |
-| `role` | string | Agent role (orchestrator, implementor, reviewer, tester, etc.) |
+| `agent` | string | Agent identifier (orchestrator, planner, coder-1, tester, reviewer, watchdog, etc.) |
+| `role` | string | Agent role (orchestrator, planner, coder, tester, reviewer, watchdog, etc.) |
 | `event` | string | Event type (see below) |
 | `detail` | string | Human-readable description |
 | `target` | string? | Target agent for SEND events |
@@ -118,7 +118,7 @@ Every line in a `.jsonl` file is one event:
 | `ctx_total` | int | Estimated total context across all active agents |
 | `task` | string? | Current task ID (e.g., T-03) |
 | `phase` | string | Current pipeline phase (e.g., P6) |
-| `worktree` | string? | **Required on a build-writer `SPAWN`** — the git worktree path the writer is bound to (e.g., `.rapid/worktrees/impl-1`). This is what `tools/worktree-check.sh` verifies at P6 exit; a parallel writer with no `worktree` fails the gate. |
+| `worktree` | string? | **Required on a build-writer `SPAWN`** — the git worktree path the writer is bound to (e.g., `.rapid/worktrees/coder-1`). This is what `tools/worktree-check.sh` verifies at P6 exit; a parallel writer with no `worktree` fails the gate. |
 | `branch` | string? | The writer's branch (e.g., `rapid/phase-6/{task-slug}`), emitted alongside `worktree` on a build-writer `SPAWN`. |
 
 ### Event Types
@@ -178,7 +178,7 @@ There is no real-time context counter. Estimate using:
 
 Execute these phases in order. Write a checkpoint to `.rapid/STATE.json` after each phase completes. **Phase gate hook (R1):** STATE.json writes are blocked by `rapid-phase-gate.sh` unless required artifacts exist. This is the enforcement mechanism — prose won't prevent phase-skipping, a hook will.
 
-**Continuation hook (R7):** R1 stops an agent from skipping *ahead* without artifacts; R7 stops an agent from quitting *early* while work remains. `tools/stop-hook.sh` is registered synchronously on `Stop` and `SubagentStop` in `~/.claude/settings.json` (alongside the async clorch/notification hooks, which cannot block). On every turn-end it (1) appends a `STOP` event to `.rapid/observe/<role>.jsonl` so a halt is never silent, then (2) if the current phase's completion artifact is missing, returns `{"decision":"block","reason":...}` with the concrete next step, forcing the agent to continue. It no-ops instantly outside an active build (`.rapid/STATE.json` absent), respects `stop_hook_active` (never blocks twice), logs-only on `SubagentStop` (a fan-out worker can't be mapped to an orchestrator artifact), and after 5 consecutive same-phase nudges escalates to the operator instead of looping. Set `RAPID_ROLE` per terminal (orchestrator/supervisor/watchdog/impl-N) so observe events are attributed. This is the deterministic backstop *under* the heartbeat/claude-peers coordination — those still drive normal operation; R7 catches the silent halt when they don't fire.
+**Continuation hook (R7):** R1 stops an agent from skipping *ahead* without artifacts; R7 stops an agent from quitting *early* while work remains. `tools/stop-hook.sh` is registered synchronously on `Stop` and `SubagentStop` in `~/.claude/settings.json` (alongside the async clorch/notification hooks, which cannot block). On every turn-end it (1) appends a `STOP` event to `.rapid/observe/<role>.jsonl` so a halt is never silent, then (2) if the current phase's completion artifact is missing, returns `{"decision":"block","reason":...}` with the concrete next step, forcing the agent to continue. It no-ops instantly outside an active build (`.rapid/STATE.json` absent), respects `stop_hook_active` (never blocks twice), logs-only on `SubagentStop` (a fan-out worker can't be mapped to an orchestrator artifact), and after 5 consecutive same-phase nudges escalates to the operator instead of looping. Set `RAPID_ROLE` per terminal (planner/coder/tester/reviewer/watchdog, or `coder-N` for sibling coder terminals) so observe events are attributed. This is the deterministic backstop *under* the heartbeat/claude-peers coordination — those still drive normal operation; R7 catches the silent halt when they don't fire.
 
 **Conformance hook (R8):** Inter-stage assertions (P4/P5) verify traceability *before* the build; R8 verifies it *as each module completes*. `tools/module-conformance-hook.sh` is registered async on `Write|Edit` (PostToolUse). When a task in `.rapid/TASKS.json` flips to a done state, it checks that the task's `spec_ref` / `prd_ref` / `arch_ref` each resolve to a real anchor in `04-spec/spec.md` / `01-intake/PRD-ENHANCED.md` / `04-spec/architecture.md`. Every completed module gets a row in `.rapid/CONFORMANCE.md`; an orphan (missing or dangling ref) is filed to `.rapid/GAPS.json` as a `conformance` gap (it does **not** block — it flows into the P8 gap loop / GitHub ticketing). The `task-00` eval-harness (`spec_ref: ALL`) is exempt. The hook is idempotent (a `.conformance_seen` ledger checks each task once) and structural only — *semantic* conformance (does the code actually satisfy the requirement) remains the watchdog's job. Fails safe: no-ops if it can't read its input.
 
@@ -333,9 +333,9 @@ After approval, update `01-intake/PRD-ENHANCED.md` with operator corrections. Th
 
 **Output:** `03-panels/synthesis.md`
 
-**Fast track (1 panel):** Run the most relevant panel as a skill (stays in your context — no context duplication). Choose: technical-expert-panel, business-expert-panel, or domain-specific panel based on the project type.
+**Fast track (1 panel area):** Run the single most relevant panel area as a skill (stays in your context — no context duplication). Choose the area — Business, Technical, Design, SME, or Users — that most governs this project's risk (e.g. technical-expert-panel, business-expert-panel, or a domain/SME panel).
 
-**Full track (3 panels):** Spawn 3 parallel subagents, one per panel type (technical, business, domain SME). Each receives: VISION.md, PILLARS.md, PRD-ENHANCED.md. Each reviews through the pillars, not generically.
+**Full track (five panel areas):** Spawn parallel subagents, one per panel area (Business · Technical · Design · SME · Users). Each receives: VISION.md, PILLARS.md, PRD-ENHANCED.md. Each reviews through the pillars, not generically.
 
 After panels complete, **synthesize** into `03-panels/synthesis.md`:
 - **Convergent findings**: where all panels agree
@@ -435,10 +435,10 @@ Each returns findings with severity. Merge into pre-screen report.
 
 **Output:** `.rapid/TASKS.json`, `04-spec/agents/*.md`, `.rapid/EVAL/`
 
-1. **Analyze spec complexity** and determine implementor count (D7):
-   - ≤5 tasks with linear deps → 1 implementor
-   - 6–12 tasks with 2–3 parallel → 2 implementors
-   - 13+ tasks with 3+ parallel → 3–4 implementors
+1. **Analyze spec complexity** and determine coder-subagent count (D7):
+   - ≤5 tasks with linear deps → 1 coder subagent
+   - 6–12 tasks with 2–3 parallel → 2 coder subagents
+   - 13+ tasks with 3+ parallel → 3–4 coder subagents
    - Cap: ≤4 concurrent (reviewer capacity constraint)
 
 2. **task-00: eval-harness (BLOCKING — R4).** The eval harness is not a step the orchestrator performs. It is the **first task** in TASKS.json, and every other task depends on it. The build literally cannot start until tests are generated. This turns a skippable step into a blocking dependency.
@@ -469,7 +469,7 @@ Each returns findings with severity. Merge into pre-screen report.
    - If a deliverable has no corresponding task: **create one before proceeding**
    - This is a hard check, not advisory. Missing deliverable coverage = phase fails.
 
-5. **Generate agent role files** in `04-spec/agents/`: implementor.md, reviewer.md, watchdog.md. Each includes R/W contract (which files the agent may modify) and the Decision Router rules (D5).
+5. **Generate agent role files** in `04-spec/agents/`: planner.md, coder.md, tester.md, reviewer.md, watchdog.md. Each includes R/W contract (which files the agent may modify) and the Decision Router rules (D5).
 
 6. **Generate CI/CD config** (D11): `.github/workflows/rapid-workflow-ci.yml` or `.gitlab-ci.yml` based on rapid.yaml `ci_platform` setting. Stages: lint → test → build → drift-check → constitution → visual-qa → deploy.
 
@@ -550,7 +550,7 @@ Each returns findings with severity. Merge into pre-screen report.
 - Full spec with workflow state machine
 - **Design comps (E) [UI projects]:** the hi-fi mocks in `04-spec/mocks/` (open `index.html`) for visual sign-off, alongside `04-spec/screens.md` and the screen-derived seam contracts. This is the cheapest point to change the look and the data shape together — after G2 they're the build's target. Collect: visual approval (or change requests), and confirmation the screen inventory is complete (no missing screen/state).
 - Architecture diagram + interface contracts (derived to serve the screens)
-- Task decomposition with dependency graph and estimated implementor count
+- Task decomposition with dependency graph and estimated coder-subagent count
 - Eval harness summary (test count, coverage map)
 - Cost projection: estimated build tokens + runtime infra (from P3 research)
 
@@ -567,7 +567,7 @@ Each returns findings with severity. Merge into pre-screen report.
 
 ### Phase 6 — Parallel Build [AUTO] — The Five-Lead RAPID Build Team
 
-Phase 6 runs as the **RAPID build team**: five named **lead agents**, each in its OWN long-lived terminal, connected as a team over the claude-peers bus. The five leads are **planner**, **coder**, **tester**, **reviewer**, and **watchdog**. Each is a persistent terminal that *fans out subagents* — it is the coordination spine for its concern, not a solo worker. The five leads map onto the prior naming as follows: **planner = orchestrator** (team lead), **coder + tester = supervisor/implementors** (build + test leads), **reviewer = the tiered CE reviewer**, **watchdog = R2 auditor** (unchanged).
+Phase 6 runs as the **RAPID build team**: five named **lead agents**, each in its OWN long-lived terminal, connected as a team over the claude-peers bus. The five leads are **planner**, **coder**, **tester**, **reviewer**, and **watchdog**. Each is a persistent terminal that *fans out subagents* — it is the coordination spine for its concern, not a solo worker. Their division of labor: **planner** is the team lead (owns the plan, gates, and the operator relationship); **coder** is the build lead and **tester** the test lead (build + verify); **reviewer** is the tiered CE reviewer of every diff; **watchdog** is the R2 drift auditor.
 
 The five lead roles:
 
@@ -606,7 +606,7 @@ Every Rapid project ships its own **Observatory** and **Test Suite (Theater)** �
 **Scale to track.** Don't pay for 5 live sessions on a 2-file change:
 - **Full track** = all 5 lead terminals (planner + coder + tester + reviewer + watchdog).
 - **Fast track** = planner + coder + reviewer + watchdog (tester folds into the coder's keep-or-revert ratchet).
-- **Tiny change** = run the whole loop as subagents under the planner/orchestrator — no live lead terminals.
+- **Tiny change** = run the whole loop as subagents under the planner — no live lead terminals.
 
 **Topology.** planner ⟷ coder ⟷ tester ⟷ reviewer form the build loop over claude-peers (plan → build → test → review → re-plan). **watchdog observes all** and reports drift to the planner. The **planner owns the human gates**.
 
@@ -748,25 +748,25 @@ The agent team is tuned for the Opus 4.8 era:
 
 ---
 
-#### P6b — Build Loop [Delegated to Supervisor]
+#### P6b — Build Loop [coder, tasks assigned by planner]
 
-The supervisor terminal owns the build loop. It reads TASKS.json and executes:
+The coder terminal owns the build loop. The planner assigns ready tasks off TASKS.json (respecting the dependency graph); the coder executes:
 
-1. **Task assignment:** For each ready task (respecting dependency graph, parallelizing where possible):
-   - Spawn an Agent with `isolation: "worktree"` as implementor
+1. **Task assignment:** For each ready task the planner dispatches (respecting dependency graph, parallelizing where possible):
+   - Fan out a coding subagent (with `isolation: "worktree"`) for the task
    - Prompt includes: the specific spec section, CONTRACTS.md, architecture.md, eval harness, Decision Router rules (D5)
    - Commit messages must reference `[SPEC §X.Y]`
    - Branch naming: `rapid/phase-6/{task-slug}`
-   - Send `TASK_ASSIGNED` to orchestrator via claude-peers
-   - **Reference project protocol:** If the user provides a reference codebase, agent prompts MUST say: "The spec is the authority. The reference project is a pattern guide for implementation style, not a source of truth for features or scope."
+   - The planner sends `TASK_ASSIGNED` to the coder via claude-peers
+   - **Reference project protocol:** If the user provides a reference codebase, coder-subagent prompts MUST say: "The spec is the authority. The reference project is a pattern guide for implementation style, not a source of truth for features or scope."
 
 2. **Keep-or-revert ratchet** (Karpathy): After each commit, run the eval harness. If tests regress from the last passing state, `git reset --hard` to last good commit. The branch only advances on verified improvement.
 
-3. **Smoke test (mandatory, run by supervisor):** After each agent returns, the supervisor runs the project's build + test commands directly via Bash:
+3. **Smoke test (mandatory, run by the coder):** After each coding subagent returns, the coder runs the project's build + test commands directly via Bash:
    - For frontend: `npm install && npm run build`
    - For backend: `npm install && npx tsc --noEmit` (or equivalent)
    - For scripts/tests: `node --check` or equivalent
-   If any command fails, send failure output back to the implementor for a fix iteration. A smoke test that was never run is a P6 violation.
+   If any command fails, send failure output back to the coding subagent for a fix iteration. A smoke test that was never run is a P6 violation.
 
 4. **Tiered multi-agent code review (mandatory):** After smoke test passes, spawn 3–5 specialized reviewer subagents **in parallel** (inspired by Compound Engineering's tiered review). Each reviewer has a single lens and returns a verdict with a confidence score (HIGH/MEDIUM/LOW):
 
@@ -782,7 +782,7 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
    | **Pattern Recognition** (CE) | Architectural patterns and anti-patterns, code smells across the PR | What looks fine locally but is a systemic problem |
    | **Standards** (CE) | CLAUDE.md compliance, project conventions, Constitution Articles VI–X | What violates the project's own rules |
 
-   After all reviewers return, the supervisor runs a **dedup/synthesis step**: merge overlapping findings, resolve contradictions (higher-confidence wins), produce a single verdict: APPROVE (all reviewers approve or LOW-confidence objections only) or REQUEST_CHANGES (any HIGH-confidence objection). Log all individual verdicts + synthesis to `.rapid/REVIEW.json`.
+   After all review subagents return, the reviewer lead runs a **dedup/synthesis step**: merge overlapping findings, resolve contradictions (higher-confidence wins), produce a single verdict: APPROVE (all dimensions approve or LOW-confidence objections only) or REQUEST_CHANGES (any HIGH-confidence objection). Log all individual verdicts + synthesis to `.rapid/REVIEW.json`.
 
    **Every PR also passes the alignment & quality checklist** (`templates/PR-CHECKLIST.md`, auto-applied via `.github/pull_request_template.md`): it must (1) trace to ≥1 enhanced-PRD requirement + ≥1 spec section and update `04-spec/TRACE.md`; (2) **honor the expert panels' asks/risks** for the area it touches (`03-panels/synthesis.md` + `roster.json`) — Design PRs match the G2 comp, Users PRs preserve the persona scenarios; (3) violate no Constitution Article and serve a pillar; (4) clear quality — function-level test coverage, no MUST-module stubs, watchdog drift CLEAN. The reviewer fills it; the **watchdog independently verifies the PRD/spec/panel-alignment claims** against `04-spec/` and `03-panels/` (a claim it can't verify blocks the merge). Any new requirement surfaced by the PR follows the **amendment protocol** (versioned enhanced-PRD amendment + DIFF + decision), never a silent edit.
 
@@ -794,23 +794,23 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
    - Wait for `DRIFT_RESULT` response from watchdog
    - On CLEAN: merge the PR, send `PR_MERGED` to watchdog (triggers post-merge check)
    - On DRIFT: block the PR, route to bug-fix loop (D8), re-submit after fix
-   - On CRITICAL: send `DRIFT_CRITICAL` to orchestrator, halt all task assignment
+   - On CRITICAL: send `DRIFT_CRITICAL` to the planner, who halts all task assignment
 
-6. **Learnings researcher (CE #11):** Before starting the structured debug protocol, the implementor (or supervisor) checks `.rapid/LEARNINGS.md` for relevant past solutions: "Has this error pattern been seen before? Was there a known root cause? What fix worked?" If a matching learning exists, apply it first. This prevents re-solving known problems and is the mechanism that makes the compound loop actually work — learnings only compound if agents read them.
+6. **Learnings researcher (CE #11):** Before starting the structured debug protocol, the coding subagent (or the coder) checks `.rapid/LEARNINGS.md` for relevant past solutions: "Has this error pattern been seen before? Was there a known root cause? What fix worked?" If a matching learning exists, apply it first. This prevents re-solving known problems and is the mechanism that makes the compound loop actually work — learnings only compound if agents read them.
 
-7. **Structured debug protocol** (inspired by CE's `/ce-debug`): When a test fails or a smoke test catches a bug, the implementor follows a systematic debug flow rather than guessing:
+7. **Structured debug protocol** (inspired by CE's `/ce-debug`): When a test fails or a smoke test catches a bug, the coding subagent follows a systematic debug flow rather than guessing:
    - **Reproduce**: Run the failing test/command, capture exact error output
    - **Trace root cause**: Read the stack trace, identify the causal chain from error → source
    - **Form hypothesis**: State a testable hypothesis ("the state machine doesn't handle the empty-input edge case")
    - **Test-first fix**: Write a test that reproduces the bug, then fix the code to make it pass
    - **Verify**: Run the full eval harness to confirm no regressions
-   If the implementor cannot form a hypothesis after reading the trace, escalate to supervisor with the trace + what was tried. Do not retry blindly.
+   If the coding subagent cannot form a hypothesis after reading the trace, escalate to the coder with the trace + what was tried. Do not retry blindly.
 
-7. **Stall detection:** If an implementor hasn't committed in 10 minutes (stale HEARTBEAT.json), the supervisor sends a `STALL_NUDGE` via claude-peers. If blocked after 3 fix attempts: escalate to operator.
+7. **Stall detection:** If a coder subagent hasn't committed in 10 minutes (stale HEARTBEAT.json), the planner sends a `STALL_NUDGE` via claude-peers. If blocked after 3 fix attempts: escalate to operator.
 
 7. **Cost tracking (D12):** After every agent spawn/return, update `.rapid/COST.json`. If total spend reaches 80% of budget, pause and alert operator.
 
-8. **Completion:** When every task has status "done" with reviewer verdict APPROVE, send `P6_COMPLETE` to orchestrator via claude-peers.
+8. **Completion:** When every task has status "done" with reviewer verdict APPROVE, the coder sends `P6_COMPLETE` to the planner via claude-peers.
 
 ---
 
@@ -818,13 +818,13 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
 
 The watchdog terminal runs independently, responding to events and periodic checks:
 
-1. **On `PR_SUBMITTED` message** (from supervisor): Drift-check the PR diff against spec.md and CONTRACTS.md. Check 7 categories: structural, interface, invariant, feature, test, quality, visual. Send `DRIFT_RESULT` back to supervisor.
+1. **On `PR_SUBMITTED` message** (from the coder): Drift-check the PR diff against spec.md and CONTRACTS.md. Check 7 categories: structural, interface, invariant, feature, test, quality, visual. Send `DRIFT_RESULT` back to the planner.
 
-2. **On `PR_MERGED` message** (from supervisor): Drift-check the integrated state of the full repo on main. Catches cross-task drift that individual PR checks miss. Send `DRIFT_RESULT` to supervisor.
+2. **On `PR_MERGED` message** (from the coder): Drift-check the integrated state of the full repo on main. Catches cross-task drift that individual PR checks miss. Send `DRIFT_RESULT` to the planner.
 
-3. **On `/loop 30m` fire**: Full-repo audit of main branch. Send `AUDIT_PERIODIC` to supervisor.
+3. **On `/loop 30m` fire**: Full-repo audit of main branch. Send `AUDIT_PERIODIC` to the planner.
 
-4. **On CRITICAL finding** (invariant violation): Immediately send `DRIFT_CRITICAL` to orchestrator. Do not wait for the supervisor to relay. This is the emergency path.
+4. **On CRITICAL finding** (invariant violation): Immediately send `DRIFT_CRITICAL` to the planner. Do not wait for the coder to relay. This is the emergency path.
 
 5. **Write all results to `.rapid/AUDIT.json`** and emit observe events.
 
@@ -832,37 +832,37 @@ The watchdog never checks in-progress worktrees — agents mid-implementation wi
 
 ---
 
-#### P6d — Orchestrator Monitoring [During P6]
+#### P6d — Planner Monitoring [During P6]
 
-While the supervisor and watchdog run, the orchestrator:
+While the coder, tester, reviewer, and watchdog run, the planner:
 
 1. **Liveness check:** Call `list_peers(scope: "repo")` every 5 minutes. If a peer disappears (terminal crashed), re-spawn it via tmux with the same prompt file. The re-spawned session reads TASKS.json and HEARTBEAT.json to resume from the next incomplete action. **Session intelligence** (inspired by CE's `/ce-sessions`): When re-spawning a crashed terminal, search `~/.claude/projects/` session logs for the crashed agent's last conversation context. Include a summary of what it was doing when it died in the re-spawn prompt. This gives the replacement session continuity instead of a cold start.
 
 2. **Heartbeat check:** Read `.rapid/HEARTBEAT.json`. If any agent's heartbeat is stale (>10 minutes), log a warning.
 
 3. **Message check:** Listen for claude-peers messages:
-   - `P6_COMPLETE` from supervisor → proceed to P6e shutdown
-   - `DRIFT_CRITICAL` from watchdog → send `BUILD_HALT` to supervisor, alert operator
-   - `TASK_ASSIGNED` / `TASK_COMPLETE` from supervisor → update cost tracking
+   - `P6_COMPLETE` from the coder → proceed to P6e shutdown
+   - `DRIFT_CRITICAL` from watchdog → send `BUILD_HALT` to the team, alert operator
+   - `TASK_COMPLETE` from the coder → update cost tracking
 
-4. **Cost check:** Read `.rapid/COST.json` periodically. If approaching budget, send `BUILD_HALT` to supervisor.
+4. **Cost check:** Read `.rapid/COST.json` periodically. If approaching budget, send `BUILD_HALT` to the team.
 
 ---
 
-#### P6e — Shutdown Sequence [Orchestrator]
+#### P6e — Shutdown Sequence [planner]
 
-When the orchestrator receives `P6_COMPLETE` from the supervisor:
+When the planner receives `P6_COMPLETE` from the coder:
 
-1. **Shutdown handshake:** Send `SHUTDOWN` message to both supervisor and watchdog via claude-peers.
+1. **Shutdown handshake:** Send `SHUTDOWN` message to the team (coder, tester, reviewer, watchdog) via claude-peers.
 2. **Wait for ACK:** Each terminal finishes its current atomic action (commit, review verdict), sends `ACK_SHUTDOWN`, and exits.
-3. **Timeout:** If `ACK_SHUTDOWN` not received within 60 seconds, fall back to `tmux kill-window` on the worker-lead windows (`rapid-team:coder`, `rapid-team:tester`, `rapid-team:reviewer`, `rapid-team:watchdog`), leaving planner to finalize.
+3. **Timeout:** If `ACK_SHUTDOWN` not received within 60 seconds, fall back to `tmux kill-window` on the lead windows (`rapid-team:coder`, `rapid-team:tester`, `rapid-team:reviewer`, `rapid-team:watchdog`), leaving planner to finalize.
 4. **P6 exit assertions** (blocking — build cannot proceed to P7 until all pass):
    - Every spec section has implementing code in the repo
    - Every public interface in CONTRACTS.md exists in the codebase
    - Architecture.md file structure matches actual repo structure
    - Any external API the code calls has been verified by actually calling it
    - Every task has a reviewer verdict of APPROVE (not skipped)
-   - Smoke test passed for every agent's output (supervisor-run)
+   - Smoke test passed for every agent's output (coder-run)
    - Secret scan passed (no credentials in committed files)
    - **Worktree isolation (C):** run `tools/worktree-check.sh`. It reads the observe log and asserts every parallel build writer (coding subagent / `coder-N` terminal) ran in its own declared git worktree — no missing worktree, no two writers sharing one. It merges a `build_writers_isolated` assertion into `P6_EXIT.json`, so a build that fanned out writers into the shared tree (instead of isolated worktrees) mechanically fails the gate. Passes trivially when no parallel writers ran (single-agent / tiny-change build).
    - **Ship gate (R8 + R9 + real verification):** run `tools/ship-gate.sh`. It scans the tree for stubs and counts open MAJOR+ stub/conformance gaps, **and reads `.rapid/VERIFY.json`**, then merges `no_open_stub_gaps` / `no_stubs_in_tree` / `no_open_conformance_gaps` / **`verification_real`** assertions into `P6_EXIT.json`. `verification_real` is true only when `VERIFY.json` shows **every required layer green — including e2e** (and no required layer left `unverified`); e2e is required to ship. Any failure → `pass:false` → the phase gate blocks P7. This is what makes R8/R9 and real verification *blocking* rather than advisory — a build cannot ship on a green it only inspected, and cannot ship without e2e.
@@ -891,23 +891,23 @@ When the orchestrator receives `P6_COMPLETE` from the supervisor:
 All inter-terminal messages use a structured JSON envelope inside the `message` field of `send_message`:
 
 ```json
-{"type":"PR_SUBMITTED","from":"supervisor","ts":"2026-05-27T14:08:12Z","payload":{"task_id":"T-03","branch":"rapid/phase-6/auth-module","pr_url":"...","spec_refs":["§3.1","§3.2"]}}
+{"type":"PR_SUBMITTED","from":"coder","ts":"2026-05-27T14:08:12Z","payload":{"task_id":"T-03","branch":"rapid/phase-6/auth-module","pr_url":"...","spec_refs":["§3.1","§3.2"]}}
 ```
 
 | Type | Direction | Purpose |
 |---|---|---|
-| `TASK_ASSIGNED` | supervisor → orchestrator | Task dispatched to implementor |
-| `TASK_COMPLETE` | supervisor → orchestrator | Task done, PR submitted |
-| `PR_SUBMITTED` | supervisor → watchdog | Trigger drift check on PR |
-| `PR_MERGED` | supervisor → watchdog, orchestrator | Trigger post-merge check |
-| `DRIFT_RESULT` | watchdog → supervisor | CLEAN / DRIFT / CRITICAL verdict |
-| `DRIFT_CRITICAL` | watchdog → orchestrator | Invariant violation — halt build |
-| `AUDIT_PERIODIC` | watchdog → supervisor | 30m periodic audit result |
-| `STALL_NUDGE` | supervisor → implementor | Heartbeat-triggered nudge |
-| `BUILD_HALT` | orchestrator → supervisor, watchdog | Emergency stop |
-| `P6_COMPLETE` | supervisor → orchestrator | All tasks done, all reviews APPROVE |
-| `SHUTDOWN` | orchestrator → supervisor, watchdog | Graceful shutdown signal |
-| `ACK_SHUTDOWN` | supervisor/watchdog → orchestrator | Confirm shutdown, report final state |
+| `TASK_ASSIGNED` | planner → coder | Task dispatched to a coder subagent |
+| `TASK_COMPLETE` | coder → planner | Task done, PR submitted |
+| `PR_SUBMITTED` | coder → reviewer, watchdog | Trigger review + drift check on PR |
+| `PR_MERGED` | coder → watchdog, planner | Trigger post-merge check |
+| `DRIFT_RESULT` | watchdog → planner | CLEAN / DRIFT / CRITICAL verdict |
+| `DRIFT_CRITICAL` | watchdog → planner | Invariant violation — halt build |
+| `AUDIT_PERIODIC` | watchdog → planner | 30m periodic audit result |
+| `STALL_NUDGE` | planner → coder | Heartbeat-triggered nudge |
+| `BUILD_HALT` | planner → team | Emergency stop |
+| `P6_COMPLETE` | coder → planner | All tasks done, all reviews APPROVE |
+| `SHUTDOWN` | planner → team | Graceful shutdown signal |
+| `ACK_SHUTDOWN` | leads → planner | Confirm shutdown, report final state |
 
 **Durability:** Every message is also appended to `.rapid/MESSAGES.json` as a fallback. If a claude-peers notification is missed, agents check this file on their heartbeat cycle.
 
@@ -915,7 +915,7 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
 - Every `send_message` call must also emit an observe `SEND` event
 - Every received message must emit an observe `RECV` event
 - On `SHUTDOWN`: finish current atomic action, send `ACK_SHUTDOWN`, exit
-- On `DRIFT_CRITICAL`: supervisor stops assigning tasks, sends `BUILD_HALT` to implementors
+- On `DRIFT_CRITICAL`: the planner stops assigning tasks, sends `BUILD_HALT` to the team
 - Unrecognized message types: log to MEMORY.md and ignore (forward compatibility)
 
 ---
@@ -941,7 +941,7 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
    - Playwright screenshots of every route at 3 viewports (mobile 390px, tablet 768px, desktop 1440px)
    - Send screenshots to Claude vision: check for overlapping text, clipped elements, broken layouts, unreadable diagrams
    - **Compare against the approved comps (E):** for each screen, diff the built screenshot against its `04-spec/mocks/<screen-id>.html` comp (the GATE-2-approved visual target) — same layout, same states, same components. A built screen that diverges from its approved comp is a gap (either the build drifted or the comp needs an operator-approved update — do not silently accept either). This is what makes the plan-phase design an enforced target rather than a discarded sketch.
-   - On failure: implementor fixes → re-screenshot → re-check (max 3 iterations per component)
+   - On failure: coder fixes → re-screenshot → re-check (max 3 iterations per component)
 4. **Concrete walkthrough — every function on every surface must be touched (R6):**
 
    **Test-suite acceptance = function-level completeness.** The bar is not "we ran some flows" — it is **every interactive function on every surface is touched and considered by at least one test/workflow flow.** "We are complete" means *we know every function was checked.* Surface-level coverage is necessary but not sufficient; a surface can render fine while a button on it does nothing.
@@ -967,7 +967,7 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
    - **Reuse reviewer**: Find duplicated logic that should be extracted into shared functions
    - **Quality reviewer**: Find overly complex code that can be simplified without changing behavior
    - **Efficiency reviewer**: Find performance anti-patterns (unnecessary re-renders, redundant queries, bloated imports)
-   Each produces findings. The supervisor applies safe simplifications (those that keep all tests green) and discards risky ones. This prevents "it works but it's ugly" from shipping. Write applied simplifications to `.rapid/SIMPLIFY.md`.
+   Each produces findings. The coder applies safe simplifications (those that keep all tests green) and discards risky ones. This prevents "it works but it's ugly" from shipping. Write applied simplifications to `.rapid/SIMPLIFY.md`.
 
 7. **Capture a recorded run of every user workflow (S-14).** Run `python3 tools/workflow-runner.py --all` to live-drive each workflow in `docs/workflows.json` node by node, threading each node's data-out into the next node's data-in. This streams a per-node trace to `.rapid/RUNS/<wf>/<run>.jsonl`, appends `.rapid/RUNS/<wf>/index.json`, and publishes `docs/testruns.json` — so the Workflow Test Theater (`docs/testsuite.html`) has a recorded run to replay and a run log, and any workflow whose final node misses its golden assertion becomes a gap. This complements (does not replace) the eval harness in step 1: step 1 proves the layers; this proves the user workflows end-to-end.
 
@@ -1114,7 +1114,7 @@ The system never says "it works" — it shows the audit trail and lets the opera
 Every agent classifies decisions before acting:
 - **Tactical** (naming, style, imports) → decide silently
 - **Technical** (library choice, pattern, cache strategy) → decide + log to MEMORY.md
-- **Architectural** (new dependency, interface change, data model) → escalate to supervisor/orchestrator
+- **Architectural** (new dependency, interface change, data model) → escalate to the planner
 - **Strategic** (drop feature, change scope, accept security trade-off) → queue for next human gate
 - **Rule:** If reversible, pick the best option and log it. If irreversible, queue for gate. Never ask a bare question — always include: decision needed, options considered, recommendation, reversibility assessment.
 - **PRD-silent items are logged, not interrupts.** When the PRD/spec is silent on something the build must decide, the build **does not stop to ask** — it picks the best option and records it as a logged decision in `.rapid/DECISIONS.json` via `tools/log-decision.sh "<decision>" spec|interpretation`. Each entry is flagged `basis="spec"` when the choice is a direct fact of the PRD/spec, or `basis="interpretation"` when it's a reasonable read of a gap. This keeps the loop moving (a silent PRD is the common case, not an exception) while leaving a reviewable trail. **The only items that interrupt are genuinely-undecidable high-stakes ones** (both branches carry material, hard-to-reverse consequence, no basis to choose) — and those are **batched to the human BEFORE the build starts**, as a Gate-1 decision batch, not surfaced mid-build. In short: log interpretations, run on; batch only the undecidable, and only at Gate 1.
@@ -1159,7 +1159,7 @@ All state lives in `.rapid/` and `docs/`. The conversation is disposable.
 |------|-----------|---------|-------------------|
 | STATE.json | Orchestrator | After every phase + gate | Current phase, status, track |
 | MEMORY.md | All agents (append-only) | On every decision/escalation | Prose log of all agent actions |
-| TASKS.json | Spec writer, supervisor | On task assign/complete/block | Per-task status + agent assignment |
+| TASKS.json | Spec writer, planner | On task assign/complete/block | Per-task status + agent assignment |
 | AUDIT.json | Watchdog | On PR, merge, every 30m | Drift check verdicts (CLEAN/DRIFT/CRITICAL) |
 | GAPS.json | Tester, gap loop | After test runs + walkthrough | Classified gaps with severity + resolution |
 | COST.json | Orchestrator | After every agent spawn/return | Token spend per agent, per phase, total |
@@ -1175,13 +1175,13 @@ All state lives in `.rapid/` and `docs/`. The conversation is disposable.
 
 ### Agent Heartbeat Protocol
 
-During Phase 6 (parallel build), every agent writes to `.rapid/HEARTBEAT.json` every 5 minutes. The orchestrator reads this file to detect stalls without waiting 15 minutes of silence.
+During Phase 6 (parallel build), every agent writes to `.rapid/HEARTBEAT.json` every 5 minutes. The planner reads this file to detect stalls without waiting 15 minutes of silence.
 
 **Format:**
 ```json
 {
   "agents": {
-    "impl-1": {
+    "coder-1": {
       "task": "task-03",
       "spec_ref": "S4.2",
       "status": "coding",
@@ -1192,7 +1192,7 @@ During Phase 6 (parallel build), every agent writes to `.rapid/HEARTBEAT.json` e
       "tests_failing": 2,
       "blocked_on": null
     },
-    "impl-2": {
+    "coder-2": {
       "task": "task-05",
       "spec_ref": "S6.1",
       "status": "blocked",
@@ -1220,17 +1220,17 @@ During Phase 6 (parallel build), every agent writes to `.rapid/HEARTBEAT.json` e
 **Heartbeat rules:**
 - Every agent updates its entry in HEARTBEAT.json every 5 minutes (read → update own entry → write)
 - Status values: `coding`, `testing`, `reviewing`, `watching`, `blocked`, `done`, `failed`
-- If `last_heartbeat` is >10 minutes stale, the orchestrator classifies that agent as STALLED
+- If `last_heartbeat` is >10 minutes stale, the planner classifies that agent as STALLED
 - Stall protocol: nudge agent via claude-peers → if no response in 5m, read their worktree to assess → if blocked on a decision, make it and log → if crashed, restart from last commit
 
-**Enforcement:** The orchestrator checks HEARTBEAT.json before every major action (spawning new agents, proceeding to next phase, presenting at gates). An agent that never writes to HEARTBEAT.json is treated as unobservable — the orchestrator escalates immediately rather than waiting for the 15m stall timeout.
+**Enforcement:** The planner checks HEARTBEAT.json before every major action (spawning new agents, proceeding to next phase, presenting at gates). An agent that never writes to HEARTBEAT.json is treated as unobservable — the planner escalates immediately rather than waiting for the 15m stall timeout.
 
 ### claude-peers Protocol (mandatory, not optional)
 
 **On agent spawn (enforced):** Every agent's prompt MUST include: "As your first action, call `set_summary` with a description of your task. Update it when your status changes. This is not optional — the operator uses it to monitor the build."
 
 **Summary format:** `[RAPID {role}] {status}: {task description}`
-- Examples: `[RAPID impl-1] coding: camera pipeline per SPEC §4.2`
+- Examples: `[RAPID coder-1] coding: camera pipeline per SPEC §4.2`
 - `[RAPID watchdog] CLEAN: last audit 2m ago, 0 drift`
 - `[RAPID reviewer] reviewing: task-03 PR, checking Art. I-V`
 
@@ -1240,7 +1240,7 @@ During Phase 6 (parallel build), every agent writes to `.rapid/HEARTBEAT.json` e
 - Hitting a blocker
 - Changing status (coding → testing → done)
 
-If an agent's summary still says "coding" but its heartbeat shows "blocked," the orchestrator treats the summary as stale and escalates.
+If an agent's summary still says "coding" but its heartbeat shows "blocked," the planner treats the summary as stale and escalates.
 
 ### `/rapid-workflow status` — Operator Dashboard
 
@@ -1253,25 +1253,25 @@ When the operator runs `/rapid-workflow status`, read all `.rapid/` state files 
 │ Track: full │ Elapsed: 2h 14m │ Budget: $23/$100    │
 ├─────────────────────────────────────────────────────┤
 │ AGENTS                                              │
-│  impl-1  ● CODING   task-03 [S4.2] camera pipeline │
+│  coder-1 ● CODING   task-03 [S4.2] camera pipeline │
 │                      4 files, 12/14 tests passing   │
 │                      last commit 3m ago             │
-│  impl-2  ◐ BLOCKED  task-05 [S6.1] auth service    │
+│  coder-2 ◐ BLOCKED  task-05 [S6.1] auth service    │
 │                      needs API key — queued for G3  │
 │                      last commit 15m ago ⚠          │
-│  impl-3  ● CODING   task-07 [S8.1] order book      │
+│  coder-3 ● CODING   task-07 [S8.1] order book      │
 │                      6 files, 8/8 tests passing     │
 │  reviewer ● IDLE     waiting for next PR            │
 │  watchdog ● CLEAN    last audit 2m ago              │
 ├─────────────────────────────────────────────────────┤
 │ TASKS                                               │
-│  ✓ task-01  init-config         done   (impl-1)    │
-│  ✓ task-02  schema-setup        done   (impl-1)    │
-│  ◐ task-03  camera-pipeline     coding (impl-1)    │
-│  ✓ task-04  data-model          done   (impl-2)    │
-│  ✗ task-05  auth-service        blocked(impl-2)    │
+│  ✓ task-01  init-config         done   (coder-1)   │
+│  ✓ task-02  schema-setup        done   (coder-1)   │
+│  ◐ task-03  camera-pipeline     coding (coder-1)   │
+│  ✓ task-04  data-model          done   (coder-2)   │
+│  ✗ task-05  auth-service        blocked(coder-2)   │
 │  · task-06  lesson-ui           pending             │
-│  ◐ task-07  order-book          coding (impl-3)    │
+│  ◐ task-07  order-book          coding (coder-3)   │
 │  · task-08  deploy-config       pending             │
 ├─────────────────────────────────────────────────────┤
 │ SAFETY                                              │
@@ -1281,7 +1281,7 @@ When the operator runs `/rapid-workflow status`, read all `.rapid/` state files 
 │  Reviews: 2 approved, 0 pending, 1 in progress     │
 ├─────────────────────────────────────────────────────┤
 │ ALERTS                                              │
-│  ⚠ impl-2 stalled 15m — blocked on API key         │
+│  ⚠ coder-2 stalled 15m — blocked on API key        │
 │  ⚠ task-06 depends on task-05 (blocked)             │
 ├─────────────────────────────────────────────────────┤
 │ COST                                                │
@@ -1316,7 +1316,7 @@ Cascade: `~/.rapid/rapid-workflow.yaml` (global) → `.rapid/rapid-workflow.yaml
 
 Read rapid.yaml at skill start. Apply to all agent prompts, build parameters, and model selection.
 
-Key settings: `build.default_track`, `build.max_implementors`, `build.gap_loop_max`, `budget.max_build_cost`, `budget.alert_threshold`, `models.default`, `models.overrides.*`, `agents.stall_timeout`, `agents.stall_retries`, `code.typescript.strict`, `design.theme`, `communication.verbosity`, `build.ci_platform`.
+Key settings: `build.default_track`, `build.max_coders`, `build.gap_loop_max`, `budget.max_build_cost`, `budget.alert_threshold`, `models.default`, `models.overrides.*`, `agents.stall_timeout`, `agents.stall_retries`, `code.typescript.strict`, `design.theme`, `communication.verbosity`, `build.ci_platform`.
 
 ---
 

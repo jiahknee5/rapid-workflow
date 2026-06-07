@@ -207,7 +207,7 @@ Read all `decisions/D-*.md`, parse frontmatter, print a markdown table sorted by
 
 ## Integration with Rapid
 
-This skill is invoked automatically by the rapid Decision Router (D5) when an **Architectural** or **Strategic** decision is resolved. The rapid orchestrator or supervisor calls `/decision log` with the decision context after resolution.
+This skill is invoked automatically by the rapid Decision Router (D5) when an **Architectural** or **Strategic** decision is resolved. The rapid orchestrator or planner calls `/decision log` with the decision context after resolution.
 
 **Tactical** and **Technical** decisions are logged to `.rapid/MEMORY.md` only — they are too frequent and too small for deck slides.
 

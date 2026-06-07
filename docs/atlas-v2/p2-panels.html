@@ -192,11 +192,11 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
     <div class="skill">
       <div class="skill-head"><span class="skill-name">Expert Panels</span><span class="skill-id">rapid:p2-panels</span><span class="skill-badges"><span class="sb arc">Arc 1 · Understand</span><span class="sb comp">composed</span></span></div>
       <div class="skill-body">
-        <div class="skill-what">Convenes <b>1 (fast) or 3 (full) expert panels</b> — business, technical, SME / users — that review the decomposed PRD <b>through the pillars</b>, each panelist in voice, then synthesizes <b>convergent / divergent / risks / open</b> with sources.</div>
+        <div class="skill-what">Convenes <b>five panel areas</b> — Business · Technical · Design · SME · Users — each rostered <b>1st/2nd/3rd-order then pared</b>, reviewing the decomposed PRD <b>through the pillars</b>, each panelist in voice, then synthesizes <b>convergent / divergent / risks / open</b> with sources. Fast track runs one area; full runs all five.</div>
         <div class="fielddual">
           <div class="field"><div class="field-label">Fixed vs. Dynamic</div><div class="fixed-dyn">
-            <div class="fd-row"><span class="lab fixed">Fixed</span><span>1–3 panels; the synthesis protocol; 2nd-order panels only on escalation.</span></div>
-            <div class="fd-row"><span class="lab dyn">Dynamic</span><span>Which panels (by domain), which panelists (named), reviewer weights.</span></div></div></div>
+            <div class="fd-row"><span class="lab fixed">Fixed</span><span>Five panel areas; the roster-then-pare construction; the synthesis protocol; deeper orders only on escalation.</span></div>
+            <div class="fd-row"><span class="lab dyn">Dynamic</span><span>Which voices survive paring (by domain), which panelists (named), reviewer weights.</span></div></div></div>
           <div class="field"><div class="field-label">Files touched</div><div class="files">
             <div class="fileflow"><span class="io">reads</span><span class="fchip ">01-intake/PRD-ENHANCED.md</span><span class="fchip ">00-vision/PILLARS.md</span></div>
             <div class="fileflow"><span class="io">writes</span><span class="fchip out">03-panels/synthesis.md</span></div></div></div>
@@ -207,9 +207,9 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
 
 **Output:** `03-panels/synthesis.md`
 
-**Fast track (1 panel):** Run the most relevant panel as a skill (stays in your context — no context duplication). Choose: technical-expert-panel, business-expert-panel, or domain-specific panel based on the project type.
+**Fast track (1 panel area):** Run the single most relevant panel area as a skill (stays in your context — no context duplication). Choose the area — Business, Technical, Design, SME, or Users — that most governs this project&#x27;s risk (e.g. technical-expert-panel, business-expert-panel, or a domain/SME panel).
 
-**Full track (3 panels):** Spawn 3 parallel subagents, one per panel type (technical, business, domain SME). Each receives: VISION.md, PILLARS.md, PRD-ENHANCED.md. Each reviews through the pillars, not generically.
+**Full track (five panel areas):** Spawn parallel subagents, one per panel area (Business · Technical · Design · SME · Users). Each receives: VISION.md, PILLARS.md, PRD-ENHANCED.md. Each reviews through the pillars, not generically.
 
 After panels complete, **synthesize** into `03-panels/synthesis.md`:
 - **Convergent findings**: where all panels agree
@@ -679,7 +679,7 @@ project&#x27;s `03-panels/`, never in this file.*
     <div class="deep-sec">
       <div class="deep-title">How a panel runs</div>
       <ol class="proto">
-        <li><b>Select lenses by domain</b> — 1 (fast) or 3 (full). A healthcare build weights Technical/Security heaviest; a kids' app leads with Users + SME.</li>
+        <li><b>Select panel areas by track</b> — one area (fast) or all five (full). A healthcare build weights Technical/Security heaviest; a kids' app leads with Users + SME.</li>
         <li><b>Name the panelists</b> — real, opinionated personas with a stake, not "an expert." Named people argue; "an expert" hedges.</li>
         <li><b>Prompt each through the pillars</b> + the enhanced PRD — every panelist reacts to a specific requirement or PRD section, never the doc in general.</li>
         <li><b>Each speaks in voice</b> with one concrete ask — a change they'd make, rooted in their discipline.</li>

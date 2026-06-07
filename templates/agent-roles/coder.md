@@ -82,7 +82,7 @@ planner.
   all to `.rapid/observe/coder.jsonl`.
 - **Every coding subagent you dispatch (and every `coder-N` terminal) MUST emit
   its `SPAWN` with a `worktree` and `branch`** — e.g.
-  `{"event":"SPAWN","agent":"impl-1","role":"implementor","worktree":".rapid/worktrees/impl-1","branch":"rapid/phase-6/<task-slug>", ...}`.
+  `{"event":"SPAWN","agent":"coder-1","role":"coder","worktree":".rapid/worktrees/coder-1","branch":"rapid/phase-6/<task-slug>", ...}`.
   This is the recorded proof that parallel writes were isolated. `tools/worktree-check.sh`
   reads these at P6 exit and **fails the gate** if a writer spawned without a worktree
   or two writers shared one — so dispatch with `isolation:"worktree"` and record the path.

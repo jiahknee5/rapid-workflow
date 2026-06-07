@@ -224,7 +224,7 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
    - Playwright screenshots of every route at 3 viewports (mobile 390px, tablet 768px, desktop 1440px)
    - Send screenshots to Claude vision: check for overlapping text, clipped elements, broken layouts, unreadable diagrams
    - **Compare against the approved comps (E):** for each screen, diff the built screenshot against its `04-spec/mocks/&lt;screen-id&gt;.html` comp (the GATE-2-approved visual target) — same layout, same states, same components. A built screen that diverges from its approved comp is a gap (either the build drifted or the comp needs an operator-approved update — do not silently accept either). This is what makes the plan-phase design an enforced target rather than a discarded sketch.
-   - On failure: implementor fixes → re-screenshot → re-check (max 3 iterations per component)
+   - On failure: coder fixes → re-screenshot → re-check (max 3 iterations per component)
 4. **Concrete walkthrough — every function on every surface must be touched (R6):**
 
    **Test-suite acceptance = function-level completeness.** The bar is not &quot;we ran some flows&quot; — it is **every interactive function on every surface is touched and considered by at least one test/workflow flow.** &quot;We are complete&quot; means *we know every function was checked.* Surface-level coverage is necessary but not sufficient; a surface can render fine while a button on it does nothing.
@@ -250,7 +250,7 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
    - **Reuse reviewer**: Find duplicated logic that should be extracted into shared functions
    - **Quality reviewer**: Find overly complex code that can be simplified without changing behavior
    - **Efficiency reviewer**: Find performance anti-patterns (unnecessary re-renders, redundant queries, bloated imports)
-   Each produces findings. The supervisor applies safe simplifications (those that keep all tests green) and discards risky ones. This prevents &quot;it works but it&#x27;s ugly&quot; from shipping. Write applied simplifications to `.rapid/SIMPLIFY.md`.
+   Each produces findings. The coder applies safe simplifications (those that keep all tests green) and discards risky ones. This prevents &quot;it works but it&#x27;s ugly&quot; from shipping. Write applied simplifications to `.rapid/SIMPLIFY.md`.
 
 7. **Capture a recorded run of every user workflow (S-14).** Run `python3 tools/workflow-runner.py --all` to live-drive each workflow in `docs/workflows.json` node by node, threading each node&#x27;s data-out into the next node&#x27;s data-in. This streams a per-node trace to `.rapid/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl`, appends `.rapid/RUNS/&lt;wf&gt;/index.json`, and publishes `docs/testruns.json` — so the Workflow Test Theater (`docs/testsuite.html`) has a recorded run to replay and a run log, and any workflow whose final node misses its golden assertion becomes a gap. This complements (does not replace) the eval harness in step 1: step 1 proves the layers; this proves the user workflows end-to-end.
 

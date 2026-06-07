@@ -192,7 +192,7 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
     <div class="skill">
       <div class="skill-head"><span class="skill-name">Tasks + Eval Harness</span><span class="skill-id">rapid:p5-tasks-eval</span><span class="skill-badges"><span class="sb arc">Arc 2 · Specify</span><span class="sb comp">composed</span></span></div>
       <div class="skill-body">
-        <div class="skill-what">Sizes the implementor fan-out, then <b>generates the immutable eval harness from the workflow state machine and locks it</b>. The harness is <b>task-00</b> — the root of the task graph that every other task depends on.</div>
+        <div class="skill-what">Sizes the coder fan-out, then <b>generates the immutable eval harness from the workflow state machine and locks it</b>. The harness is <b>task-00</b> — the root of the task graph that every other task depends on.</div>
         <div class="fielddual">
           <div class="field"><div class="field-label">Fixed vs. Dynamic</div><div class="fixed-dyn">
             <div class="fd-row"><span class="lab fixed">Fixed</span><span>task-00 is the blocking root; the harness is immutable after P5; agents extend tests, never edit them.</span></div>
@@ -207,10 +207,10 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
 
 **Output:** `.rapid/TASKS.json`, `04-spec/agents/*.md`, `.rapid/EVAL/`
 
-1. **Analyze spec complexity** and determine implementor count (D7):
-   - ≤5 tasks with linear deps → 1 implementor
-   - 6–12 tasks with 2–3 parallel → 2 implementors
-   - 13+ tasks with 3+ parallel → 3–4 implementors
+1. **Analyze spec complexity** and determine coder-subagent count (D7):
+   - ≤5 tasks with linear deps → 1 coder subagent
+   - 6–12 tasks with 2–3 parallel → 2 coder subagents
+   - 13+ tasks with 3+ parallel → 3–4 coder subagents
    - Cap: ≤4 concurrent (reviewer capacity constraint)
 
 2. **task-00: eval-harness (BLOCKING — R4).** The eval harness is not a step the orchestrator performs. It is the **first task** in TASKS.json, and every other task depends on it. The build literally cannot start until tests are generated. This turns a skippable step into a blocking dependency.
@@ -241,7 +241,7 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
    - If a deliverable has no corresponding task: **create one before proceeding**
    - This is a hard check, not advisory. Missing deliverable coverage = phase fails.
 
-5. **Generate agent role files** in `04-spec/agents/`: implementor.md, reviewer.md, watchdog.md. Each includes R/W contract (which files the agent may modify) and the Decision Router rules (D5).
+5. **Generate agent role files** in `04-spec/agents/`: planner.md, coder.md, tester.md, reviewer.md, watchdog.md. Each includes R/W contract (which files the agent may modify) and the Decision Router rules (D5).
 
 6. **Generate CI/CD config** (D11): `.github/workflows/rapid-workflow-ci.yml` or `.gitlab-ci.yml` based on rapid.yaml `ci_platform` setting. Stages: lint → test → build → drift-check → constitution → visual-qa → deploy.
 
@@ -259,7 +259,7 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
     
     <div class="deep-sec">
       <div class="deep-title">task-00 — the eval harness is the root of the graph</div>
-      <div class="deep-note">The harness is <code>task-00</code>: <code>depends_on:[]</code>, and <b>every other task depends on it</b>. The supervisor verifies <code>task-00</code> is <code>done</code> before assigning any other task. Tests-before-code isn't a guideline here — it's the shape of the dependency graph.</div>
+      <div class="deep-note">The harness is <code>task-00</code>: <code>depends_on:[]</code>, and <b>every other task depends on it</b>. The planner verifies <code>task-00</code> is <code>done</code> before assigning any other task. Tests-before-code isn't a guideline here — it's the shape of the dependency graph.</div>
     </div>
     <div class="deep-sec">
       <div class="deep-title">How tests are generated from the workflow</div>
@@ -275,12 +275,12 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
     </div>
     <div class="deep-sec">
       <div class="deep-title">Fan-out sizing</div>
-      <table class="idx"><thead><tr><th style="width:30%">Task count</th><th>Implementors</th></tr></thead><tbody>
+      <table class="idx"><thead><tr><th style="width:30%">Task count</th><th>Coder fan-out</th></tr></thead><tbody>
         <tr><td class="k">≤ 5 tasks</td><td>1 coder (fans out subagents)</td></tr>
         <tr><td class="k">6 – 12 tasks</td><td>2 coder terminals</td></tr>
         <tr><td class="k">13+ tasks</td><td>3 – 4 coder terminals (+ 1 watchdog)</td></tr>
       </tbody></table>
-      <div class="deep-sub" style="margin-top:8px;">Beyond 4 implementors, honest review degrades and supervisor arbitration becomes noise — sequence two rounds of 4 rather than fanning out 8.</div>
+      <div class="deep-sub" style="margin-top:8px;">Beyond 4 coder subagents, honest review degrades — the reviewer can't meaningfully check that many parallel diffs, so sequence two rounds of 4 rather than fanning out 8.</div>
     </div>
    
     <div class="pagernav"><a class="pager" href="p4-spec.html">← P4 Spec Derivation</a><span style="flex:1"></span><a class="pager" href="p5b-deepen.html">P5b Spec Deepening →</a></div>

@@ -138,9 +138,9 @@ PH = [
    '''),
 
  dict(slug="p2-panels", ph="P2", name="Expert Panels", arc="Arc 1 · Understand", kind="phase",
-   what="Convenes <b>1 (fast) or 3 (full) expert panels</b> — business, technical, SME / users — that review the decomposed PRD <b>through the pillars</b>, each panelist in voice, then synthesizes <b>convergent / divergent / risks / open</b> with sources.",
-   fixed="1–3 panels; the synthesis protocol; 2nd-order panels only on escalation.",
-   dynamic="Which panels (by domain), which panelists (named), reviewer weights.",
+   what="Convenes <b>five panel areas</b> — Business · Technical · Design · SME · Users — each rostered <b>1st/2nd/3rd-order then pared</b>, reviewing the decomposed PRD <b>through the pillars</b>, each panelist in voice, then synthesizes <b>convergent / divergent / risks / open</b> with sources. Fast track runs one area; full runs all five.",
+   fixed="Five panel areas; the roster-then-pare construction; the synthesis protocol; deeper orders only on escalation.",
+   dynamic="Which voices survive paring (by domain), which panelists (named), reviewer weights.",
    example="A healthcare build weights the <b>Technical / Security</b> lens heaviest; a kids' app leads with the <b>Users</b> lens (kids, parents, teachers in voice) plus an <b>SME</b> panel for the domain. The synthesis — not the transcripts — is what you read at G1.",
    value="Tiered, in-voice domain challenge surfaces objections a generalist gate misses — and it runs after the cheap faithfulness gate, so panel cost is never wasted. Its output sets priority at G1.",
    reads=["01-intake/PRD-ENHANCED.md","00-vision/PILLARS.md"], writes=["03-panels/synthesis.md"], exemplar=True, extra_skill="expert-panel",
@@ -170,7 +170,7 @@ PH = [
     <div class="deep-sec">
       <div class="deep-title">How a panel runs</div>
       <ol class="proto">
-        <li><b>Select lenses by domain</b> — 1 (fast) or 3 (full). A healthcare build weights Technical/Security heaviest; a kids' app leads with Users + SME.</li>
+        <li><b>Select panel areas by track</b> — one area (fast) or all five (full). A healthcare build weights Technical/Security heaviest; a kids' app leads with Users + SME.</li>
         <li><b>Name the panelists</b> — real, opinionated personas with a stake, not "an expert." Named people argue; "an expert" hedges.</li>
         <li><b>Prompt each through the pillars</b> + the enhanced PRD — every panelist reacts to a specific requirement or PRD section, never the doc in general.</li>
         <li><b>Each speaks in voice</b> with one concrete ask — a change they'd make, rooted in their discipline.</li>
@@ -305,7 +305,7 @@ PH = [
    '''),
 
  dict(slug="p5-tasks-eval", ph="P5", name="Tasks + Eval Harness", arc="Arc 2 · Specify", kind="phase",
-   what="Sizes the implementor fan-out, then <b>generates the immutable eval harness from the workflow state machine and locks it</b>. The harness is <b>task-00</b> — the root of the task graph that every other task depends on.",
+   what="Sizes the coder fan-out, then <b>generates the immutable eval harness from the workflow state machine and locks it</b>. The harness is <b>task-00</b> — the root of the task graph that every other task depends on.",
    fixed="task-00 is the blocking root; the harness is immutable after P5; agents extend tests, never edit them.",
    dynamic="The actual test cases, derived from this project's workflow nodes and branches.",
    example="Each workflow node → a test (arrange from <code>in</code>, act from <code>proc</code>, assert from <code>out</code>); each branch → a negative test; each failure path → a recovery test.",
@@ -314,7 +314,7 @@ PH = [
    deep='''
     <div class="deep-sec">
       <div class="deep-title">task-00 — the eval harness is the root of the graph</div>
-      <div class="deep-note">The harness is <code>task-00</code>: <code>depends_on:[]</code>, and <b>every other task depends on it</b>. The supervisor verifies <code>task-00</code> is <code>done</code> before assigning any other task. Tests-before-code isn't a guideline here — it's the shape of the dependency graph.</div>
+      <div class="deep-note">The harness is <code>task-00</code>: <code>depends_on:[]</code>, and <b>every other task depends on it</b>. The planner verifies <code>task-00</code> is <code>done</code> before assigning any other task. Tests-before-code isn't a guideline here — it's the shape of the dependency graph.</div>
     </div>
     <div class="deep-sec">
       <div class="deep-title">How tests are generated from the workflow</div>
@@ -330,12 +330,12 @@ PH = [
     </div>
     <div class="deep-sec">
       <div class="deep-title">Fan-out sizing</div>
-      <table class="idx"><thead><tr><th style="width:30%">Task count</th><th>Implementors</th></tr></thead><tbody>
+      <table class="idx"><thead><tr><th style="width:30%">Task count</th><th>Coder fan-out</th></tr></thead><tbody>
         <tr><td class="k">≤ 5 tasks</td><td>1 coder (fans out subagents)</td></tr>
         <tr><td class="k">6 – 12 tasks</td><td>2 coder terminals</td></tr>
         <tr><td class="k">13+ tasks</td><td>3 – 4 coder terminals (+ 1 watchdog)</td></tr>
       </tbody></table>
-      <div class="deep-sub" style="margin-top:8px;">Beyond 4 implementors, honest review degrades and supervisor arbitration becomes noise — sequence two rounds of 4 rather than fanning out 8.</div>
+      <div class="deep-sub" style="margin-top:8px;">Beyond 4 coder subagents, honest review degrades — the reviewer can't meaningfully check that many parallel diffs, so sequence two rounds of 4 rather than fanning out 8.</div>
     </div>
    '''),
 
@@ -420,8 +420,8 @@ PH = [
    subskills=[("planner","owns the spec-of-record; pins shared seams before fan-out; arbitrates"),
               ("coder","writes code; fans out 1–4 isolated worktree writers. Never audits"),
               ("tester","runs the locked harness, Playwright, screenshots. Never writes features"),
-              ("reviewer","5 tiered, confidence-gated lenses; one verdict per PR"),
-              ("watchdog","audits every merge vs spec + Constitution. Never an implementor")],
+              ("reviewer","per-dimension, confidence-gated review subagents (correctness / security / …); one verdict per PR"),
+              ("watchdog","audits every merge vs spec + Constitution. Never a coder")],
    deep='''
     <div class="deep-sec">
       <div class="deep-title">The P6 sub-phases</div>
@@ -430,14 +430,14 @@ PH = [
         <li><b>P6a-gate — Pin every shared seam</b>: interfaces in <code>CONTRACTS.md</code> are frozen <i>before</i> fan-out, so parallel coders can't collide on a contract.</li>
         <li><b>P6b — Build loop</b>: coders implement to the locked spec; keep-or-revert after every commit.</li>
         <li><b>P6c — Watchdog loop</b>: a <code>/loop 30m</code> drift audit writes <code>AUDIT.json</code>.</li>
-        <li><b>P6d — Monitoring</b>: the orchestrator watches heartbeats, nudges stalls.</li>
+        <li><b>P6d — Monitoring</b>: the planner watches heartbeats, nudges stalls.</li>
         <li><b>P6e — Shutdown handshake</b>: clean teardown, writes <code>P6_EXIT.json</code> — the gate P7 reads.</li>
       </ol>
     </div>
     <div class="deep-sec">
       <div class="deep-title">Five mechanisms — safe by construction</div>
       <table class="idx"><thead><tr><th style="width:30%">Mechanism</th><th>What it guarantees</th></tr></thead><tbody>
-        <tr><td class="k">R2 separate auditor</td><td>The watchdog ≠ any implementor — the builder can't skip its own checks.</td></tr>
+        <tr><td class="k">R2 separate auditor</td><td>The watchdog ≠ any coder — the builder can't skip its own checks.</td></tr>
         <tr><td class="k">R4 immutable evals</td><td><code>.rapid/EVAL/</code> locked after P5 — code follows tests, not the reverse.</td></tr>
         <tr><td class="k">Keep-or-revert</td><td>Any regression after a merge → <code>git reset --hard</code>; only improvements survive.</td></tr>
         <tr><td class="k">Worktree isolation</td><td>Each writer in its own worktree; verified at P6 exit or the gate fails.</td></tr>
