@@ -67,7 +67,7 @@ kickoff() {  # the initial prompt handed to `claude` in the role's terminal
 case "$MODE" in
   dry)
     echo "RAPID team (track=$TRACK) — would launch in $PROJECT:"
-    for r in $ROLES; do ensure_brief "$r"; printf '  [%s] cd %q && export RAPID_ROLE=%s && claude "<kickoff>"\n' "$r" "$PROJECT" "$r"; done
+    for r in $ROLES; do ensure_brief "$r"; printf '  [%s] cd %q && export RAPID_ROLE=%s && claude --dangerously-skip-permissions "<kickoff>"\n' "$r" "$PROJECT" "$r"; done
     ;;
   cursor)
     for r in $ROLES; do ensure_brief "$r"; done
@@ -77,7 +77,7 @@ project=os.environ["PROJECT"]; roles=os.environ["ROLES_CSV"].split()
 def cmd(r):
     kick=(f"You are the RAPID {r}. Read 04-spec/agents/{r}.md, .rapid/STATE.json and .rapid/TASKS.json; "
           f"set your claude-peers summary; list_peers; then begin your role. Coordinate over claude-peers.")
-    return f'export RAPID_ROLE={r} && claude "{kick}"'
+    return f'export RAPID_ROLE={r} && claude --dangerously-skip-permissions "{kick}"'
 tasks=[{"label":f"RAPID: {r}","type":"shell","command":cmd(r),
         "presentation":{"panel":"dedicated","group":"rapid-team","reveal":"always","focus":False},
         "problemMatcher":[]} for r in roles]
@@ -102,7 +102,7 @@ PY
       if [ "$DEMO" -eq 1 ]; then
         tmux send-keys -t "$S:$r" "export RAPID_ROLE=$r && clear && printf 'RAPID role: %s\n  RAPID_ROLE=%s  cwd=%s\n  contract: 04-spec/agents/%s.md\n  (demo — no claude launched; drop --demo to start the real agent here)\n' \"$r\" \"\$RAPID_ROLE\" \"\$(pwd)\" \"$r\"" Enter
       else
-        tmux send-keys -t "$S:$r" "export RAPID_ROLE=$r && claude $(printf '%q' "$(kickoff "$r")")" Enter
+        tmux send-keys -t "$S:$r" "export RAPID_ROLE=$r && claude --dangerously-skip-permissions $(printf '%q' "$(kickoff "$r")")" Enter
       fi
     done
     echo "RAPID team launched in tmux session '$S' (roles: $ROLES). Attach: tmux attach -t $S  (or run 'tmux attach -t $S' inside a Cursor terminal)."
