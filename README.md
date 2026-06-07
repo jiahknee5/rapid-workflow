@@ -11,15 +11,17 @@ The agent implementing the code must never be the same agent auditing the code. 
 This repo defines **the methodology** — how RAPID works. It does NOT contain project-specific output. When RAPID runs, it generates artifacts (specs, tests, panel records, documentation decks) in the **project repo**, not here.
 
 ```
-workflow/
+rapid-workflow/
 ├── skills/                            Claude Code skills (source of truth, symlinked)
-│   ├── rapid/SKILL.md                 The RAPID orchestrator (1125 lines)
+│   ├── rapid-workflow/SKILL.md        The RAPID orchestrator
+│   ├── expert-panel/SKILL.md          Five panel areas (Business·Technical·Design·SME·Users)
+│   ├── refine/SKILL.md                Goal-directed propose→measure→keep-or-revert loop
 │   ├── decision/SKILL.md              Decision & panel documentation
 │   ├── docs/SKILL.md                  Documentation deck generator
-│   └── workflow/SKILL.md              AI Build Workflow entry point
+│   └── workflow/SKILL.md              Alias → /rapid-workflow
 │
 ├── docs/                              Documentation of the methodology
-│   ├── rapid-architecture.html        D0–D21 interactive architecture reference
+│   ├── architecture.html              D0–D21 interactive architecture reference
 │   ├── rapid-reference.md             Text reference (all diagrams as markdown)
 │   ├── rapid-comparison.html          RAPID vs TDD Agent-Crew Scaffold
 │   ├── methodology-deck.md            18-slide methodology walkthrough (source)
@@ -61,24 +63,24 @@ This means `git diff` shows skill changes, cloning the repo gives you the skills
 
 ```
 P0:Vision → P1:Structure → P1b:Decompose → [G0] → P2:Panels → P3:Research → [G1] →
-P4:Spec → P5:Tasks → P5b:Deepen → [G2] → P6:Build → P7:Test → P8:Gaps ↻ [G3] →
+P4:Spec → P5:Tasks → P5b:Deepen → P5c:Mockups → [G2] → P6:Build → P7:Test → P8:Gaps ↻ [G3] →
 P9:Deploy → P10:Pulse ↻
 ```
 
-**13 phases. 4 human gates. 3 terminals during build. 9 tiered reviewers. 15 Compound Engineering integrations.**
+**12 phases. 4 human gates. Five-lead build team. Tiered per-dimension review. 15 Compound Engineering integrations.**
 
 | Arc | Phases | What happens |
 |---|---|---|
-| **Understand** | P0–P3 | Vision sets the lens, PRD decomposed, panels challenge requirements, research grounds decisions |
-| **Specify** | P4–P5b | Spec derived from PRD with maintained diff, tasks decomposed, eval harness locked, spec deepened |
-| **Execute** | P6–P9 | 3-terminal build (orchestrator + supervisor + watchdog), tiered review, gap loop, deploy |
+| **Understand** | P0–P3 | Vision sets the lens, PRD decomposed, five expert panels challenge requirements, research grounds decisions |
+| **Specify** | P4–P5c | Spec derived from PRD with maintained diff, tasks decomposed, eval harness locked, spec deepened, hi-fi mockups approved before build |
+| **Execute** | P6–P9 | Five-lead build (planner · coder · tester · reviewer · watchdog), tiered review, gap loop, deploy |
 | **Compound** | P10 | Post-ship pulse feeds next build's P0 — each build starts smarter |
 
 ## Quick Start
 
 ### View the architecture
 ```bash
-open docs/rapid-architecture.html
+open docs/architecture.html
 ```
 
 ### Run the live dashboard during a build
@@ -129,8 +131,8 @@ tools/lifecycle-e2e.sh --stage all --name myproj                # create→docs�
 | **Separate builder from auditor** | Same agent can't serve both honestly under pressure |
 | **Hooks over prose** | Phase gate hook blocks advancement; prose gets skipped |
 | **task-00 is the eval harness** | Blocking dependency, not a skippable step |
-| **3 terminals during P6** | Orchestrator monitors, supervisor builds, watchdog audits — independently |
-| **9 tiered reviewers** | Different lenses find different bugs; confidence gating prevents noise |
+| **Five-lead build team during P6** | planner · coder · tester · reviewer · watchdog — each in its own terminal; roles can't collapse into each other |
+| **Tiered per-dimension review** | Reviewer fans out a subagent per dimension (correctness · security · …); confidence gating prevents noise |
 | **Compound learning** | LEARNINGS.md carries forward; each build starts where the last left off |
 
 ## Lineage

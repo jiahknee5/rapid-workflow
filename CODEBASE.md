@@ -1,7 +1,7 @@
 # rapid-workflow — Codebase Guide
 
 > A walkthrough of what this repository is, what lives in it, and how the pieces fit together.
-> Written 2026-05-29. Current version: **v0.5.0**.
+> Written 2026-05-29. Current version: **v0.6.0**.
 
 ---
 
@@ -37,10 +37,11 @@ IDEA / PRD
  P4  Spec          derive spec from PRD with a maintained diff
  P5  Tasks + Eval  decompose tasks, generate IMMUTABLE eval harness
  P5b Deepen        re-derive / expand spec sections
-[G2] Architecture  operator approves spec, hands over keys — point of no return
+ P5c Mockups       hi-fi UI mockups + clickable prototype, approved before build
+[G2] Architecture  operator approves spec + mockups, hands over keys — point of no return
    │
    ▼  ── Arc 3: EXECUTE & CONVERGE ────────────────────────
- P6  Build         3-terminal swarm (see §6)
+ P6  Build         five-lead build team (see §6)
  P7  Test + QA     immutable evals, Playwright, screenshot evidence
  P8  Gap Loop ↻    classify gaps by pillar + severity, re-derive (max ×3)
 [G3] Ship          operator reviews app, audit, gaps, tests, cost
@@ -60,19 +61,25 @@ DEPLOYED APP
 ```
 rapid-workflow/
 ├── README.md              high-level overview + quick start
-├── CHANGELOG.md           version history (currently v0.5.0)
+├── CHANGELOG.md           version history (currently v0.6.0)
 ├── CODEBASE.md            ← this file
 ├── docs.json              docs registry snapshot
 │
-├── skills/                the four Claude Code skills (symlinked to ~/.claude/skills/)
-│   ├── rapid/SKILL.md       orchestrator — runs the 12-phase pipeline
+├── skills/                the six Claude Code skills (symlinked to ~/.claude/skills/)
+│   ├── rapid-workflow/SKILL.md orchestrator — runs the 12-phase pipeline
 │   ├── workflow/SKILL.md     alias → /rapid-workflow
+│   ├── expert-panel/SKILL.md  five panel areas (Business·Technical·Design·SME·Users), 1st/2nd/3rd-order
+│   ├── refine/SKILL.md        goal-directed propose→measure→keep-or-revert loop (Karpathy-style)
 │   ├── decision/SKILL.md     /decision — decision + panel documentation
 │   └── docs/SKILL.md         /docs — generates Reveal.js documentation decks
 │
 ├── tools/                 operational scripts (run from a target project root)
 │   ├── observe-server.py     live observability dashboard server (:4040)
+│   ├── rapid-team.sh         brings up the five-lead build team (tmux / --cursor)
 │   ├── phase-gate-hook.sh    PreToolUse hook — BLOCKS phase advance w/o artifacts
+│   ├── inputs-check.sh       fail-closed human-input gate (blocks P6 entry)
+│   ├── trace-check.sh        G2 traceability gate (every req → spec, every screen → req)
+│   ├── worktree-check.sh     P6-exit isolation verifier (each writer in its own worktree)
 │   ├── post-write-hook.sh    PostToolUse hook — updates registry + CHANGES.md
 │   ├── build-docs-registry.sh helper for the post-write hook
 │   └── rapid-spec.html       large HTML reference (superseded by docs/architecture.html)
@@ -102,9 +109,9 @@ rapid-workflow/
 
 ---
 
-## 4. The four skills
+## 4. The six skills
 
-All four live in `skills/` (the source of truth) and are symlinked into `~/.claude/skills/` so Claude Code can find them. Editing here and committing tracks the change in git.
+All six live in `skills/` (the source of truth) and are symlinked into `~/.claude/skills/` so Claude Code can find them. Editing here and committing tracks the change in git.
 
 ### `/rapid-workflow` — the orchestrator
 `skills/rapid-workflow/SKILL.md` (~1100+ lines). Runs the full pipeline.
@@ -120,13 +127,19 @@ It separates **deterministic** components (same every run — the 12 phases, 4 g
 |---|---|
 | Pillars (3–5) | derived from the project's risks + goals |
 | Constitution Articles VI–X | tailored to the safety domain |
-| Panels (1–3) | domain-selected, panelists named per project |
+| Panels (Business·Technical·Design·SME·Users) | 1st/2nd/3rd-order rosters built, then pared per project |
 | Reviewer weights | security-heavy for healthcare, perf-heavy for real-time |
-| Agent topology | orchestrator + supervisor + ≤4 implementors + watchdog |
+| Agent topology | five-lead build team (planner·coder·tester·reviewer·watchdog) + ≤4 worktree coder subagents |
 | Eval harness | generated from the workflow state machine, then locked |
 
 ### `/workflow` — alias
 `skills/workflow/SKILL.md`. Passes all arguments straight through to `/rapid-workflow`.
+
+### `/expert-panel` — the panel builder (P2)
+`skills/expert-panel/SKILL.md`. The differentiator skill. Instantiates **five panel areas** — Business, Technical, Design, SME, Users — each as a **1st/2nd/3rd-order** roster (Practitioners → Shapers & Critics → Outsiders & Long-horizon), then **pares** to a working panel via an explicit rubric (composition rule ≥3 / ≥2 / ≥1). Each area carries named frameworks (Five Forces, JTBD, Test Pyramid, STRIDE, Double Diamond, Nielsen heuristics, Kano) and the Business area adds capital lenses (founder / VC / PE / corporate C-suite / advisor). It maps to the four risk lenses — Desirability, Feasibility, Viability, Legitimacy — and writes panel observability to `03-panels/roster.json` (candidates with scores/kept/reason; panel members with ask/changed[]). Generic by construction: it names no product.
+
+### `/refine` — the goal-directed loop primitive (P8)
+`skills/refine/SKILL.md`. Karpathy's autoresearch loop, generalized: **propose → measure → keep-or-revert** against an explicit goal and eval. Used by the P8 gap loop so only improvements survive (regression ⇒ `git reset --hard`).
 
 ### `/decision` — decision & panel documentation
 `skills/decision/SKILL.md`. Two corpora in one skill: resolved **decisions** and expert **panel findings**. Each decision is a `D-NN.md` file with YAML frontmatter (question, phase, pillars, options w/ pros/cons, rationale + sources, panel input, cascade impacts). Regenerates McKinsey-style Reveal.js decks (`decisions/deck.html`, `panels/deck.html`).
@@ -169,20 +182,21 @@ This is where RAPID's safety thesis becomes mechanical. Prose can be ignored und
 
 ## 6. The build phase (P6) in detail
 
-P6 is the riskiest phase, so it uses a **3-terminal architecture** with roles that cannot collapse into each other:
+P6 is the riskiest phase, so it runs as a **five-lead build team** — five named lead agents, each in its OWN long-lived terminal, connected over claude-peers. Roles that cannot collapse into each other:
 
-- **Orchestrator** — monitors, manages the tmux session, routes messages.
-- **Supervisor** (separate terminal) — assigns tasks, runs smoke tests.
-- **Implementors** — up to **4** worktree agents writing code in parallel (isolated git worktrees so they don't conflict).
-- **Watchdog** (separate terminal) — runs on a `/loop 30m`, drift-checks every PR/merge against the spec and Constitution. It is *never* an implementor.
+- **planner** (team lead) — owns the plan, task decomposition, the 4 human gates, and the operator relationship.
+- **coder** (build lead) — implements tasks and **fans out coding subagents** for independent work (each in an isolated git worktree so they don't conflict); 1–4 coder terminals.
+- **tester** (test lead) — owns the immutable eval harness (task-00), fans out per-surface test subagents (Playwright, screenshots across viewports).
+- **reviewer** (review lead) — tiered code review of every diff via **per-dimension subagents** (correctness / security / …), aggregated to one confidence-gated verdict.
+- **watchdog** — auto-spawned at P6a in its own terminal; drift-checks every PR/merge against the spec and Constitution. It is *never* a coder.
 
-Supporting roles: 5 tiered **reviewers** (confidence-gated, different lenses), a **tester** (Playwright, screenshots across 3 viewports), and **visual QA**.
+**Subagents are the parallel muscle; terminals are the coordination spine.** Tracks scale the team: **full** = all five lead terminals; **fast** = planner + coder + reviewer + watchdog (tester folds into the coder's keep-or-revert ratchet); **tiny** = the whole loop as subagents under the planner. Launched via `tools/rapid-team.sh` (one tmux window per lead, or `--cursor` for VS Code tasks).
 
 The four safety mechanisms operating here:
 
 | Mechanism | What it does |
 |---|---|
-| Separate auditor (R2) | Watchdog ≠ implementor — builder can't skip its own safety checks |
+| Separate auditor (R2) | Watchdog ≠ coder — the builder can't skip its own safety checks |
 | Immutable eval harness (R4) | `.rapid/EVAL/` is locked after P5 — tests are the spec, code follows |
 | Keep-or-revert ratchet | On any regression after a merge, `git reset --hard` — only improvements survive |
 | Worktree isolation, verified (C) | Each parallel writer records its `worktree`/`branch` on SPAWN; `tools/worktree-check.sh` fails the P6 exit gate if any writer skipped isolation or two shared one |
@@ -234,4 +248,4 @@ A copy also exists at each generated project's root so agents are checked agains
 
 ---
 
-*RAPID = the repo; RAPID = the methodology; `/rapid-workflow` = the skill that runs it; the 12-phase pipeline + 4 gates + 3-terminal swarm + 4 safety mechanisms = the machine.*
+*`rapid-workflow` = the repo; RAPID = the methodology; `/rapid-workflow` = the skill that runs it; the 12-phase pipeline + 4 gates + five-lead build team + safety mechanisms (R1–R9) = the machine.*
