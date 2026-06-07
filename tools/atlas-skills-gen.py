@@ -143,19 +143,29 @@ PH = [
    dynamic="Which panels (by domain), which panelists (named), reviewer weights.",
    example="A healthcare build weights the <code>security-expert-panel</code> heaviest; a kids' app convenes a <code>user-panel</code> of kids, parents, and teachers in voice plus <code>asl-expert-panel</code>. The synthesis — not the transcripts — is what you read at G1.",
    value="Tiered, in-voice domain challenge surfaces objections a generalist gate misses — and it runs after the cheap faithfulness gate, so panel cost is never wasted. Its output sets priority at G1.",
-   reads=["01-intake/PRD-ENHANCED.md","00-vision/PILLARS.md"], writes=["03-panels/synthesis.md"], exemplar=True,
+   reads=["01-intake/PRD-ENHANCED.md","00-vision/PILLARS.md"], writes=["03-panels/synthesis.md"], exemplar=True, extra_skill="expert-panel",
    deep='''
     <div class="deep-sec">
       <div class="deep-title">The four panel lenses</div>
       <div class="deep-sub">Every panel is one of four lenses. Which lenses run, and who sits on each, is composed per project; <b>the default full track convenes Business + Technical + SME/Users</b>, fast track picks the single most relevant.</div>
       <div class="lens-grid">
-        <div class="lens blue"><h5>Business</h5><div class="lens-skill">/business-expert-panel</div><p>Market, GTM, pricing tiers, unit economics, gross margin, moats, regulatory exposure (COPPA/FERPA/AI-in-classroom), 2nd-order societal effects.</p><div class="catches"><b>Catches:</b> is this check-writable? is the funnel real?</div></div>
-        <div class="lens teal"><h5>Technical</h5><div class="lens-skill">/technical-expert-panel · /security-expert-panel</div><p>Architecture, testability, performance, security, accessibility, DevEx/CI, mobile/iPad constraints, model/inference design.</p><div class="catches"><b>Catches:</b> will it hold up? is it testable? where does it break?</div></div>
-        <div class="lens purple"><h5>SME (domain)</h5><div class="lens-skill">/asl-expert-panel · /superbuilders-patrick-panel</div><p>Domain experts speaking in voice — ASL linguists, Deaf engineers, Direct-Instruction scholars, integration leads. Pedagogy, domain correctness, cultural soundness.</p><div class="catches"><b>Catches:</b> is it right for the domain? is it tone-deaf?</div></div>
-        <div class="lens green"><h5>Users</h5><div class="lens-skill">/user-panel</div><p>The people who'll actually touch it, in first person — kids, parents, teachers, operators. Names every hands-on persona (see P5 → tests).</p><div class="catches"><b>Catches:</b> does it feel like exploration, or homework?</div></div>
+        <div class="lens blue"><h5>Business</h5><div class="lens-skill">/expert-panel · Business</div><p>Market &amp; timing, GTM motion, pricing &amp; packaging, unit economics, regulatory exposure, moat/defensibility, 2nd-order effects of success at scale.</p><div class="catches"><b>Catches:</b> is this viable, fundable, defensible?</div></div>
+        <div class="lens teal"><h5>Technical</h5><div class="lens-skill">/expert-panel · Technical</div><p>Architecture, testability, performance, security, privacy, accessibility, reliability, DevEx/CI, data, and model/inference design (if AI).</p><div class="catches"><b>Catches:</b> will it hold up? is it testable? where does it break?</div></div>
+        <div class="lens purple"><h5>SME (domain)</h5><div class="lens-skill">/expert-panel · SME</div><p>Domain experts in voice — the project's own field, whatever it is. Domain correctness, accepted practice, legitimacy, cultural soundness, real edge cases.</p><div class="catches"><b>Catches:</b> is it right and credible in the domain?</div></div>
+        <div class="lens green"><h5>Users</h5><div class="lens-skill">/expert-panel · Users</div><p>Every hands-on persona in first person — primary &amp; secondary users, the operator/admin, the skeptic, the buyer-not-user, the misuser. Feeds P5 → tests.</p><div class="catches"><b>Catches:</b> does it actually work for the people who touch it?</div></div>
       </div>
     </div>
 
+    <div class="deep-sec">
+      <div class="deep-title">Building a panel — three orders, then pare</div>
+      <div class="deep-sub">Each area's panel is constructed by the generic <code>/expert-panel</code> skill: <b>overproduce candidates across three orders of distance from the work, score them, and pare to the load-bearing 6–8</b> — grounded and hard to fool. The skill names disciplines, not people, and is instantiated per project (no product baked in).</div>
+      <div class="lens-grid">
+        <div class="lens blue"><h5>1st order · Practitioners</h5><p>Do the work hands-on, now. Ground truth and real costs. <b>≥3</b> on the panel.</p></div>
+        <div class="lens teal"><h5>2nd order · Shapers &amp; Critics</h5><p>Fund, regulate, standardize, audit. The external constraint insiders stop seeing. <b>≥2</b>.</p></div>
+        <div class="lens purple"><h5>3rd order · Outsiders &amp; Long-horizon</h5><p>Adjacent / contrarian / systemic / failure-mode. Catches the non-obvious fatal flaw. <b>≥1 — never cut</b>.</p></div>
+        <div class="lens green"><h5>Pare to 6–8</h5><p>Score on pillar-relevance · unique coverage · concrete ask · perspective distance. The composition rule keeps it from becoming an echo chamber.</p></div>
+      </div>
+    </div>
     <div class="deep-sec">
       <div class="deep-title">How a panel runs</div>
       <ol class="proto">
@@ -185,17 +195,8 @@ PH = [
     </div>
 
     <div class="deep-sec">
-      <div class="deep-title">The panel library — every panel skill</div>
-      <div class="deep-sub">Panels are <b>composed</b> from this library by domain; panelists are named per project. New domains add a new panel skill rather than overloading an existing one.</div>
-      <table class="idx"><thead><tr><th style="width:30%">Panel skill</th><th style="width:14%">Lens</th><th>When to convene it</th></tr></thead><tbody>
-        <tr><td class="k">/business-expert-panel</td><td>Business</td><td>Market / GTM / pricing / unit economics / regulatory — "is this fundable?"</td></tr>
-        <tr><td class="k">/technical-expert-panel</td><td>Technical</td><td>Architecture, testability, perf, a11y, DevEx — general build soundness.</td></tr>
-        <tr><td class="k">/security-expert-panel</td><td>Technical</td><td>Threat model, adversarial AI, compliance — weight up for healthcare/finance.</td></tr>
-        <tr><td class="k">/asl-technical-panel</td><td>Technical</td><td>On-device / browser inference, datasets, camera UX — vision-model builds.</td></tr>
-        <tr><td class="k">/asl-expert-panel</td><td>SME</td><td>ASL linguists, Deaf community, interpreters — domain + cultural correctness.</td></tr>
-        <tr><td class="k">/superbuilders-patrick-panel</td><td>SME</td><td>Alpha/Primer/Direct-Instruction lens — mission + integration readiness.</td></tr>
-        <tr><td class="k">/user-panel</td><td>Users</td><td>Kids / parents / teachers / operators in first person — felt-sense gut-check.</td></tr>
-      </tbody></table>
+      <div class="deep-title">Output &amp; integration</div>
+      <div class="deep-sub">The deliverable is the <b>synthesis</b> (convergent / divergent / risks / open) — not the transcripts — read by the operator at <b>Gate 1</b>. The same generic skill serves any product; a built project's <i>instantiated</i> panel (with named personas) lives in that project's <code>03-panels/</code>, never in the skill. The full skill text is embedded below.</div>
     </div>
    '''),
 
@@ -611,6 +612,10 @@ def load_role_briefs():
     return "\n\n".join(out)
 ROLE_BRIEFS = load_role_briefs()
 
+def load_skill_file(name):
+    p = ROOT+"/skills/"+name+"/SKILL.md"
+    return open(p).read() if os.path.exists(p) else ""
+
 def topnav(active):
     # Slim, high-level developer destinations — phases live in the left nav + hub stepper.
     # active="index" highlights Plan (every Skills-Atlas page is part of the plan).
@@ -669,6 +674,11 @@ def skill_card(p):
         if p.get("subskills") and ROLE_BRIEFS:
             block += (f'<div class="src-where" style="margin-top:12px;">Build-team role briefs — verbatim from <code>templates/agent-roles/</code>:</div>'
                       f'<pre class="src-raw">{html.escape(ROLE_BRIEFS)}</pre>')
+        if p.get("extra_skill"):
+            et = load_skill_file(p["extra_skill"])
+            if et:
+                block += (f'<div class="src-where" style="margin-top:12px;">The generic <code>/{p["extra_skill"]}</code> skill — verbatim from <code>skills/{p["extra_skill"]}/SKILL.md</code>:</div>'
+                          f'<pre class="src-raw">{html.escape(et)}</pre>')
         block += '</details>'
         sub += block
     else:
