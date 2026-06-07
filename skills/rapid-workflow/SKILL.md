@@ -519,6 +519,25 @@ For any build with a user-facing surface, design is **not** a P6 afterthought �
 
 **This is the point of no return. Implementation starts after this.**
 
+**Planning-alignment lock (fail-closed).** G2 is where the whole planning chain is locked in
+*alignment*, not just the spec. Before the operator approves, `tools/trace-check.sh` builds the
+**traceability matrix** and fails closed unless it is complete: every enhanced-PRD requirement
+(`BR/FR/TR/NFR-N`) maps to a spec section *or* is explicitly `[OUT OF SCOPE]`, and every spec
+section (`S-NN`) traces back to a requirement. No orphan requirement (unbuilt), no orphan spec
+(scope creep). It writes `planning_aligned` to `.rapid/TRACE.json`; the phase-gate hook refuses
+P6 while it's false. On pass, G2 snapshots the aligned set (enhanced PRD + spec + workflow +
+mocks + tasks + eval) as a **versioned baseline** (a git tag + content hashes) — "what we agreed
+to build," immutable alongside the locked eval harness.
+
+**Amendment protocol — new requirements stay version-controlled.** The *raw* PRD
+(`01-intake/PRD.md`) is frozen forever (the input contract). New requirements **never silently
+edit** it. They land as **numbered, dated, gate-ratified amendments** to the enhanced PRD
+(`FR-19 [AMENDMENT @ G2 · YYYY-MM-DD]`), which then (a) re-derive the affected spec section,
+(b) update `01-intake/DIFF.md`, (c) log a decision in `.rapid/DECISIONS.json`, and (d) bump the
+enhanced-PRD version header. Pre-build → ratified at G2; mid-build (P8 PRD-level gap) → back to
+the operator → ratified at G3 → re-baseline. The enhanced PRD is the single version-controlled
+**requirements register**; the TRACE matrix is the alignment proof; the baseline is the freeze.
+
 **Document review agents (pre-screen):** Before presenting to operator, spawn 3+3 parallel doc review subagents — the standard 3 (scope, coherence, adversarial) plus the deepening findings from P5b:
 - **Scope Guardian**: Is the spec overbuilt for the stated timeline? Are there tasks that don't serve any pillar?
 - **Coherence reviewer**: Do spec sections contradict each other? Does the architecture match the workflow state machine?
@@ -764,6 +783,8 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
    | **Standards** (CE) | CLAUDE.md compliance, project conventions, Constitution Articles VI–X | What violates the project's own rules |
 
    After all reviewers return, the supervisor runs a **dedup/synthesis step**: merge overlapping findings, resolve contradictions (higher-confidence wins), produce a single verdict: APPROVE (all reviewers approve or LOW-confidence objections only) or REQUEST_CHANGES (any HIGH-confidence objection). Log all individual verdicts + synthesis to `.rapid/REVIEW.json`.
+
+   **Every PR also passes the alignment & quality checklist** (`templates/PR-CHECKLIST.md`, auto-applied via `.github/pull_request_template.md`): it must (1) trace to ≥1 enhanced-PRD requirement + ≥1 spec section and update `04-spec/TRACE.md`; (2) **honor the expert panels' asks/risks** for the area it touches (`03-panels/synthesis.md` + `roster.json`) — Design PRs match the G2 comp, Users PRs preserve the persona scenarios; (3) violate no Constitution Article and serve a pillar; (4) clear quality — function-level test coverage, no MUST-module stubs, watchdog drift CLEAN. The reviewer fills it; the **watchdog independently verifies the PRD/spec/panel-alignment claims** against `04-spec/` and `03-panels/` (a claim it can't verify blocks the merge). Any new requirement surfaced by the PR follows the **amendment protocol** (versioned enhanced-PRD amendment + DIFF + decision), never a silent edit.
 
    On fast track: run 3 reviewers (Correctness + Spec Compliance + Security).
    On full track: run all 9. Reviewer weights shift by domain — security heaviest for healthcare, performance for real-time, reliability for infrastructure, API contract for platform/SDK projects.

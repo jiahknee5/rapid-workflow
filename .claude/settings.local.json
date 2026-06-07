@@ -73,7 +73,10 @@
       "Bash(ln -sfn __TRACKED_VAR__/skills/refine ~/.claude/skills/refine)",
       "Bash(sed -n '496,512p' skills/rapid-workflow/SKILL.md)",
       "Bash(awk '{print \"  observatory API_BASE overridable: \"$1}')",
-      "Bash(echo \" docs.json entries after regen: $\\(python3 -c \"import json;d=json.load\\(open\\('docs.json'\\)\\);print\\(len\\(d\\) if isinstance\\(d,list\\) else len\\(d.get\\('pages',d.get\\('docs',d\\)\\)\\)\\)\" \\)\")"
+      "Bash(echo \" docs.json entries after regen: $\\(python3 -c \"import json;d=json.load\\(open\\('docs.json'\\)\\);print\\(len\\(d\\) if isinstance\\(d,list\\) else len\\(d.get\\('pages',d.get\\('docs',d\\)\\)\\)\\)\" \\)\")",
+      "Bash(gh pr *)",
+      "Bash(echo \" existing PR? $\\(gh pr list --head rename-to-rapid --json number --jq 'length' || echo '?'\\)\")",
+      "Bash(echo \"  exit: $?\")"
     ]
   }
 }
