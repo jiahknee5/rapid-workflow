@@ -275,11 +275,11 @@ const POLL_INTERVAL = 3000;
 // ═══ AGENT COLORS ═══
 const AC = {
   'orchestrator':{c:'var(--c-orch)',d:'var(--c-orch-dim)'},
-  'supervisor':  {c:'var(--c-supv)',d:'var(--c-supv-dim)'},
-  'impl-1':      {c:'var(--c-impl1)',d:'var(--c-impl1-dim)'},
-  'impl-2':      {c:'var(--c-impl2)',d:'var(--c-impl2-dim)'},
-  'impl-3':      {c:'var(--c-impl3)',d:'var(--c-impl3-dim)'},
-  'impl-4':      {c:'var(--c-impl4)',d:'var(--c-impl4-dim)'},
+  'planner':     {c:'var(--c-supv)',d:'var(--c-supv-dim)'},
+  'coder-1':     {c:'var(--c-impl1)',d:'var(--c-impl1-dim)'},
+  'coder-2':     {c:'var(--c-impl2)',d:'var(--c-impl2-dim)'},
+  'coder-3':     {c:'var(--c-impl3)',d:'var(--c-impl3-dim)'},
+  'coder-4':     {c:'var(--c-impl4)',d:'var(--c-impl4-dim)'},
   'watchdog':    {c:'var(--c-watch)',d:'var(--c-watch-dim)'},
   'reviewer':    {c:'var(--c-revw)',d:'var(--c-revw-dim)'},
   'tester':      {c:'var(--c-test)',d:'var(--c-test-dim)'},
@@ -545,15 +545,20 @@ function renderAgentTopology() {
   }
 
   const orch = AGENTS.find(a => a.role === 'orchestrator');
-  const supv = AGENTS.find(a => a.role === 'supervisor');
-  const impls = AGENTS.filter(a => a.role === 'implementor');
+  const planner = AGENTS.find(a => a.role === 'planner');
+  const coders = AGENTS.filter(a => a.role === 'coder');
+  const tester = AGENTS.find(a => a.role === 'tester');
+  const reviewer = AGENTS.find(a => a.role === 'reviewer');
   const watch = AGENTS.find(a => a.role === 'watchdog');
-  const others = AGENTS.filter(a => !['orchestrator','supervisor','implementor','watchdog'].includes(a.role));
+  const leadRoles = ['orchestrator','planner','coder','tester','reviewer','watchdog'];
+  const others = AGENTS.filter(a => !leadRoles.includes(a.role));
 
   let html = '';
   if (orch) html += `<div class="arc3-section"><div class="arc3-section-label">Orchestrator<span class="line"></span></div>${node(orch)}</div><div class="connector"><div class="vline"></div></div>`;
-  if (supv) html += `<div class="arc3-section"><div class="arc3-section-label">Supervisor<span class="line"></span></div>${node(supv)}</div><div class="connector"><div class="vline"></div></div>`;
-  if (impls.length) html += `<div class="arc3-section"><div class="arc3-section-label">Implementors (${impls.filter(a=>a.status==='complete').length}/${impls.length} done)<span class="line"></span></div>${impls.map(node).join('')}</div><div class="connector"><div class="vline"></div></div>`;
+  if (planner) html += `<div class="arc3-section"><div class="arc3-section-label">Planner<span class="line"></span></div>${node(planner)}</div><div class="connector"><div class="vline"></div></div>`;
+  if (coders.length) html += `<div class="arc3-section"><div class="arc3-section-label">Coders (${coders.filter(a=>a.status==='complete').length}/${coders.length} done)<span class="line"></span></div>${coders.map(node).join('')}</div><div class="connector"><div class="vline"></div></div>`;
+  if (tester) html += `<div class="arc3-section"><div class="arc3-section-label">Tester<span class="line"></span></div>${node(tester)}</div><div class="connector"><div class="vline"></div></div>`;
+  if (reviewer) html += `<div class="arc3-section"><div class="arc3-section-label">Reviewer<span class="line"></span></div>${node(reviewer)}</div><div class="connector"><div class="vline"></div></div>`;
   if (watch) html += `<div class="arc3-section"><div class="arc3-section-label">Watchdog<span class="line"></span></div>${node(watch)}</div>`;
   if (others.length) html += `<div class="connector"><div class="vline"></div></div><div class="arc3-section"><div class="arc3-section-label">Other (${others.length})<span class="line"></span></div>${others.map(node).join('')}</div>`;
 
@@ -565,8 +570,8 @@ function selectAgent(id) {
   else {
     selectedAgent = id;
     if (id === 'orchestrator') { activeL1 = 'orch'; activeL2 = null; }
-    else if (id === 'supervisor') { activeL1 = 'supv'; activeL2 = null; }
-    else if (id.startsWith('impl')) { activeL1 = 'impl'; activeL2 = id; }
+    else if (id === 'planner') { activeL1 = 'plan'; activeL2 = null; }
+    else if (id.startsWith('coder')) { activeL1 = 'coder'; activeL2 = id; }
     else { activeL1 = 'sub'; activeL2 = id; }
   }
   renderAgentTopology();
@@ -623,14 +628,14 @@ let activeL1 = 'all', activeL2 = null;
 function renderTabs() {
   const l1 = document.getElementById('tabs-l1');
   const l2 = document.getElementById('tabs-l2');
-  const implAgents = AGENTS.filter(a => a.role === 'implementor').map(a => a.id);
-  const subAgents = AGENTS.filter(a => !['orchestrator','supervisor','implementor'].includes(a.role)).map(a => a.id);
+  const coderAgents = AGENTS.filter(a => a.role === 'coder').map(a => a.id);
+  const subAgents = AGENTS.filter(a => !['orchestrator','planner','coder'].includes(a.role)).map(a => a.id);
 
   const tabs = [
     {id:'all',  label:'All',          dot:null,            count:EVENTS.length},
     {id:'orch', label:'Orchestrator', dot:'var(--c-orch)', count:EVENTS.filter(e=>e.agent==='orchestrator').length},
-    {id:'supv', label:'Supervisor',   dot:'var(--c-supv)', count:EVENTS.filter(e=>e.agent==='supervisor').length},
-    {id:'impl', label:'Implementors', dot:'var(--green)',  count:EVENTS.filter(e=>e.agent?.startsWith('impl')).length},
+    {id:'plan', label:'Planner',      dot:'var(--c-supv)', count:EVENTS.filter(e=>e.agent==='planner').length},
+    {id:'coder',label:'Coders',       dot:'var(--green)',  count:EVENTS.filter(e=>e.agent?.startsWith('coder')).length},
     {id:'sub',  label:'Subagents',    dot:'var(--amber)',  count:EVENTS.filter(e=>subAgents.includes(e.agent)).length},
   ];
   l1.innerHTML = tabs.map(t =>
@@ -640,7 +645,7 @@ function renderTabs() {
   ).join('');
 
   let l2Tabs = [];
-  if (activeL1==='impl') l2Tabs = implAgents.map(id=>({id,label:id,dot:ac(id).c}));
+  if (activeL1==='coder') l2Tabs = coderAgents.map(id=>({id,label:id,dot:ac(id).c}));
   else if (activeL1==='sub') l2Tabs = subAgents.map(id=>({id,label:id,dot:ac(id).c,half:true}));
   l2.innerHTML = l2Tabs.map(t =>
     `<div class="tab ${t.half?'half':''} ${activeL2===t.id?'active':''}" onclick="setL2('${t.id}')">
@@ -654,11 +659,11 @@ function setL2(id) { activeL2=activeL2===id?null:id; selectedAgent=id; renderTab
 
 // ═══ RENDER: LOG ═══
 function filterEvents() {
-  const subAgents = AGENTS.filter(a => !['orchestrator','supervisor','implementor'].includes(a.role)).map(a => a.id);
+  const subAgents = AGENTS.filter(a => !['orchestrator','planner','coder'].includes(a.role)).map(a => a.id);
   if (activeL2) return EVENTS.filter(e=>e.agent===activeL2);
   if (activeL1==='orch') return EVENTS.filter(e=>e.agent==='orchestrator');
-  if (activeL1==='supv') return EVENTS.filter(e=>e.agent==='supervisor');
-  if (activeL1==='impl') return EVENTS.filter(e=>e.agent?.startsWith('impl'));
+  if (activeL1==='plan') return EVENTS.filter(e=>e.agent==='planner');
+  if (activeL1==='coder') return EVENTS.filter(e=>e.agent?.startsWith('coder'));
   if (activeL1==='sub') return EVENTS.filter(e=>subAgents.includes(e.agent));
   return EVENTS;
 }

@@ -178,7 +178,7 @@ html,body{background:#11161d;}
           <li>The protocol says <b>"do X before proceeding."</b></li>
           <li>X produces <b>no visible output</b> — tests, reviews, coverage.</li>
           <li>The next step <b>does</b> produce visible output — working code, a deploy.</li>
-          <li>Under time or context pressure, the implementor <b>skips X</b> and does the exciting thing. Every time.</li>
+          <li>Under time or context pressure, the coder <b>skips X</b> and does the exciting thing. Every time.</li>
         </ul>
       </div>
       <div>
@@ -187,7 +187,7 @@ html,body{background:#11161d;}
           <li><b>Hooks (R1, R7–R9)</b> — make advancing, stopping early, or shipping a stub mechanically impossible.</li>
           <li><b>A separate watchdog (R2)</b> — its only job is auditing; no implementation incentive.</li>
           <li><b>Blocking dependencies (R4)</b> — the eval harness is task-00, not a prose reminder.</li>
-          <li><b>Tiered reviewers</b> — separate subagents the implementor's context can't pressure.</li>
+          <li><b>Tiered reviewers</b> — separate subagents the coder's context can't pressure.</li>
         </ul>
       </div>
     </div>
@@ -479,8 +479,8 @@ html,body{background:#11161d;}
         <ul class="blist tight">
           <li>One <b>long-lived terminal per lead</b>, connected via claude-peers (12 message types, JSON envelope).</li>
           <li>The <b>coder</b> runs 1–4 coder terminals only for long, interdependent tasks; otherwise fans out coding subagents — <b>bounded parallelism</b>.</li>
-          <li>The <b>watchdog</b> is never an implementor — its only output is audit findings, so it has no incentive to skip them.</li>
-          <li>Beyond a fan-out of 4, supervisor arbitration becomes noise and review stops being honest.</li>
+          <li>The <b>watchdog</b> is never a coder — its only output is audit findings, so it has no incentive to skip them.</li>
+          <li>Beyond a fan-out of 4, the reviewer can't honestly check every diff and review stops being meaningful.</li>
         </ul>
       </div>
       <div>
@@ -508,14 +508,14 @@ html,body{background:#11161d;}
       <div>
         <div class="colhead">Tiered review — different lenses find different bugs</div>
         <ul class="blist tight">
-          <li><b>5 parallel specialized reviewers</b>, each a separate subagent the implementor's context can't pressure.</li>
+          <li><b>Per-dimension review subagents</b> (correctness · security · perf · …), each a separate subagent the coder's context can't pressure.</li>
           <li><b>Confidence gating</b> suppresses low-confidence noise; findings are de-duplicated across reviewers.</li>
           <li><b>Weights shift by domain</b> — security heaviest for healthcare, performance for real-time, correctness for financial.</li>
           <li>Backed by the <kbd>review</kbd>, <kbd>simplify</kbd>, <kbd>security-review</kbd>, and <kbd>eval</kbd> skills.</li>
         </ul>
         <div class="rationale teal">
           <div class="r-label">Why separate, not one reviewer</div>
-          <div class="r-text">One reviewer reading 8 parallel diffs misses things a focused lens catches. Five narrow reviewers + dedup beats one broad pass.</div>
+          <div class="r-text">One reviewer reading 8 parallel diffs misses things a focused lens catches. Per-dimension reviewers + dedup beats one broad pass.</div>
         </div>
       </div>
       <div>
@@ -544,7 +544,7 @@ html,body{background:#11161d;}
     <div class="options cols-3" style="grid-template-rows:1fr 1fr;">
       <div class="option red">
         <div class="opt-name"><span class="k">R2</span> Separate auditor</div>
-        <div class="opt-desc">The watchdog ≠ any implementor — the builder structurally <b>cannot skip its own safety checks</b>.</div>
+        <div class="opt-desc">The watchdog ≠ any coder — the builder structurally <b>cannot skip its own safety checks</b>.</div>
       </div>
       <div class="option teal">
         <div class="opt-name"><span class="k">R4</span> Immutable evals</div>
@@ -692,7 +692,7 @@ html,body{background:#11161d;}
 <!-- ===== 19 · OBSERVABILITY ===== -->
 <section><div class="slide">
   <div class="eyebrow">Observability</div>
-  <div class="title">Every agent emits an event stream, so the whole swarm is watchable live</div>
+  <div class="title">Every agent emits an event stream, so the whole build team is watchable live</div>
   <div class="fill">
     <div class="flow" style="gap:3px;margin:4px 0 10px;justify-content:flex-start;">
       <span class="n">agents emit JSONL<small>.rapid/observe/{agent}.jsonl</small></span><span class="arr">→</span>
@@ -712,14 +712,14 @@ html,body{background:#11161d;}
       <div>
         <div class="colhead">What the Observatory shows</div>
         <ul class="blist tight">
-          <li><b>Agent topology</b> — the live swarm graph (who spawned whom, who's messaging whom).</li>
+          <li><b>Agent topology</b> — the live team graph (who spawned whom, who's messaging whom).</li>
           <li><b>Event stream</b> — the merged, time-ordered feed across all agents.</li>
           <li><b>Health view</b> — phase / tasks / tests / doc staleness at a glance.</li>
           <li>Heartbeats every 5m during P6; <b>stall detection</b> at 10m of stale heartbeat.</li>
         </ul>
         <div class="rationale teal">
           <div class="r-label">Why it matters</div>
-          <div class="r-text">An autonomous swarm you can't see is an autonomous swarm you can't trust. Observability is how the operator stays in the loop without being in the path.</div>
+          <div class="r-text">An autonomous build team you can't see is one you can't trust. Observability is how the operator stays in the loop without being in the path.</div>
         </div>
       </div>
     </div>
