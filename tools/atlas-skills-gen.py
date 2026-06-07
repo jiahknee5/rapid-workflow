@@ -665,6 +665,7 @@ def topnav(active):
         ("Plan", "index.html", True, None),
         ("Build &amp; Observatory", "../observatory.html", False, None),
         ("Test Suite", "../testsuite.html", False, None),
+        ("Documentation", "../documentation.html", False, None),
         ("Local&nbsp;▶", "../home.html#product", False, "local"),
         ("Deployed", "../home.html#product", False, "deployed"),
         ("Source", "../home.html#source", False, "source"),

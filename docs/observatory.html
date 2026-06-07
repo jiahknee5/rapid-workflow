@@ -268,7 +268,11 @@ a{color:#7AA2F7;}
 
 <script>
 // ═══ CONFIGURATION ═══
-const API_BASE = 'http://localhost:4040';
+// Connect target: ?api=<url> override → same-origin when served BY observe-server
+// (any port, since it serves the dashboard at "/") → else default :4040. The server
+// sends CORS (Access-Control-Allow-Origin:*), so cross-origin (e.g. Atlas-served) works too.
+const API_BASE = new URLSearchParams(location.search).get('api')
+  || (location.protocol.startsWith('http') && /\/(dashboard)?$/.test(location.pathname) ? location.origin : 'http://localhost:4040');
 const POLL_INTERVAL = 3000;
 
 // ═══ AGENT COLORS ═══

@@ -71,7 +71,8 @@
       "Bash(sort -t'#' -k2 -n -u)",
       "Bash(awk '{print \"  \"$1\" references to tiered-review / doc-review-gates / pulse / learnings / optimization / compound-loop\"}')",
       "Bash(ln -sfn __TRACKED_VAR__/skills/refine ~/.claude/skills/refine)",
-      "Bash(sed -n '496,512p' skills/rapid-workflow/SKILL.md)"
+      "Bash(sed -n '496,512p' skills/rapid-workflow/SKILL.md)",
+      "Bash(awk '{print \"  observatory API_BASE overridable: \"$1}')"
     ]
   }
 }
