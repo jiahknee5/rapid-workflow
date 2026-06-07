@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "updated": "2026-06-06",
   "generated_by": "tools/build-docs-registry.sh",
   "categories": {
@@ -116,22 +116,6 @@
       "generated": true
     },
     {
-      "file": "docs/prd-enhanced.html",
-      "title": "Prd Enhanced",
-      "category": "workflow",
-      "description": "",
-      "status": "current",
-      "generated": true
-    },
-    {
-      "file": "docs/prd.html",
-      "title": "Prd",
-      "category": "workflow",
-      "description": "",
-      "status": "current",
-      "generated": true
-    },
-    {
       "file": "docs/rapid-reconstruction-prompt.md",
       "title": "Rapid Reconstruction Prompt",
       "category": "rapid",
@@ -147,22 +131,6 @@
       "status": "current"
     },
     {
-      "file": "docs/spec.html",
-      "title": "Spec",
-      "category": "workflow",
-      "description": "",
-      "status": "current",
-      "generated": true
-    },
-    {
-      "file": "docs/system-architecture.html",
-      "title": "System Architecture",
-      "category": "workflow",
-      "description": "",
-      "status": "current",
-      "generated": true
-    },
-    {
       "file": "docs/terminal-ui.html",
       "title": "Terminal Ui",
       "category": "workflow",
@@ -175,14 +143,6 @@
       "title": "Test Suite",
       "category": "workflow",
       "description": "Workflow Test Theater \u2014 runs each user workflow as a live test with a synchronized user-view / data-flow walkthrough and a per-workflow run log",
-      "status": "current",
-      "generated": true
-    },
-    {
-      "file": "docs/users.html",
-      "title": "Users",
-      "category": "workflow",
-      "description": "",
       "status": "current",
       "generated": true
     },
@@ -474,6 +434,14 @@
       "generated": true
     },
     {
+      "file": "tools/trace-check.sh",
+      "title": "Trace Check",
+      "category": "workflow",
+      "description": "",
+      "status": "new",
+      "generated": true
+    },
+    {
       "file": "tools/verify.sh",
       "title": "Verify",
       "category": "workflow",
@@ -537,6 +505,36 @@
     {
       "file": "docs/workflows.json",
       "title": "Workflow Map",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/prd-enhanced.html",
+      "title": "Prd Enhanced",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/prd.html",
+      "title": "Prd",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/spec.html",
+      "title": "Spec",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/system-architecture.html",
+      "title": "System Architecture",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/users.html",
+      "title": "Users",
       "category": "workflow",
       "status": "missing"
     }

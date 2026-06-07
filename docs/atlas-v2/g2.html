@@ -207,6 +207,25 @@ details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border
 
 **This is the point of no return. Implementation starts after this.**
 
+**Planning-alignment lock (fail-closed).** G2 is where the whole planning chain is locked in
+*alignment*, not just the spec. Before the operator approves, `tools/trace-check.sh` builds the
+**traceability matrix** and fails closed unless it is complete: every enhanced-PRD requirement
+(`BR/FR/TR/NFR-N`) maps to a spec section *or* is explicitly `[OUT OF SCOPE]`, and every spec
+section (`S-NN`) traces back to a requirement. No orphan requirement (unbuilt), no orphan spec
+(scope creep). It writes `planning_aligned` to `.rapid/TRACE.json`; the phase-gate hook refuses
+P6 while it&#x27;s false. On pass, G2 snapshots the aligned set (enhanced PRD + spec + workflow +
+mocks + tasks + eval) as a **versioned baseline** (a git tag + content hashes) — &quot;what we agreed
+to build,&quot; immutable alongside the locked eval harness.
+
+**Amendment protocol — new requirements stay version-controlled.** The *raw* PRD
+(`01-intake/PRD.md`) is frozen forever (the input contract). New requirements **never silently
+edit** it. They land as **numbered, dated, gate-ratified amendments** to the enhanced PRD
+(`FR-19 [AMENDMENT @ G2 · YYYY-MM-DD]`), which then (a) re-derive the affected spec section,
+(b) update `01-intake/DIFF.md`, (c) log a decision in `.rapid/DECISIONS.json`, and (d) bump the
+enhanced-PRD version header. Pre-build → ratified at G2; mid-build (P8 PRD-level gap) → back to
+the operator → ratified at G3 → re-baseline. The enhanced PRD is the single version-controlled
+**requirements register**; the TRACE matrix is the alignment proof; the baseline is the freeze.
+
 **Document review agents (pre-screen):** Before presenting to operator, spawn 3+3 parallel doc review subagents — the standard 3 (scope, coherence, adversarial) plus the deepening findings from P5b:
 - **Scope Guardian**: Is the spec overbuilt for the stated timeline? Are there tasks that don&#x27;t serve any pillar?
 - **Coherence reviewer**: Do spec sections contradict each other? Does the architecture match the workflow state machine?

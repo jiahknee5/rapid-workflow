@@ -422,6 +422,8 @@ The supervisor terminal owns the build loop. It reads TASKS.json and executes:
 
    After all reviewers return, the supervisor runs a **dedup/synthesis step**: merge overlapping findings, resolve contradictions (higher-confidence wins), produce a single verdict: APPROVE (all reviewers approve or LOW-confidence objections only) or REQUEST_CHANGES (any HIGH-confidence objection). Log all individual verdicts + synthesis to `.rapid/REVIEW.json`.
 
+   **Every PR also passes the alignment &amp; quality checklist** (`templates/PR-CHECKLIST.md`, auto-applied via `.github/pull_request_template.md`): it must (1) trace to ≥1 enhanced-PRD requirement + ≥1 spec section and update `04-spec/TRACE.md`; (2) **honor the expert panels&#x27; asks/risks** for the area it touches (`03-panels/synthesis.md` + `roster.json`) — Design PRs match the G2 comp, Users PRs preserve the persona scenarios; (3) violate no Constitution Article and serve a pillar; (4) clear quality — function-level test coverage, no MUST-module stubs, watchdog drift CLEAN. The reviewer fills it; the **watchdog independently verifies the PRD/spec/panel-alignment claims** against `04-spec/` and `03-panels/` (a claim it can&#x27;t verify blocks the merge). Any new requirement surfaced by the PR follows the **amendment protocol** (versioned enhanced-PRD amendment + DIFF + decision), never a silent edit.
+
    On fast track: run 3 reviewers (Correctness + Spec Compliance + Security).
    On full track: run all 9. Reviewer weights shift by domain — security heaviest for healthcare, performance for real-time, reliability for infrastructure, API contract for platform/SDK projects.
 
