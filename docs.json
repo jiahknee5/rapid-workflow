@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "updated": "2026-06-06",
   "generated_by": "tools/build-docs-registry.sh",
   "categories": {
@@ -438,7 +438,7 @@
       "title": "Trace Check",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {

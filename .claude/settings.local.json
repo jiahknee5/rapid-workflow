@@ -76,7 +76,8 @@
       "Bash(echo \" docs.json entries after regen: $\\(python3 -c \"import json;d=json.load\\(open\\('docs.json'\\)\\);print\\(len\\(d\\) if isinstance\\(d,list\\) else len\\(d.get\\('pages',d.get\\('docs',d\\)\\)\\)\\)\" \\)\")",
       "Bash(gh pr *)",
       "Bash(echo \" existing PR? $\\(gh pr list --head rename-to-rapid --json number --jq 'length' || echo '?'\\)\")",
-      "Bash(echo \"  exit: $?\")"
+      "Bash(echo \"  exit: $?\")",
+      "Bash(awk '{print \"Architecture in rapid-nav.js: \"$1}')"
     ]
   }
 }
