@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # verify.sh — real, non-negotiable verification.  "It compiles" / "it builds"
 # is NOT "it works."  Runs the actual gates with GENUINE exit codes (no pipe or
-# wrapper masking), writes a per-layer report to .forge/VERIFY.json, and exits
+# wrapper masking), writes a per-layer report to .rapid/VERIFY.json, and exits
 # nonzero if any REQUIRED layer failed or could not be run.  e2e is required to
 # ship (it catches what every other layer misses) — waive it only explicitly.
 #
-# Gate commands come from .forge/verify.cmds.json:
+# Gate commands come from .rapid/verify.cmds.json:
 #   { "build": "...", "lint": "...", "unit": "...", "e2e": "...",
 #     "waive": ["e2e"] }            # waive = not required (reported, non-blocking)
 # A layer with no command is "unrun" → blocks unless waived. On first run with no
@@ -16,9 +16,9 @@
 # failure as success here.
 set -uo pipefail
 
-[ -f ".forge/STATE.json" ] || { echo "verify: not a FORGE build (no .forge/STATE.json)" >&2; exit 2; }
-mkdir -p .forge
-CFG=".forge/verify.cmds.json"
+[ -f ".rapid/STATE.json" ] || { echo "verify: not a RAPID build (no .rapid/STATE.json)" >&2; exit 2; }
+mkdir -p .rapid
+CFG=".rapid/verify.cmds.json"
 LAYERS="build lint unit e2e"
 
 if [ ! -f "$CFG" ]; then
@@ -46,7 +46,7 @@ results, blocking_fail = [], False
 for name in layers:
     cmd = (cfg.get(name) or "").strip()
     required = name not in waive
-    log = f".forge/verify-{name}.log"
+    log = f".rapid/verify-{name}.log"
     if not cmd:
         status = "waived" if not required else "unrun"
         if required:
@@ -67,7 +67,7 @@ report = {
     "ok": not blocking_fail,
     "layers": results,
 }
-json.dump(report, open(".forge/VERIFY.json", "w"), indent=2)
+json.dump(report, open(".rapid/VERIFY.json", "w"), indent=2)
 
 # per-layer report — what actually RAN vs only inspected, and what couldn't be verified
 mark = {"pass": "PASS", "fail": "FAIL", "unrun": "UNRUN", "waived": "waived"}

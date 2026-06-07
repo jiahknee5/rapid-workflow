@@ -1,0 +1,1502 @@
+{
+  "generated": "2026-06-07T04:22:38Z",
+  "generated_by": "tools/workflow-runner.py",
+  "note": "Published run log + latest full trace per workflow. The testsuite page replays this when observe-server is not running (static /_atlas deploy); when the server is up it live-tails .rapid/RUNS/<wf>/<run>.jsonl instead.",
+  "workflows": {
+    "WF-1": {
+      "runs": [
+        {
+          "run_id": "20260607T042235Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-06-07T04:22:35Z",
+          "finished": "2026-06-07T04:22:36Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T215441Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:54:41Z",
+          "finished": "2026-05-31T21:55:16Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 1,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T215424Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:54:24Z",
+          "finished": "2026-05-31T21:54:25Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T215252Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:52:52Z",
+          "finished": "2026-05-31T21:53:26Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 1,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T215103Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:51:03Z",
+          "finished": "2026-05-31T21:51:38Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 1,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T214945Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:49:45Z",
+          "finished": "2026-05-31T21:49:49Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T214823Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:48:23Z",
+          "finished": "2026-05-31T21:48:27Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T214812Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:48:12Z",
+          "finished": "2026-05-31T21:48:13Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T213458Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:34:58Z",
+          "finished": "2026-05-31T21:34:58Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T212920Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:29:20Z",
+          "finished": "2026-05-31T21:29:21Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
+        {
+          "run_id": "20260531T212408Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-05-31T21:24:08Z",
+          "finished": "2026-05-31T21:24:09Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        }
+      ],
+      "latest": {
+        "run_id": "20260607T042235Z",
+        "summary": {
+          "seq": 11,
+          "type": "run_done",
+          "wf": "WF-1",
+          "run_id": "20260607T042235Z",
+          "t": "2026-06-07T04:22:36Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5
+        },
+        "nodes": [
+          {
+            "seq": 2,
+            "type": "node_done",
+            "wf": "WF-1",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:35Z",
+            "node_id": "n1-start",
+            "label": "Understand",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 0,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "prd-enhanced.html"
+            },
+            "declared": {
+              "in": "One-line idea (/rapid-workflow \"<idea>\")",
+              "proc": "Consult panels + research, read the locked requirement register",
+              "out": "Scope understood; requirement count + current phase, prepopulated"
+            },
+            "data_in": {
+              "idea": "build a math tutor for kids"
+            },
+            "data_out": {
+              "path": "01-intake/PRD-ENHANCED.md",
+              "matches": 24,
+              "pattern": "^### (BR|FR|TR|NFR)-"
+            }
+          },
+          {
+            "seq": 4,
+            "type": "node_done",
+            "wf": "WF-1",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:35Z",
+            "node_id": "n2-plan",
+            "label": "Plan + tests-first (gate 1)",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 1,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "eval.html"
+            },
+            "declared": {
+              "in": "Build plan + tests generated from the plan",
+              "proc": "Decompose into tasks; lock the immutable eval harness as the dependency root",
+              "out": "Task graph + .rapid/EVAL/ test files exist before any code"
+            },
+            "data_in": {
+              "path": "01-intake/PRD-ENHANCED.md",
+              "matches": 24,
+              "pattern": "^### (BR|FR|TR|NFR)-"
+            },
+            "data_out": {
+              "pattern": ".rapid/EVAL/*.test.sh",
+              "count": 1,
+              "sample": [
+                "hooks.smoke.test.sh"
+              ]
+            }
+          },
+          {
+            "seq": 6,
+            "type": "node_done",
+            "wf": "WF-1",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:35Z",
+            "node_id": "n3-build",
+            "label": "Agents build in parallel",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 2,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "observatory.html"
+            },
+            "declared": {
+              "in": "Approved plan, task assignments",
+              "proc": "Five-lead team builds; conformance hook traces every done task's refs",
+              "out": "Tasks merged; conformance audit current"
+            },
+            "data_in": {
+              "pattern": ".rapid/EVAL/*.test.sh",
+              "count": 1,
+              "sample": [
+                "hooks.smoke.test.sh"
+              ]
+            },
+            "data_out": {
+              "path": ".rapid/TASKS.json",
+              "extract": "tasks.$len",
+              "value": 16
+            }
+          },
+          {
+            "seq": 8,
+            "type": "node_done",
+            "wf": "WF-1",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:36Z",
+            "node_id": "n4-test",
+            "label": "Test vs criteria (codex tester)",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 3,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.61,
+            "view": {
+              "kind": "iframe",
+              "src": "eval.html"
+            },
+            "declared": {
+              "in": "Built code + criteria from the plan",
+              "proc": "Codex (the tester) runs the ship gate and independently judges the eval result",
+              "out": "Codex verdict {status, evidence}; pass only if the eval gate is green"
+            },
+            "data_in": {
+              "path": ".rapid/TASKS.json",
+              "extract": "tasks.$len",
+              "value": 16
+            },
+            "data_out": {
+              "role": "codex",
+              "engine": "fallback (agents=off)",
+              "cmd": "bash tools/ship-gate.sh",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.61,
+              "tail": "wrote docs/eval.json (4/4 assertions, 1/1 harness test(s) passing)\n  [PASS] verification_real: all required layers green with genuine exit codes\n  [PASS] no_open_stub_gaps: 0 open MAJOR+ stub gap(s)\n  [PASS] no_stubs_in_tree: 0 stub marker(s) found in source tree\n  [PASS] no_open_conformance_gaps: 0 open MAJOR+ conformance gap(s)\n\nSHIP GATE OPEN: stub + conformance assertions pass.",
+              "parsed": {
+                "pass": 4,
+                "fail": 0,
+                "total": 4
+              }
+            }
+          },
+          {
+            "seq": 10,
+            "type": "node_done",
+            "wf": "WF-1",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:36Z",
+            "node_id": "n5-ship",
+            "label": "Ship gate (gate 3 \u00b7 simulated operator)",
+            "lane": "actor",
+            "node_class": "n-gate",
+            "index": 4,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "documentation.html"
+            },
+            "declared": {
+              "in": "Working app, tests, doc completeness, cost, remaining gaps",
+              "proc": "Simulated operator decides on the ship gate from the run evidence (a real ship still needs a real human)",
+              "out": "Decision {approve|reject|hold} + rationale; deploy/doc-site follow on approve"
+            },
+            "data_in": {
+              "role": "codex",
+              "engine": "fallback (agents=off)",
+              "cmd": "bash tools/ship-gate.sh",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.61,
+              "tail": "wrote docs/eval.json (4/4 assertions, 1/1 harness test(s) passing)\n  [PASS] verification_real: all required layers green with genuine exit codes\n  [PASS] no_open_stub_gaps: 0 open MAJOR+ stub gap(s)\n  [PASS] no_stubs_in_tree: 0 stub marker(s) found in source tree\n  [PASS] no_open_conformance_gaps: 0 open MAJOR+ conformance gap(s)\n\nSHIP GATE OPEN: stub + conformance assertions pass.",
+              "parsed": {
+                "pass": 4,
+                "fail": 0,
+                "total": 4
+              }
+            },
+            "data_out": {
+              "role": "human",
+              "engine": "fallback (agents=off)",
+              "path": "docs.json",
+              "extract": "docs.$len",
+              "value": 61
+            }
+          }
+        ]
+      }
+    },
+    "WF-2": {
+      "runs": [
+        {
+          "run_id": "20260607T042236Z",
+          "wf": "WF-2",
+          "title": "PRD \u2192 gated build, failing gate, gap loop, re-converge",
+          "started": "2026-06-07T04:22:36Z",
+          "finished": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
+          "input": {
+            "source": ".rapid/GAPS.json"
+          }
+        },
+        {
+          "run_id": "20260531T215425Z",
+          "wf": "WF-2",
+          "title": "PRD \u2192 gated build, failing gate, gap loop, re-converge",
+          "started": "2026-05-31T21:54:25Z",
+          "finished": "2026-05-31T21:54:25Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
+          "input": {
+            "source": ".rapid/GAPS.json"
+          }
+        },
+        {
+          "run_id": "20260531T214813Z",
+          "wf": "WF-2",
+          "title": "PRD \u2192 gated build, failing gate, gap loop, re-converge",
+          "started": "2026-05-31T21:48:13Z",
+          "finished": "2026-05-31T21:48:13Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
+          "input": {
+            "source": ".rapid/GAPS.json"
+          }
+        },
+        {
+          "run_id": "20260531T213458Z",
+          "wf": "WF-2",
+          "title": "PRD \u2192 gated build, failing gate, gap loop, re-converge",
+          "started": "2026-05-31T21:34:58Z",
+          "finished": "2026-05-31T21:34:59Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
+          "input": {
+            "source": ".rapid/GAPS.json"
+          }
+        },
+        {
+          "run_id": "20260531T212429Z",
+          "wf": "WF-2",
+          "title": "PRD \u2192 gated build, failing gate, gap loop, re-converge",
+          "started": "2026-05-31T21:24:29Z",
+          "finished": "2026-05-31T21:24:30Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
+          "input": {
+            "source": ".rapid/GAPS.json"
+          }
+        },
+        {
+          "run_id": "20260531T212409Z",
+          "wf": "WF-2",
+          "title": "PRD \u2192 gated build, failing gate, gap loop, re-converge",
+          "started": "2026-05-31T21:24:09Z",
+          "finished": "2026-05-31T21:24:09Z",
+          "status": "fail",
+          "pass": 3,
+          "fail": 1,
+          "info": 0,
+          "total": 4,
+          "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
+          "input": {
+            "source": ".rapid/GAPS.json"
+          }
+        }
+      ],
+      "latest": {
+        "run_id": "20260607T042236Z",
+        "summary": {
+          "seq": 9,
+          "type": "run_done",
+          "wf": "WF-2",
+          "run_id": "20260607T042236Z",
+          "t": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4
+        },
+        "nodes": [
+          {
+            "seq": 2,
+            "type": "node_done",
+            "wf": "WF-2",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:36Z",
+            "node_id": "n1-intake",
+            "label": "Intake + lock criteria",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 0,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "spec.html"
+            },
+            "declared": {
+              "in": "Stakeholder PRD document",
+              "proc": "Derive plan; generate tests from the plan before code; lock acceptance criteria",
+              "out": "Build plan with locked acceptance criteria (immutable EVAL)"
+            },
+            "data_in": {
+              "source": ".rapid/GAPS.json"
+            },
+            "data_out": {
+              "pattern": ".rapid/EVAL/*",
+              "count": 1,
+              "sample": [
+                "hooks.smoke.test.sh"
+              ]
+            }
+          },
+          {
+            "seq": 4,
+            "type": "node_done",
+            "wf": "WF-2",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:36Z",
+            "node_id": "n2-gate",
+            "label": "Gate hit \u2014 scan for gaps",
+            "lane": "system",
+            "node_class": "n-gate",
+            "index": 1,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.19,
+            "view": {
+              "kind": "iframe",
+              "src": "eval.html"
+            },
+            "declared": {
+              "in": "Built code + generated criteria",
+              "proc": "Run the stub scanner across the tree; surface open gaps",
+              "out": "Failing-gate signal: the gaps, surfaced not buried"
+            },
+            "data_in": {
+              "pattern": ".rapid/EVAL/*",
+              "count": 1,
+              "sample": [
+                "hooks.smoke.test.sh"
+              ]
+            },
+            "data_out": {
+              "cmd": "bash tools/stub-scan.sh --tree",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.19,
+              "tail": ""
+            }
+          },
+          {
+            "seq": 6,
+            "type": "node_done",
+            "wf": "WF-2",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:36Z",
+            "node_id": "n3-gaploop",
+            "label": "Gap loop \u2014 fix or flag",
+            "lane": "system",
+            "node_class": "n-blue",
+            "index": 2,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "eval.html"
+            },
+            "declared": {
+              "in": "The failing assertions (the gaps)",
+              "proc": "Read the classified gap register; fix automatically when possible, flag when not",
+              "out": "Patched code or a flagged gap escalated to the operator"
+            },
+            "data_in": {
+              "cmd": "bash tools/stub-scan.sh --tree",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.19,
+              "tail": ""
+            },
+            "data_out": {
+              "path": ".rapid/GAPS.json",
+              "extract": "$len",
+              "value": 9
+            }
+          },
+          {
+            "seq": 8,
+            "type": "node_done",
+            "wf": "WF-2",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n4-reconverge",
+            "label": "Re-converge (codex tester)",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 3,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.54,
+            "view": {
+              "kind": "iframe",
+              "src": "eval.html"
+            },
+            "declared": {
+              "in": "Patched code",
+              "proc": "Codex (the tester) re-runs the SAME locked ship gate and judges re-convergence; criteria are never weakened",
+              "out": "Codex verdict {status, evidence}; pass means the same locked criteria are green again"
+            },
+            "data_in": {
+              "path": ".rapid/GAPS.json",
+              "extract": "$len",
+              "value": 9
+            },
+            "data_out": {
+              "role": "codex",
+              "engine": "fallback (agents=off)",
+              "cmd": "bash tools/ship-gate.sh",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.54,
+              "tail": "wrote docs/eval.json (4/4 assertions, 1/1 harness test(s) passing)\n  [PASS] verification_real: all required layers green with genuine exit codes\n  [PASS] no_open_stub_gaps: 0 open MAJOR+ stub gap(s)\n  [PASS] no_stubs_in_tree: 0 stub marker(s) found in source tree\n  [PASS] no_open_conformance_gaps: 0 open MAJOR+ conformance gap(s)\n\nSHIP GATE OPEN: stub + conformance assertions pass.",
+              "parsed": {
+                "pass": 4,
+                "fail": 0,
+                "total": 4
+              }
+            }
+          }
+        ]
+      }
+    },
+    "WF-3": {
+      "runs": [
+        {
+          "run_id": "20260607T042237Z",
+          "wf": "WF-3",
+          "title": "Stakeholder receives the shipped project and navigates the docs",
+          "started": "2026-06-07T04:22:37Z",
+          "finished": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "After deploy, the stakeholder can open the documentation site and navigate it \u2014 phases and test coverage included \u2014 with no manual cleanup required from the operator.",
+          "input": {
+            "source": "docs.json"
+          }
+        },
+        {
+          "run_id": "20260531T215425Z",
+          "wf": "WF-3",
+          "title": "Stakeholder receives the shipped project and navigates the docs",
+          "started": "2026-05-31T21:54:25Z",
+          "finished": "2026-05-31T21:54:25Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "After deploy, the stakeholder can open the documentation site and navigate it \u2014 phases and test coverage included \u2014 with no manual cleanup required from the operator.",
+          "input": {
+            "source": "docs.json"
+          }
+        },
+        {
+          "run_id": "20260531T214813Z",
+          "wf": "WF-3",
+          "title": "Stakeholder receives the shipped project and navigates the docs",
+          "started": "2026-05-31T21:48:13Z",
+          "finished": "2026-05-31T21:48:13Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "After deploy, the stakeholder can open the documentation site and navigate it \u2014 phases and test coverage included \u2014 with no manual cleanup required from the operator.",
+          "input": {
+            "source": "docs.json"
+          }
+        },
+        {
+          "run_id": "20260531T213459Z",
+          "wf": "WF-3",
+          "title": "Stakeholder receives the shipped project and navigates the docs",
+          "started": "2026-05-31T21:34:59Z",
+          "finished": "2026-05-31T21:34:59Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "After deploy, the stakeholder can open the documentation site and navigate it \u2014 phases and test coverage included \u2014 with no manual cleanup required from the operator.",
+          "input": {
+            "source": "docs.json"
+          }
+        },
+        {
+          "run_id": "20260531T212545Z",
+          "wf": "WF-3",
+          "title": "Stakeholder receives the shipped project and navigates the docs",
+          "started": "2026-05-31T21:25:45Z",
+          "finished": "2026-05-31T21:25:45Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "After deploy, the stakeholder can open the documentation site and navigate it \u2014 phases and test coverage included \u2014 with no manual cleanup required from the operator.",
+          "input": {
+            "source": "docs.json"
+          }
+        },
+        {
+          "run_id": "20260531T212409Z",
+          "wf": "WF-3",
+          "title": "Stakeholder receives the shipped project and navigates the docs",
+          "started": "2026-05-31T21:24:09Z",
+          "finished": "2026-05-31T21:24:09Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "After deploy, the stakeholder can open the documentation site and navigate it \u2014 phases and test coverage included \u2014 with no manual cleanup required from the operator.",
+          "input": {
+            "source": "docs.json"
+          }
+        }
+      ],
+      "latest": {
+        "run_id": "20260607T042237Z",
+        "summary": {
+          "seq": 9,
+          "type": "run_done",
+          "wf": "WF-3",
+          "run_id": "20260607T042237Z",
+          "t": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4
+        },
+        "nodes": [
+          {
+            "seq": 2,
+            "type": "node_done",
+            "wf": "WF-3",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n1-during",
+            "label": "Docs built per phase",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 0,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "documentation.html"
+            },
+            "declared": {
+              "in": "Each completed phase",
+              "proc": "Documentation generated automatically per phase, in the background",
+              "out": "Docs current through the latest completed phase, mid-build"
+            },
+            "data_in": {
+              "source": "docs.json"
+            },
+            "data_out": {
+              "path": "docs.json",
+              "extract": "updated",
+              "value": "2026-06-06"
+            }
+          },
+          {
+            "seq": 4,
+            "type": "node_done",
+            "wf": "WF-3",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n2-reorg",
+            "label": "Reorganize into a clean site",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 1,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "home.html"
+            },
+            "declared": {
+              "in": "All per-phase documentation",
+              "proc": "Reorganize into a navigable site; count registered pages",
+              "out": "A handoff-ready documentation site, no manual cleanup"
+            },
+            "data_in": {
+              "path": "docs.json",
+              "extract": "updated",
+              "value": "2026-06-06"
+            },
+            "data_out": {
+              "path": "docs.json",
+              "extract": "docs.$len",
+              "value": 61
+            }
+          },
+          {
+            "seq": 6,
+            "type": "node_done",
+            "wf": "WF-3",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n3-handoff",
+            "label": "Stakeholder navigates",
+            "lane": "actor",
+            "node_class": "n-purple",
+            "index": 2,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "eval.html"
+            },
+            "declared": {
+              "in": "The deployed app + doc site link",
+              "proc": "Stakeholder opens the site and navigates phases + test coverage on their own",
+              "out": "Reads the docs without operator help"
+            },
+            "data_in": {
+              "path": "docs.json",
+              "extract": "docs.$len",
+              "value": 61
+            },
+            "data_out": {
+              "path": "docs/eval.html",
+              "exists": true
+            }
+          },
+          {
+            "seq": 8,
+            "type": "node_done",
+            "wf": "WF-3",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n4-accept",
+            "label": "Accept handoff",
+            "lane": "actor",
+            "node_class": "n-primary",
+            "index": 3,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "prd-enhanced.html"
+            },
+            "declared": {
+              "in": "Doc site + visible test status",
+              "proc": "Confirm what was built matches the requirements (traceability is published)",
+              "out": "Accepted handoff"
+            },
+            "data_in": {
+              "path": "docs/eval.html",
+              "exists": true
+            },
+            "data_out": {
+              "path": "docs/prd-enhanced.html",
+              "exists": true
+            }
+          }
+        ]
+      }
+    },
+    "WF-4": {
+      "runs": [
+        {
+          "run_id": "20260607T042237Z",
+          "wf": "WF-4",
+          "title": "Operator monitors a live build and handles a drift/stall alert",
+          "started": "2026-06-07T04:22:37Z",
+          "finished": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "input": {
+            "source": ".rapid/observe"
+          }
+        },
+        {
+          "run_id": "20260531T215425Z",
+          "wf": "WF-4",
+          "title": "Operator monitors a live build and handles a drift/stall alert",
+          "started": "2026-05-31T21:54:25Z",
+          "finished": "2026-05-31T21:54:25Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "input": {
+            "source": ".rapid/observe"
+          }
+        },
+        {
+          "run_id": "20260531T214813Z",
+          "wf": "WF-4",
+          "title": "Operator monitors a live build and handles a drift/stall alert",
+          "started": "2026-05-31T21:48:13Z",
+          "finished": "2026-05-31T21:48:13Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "input": {
+            "source": ".rapid/observe"
+          }
+        },
+        {
+          "run_id": "20260531T213459Z",
+          "wf": "WF-4",
+          "title": "Operator monitors a live build and handles a drift/stall alert",
+          "started": "2026-05-31T21:34:59Z",
+          "finished": "2026-05-31T21:34:59Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "input": {
+            "source": ".rapid/observe"
+          }
+        },
+        {
+          "run_id": "20260531T212409Z",
+          "wf": "WF-4",
+          "title": "Operator monitors a live build and handles a drift/stall alert",
+          "started": "2026-05-31T21:24:09Z",
+          "finished": "2026-05-31T21:24:09Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "input": {
+            "source": ".rapid/observe"
+          }
+        }
+      ],
+      "latest": {
+        "run_id": "20260607T042237Z",
+        "summary": {
+          "seq": 9,
+          "type": "run_done",
+          "wf": "WF-4",
+          "run_id": "20260607T042237Z",
+          "t": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4
+        },
+        "nodes": [
+          {
+            "seq": 2,
+            "type": "node_done",
+            "wf": "WF-4",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n1-observe",
+            "label": "Observe \u2014 per-role terminals",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 0,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "observatory.html"
+            },
+            "declared": {
+              "in": "Live build; per-role terminals emitting events",
+              "proc": "Each agent writes .rapid/observe/<role>.jsonl; the dashboard reads all at once",
+              "out": "/rapid-workflow status + observatory read every terminal"
+            },
+            "data_in": {
+              "source": ".rapid/observe"
+            },
+            "data_out": {
+              "pattern": ".rapid/observe/*.jsonl",
+              "count": 9,
+              "sample": [
+                "coder-2.jsonl",
+                "planner.jsonl",
+                "workflow-subagent.jsonl",
+                "conformance.jsonl",
+                "coder-1.jsonl",
+                "stub.jsonl"
+              ]
+            }
+          },
+          {
+            "seq": 4,
+            "type": "node_done",
+            "wf": "WF-4",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n2-heartbeat",
+            "label": "Heartbeat per role",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 1,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "observatory.html"
+            },
+            "declared": {
+              "in": "Each agent's current task",
+              "proc": "Every agent updates .rapid/HEARTBEAT.json every \u22645 min",
+              "out": "A live per-role liveness signal"
+            },
+            "data_in": {
+              "pattern": ".rapid/observe/*.jsonl",
+              "count": 9,
+              "sample": [
+                "coder-2.jsonl",
+                "planner.jsonl",
+                "workflow-subagent.jsonl",
+                "conformance.jsonl",
+                "coder-1.jsonl",
+                "stub.jsonl"
+              ]
+            },
+            "data_out": {
+              "path": ".rapid/observe/seq.txt",
+              "exists": true
+            }
+          },
+          {
+            "seq": 6,
+            "type": "node_done",
+            "wf": "WF-4",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n3-stall",
+            "label": "Stall detect",
+            "lane": "system",
+            "node_class": "n-guard",
+            "index": 2,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "iframe",
+              "src": "observatory.html"
+            },
+            "declared": {
+              "in": "Heartbeat timestamps per role",
+              "proc": "Monitor compares each heartbeat to the threshold; flags the stale one",
+              "out": "A stall alert flagging the exact terminal (e.g. coder-2)"
+            },
+            "data_in": {
+              "path": ".rapid/observe/seq.txt",
+              "exists": true
+            },
+            "data_out": {
+              "path": "tools/stop-hook.sh",
+              "exists": true
+            }
+          },
+          {
+            "seq": 8,
+            "type": "node_done",
+            "wf": "WF-4",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n4-continue",
+            "label": "Continuous build + escalation",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 3,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "text"
+            },
+            "declared": {
+              "in": "A terminal trying to halt while phase work remains",
+              "proc": "Stop-hook blocks the halt, attributes continuation by role; 5 nudges \u2192 escalate",
+              "out": "Live terminals keep building; persistent stalls reach the operator"
+            },
+            "data_in": {
+              "path": "tools/stop-hook.sh",
+              "exists": true
+            },
+            "data_out": {
+              "path": "tools/stop-hook.sh",
+              "lines": 152
+            }
+          }
+        ]
+      }
+    },
+    "WF-5": {
+      "runs": [
+        {
+          "run_id": "20260607T042237Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-06-07T04:22:37Z",
+          "finished": "2026-06-07T04:22:38Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
+        {
+          "run_id": "20260601T014023Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-06-01T01:40:23Z",
+          "finished": "2026-06-01T01:40:23Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
+        {
+          "run_id": "20260601T004321Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-06-01T00:43:21Z",
+          "finished": "2026-06-01T00:43:22Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
+        {
+          "run_id": "20260531T225659Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-05-31T22:56:59Z",
+          "finished": "2026-05-31T22:57:00Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
+        {
+          "run_id": "20260531T225440Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-05-31T22:54:40Z",
+          "finished": "2026-05-31T22:55:03Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
+        {
+          "run_id": "20260531T225350Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-05-31T22:53:50Z",
+          "finished": "2026-05-31T22:54:09Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 1,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
+        {
+          "run_id": "20260531T225221Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-05-31T22:52:21Z",
+          "finished": "2026-05-31T22:52:42Z",
+          "status": "fail",
+          "pass": 3,
+          "fail": 2,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
+        {
+          "run_id": "20260531T225210Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-05-31T22:52:10Z",
+          "finished": "2026-05-31T22:52:12Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        }
+      ],
+      "latest": {
+        "run_id": "20260607T042237Z",
+        "summary": {
+          "seq": 11,
+          "type": "run_done",
+          "wf": "WF-5",
+          "run_id": "20260607T042237Z",
+          "t": "2026-06-07T04:22:38Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5
+        },
+        "nodes": [
+          {
+            "seq": 2,
+            "type": "node_done",
+            "wf": "WF-5",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n1-create",
+            "label": "Create project (scaffold)",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 0,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.16,
+            "view": {
+              "kind": "text"
+            },
+            "declared": {
+              "in": "A project name + one-line idea",
+              "proc": "Run the deterministic P1 scaffold (new-project.sh \u2192 atlas-init): structure + CONSTITUTION + BUILD-AUTONOMY + .rapid + the Atlas deck",
+              "out": "A scaffolded project with the full structure and a live (stub) doc deck"
+            },
+            "data_in": {
+              "name": "rapid_workflow_test_1"
+            },
+            "data_out": {
+              "cmd": "bash tools/lifecycle-e2e.sh --stage create --name rapid_workflow_test_1",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.16,
+              "tail": "STAGE create \u2014 scaffold the project via the skill\n  [PASS] project scaffolded at /Users/johnny/projects/rapid_workflow_test_1 (structure + CONSTITUTION + BUILD-AUTONOMY + Atlas deck)"
+            }
+          },
+          {
+            "seq": 4,
+            "type": "node_done",
+            "wf": "WF-5",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
+            "node_id": "n2-docs",
+            "label": "Populate documentation",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 1,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.74,
+            "view": {
+              "kind": "text"
+            },
+            "declared": {
+              "in": "The project's own artifacts (PRD, spec, architecture, workflow, eval.json)",
+              "proc": "Write the spec/architecture/workflow artifacts, run the real generators, render the deck from the project's own content",
+              "out": "Every core deck page populated (no atlas-stub) from the project's content"
+            },
+            "data_in": {
+              "cmd": "bash tools/lifecycle-e2e.sh --stage create --name rapid_workflow_test_1",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.16,
+              "tail": "STAGE create \u2014 scaffold the project via the skill\n  [PASS] project scaffolded at /Users/johnny/projects/rapid_workflow_test_1 (structure + CONSTITUTION + BUILD-AUTONOMY + Atlas deck)"
+            },
+            "data_out": {
+              "cmd": "bash tools/lifecycle-e2e.sh --stage docs --name rapid_workflow_test_1",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.74,
+              "tail": "STAGE docs \u2014 write real artifacts + populate the deck (no stub pages)\npopulate-deck: populated /Users/johnny/projects/rapid_workflow_test_1/docs\n  [PASS] documentation populated + distinct (9 pages: no stub, no dead links, prd\u2260prd-enhanced, workflow\u2260users, branded rapid_workflow_test_1)"
+            }
+          },
+          {
+            "seq": 6,
+            "type": "node_done",
+            "wf": "WF-5",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:38Z",
+            "node_id": "n3-build",
+            "label": "Build local app (codex tester)",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 2,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.4,
+            "view": {
+              "kind": "text"
+            },
+            "declared": {
+              "in": "The seeded app source (src/)",
+              "proc": "Codex (the tester) runs the build stage and judges that the local app builds to dist/",
+              "out": "Codex verdict {status, evidence}; pass only if the build produced dist/"
+            },
+            "data_in": {
+              "cmd": "bash tools/lifecycle-e2e.sh --stage docs --name rapid_workflow_test_1",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.74,
+              "tail": "STAGE docs \u2014 write real artifacts + populate the deck (no stub pages)\npopulate-deck: populated /Users/johnny/projects/rapid_workflow_test_1/docs\n  [PASS] documentation populated + distinct (9 pages: no stub, no dead links, prd\u2260prd-enhanced, workflow\u2260users, branded rapid_workflow_test_1)"
+            },
+            "data_out": {
+              "role": "codex",
+              "engine": "fallback (agents=off)",
+              "cmd": "bash tools/lifecycle-e2e.sh --stage build --name rapid_workflow_test_1",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.4,
+              "tail": "STAGE build \u2014 seed the real app + build it locally\n  [PASS] local app built \u2192 dist/ (3 files), app.js valid, eval seeded"
+            }
+          },
+          {
+            "seq": 8,
+            "type": "node_done",
+            "wf": "WF-5",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:38Z",
+            "node_id": "n4-approve",
+            "label": "Approve dev deploy (simulated operator)",
+            "lane": "actor",
+            "node_class": "n-gate",
+            "index": 3,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.0,
+            "view": {
+              "kind": "text"
+            },
+            "declared": {
+              "in": "The build + docs results",
+              "proc": "Simulated operator decides whether to approve the dev deploy",
+              "out": "Decision {approve|reject|hold}; approve is in-scope because this deploy is local/staging"
+            },
+            "data_in": {
+              "role": "codex",
+              "engine": "fallback (agents=off)",
+              "cmd": "bash tools/lifecycle-e2e.sh --stage build --name rapid_workflow_test_1",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.4,
+              "tail": "STAGE build \u2014 seed the real app + build it locally\n  [PASS] local app built \u2192 dist/ (3 files), app.js valid, eval seeded"
+            },
+            "data_out": {
+              "role": "human",
+              "engine": "fallback (agents=off)",
+              "path": ".rapid/E2E.json",
+              "extract": "summary",
+              "value": {
+                "pass": 3,
+                "fail": 0,
+                "total": 3
+              }
+            }
+          },
+          {
+            "seq": 10,
+            "type": "node_done",
+            "wf": "WF-5",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:38Z",
+            "node_id": "n5-deploy",
+            "label": "Deploy dev + verify",
+            "lane": "system",
+            "node_class": "n-auto",
+            "index": 4,
+            "status": "pass",
+            "required": true,
+            "elapsed_s": 0.17,
+            "view": {
+              "kind": "text"
+            },
+            "declared": {
+              "in": "Approved build + populated docs",
+              "proc": "Run the real local deploy (atlas-deploy \u2192 staging dir) and assert the three deliverables",
+              "out": "app + /_atlas in the staging dir, env.json dev.url set; E2E.json written"
+            },
+            "data_in": {
+              "role": "human",
+              "engine": "fallback (agents=off)",
+              "path": ".rapid/E2E.json",
+              "extract": "summary",
+              "value": {
+                "pass": 3,
+                "fail": 0,
+                "total": 3
+              }
+            },
+            "data_out": {
+              "cmd": "bash tools/lifecycle-e2e.sh --stage deploy --name rapid_workflow_test_1 && bash tools/lifecycle-e2e.sh --stage verify --name rapid_workflow_test_1",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.17,
+              "tail": "STAGE deploy \u2014 local/staging dev deploy (app + /_atlas)\n  [PASS] dev deployed \u2192 /tmp/rapid_workflow_test_1-dev (app + /_atlas), env.json dev.url=http://localhost:4173\nSTAGE verify \u2014 assert the three deliverables + write E2E.json\n  wrote /Users/johnny/projects/rapid-workflow/.rapid/E2E.json\n  [PASS] documentation populated\n  [PASS] local app built\n  [PASS] dev deployed\nLIFECYCLE E2E GREEN: rapid_workflow_test_1 created, documented, built, and dev-deployed.",
+              "parsed": {
+                "pass": 3,
+                "fail": 0,
+                "total": 3
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

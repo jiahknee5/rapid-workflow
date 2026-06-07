@@ -4,124 +4,164 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Evaluation — RAPID</title>
+<style> tokens + component rules change (dark, cosmic).
+     atlas-init.sh extracts THIS <style> block when ATLAS_TEMPLATE points here.
+     Design spec: docs/atlas-v2-design.md. ============================ -->
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #FFFFFF; --surface: #F7F8FA; --surface-alt: #F0F2F5;
-  --border: #D4D8DE; --border-light: #E2E5EA;
-  --text: #1A2744; --text-muted: #4A5568; --text-dim: #8896A6;
-  --navy: #1A2744; --blue: #2B6CB0; --blue-dim: rgba(43,108,176,0.08);
-  --green: #276749; --green-dim: rgba(39,103,73,0.08);
-  --red: #C53030; --red-dim: rgba(197,48,48,0.06);
-  --amber: #B7791F; --amber-dim: rgba(183,121,31,0.08);
-  --purple: #553C9A; --purple-dim: rgba(85,60,154,0.07);
-  --teal: #0D7377; --teal-dim: rgba(13,115,119,0.07);
-  --radius: 4px; --radius-sm: 3px;
+  --bg: #0D1117; --surface: #161B22; --surface-alt: #1C2330;
+  --border: #2A313B; --border-light: #20262F;
+  --text: #E6EDF3; --text-muted: #9BA6B2; --text-dim: #6B7480;
+  /* --navy is repurposed as the primary ACCENT (fills / active / eyebrow) */
+  --navy: #7AA2F7; --accent: #7AA2F7; --accent-dim: rgba(122,162,247,0.12);
+  --blue: #58A6FF; --blue-dim: rgba(88,166,255,0.14);
+  --green: #3FB950; --green-dim: rgba(63,185,80,0.14);
+  --red: #F85149; --red-dim: rgba(248,81,73,0.14);
+  --amber: #D29922; --amber-dim: rgba(210,153,34,0.14);
+  --purple: #BC8CFF; --purple-dim: rgba(188,140,255,0.14);
+  --teal: #56D4DD; --teal-dim: rgba(86,212,221,0.14);
+  --radius: 8px; --radius-sm: 6px;
+  --code-bg: #0A0D12;
 }
-html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", sans-serif; font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+/* faint cosmic depth: a soft accent glow + a barely-there starfield */
+body::before { content:""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(900px 500px at 12% -8%, rgba(122,162,247,0.07), transparent 60%),
+    radial-gradient(700px 500px at 100% 0%, rgba(86,212,221,0.04), transparent 55%); }
+body > * { position: relative; z-index: 1; }
 .spec-layout { display: flex; flex: 1; }
 
 /* Sidebar nav (left menu) */
-.sidebar { width: 280px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 32px 20px; position: sticky; top: 38px; height: calc(100vh - 38px); overflow-y: auto; }
-.sidebar-brand { font-size: 1.1rem; font-weight: 800; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px; }
+.sidebar { width: 280px; flex-shrink: 0; background: rgba(13,17,23,0.6); border-right: 1px solid var(--border-light); padding: 32px 18px; position: sticky; top: 44px; height: calc(100vh - 44px); overflow-y: auto; }
+.sidebar-brand { font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; margin-bottom: 4px; }
 .sidebar-sub { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 24px; font-weight: 500; }
-.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin: 20px 0 8px; }
-.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 3px 8px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; }
+.sidebar-section { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-dim); margin: 22px 0 8px; }
+.sidebar a { display: block; font-size: 0.78rem; color: var(--text-muted); text-decoration: none; padding: 4px 10px; border-radius: var(--radius-sm); margin: 1px 0; line-height: 1.4; transition: background .12s, color .12s, box-shadow .12s; }
 .sidebar a:hover { background: var(--surface-alt); color: var(--text); }
-.sidebar a.sub { padding-left: 20px; font-size: 0.72rem; color: var(--text-dim); }
+.sidebar a.sub { padding-left: 22px; font-size: 0.72rem; color: var(--text-dim); }
 .sidebar a.sub:hover { color: var(--text-muted); }
-.sidebar a.active { background: var(--navy); color: #fff; font-weight: 600; }
+.sidebar a.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; box-shadow: inset 2px 0 0 var(--accent); }
 .sidebar .req-count { font-size: 0.6rem; color: var(--text-dim); font-weight: 600; float: right; margin-top: 2px; }
 
 /* Main content */
-.main { flex: 1; max-width: 920px; padding: 48px 48px 96px; }
+.main { flex: 1; max-width: 820px; padding: 52px 56px 110px; }
 
 /* Section system */
-.section { margin-bottom: 56px; padding-top: 20px; border-top: 2.5px solid var(--navy); scroll-margin-top: 48px; }
-.section-id { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
-.section-title { font-size: 1.3rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; line-height: 1.28; }
-.section-desc { font-size: 0.86rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.6; }
+.section { margin-bottom: 56px; padding-top: 26px; border-top: 1px solid var(--border-light); scroll-margin-top: 56px; }
+.section:first-child { border-top: none; padding-top: 8px; }
+.section-id { font-size: 0.56rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.section-title { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.25; letter-spacing: -0.01em; }
+.section-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; max-width: 720px; line-height: 1.72; }
 
 /* Subsection */
-.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 16px; border-top: 1px solid var(--border-light); }
-.subsection-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-.subsection-desc { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+.subsection { margin-top: 36px; margin-bottom: 24px; padding-top: 18px; border-top: 1px solid var(--border-light); }
+.subsection-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.subsection-desc { font-size: 0.84rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
 
 /* Strategy / callout block */
-.strategy { background: var(--surface); border-left: 4px solid var(--navy); padding: 20px 24px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
-.strategy h3 { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
-.strategy p { font-size: 0.88rem; color: var(--text); line-height: 1.7; margin-bottom: 8px; }
+.strategy { background: var(--surface); border: 1px solid var(--border-light); border-left: 3px solid var(--accent); padding: 18px 22px; margin-bottom: 24px; border-radius: 0 var(--radius) var(--radius) 0; }
+.strategy h3 { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.strategy p { font-size: 0.9rem; color: var(--text); line-height: 1.74; margin-bottom: 8px; }
 .strategy p:last-child { margin-bottom: 0; }
-.key-insight { background: rgba(26,39,68,0.04); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 14px 0; font-size: 0.82rem; line-height: 1.6; }
-.key-insight strong { color: var(--navy); }
+.key-insight { background: var(--accent-dim); border-left: 3px solid var(--accent); padding: 12px 16px; margin: 14px 0; font-size: 0.84rem; line-height: 1.65; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; color: var(--text-muted); }
+.key-insight strong { color: var(--text); }
 
 /* Requirement card */
-.req { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.req { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
 .req-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); }
-.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--navy); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
+.req-id { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.06em; color: var(--accent); min-width: 48px; font-family: "SF Mono", "Fira Code", monospace; }
 .req-title { font-size: 0.88rem; font-weight: 600; color: var(--text); flex: 1; }
 .req-pri { font-size: 0.55rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
 .req-pri.must { background: var(--red-dim); color: var(--red); }
 .req-pri.should { background: var(--amber-dim); color: var(--amber); }
 .req-pri.could { background: var(--blue-dim); color: var(--blue); }
-.req-body { padding: 12px 16px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+.req-body { padding: 12px 16px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
 .req-body strong { color: var(--text); }
-.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: var(--surface); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
+.req-meta { display: flex; gap: 16px; padding: 8px 16px; background: rgba(0,0,0,0.18); font-size: 0.65rem; color: var(--text-dim); border-top: 1px solid var(--border-light); flex-wrap: wrap; }
 .req-meta span { display: flex; align-items: center; gap: 4px; }
 .req-meta .label { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
 
 /* Tables */
-.compare-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin: 12px 0; }
-.compare-table th { text-align: left; padding: 8px 10px; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--navy); }
-.compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 14px 0; border: 1px solid var(--border-light); border-radius: var(--radius); overflow: hidden; }
+.compare-table th { text-align: left; padding: 9px 12px; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); background: var(--surface-alt); border-bottom: 1px solid var(--border); }
+.compare-table td { padding: 9px 12px; border-bottom: 1px solid var(--border-light); vertical-align: top; color: var(--text-muted); }
 .compare-table tr:nth-child(even) td { background: var(--surface); }
-.compare-table td:first-child { font-weight: 600; color: var(--navy); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; color: var(--text); }
 
 /* Metric callout */
-.metric-row { display: flex; gap: 24px; flex-wrap: wrap; padding: 16px 0; }
-.metric { display: flex; flex-direction: column; align-items: center; padding: 12px 20px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
-.metric-value { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
-.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+.metric-row { display: flex; gap: 16px; flex-wrap: wrap; padding: 16px 0; }
+.metric { display: flex; flex-direction: column; align-items: center; padding: 14px 22px; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border-light); }
+.metric-value { font-size: 1.7rem; font-weight: 800; color: var(--text); line-height: 1; }
+.metric-label { font-size: 0.58rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-top: 5px; }
 
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-.card h4 { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
-.card p, .card div { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
-.footnote { font-size: 0.62rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border); padding-top: 8px; font-style: italic; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 18px; transition: transform .12s, border-color .12s, box-shadow .12s; }
+.card:hover { transform: translateY(-1px); border-color: var(--border); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+.card h4 { font-size: 0.84rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.card p, .card div { font-size: 0.8rem; color: var(--text-muted); line-height: 1.65; }
+.footnote { font-size: 0.64rem; color: var(--text-dim); margin-top: 14px; border-top: 1px solid var(--border-light); padding-top: 8px; font-style: italic; }
 
 /* Code blocks */
-.code-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.7rem; line-height: 1.65; overflow-x: auto; white-space: pre; color: var(--text-muted); margin: 12px 0; }
+.code-block { background: var(--code-bg); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 14px 18px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.72rem; line-height: 1.7; overflow-x: auto; white-space: pre; color: #c4cad6; margin: 14px 0; }
+
+/* Diagrams & process flows */
+.diagram { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+.diagram-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+.n { display: inline-flex; align-items: center; justify-content: center; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 0.72rem; font-weight: 600; text-align: center; background: var(--surface-alt); color: var(--text-muted); white-space: nowrap; }
+.n small { display: block; font-size: 0.58rem; font-weight: 400; color: var(--text-dim); margin-top: 1px; }
+.n-auto { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.n-gate { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); font-weight: 800; }
+.n-guard { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+.n-primary { border-color: var(--accent); background: var(--accent); color: #0B0E13; }
+.n-blue { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); } .n-purple { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); } .n-teal { border-color: var(--teal); color: var(--teal); background: var(--teal-dim); }
+.arr { color: var(--text-dim); font-size: 0.9rem; padding: 0 3px; } .arr-loop { color: var(--amber); font-weight: 800; }
+.hflow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; justify-content: center; }
+.vflow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.vline { width: 1.5px; height: 16px; background: var(--border); }
+.branch { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.swimlane { border:1px solid var(--border-light); border-radius:var(--radius); overflow:hidden; margin-bottom:16px; }
+.swimlane .lane { display:grid; grid-template-columns:130px 1fr; border-bottom:1px solid var(--border-light); }
+.swimlane .lane:last-child { border-bottom:none; }
+.swimlane .lane-label { background:var(--surface-alt); padding:10px 12px; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); border-right:1px solid var(--border-light); display:flex; align-items:center; }
+.swimlane .lane-body { padding:10px 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.78rem; color:var(--text-muted); }
+.step-table { width:100%; border-collapse:collapse; font-size:0.76rem; margin:12px 0; }
+.step-table th { text-align:left; padding:8px 10px; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); background:var(--surface-alt); }
+.step-table td { padding:8px 10px; border-bottom:1px solid var(--border-light); vertical-align:top; color:var(--text-muted); }
+.step-table td:first-child { font-weight:700; color:var(--text); font-family:"SF Mono",monospace; white-space:nowrap; }
+
+code { background: var(--surface-alt); color: #cbd3e1; padding: 1px 5px; border-radius: 4px; font-family: "SF Mono","Fira Code",monospace; font-size: 0.85em; }
 
 @media (max-width: 900px) {
   body { flex-direction: column; }
   .spec-layout { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); padding: 16px; }
+  .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border-light); padding: 16px; }
   .main { padding: 28px 20px; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
 }
 
 /* Top cross-page nav */
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: rgba(8,11,16,0.85); backdrop-filter: saturate(140%) blur(8px); padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; padding: 8px 16px 8px 0; margin-right: 8px; border-right: 1px solid var(--border); line-height: 1.2; }
+.rapid-nav-brand::before { content: "✦"; color: var(--accent); margin-right: 7px; font-size: 13px; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; padding-left: 20px; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: var(--text-dim); text-decoration: none; padding: 12px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.12s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: var(--text); }
+.rapid-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
-  <a href="prd.html">PRD</a>
-  <a href="prd-enhanced.html">Enhanced PRD</a>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+  <a href="atlas-v2/index.html" style="color:#7AA2F7;font-weight:700;">✦ Skills Atlas</a>
   <a href="architecture.html">Architecture</a>
   <a href="workflow.html">Workflow</a>
-  <a href="users.html">Users</a>
-  <a href="spec.html">Spec</a>
   <a href="observatory.html">Observatory</a>
-  <a href="eval.html" class="active">Eval</a>
+  <a href="eval.html" class="active">Eval</a><a href="testsuite.html">Test Suite</a>
   <a href="cost.html">Cost</a>
   <a href="documentation.html">Documentation</a>
 </nav>
@@ -142,7 +182,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="section-id">Evaluation · Overview</div>
     <div class="section-title">How RAPID evaluates a build</div>
     <div class="section-desc">
-      RAPID's evaluation system has two jobs. First, it proves that the FORGE enforcement
+      RAPID's evaluation system has two jobs. First, it proves that the RAPID enforcement
       hooks themselves still work — that is the immutable <strong>task-00 smoke test</strong>.
       Second, at the end of the build it runs a <strong>ship gate</strong> that refuses to
       let the build advance to walkthrough while stub or conformance gaps remain open. Both
@@ -151,10 +191,10 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     </div>
     <div class="strategy">
       <h3>The two evaluation surfaces</h3>
-      <p><strong>task-00 harness</strong> (<code>.forge/EVAL/hooks.smoke.test.sh</code>) — an
-      immutable smoke test that builds a throwaway <code>.forge</code> tree in a temp directory
+      <p><strong>task-00 harness</strong> (<code>.rapid/EVAL/hooks.smoke.test.sh</code>) — an
+      immutable smoke test that builds a throwaway <code>.rapid</code> tree in a temp directory
       and asserts the hooks for R1, R7, R8 and R9 behave correctly.</p>
-      <p><strong>Ship gate</strong> (<code>.forge/P6_EXIT.json</code>) — three exit assertions
+      <p><strong>Ship gate</strong> (<code>.rapid/P6_EXIT.json</code>) — the exit assertions
       written at P6 that the phase gate (S-01) reads to decide whether P7 (walkthrough) may
       begin.</p>
     </div>
@@ -164,14 +204,16 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="section-id">Evaluation · Harness</div>
     <div class="section-title">The eval harness — task-00, the immutable smoke test</div>
     <div class="section-desc">
-      <code>.forge/EVAL/hooks.smoke.test.sh</code> is the dependency root of the build
+      <code>.rapid/EVAL/hooks.smoke.test.sh</code> is the dependency root of the build
       (per spec section S-04: "task-00 eval-harness is the dependency root in
-      <code>.forge/TASKS.json</code>"). It is re-runnable: it locates the repo's
+      <code>.rapid/TASKS.json</code>"). It is re-runnable: it locates the repo's
       <code>tools/</code> directory, makes a temporary build skeleton
-      (<code>.forge</code>, <code>01-intake</code>, <code>04-spec</code>, <code>src</code>),
+      (<code>.rapid</code>, <code>01-intake</code>, <code>04-spec</code>, <code>src</code>),
       seeds it with <code>{"phase":1}</code>, and exercises each enforcement hook against it.
       It exits non-zero if any assertion fails.
     </div>
+
+    <div id="harness-status"><div class="key-insight">Live harness status loading…</div></div>
 
     <div class="subsection">
       <div class="subsection-title">What it asserts</div>
@@ -199,7 +241,7 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         <h4>R9 — Stub detection</h4>
         <div>A source file containing <code>// TODO implement</code> must cause the
         stub-detect hook to <strong>file a stub gap</strong> — a <code>GAP-STUB</code>
-        entry must appear in <code>.forge/GAPS.json</code>.</div>
+        entry must appear in <code>.rapid/GAPS.json</code>.</div>
       </div>
       <div class="card">
         <h4>R8 — Conformance plumbing</h4>
@@ -215,17 +257,17 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
     <div class="code-block">set -uo pipefail
 TOOLS="$(cd "$(dirname "$0")/../../tools" &amp;&amp; pwd)"
 B="$(mktemp -d)"; trap 'rm -rf "$B"' EXIT
-cd "$B"; mkdir -p .forge 01-intake 04-spec src
-printf '{"phase":1}\n' &gt; .forge/STATE.json
+cd "$B"; mkdir -p .rapid 01-intake 04-spec src
+printf '{"phase":1}\n' &gt; .rapid/STATE.json
 fail=0
 assert(){ [ "$1" = "$2" ] || { echo "FAIL: $3 (got '$1' want '$2')"; fail=1; }; }
 
 # R1: block phase advance without artifact, allow with it
-printf '{"tool_input":{"file_path":".forge/STATE.json","content":"{\\"phase\\":2}"}}' \
+printf '{"tool_input":{"file_path":".rapid/STATE.json","content":"{\\"phase\\":2}"}}' \
   | bash "$TOOLS/phase-gate-hook.sh" &gt;/dev/null 2&gt;&amp;1
 assert "$?" "2" "R1 blocks P2 without PRD-ENHANCED"
 printf '# prd\n' &gt; 01-intake/PRD-ENHANCED.md
-printf '{"tool_input":{"file_path":".forge/STATE.json","content":"{\\"phase\\":2}"}}' \
+printf '{"tool_input":{"file_path":".rapid/STATE.json","content":"{\\"phase\\":2}"}}' \
   | bash "$TOOLS/phase-gate-hook.sh" &gt;/dev/null 2&gt;&amp;1
 assert "$?" "0" "R1 allows P2 with PRD-ENHANCED"
 
@@ -239,11 +281,11 @@ printf '04-spec/spec.md\n# s\n## S1\n' &gt; 04-spec/spec.md
 printf 'function f(){ // TODO implement\n}\n' &gt; src/a.js
 printf '{"tool_input":{"file_path":"src/a.js"}}' \
   | bash "$TOOLS/stub-detect-hook.sh" &gt;/dev/null 2&gt;&amp;1
-grep -q 'GAP-STUB' .forge/GAPS.json 2&gt;/dev/null; assert "$?" "0" "R9 files stub gap"
+grep -q 'GAP-STUB' .rapid/GAPS.json 2&gt;/dev/null; assert "$?" "0" "R9 files stub gap"
 
 echo "task-00 smoke: $([ $fail -eq 0 ] &amp;&amp; echo PASS || echo FAIL)"
 exit $fail</div>
-    <div class="footnote">Source: .forge/EVAL/hooks.smoke.test.sh. The harness is "immutable" — it is the fixed reference the build is measured against, not a test that gets rewritten to pass. This page does not claim the harness currently passes; it describes what the harness asserts.</div>
+    <div class="footnote">Source: .rapid/EVAL/hooks.smoke.test.sh. The harness is "immutable" — it is the fixed reference the build is measured against, not a test that gets rewritten to pass. The live status box above shows the result of actually running the harness (recorded in <code>eval.json</code> by the ship gate); the cards describe what it asserts.</div>
   </div>
 
   <div class="section" id="ship-gate">
@@ -251,43 +293,14 @@ exit $fail</div>
     <div class="section-title">The ship gate — P6 exit assertions</div>
     <div class="section-desc">
       At P6 the ship gate (<code>tools/ship-gate.sh</code>, spec S-09) merges the stub and
-      conformance assertions into <code>.forge/P6_EXIT.json</code>. The phase-gate hook
+      conformance assertions into <code>.rapid/P6_EXIT.json</code>. The phase-gate hook
       (S-01) reads that file and blocks P7 (walkthrough) if any assertion fails. The table
       below shows the assertions <strong>exactly as recorded in the current
-      <code>.forge/P6_EXIT.json</code></strong>.
+      <code>.rapid/P6_EXIT.json</code></strong>.
     </div>
 
-    <table class="compare-table">
-      <thead>
-        <tr><th>Status</th><th>Assertion</th><th>Detail (from file)</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
-          <td>no_open_stub_gaps</td>
-          <td>0 open MAJOR+ stub gap(s)</td>
-        </tr>
-        <tr>
-          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
-          <td>no_stubs_in_tree</td>
-          <td>0 stub marker(s) found in source tree</td>
-        </tr>
-        <tr>
-          <td><span style="color:var(--green);font-weight:800;">&#9679;</span> PASS</td>
-          <td>no_open_conformance_gaps</td>
-          <td>0 open MAJOR+ conformance gap(s)</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="key-insight">
-      <strong>All three P6 exit assertions are recorded as passing</strong> in
-      <code>.forge/P6_EXIT.json</code> (each entry has <code>"pass": true</code>). Because
-      no assertion fails, the phase gate does not block advancement to P7. If any assertion's
-      detail showed a non-zero count, its <code>pass</code> would be <code>false</code>, its
-      dot would be red, and S-01 would refuse the walkthrough phase.
-    </div>
-    <div class="footnote">Source: .forge/P6_EXIT.json. Status dots reflect the file's recorded values; this page does not assert results beyond what the file contains.</div>
+    <div id="eval-gate"><div class="key-insight">Loading exit assertions from <code>eval.json</code>…</div></div>
+    <div class="footnote">Source: <code>docs/eval.json</code>, published by <code>tools/ship-gate.sh</code> from the live <code>.rapid/P6_EXIT.json</code>. The table and counts above are rendered from that file at load time — they reflect the recorded values, not a hardcoded claim. Use ↻ Regenerate (or run the ship gate) to refresh.</div>
   </div>
 
   <div class="section" id="keep-revert">
@@ -305,7 +318,7 @@ exit $fail</div>
       <p>The smoke test is re-runnable against a throwaway tree, so it can be run before and
       after any change to the hooks or the build. If a change breaks an assertion, the harness
       exits non-zero and the change does not survive.</p>
-      <p>At ship time the same discipline applies through <code>.forge/P6_EXIT.json</code>: a
+      <p>At ship time the same discipline applies through <code>.rapid/P6_EXIT.json</code>: a
       build only ships forward when no open MAJOR+ stub or conformance gaps remain and no stub
       markers are found in the tree. A regression flips an assertion to
       <code>"pass": false</code> and the gate holds.</p>
@@ -350,15 +363,15 @@ exit $fail</div>
       </div>
       <div class="req-body">
         Spec S-04: the <strong>task-00 eval-harness is the dependency root</strong> in
-        <code>.forge/TASKS.json</code>, and the phase gate <strong>refuses P6 until
-        <code>.forge/EVAL/</code> holds test files</strong>. This makes the smoke test a
+        <code>.rapid/TASKS.json</code>, and the phase gate <strong>refuses P6 until
+        <code>.rapid/EVAL/</code> holds test files</strong>. This makes the smoke test a
         prerequisite of the build rather than an afterthought — there is no path to the ship
         gate that skips the eval harness.
       </div>
       <div class="req-meta">
         <span><span class="label">Spec</span> S-04</span>
         <span><span class="label">Root task</span> task-00</span>
-        <span><span class="label">Gate</span> P6 requires .forge/EVAL/</span>
+        <span><span class="label">Gate</span> P6 requires .rapid/EVAL/</span>
       </div>
     </div>
 
@@ -371,6 +384,53 @@ exit $fail</div>
 
 </div></div>
 </div>
-  <script src="env-links.js" defer></script>
+  <script src="env-links.js" defer></script><script src="sidebar.js" defer></script>
+  <!-- Live eval state: rendered from docs/eval.json (published by tools/ship-gate.sh
+       from the real .rapid/P6_EXIT.json + an actual run of .rapid/EVAL/*.test.sh).
+       Works under observe-server and on a static /_atlas deploy; degrades to an
+       honest "not run yet" note when the file is absent. -->
+  <script>
+  (function () {
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function dot(pass) {
+      var ok = pass === true;
+      return '<span style="color:var(--' + (ok ? 'green' : 'red') + ');font-weight:800;">&#9679;</span> ' + (ok ? 'PASS' : 'FAIL');
+    }
+    fetch('eval.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (d) {
+      var hs = document.getElementById('harness-status');
+      if (hs) {
+        if (d && Array.isArray(d.harness) && d.harness.length) {
+          hs.innerHTML = d.harness.map(function (h) {
+            return '<div class="key-insight">' + dot(h.pass) + ' &nbsp;<strong>' + esc(h.name) + '</strong> — ' + esc(h.output || '') + '</div>';
+          }).join('');
+        } else if (d) {
+          hs.innerHTML = '<div class="key-insight">No harness tests found in <code>.rapid/EVAL/</code>.</div>';
+        } else {
+          hs.innerHTML = '<div class="key-insight">Live status unavailable — run <code>tools/ship-gate.sh</code> (or serve via observe-server) to publish <code>eval.json</code>.</div>';
+        }
+      }
+      var ge = document.getElementById('eval-gate');
+      if (ge) {
+        if (d && Array.isArray(d.assertions) && d.assertions.length) {
+          var rows = d.assertions.map(function (a) {
+            return '<tr><td>' + dot(a.pass) + '</td><td>' + esc(a.name) + '</td><td>' + esc(a.detail || '') + '</td></tr>';
+          }).join('');
+          var s = d.summary || {}, fail = s.fail || 0, total = s.total || d.assertions.length, pass = (s.pass != null ? s.pass : total - fail);
+          ge.innerHTML =
+            '<table class="compare-table"><thead><tr><th>Status</th><th>Assertion</th><th>Detail (from file)</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+            '<div class="key-insight"><strong>' + pass + '/' + total + ' P6 exit assertion(s) passing</strong> in <code>.rapid/P6_EXIT.json</code>. ' +
+            (fail === 0
+              ? 'No assertion fails, so the phase gate (S-01) does not block advancement to P7.'
+              : fail + ' assertion(s) fail — S-01 refuses the walkthrough phase until the underlying gaps are resolved.') +
+            (d.generated ? ' <span style="opacity:.6;">Generated ' + esc(d.generated) + '.</span>' : '') +
+            '</div>';
+        } else {
+          ge.innerHTML = '<div class="key-insight">No exit assertions recorded yet — run <code>tools/ship-gate.sh</code> at P6 to generate <code>.rapid/P6_EXIT.json</code> and <code>eval.json</code>. This page reflects the file; it does not fabricate results.</div>';
+        }
+      }
+    });
+  })();
+  </script>
+  <script src="rapid-nav.js" defer></script>
 </body>
 </html>

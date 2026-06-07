@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>RAPID — System Architecture</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FFFFFF;--surface:#F7F8FA;--surface-alt:#F0F2F5;--border:#D4D8DE;--border-light:#E2E5EA;
+  --text:#1A2744;--text-muted:#4A5568;--text-dim:#8896A6;
+  --navy:#1A2744;--blue:#2B6CB0;--green:#276749;--red:#C53030;--amber:#B7791F;--purple:#6B46C1;--teal:#2C7A7B;
+  --radius:4px;
+  /* diagram box tints */
+  --auto-bg:#EAF2FB;--auto-bd:#BBD3EE;--auto-fg:#1B4F86;
+  --human-bg:#FBF2E0;--human-bd:#E7CF9F;--human-fg:#8A5B12;
+  --hook-bg:#FBE9E9;--hook-bd:#EDB9B9;--hook-fg:#9B2C2C;
+  --data-bg:#EEF1F5;--data-bd:#C9D2DE;--data-fg:#3A475C;
+  --tool-bg:#E2F0EF;--tool-bd:#A6CFCC;--tool-fg:#23615F;
+  --feat-bg:#F1E9FB;--feat-bd:#CFB7EE;--feat-fg:#5B36A8;
+}
+html{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--blue);text-decoration:none}
+
+/* top nav (Atlas style) */
+.rapid-nav{display:flex;align-items:center;background:#1A2744;padding:0 20px;overflow-x:auto;position:sticky;top:0;z-index:1000}
+.rapid-nav-brand{display:flex;flex-direction:column;font-size:12px;font-weight:800;color:#fff;letter-spacing:-.02em;padding:6px 16px 6px 0;margin-right:8px;border-right:1px solid rgba(255,255,255,.15);line-height:1.2}
+.rapid-nav-brand .sub{font-size:7px;font-weight:500;color:rgba(255,255,255,.45);letter-spacing:.06em;text-transform:uppercase}
+.rapid-nav a{font-size:9.5px;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;padding:10px 12px;letter-spacing:.3px;white-space:nowrap;border-bottom:2px solid transparent}
+.rapid-nav a:hover{color:rgba(255,255,255,.85)}.rapid-nav a.active{color:#fff;border-bottom-color:#fff}
+
+.layout{display:flex;flex:1}
+.sidebar{width:264px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:28px 16px;position:sticky;top:38px;height:calc(100vh - 38px);overflow-y:auto}
+.sidebar .b1{font-size:1.1rem;font-weight:800;color:var(--navy);letter-spacing:-.02em}
+.sidebar .b2{font-size:.7rem;color:var(--text-dim);margin-bottom:20px;font-weight:500}
+.sidebar .sec{font-size:.55rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin:18px 0 6px}
+.sidebar a{display:block;font-size:.76rem;color:var(--text-muted);text-decoration:none;padding:3px 8px;border-radius:3px;margin:1px 0}
+.sidebar a:hover{background:var(--surface-alt);color:var(--text)}
+.sidebar a .tag{font-size:.58rem;font-weight:700;color:var(--feat-fg);margin-left:4px}
+
+.content{flex:1;min-width:0}
+.main{max-width:1000px;margin:0 auto;padding:40px 40px 120px}
+h1{font-size:1.9rem;font-weight:800;color:var(--navy);letter-spacing:-.02em;margin-bottom:8px}
+.lede{font-size:.92rem;color:var(--text-muted);max-width:760px;margin-bottom:8px}
+h2{font-size:1.2rem;font-weight:800;color:var(--navy);margin:8px 0 4px;scroll-margin-top:54px;display:flex;align-items:baseline;gap:10px}
+h2 .pid{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;font-weight:700;color:#fff;background:var(--navy);padding:2px 7px;border-radius:4px;letter-spacing:.02em}
+.eyebrow{font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin:40px 0 4px}
+.desc{font-size:.86rem;color:var(--text-muted);margin:6px 0 4px;max-width:780px}
+.plane{border-top:2px solid var(--border);margin-top:46px;padding-top:6px}
+.plane-h{font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim)}
+
+/* ---- diagram kit ---- */
+.dgm{background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:22px 20px;margin:14px 0 8px;overflow-x:auto}
+.seq{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.col{display:flex;flex-direction:column;align-items:center;gap:0}
+.cols{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.b{display:inline-flex;flex-direction:column;justify-content:center;gap:2px;min-width:88px;max-width:230px;padding:9px 13px;border:1px solid var(--bd,var(--border));background:var(--bgc,#fff);border-radius:6px;font-size:.77rem;font-weight:700;color:var(--fg,var(--text));text-align:center;line-height:1.22}
+.b small{font-weight:500;font-size:.65rem;color:var(--text-dim);max-width:200px}
+.b.auto{--bgc:var(--auto-bg);--bd:var(--auto-bd);--fg:var(--auto-fg)}
+.b.human{--bgc:var(--human-bg);--bd:var(--human-bd);--fg:var(--human-fg)}
+.b.hook{--bgc:var(--hook-bg);--bd:var(--hook-bd);--fg:var(--hook-fg)}
+.b.data{--bgc:var(--data-bg);--bd:var(--data-bd);--fg:var(--data-fg);font-family:ui-monospace,Menlo,monospace;font-weight:600;font-size:.71rem}
+.b.tool{--bgc:var(--tool-bg);--bd:var(--tool-bd);--fg:var(--tool-fg);font-family:ui-monospace,Menlo,monospace;font-weight:600;font-size:.71rem}
+.b.feat{--bgc:var(--feat-bg);--bd:var(--feat-bd);--fg:var(--feat-fg);box-shadow:0 0 0 2px rgba(107,70,193,.14)}
+.b.sub{border-style:dashed}
+.b.wide{max-width:none}
+.b .star{font-size:.56rem;font-weight:800;color:var(--feat-fg);letter-spacing:.08em}
+.arr{display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:1.05rem;padding:0 4px;min-width:20px}
+.arr.dn{padding:5px 0}
+.arr.lbl{flex-direction:column;font-size:.95rem}
+.arr .t{font-size:.56rem;font-weight:600;color:var(--text-dim);letter-spacing:.02em}
+.grp{border:1px dashed var(--border);border-radius:8px;padding:12px 12px 14px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.5)}
+.grp>.glbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);font-weight:800}
+.note{border-left:3px solid var(--feat-bd);background:var(--feat-bg);padding:9px 13px;border-radius:0 6px 6px 0;font-size:.8rem;color:var(--feat-fg);margin:6px 0}
+.note b{color:var(--feat-fg)}
+.meta{font-size:.72rem;color:var(--text-dim);margin:6px 0 2px}
+.meta code{font-family:ui-monospace,Menlo,monospace;color:var(--text-muted);background:var(--surface-alt);padding:1px 5px;border-radius:3px;font-size:.92em}
+.meta .k{font-weight:700;color:var(--text-muted);text-transform:uppercase;font-size:.62rem;letter-spacing:.08em;margin-right:4px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:14px 18px;margin:14px 0 6px}
+.legend .it{display:flex;align-items:center;gap:7px;font-size:.74rem;color:var(--text-muted)}
+.legend .sw{width:18px;height:13px;border-radius:3px;border:1px solid}
+.sw.auto{background:var(--auto-bg);border-color:var(--auto-bd)}
+.sw.human{background:var(--human-bg);border-color:var(--human-bd)}
+.sw.hook{background:var(--hook-bg);border-color:var(--hook-bd)}
+.sw.data{background:var(--data-bg);border-color:var(--data-bd)}
+.sw.tool{background:var(--tool-bg);border-color:var(--tool-bd)}
+.sw.feat{background:var(--feat-bg);border-color:var(--feat-bd);box-shadow:0 0 0 2px rgba(107,70,193,.14)}
+.foot{font-size:.74rem;color:var(--text-dim);margin-top:50px;border-top:1px solid var(--border);padding-top:16px}
+@media(max-width:880px){.sidebar{display:none}.main{padding:28px 20px 80px}}
+</style>
+<style>
+/* ===== Constellation dark override — re-themes this bespoke app page ===== */
+:root{
+  --bg:#0D1117;--surface:#161B22;--surface-alt:#1C2330;
+  --border:#2A313B;--border-light:#20262F;
+  --text:#E6EDF3;--text-muted:#9BA6B2;--text-dim:#6B7480;
+  --navy:#7AA2F7;--accent:#7AA2F7;--accent-dim:rgba(122,162,247,0.12);
+  --blue:#58A6FF;--blue-dim:rgba(88,166,255,0.14);
+  --green:#3FB950;--green-dim:rgba(63,185,80,0.14);
+  --red:#F85149;--red-dim:rgba(248,81,73,0.14);
+  --amber:#D29922;--amber-dim:rgba(210,153,34,0.14);
+  --purple:#BC8CFF;--teal:#56D4DD;--code-bg:#0A0D12;
+}
+html,body{background:#0D1117 !important;color:#E6EDF3 !important;}
+/* dark chrome — elements that used navy as a FILL must be dark surfaces, not accent */
+.rapid-nav{background:rgba(8,11,16,0.92) !important;border-bottom:1px solid #2A313B !important;}
+.sidebar{background:rgba(13,17,23,0.6) !important;border-color:#20262F !important;}
+.col-left-header,.col-right-header,.log-header,.pane-head,.compare-table th,.step-table th,table th{background:#1C2330 !important;color:#7AA2F7 !important;border-color:#2A313B !important;}
+.ph{background:#1C2330 !important;color:#9BA6B2 !important;}
+/* surfaces, cards, borders */
+.card,.panel,.box,.metric,.compare-table,.step-table,.diagram{background:#161B22 !important;border-color:#20262F !important;}
+code,pre,.code-block{background:#0A0D12 !important;color:#c4cad6 !important;border-color:#20262F !important;}
+/* keep accent fills readable (accent bg → dark text) */
+.n-primary,.btn-primary,.wf-tab.active,.regen-btn{color:#0B0E13 !important;}
+a{color:#7AA2F7;}
+</style>
+
+</head>
+<body>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:.5;font-size:10px;">/ Atlas</span><span class="sub">developer view</span></span>
+  <a href="home.html">Home</a>
+  <a href="atlas-v2/index.html" style="color:#7AA2F7;font-weight:700;">✦ Skills Atlas</a>
+  <a href="prd.html">PRD</a>
+  <a href="architecture.html">Architecture</a>
+  <a href="workflow.html">Workflow</a>
+  <a href="spec.html">Spec</a>
+  <a href="observatory.html">Observatory</a>
+  <a href="eval.html">Eval</a>
+  <a href="cost.html">Cost</a>
+  <a class="active" href="system-architecture.html">System Map</a>
+</nav>
+<div class="layout">
+<aside class="sidebar">
+  <div class="b1">RAPID</div>
+  <div class="b2">System Architecture</div>
+  <div class="sec">Overview</div>
+  <a href="#glance">System at a glance</a>
+  <a href="#legend">Legend</a>
+  <a href="#pipeline">The 13-phase pipeline</a>
+  <div class="sec">Plan plane</div>
+  <a href="#p0">P0 · Vision</a>
+  <a href="#p1">P1 · Structure + Preflight</a>
+  <a href="#p1b">P1b · PRD Decomposition</a>
+  <a href="#p2">P2 · Expert Panels</a>
+  <a href="#p3">P3 · Grounding Research</a>
+  <a href="#p4">P4 · Spec Derivation</a>
+  <a href="#design">Design-in-plan<span class="tag">E</span></a>
+  <a href="#p5">P5 · Tasks + Eval Harness</a>
+  <a href="#p5b">P5b · Spec Deepening</a>
+  <div class="sec">Build plane</div>
+  <a href="#team">P6 · Five-lead build team</a>
+  <a href="#seams">P6a · Seam pinning</a>
+  <a href="#worktree">Worktree isolation<span class="tag">C</span></a>
+  <a href="#ratchet">Keep-or-revert ratchet</a>
+  <a href="#p7">P7 · Test + Visual QA</a>
+  <a href="#p8">P8 · Gap loop + Optimize</a>
+  <a href="#p9">P9 · Deploy + Document</a>
+  <a href="#p10">P10 · Product Pulse</a>
+  <div class="sec">Gates & autonomy</div>
+  <a href="#gates">The 4 human gates</a>
+  <a href="#inputs">Inputs ledger<span class="tag">B</span></a>
+  <a href="#autonomy">Standing authorization</a>
+  <div class="sec">Enforcement</div>
+  <a href="#hooks">Hook map (R1–R9)</a>
+  <a href="#eval-immutable">Immutable eval harness</a>
+  <a href="#shipgate">Ship gate</a>
+  <div class="sec">Observability</div>
+  <a href="#observe">Observe → dashboard</a>
+  <a href="#cost">Per-phase cost<span class="tag">A</span></a>
+  <a href="#state">.rapid state files</a>
+  <div class="sec">Atlas & tests</div>
+  <a href="#atlas">Atlas (deck + live)</a>
+  <a href="#theater">Workflow Test Theater</a>
+</aside>
+<div class="content"><main class="main">
+
+<h1>RAPID — System Architecture</h1>
+<p class="lede">The complete map of the RAPID build system: a layered pipeline that takes a product idea
+through vision → panels → derived spec → a bounded agent swarm → a gap loop, and out the other side as a
+deployed, documented app with its own Atlas. Every feature and capability below gets its own diagram.</p>
+<p class="lede" style="font-size:.82rem;color:var(--text-dim)">Reading order is top-to-bottom = idea-to-ship. Boxes are color-coded by kind (see Legend).
+The four newest capabilities — <b style="color:var(--feat-fg)">A</b> per-phase cost, <b style="color:var(--feat-fg)">B</b> inputs ledger,
+<b style="color:var(--feat-fg)">C</b> verified worktrees, <b style="color:var(--feat-fg)">E</b> design-in-plan — are drawn in purple.</p>
+
+<!-- ============ OVERVIEW ============ -->
+<h2 id="glance">System at a glance</h2>
+<p class="desc">One product idea in, one shipped + documented app out. Humans are consulted at four gates, all
+front-loaded before the build; after Gate 2 the build runs to completion on its own.</p>
+<div class="dgm">
+  <div class="seq">
+    <div class="b" style="--bgc:#fff">Idea / PRD<small>text or file</small></div>
+    <div class="arr">→</div>
+    <div class="b auto">Plan<small>P0–P5b · vision→spec</small></div>
+    <div class="arr lbl"><span>→</span><span class="t">3 gates</span></div>
+    <div class="b human">Approve<small>G0·G1·G2</small></div>
+    <div class="arr">→</div>
+    <div class="b auto">Build<small>P6 · agent swarm</small></div>
+    <div class="arr">→</div>
+    <div class="b auto">Verify + Gaps<small>P7–P8</small></div>
+    <div class="arr lbl"><span>→</span><span class="t">G3 ship?</span></div>
+    <div class="b human">Ship<small>G3</small></div>
+    <div class="arr">→</div>
+    <div class="b auto">Deploy + Docs<small>P9–P10</small></div>
+    <div class="arr">→</div>
+    <div class="b" style="--bgc:#fff">Live app<small>+ its Atlas</small></div>
+  </div>
+</div>
+<p class="meta"><span class="k">Thesis</span> the gap loop is the product; the build is the artifact. Human input is bounded and front-loaded; everything else is logged, not asked.</p>
+
+<!-- ============ LEGEND ============ -->
+<h2 id="legend">Legend</h2>
+<div class="legend">
+  <div class="it"><span class="sw auto"></span> Automated phase / step</div>
+  <div class="it"><span class="sw human"></span> Human gate (operator)</div>
+  <div class="it"><span class="sw hook"></span> Enforcement hook (blocks)</div>
+  <div class="it"><span class="sw data"></span> <code style="font-family:ui-monospace,Menlo,monospace">.rapid/</code> artifact / state file</div>
+  <div class="it"><span class="sw tool"></span> Tool script (tools/*)</div>
+  <div class="it"><span class="sw feat"></span> New capability (A/B/C/E)</div>
+  <div class="it"><span class="sw" style="border-style:dashed;background:#fff;border-color:var(--border)"></span> Ephemeral subagent (fan-out)</div>
+</div>
+
+<!-- ============ PIPELINE ============ -->
+<h2 id="pipeline">The 13-phase pipeline</h2>
+<p class="desc">Phases run in a fixed order; a phase-gate hook blocks <code style="font-family:ui-monospace">STATE.json</code> from advancing
+without that phase's artifacts. Four human gates (▸) punctuate the flow — all before or at the build boundary.</p>
+<div class="dgm">
+  <div class="seq" style="gap:5px">
+    <div class="b auto">P0<small>Vision</small></div><div class="arr">→</div>
+    <div class="b auto">P1<small>Structure</small></div><div class="arr">→</div>
+    <div class="b auto">P1b<small>PRD decomp</small></div><div class="arr">▸</div>
+    <div class="b human">G0<small>PRD review</small></div><div class="arr">→</div>
+    <div class="b auto">P2<small>Panels</small></div><div class="arr">→</div>
+    <div class="b auto">P3<small>Research</small></div><div class="arr">▸</div>
+    <div class="b human">G1<small>Direction</small></div>
+  </div>
+  <div class="arr dn">↓</div>
+  <div class="seq" style="gap:5px">
+    <div class="b auto">P4<small>Spec + mocks</small></div><div class="arr">→</div>
+    <div class="b auto">P5<small>Tasks + eval</small></div><div class="arr">→</div>
+    <div class="b auto">P5b<small>Deepening</small></div><div class="arr">▸</div>
+    <div class="b human">G2<small>Architecture · point of no return</small></div><div class="arr">→</div>
+    <div class="b auto">P6<small>Build team</small></div>
+  </div>
+  <div class="arr dn">↓</div>
+  <div class="seq" style="gap:5px">
+    <div class="b auto">P7<small>Test + Visual QA</small></div><div class="arr">→</div>
+    <div class="b auto">P8<small>Gap loop</small></div><div class="arr">▸</div>
+    <div class="b human">G3<small>Ship?</small></div><div class="arr">→</div>
+    <div class="b auto">P9<small>Deploy + Docs</small></div><div class="arr">→</div>
+    <div class="b auto">P10<small>Pulse (opt)</small></div>
+  </div>
+</div>
+<p class="meta"><span class="k">Tracks</span> <b>fast</b> = 1 panel, fewer leads; <b>full</b> = 3 panels, all 5 leads. Scale to the change.</p>
+
+<!-- ============ PLAN PLANE ============ -->
+<div class="plane"><span class="plane-h">Plan plane — vision → locked spec (P0–P5b)</span></div>
+
+<div class="eyebrow">Phase 0</div>
+<h2 id="p0"><span class="pid">P0</span> Vision Extraction</h2>
+<p class="desc">Turn a raw idea or PRD into a north star and 3–5 project-specific evaluation pillars that every later
+phase reads as grounding.</p>
+<div class="dgm">
+  <div class="seq">
+    <div class="b" style="--bgc:#fff">Idea / PRD</div>
+    <div class="arr">→</div>
+    <div class="grp"><span class="glbl">extract</span>
+      <div class="seq"><div class="b auto">North star</div><div class="b auto">Success signals</div><div class="b auto">Objective</div></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="b auto">Derive 3–5 pillars<small>project-specific, not generic</small></div>
+    <div class="arr">→</div>
+    <div class="col"><div class="b data">00-vision/VISION.md</div><div class="b data">00-vision/PILLARS.md</div></div>
+  </div>
+  <div class="arr dn">↑ compound refresh</div>
+  <div class="seq"><div class="b data">prev .rapid/LEARNINGS.md</div><div class="arr">→</div><div class="b auto">re-check vs current code → inject non-stale learnings</div></div>
+</div>
+<p class="meta"><span class="k">Out</span> <code>00-vision/VISION.md</code>, <code>00-vision/PILLARS.md</code> &nbsp;·&nbsp; <span class="k">Re-runnable</span> <code>/rapid-workflow --resume</code></p>
+
+<div class="eyebrow">Phase 1</div>
+<h2 id="p1"><span class="pid">P1</span> Structure + Preflight</h2>
+<p class="desc">Scaffold the project, lock the PRD, write the governance + autonomy charters, seed the input ledger,
+prove the toolchain installs, and stand up the project's own Atlas — all before any content exists.</p>
+<div class="dgm">
+  <div class="cols">
+    <div class="grp"><span class="glbl">scaffold + lock</span>
+      <div class="b auto">Numbered folders<small>00-vision … 05-gaps, .rapid/</small></div>
+      <div class="b data">01-intake/PRD.md<small>immutable from here</small></div>
+    </div>
+    <div class="grp"><span class="glbl">charters</span>
+      <div class="b data">CONSTITUTION.md<small>Articles I–X</small></div>
+      <div class="b data">BUILD-AUTONOMY.md<small>standing auth (signed G1)</small></div>
+      <div class="b feat"><span class="star">★ B</span>.rapid/INPUTS.json<small>human-input ledger</small></div>
+    </div>
+    <div class="grp"><span class="glbl">prove + publish</span>
+      <div class="b tool">preflight.sh<small>probe+install stack · hard-fail</small></div>
+      <div class="b tool">atlas-init.sh<small>Atlas live day one</small></div>
+      <div class="b data">.rapid/STATE.json<small>{phase:1}</small></div>
+    </div>
+  </div>
+</div>
+<p class="meta"><span class="k">Rule</span> never code around a missing runtime — a shim is unverifiable. Preflight green or the build is blocked.</p>
+
+<div class="eyebrow">Phase 1b</div>
+<h2 id="p1b"><span class="pid">P1b</span> PRD Decomposition</h2>
+<p class="desc">Convert whatever the stakeholder wrote into a structured, reviewable checklist so nothing slips and the
+operator can verify completeness before panels run.</p>
+<div class="dgm">
+  <div class="seq">
+    <div class="b data">01-intake/PRD.md</div>
+    <div class="arr">→</div>
+    <div class="grp"><span class="glbl">categorize every item</span>
+      <div class="seq" style="flex-wrap:wrap">
+        <div class="b auto">Functional<small>MUST / SHOULD / COULD + acceptance</small></div>
+        <div class="b auto">Non-functional<small>measurable thresholds</small></div>
+        <div class="b auto">Constraints</div>
+        <div class="b auto">Assumptions<small>VERIFIED / UNVERIFIED / RISKY</small></div>
+        <div class="b auto">Out of scope</div>
+        <div class="b auto">Open questions</div>
+      </div>
+    </div>
+    <div class="arr">→</div>
+    <div class="b data">01-intake/PRD-ENHANCED.md<small>+ summary table</small></div>
+  </div>
+</div>
+<p class="meta"><span class="k">Next</span> ▸ Gate 0 — operator reviews before panels consume it (cheapest correction point).</p>
+
+<div class="eyebrow">Phase 2</div>
+<h2 id="p2"><span class="pid">P2</span> Expert Panels</h2>
+<p class="desc">One to three domain panels review the enhanced PRD <em>through the pillars</em>, in parallel, then a
+synthesis collapses convergence, divergence, and risks.</p>
+<div class="dgm">
+  <div class="seq">
+    <div class="b data">PRD-ENHANCED.md<small>+ PILLARS.md</small></div>
+    <div class="arr">→</div>
+    <div class="grp"><span class="glbl">parallel panels (1=fast · 3=full)</span>
+      <div class="seq"><div class="b sub auto">Technical</div><div class="b sub auto">Business / SME</div><div class="b sub auto">Domain</div></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="b auto">Synthesize<small>convergent / divergent / risks</small></div>
+    <div class="arr">→</div>
+    <div class="b data">03-panels/synthesis.md</div>
+  </div>
+</div>
+<p class="meta"><span class="k">Discipline</span> panels review through the vision, not generically — pillars come first.</p>
+
+<div class="eyebrow">Phase 3</div>
+<h2 id="p3"><span class="pid">P3</span> Grounding Research</h2>
+<p class="desc">Every open question from panels gets a time-boxed research subagent that returns options, evidence, and a
+fallback — including a hard check that external data actually exists.</p>
+<div class="dgm">
+  <div class="seq">
+    <div class="b data">[OPEN] questions</div>
+    <div class="arr">→</div>
+    <div class="grp"><span class="glbl">one subagent per question · 15-min timebox</span>
+      <div class="seq"><div class="b sub auto">Q1 → options+evidence</div><div class="b sub auto">Q2 → …</div><div class="b sub auto">Qn → …</div></div>
+    </div>
+    <div class="arr">→</div>
+    <div class="b data">02-grounding/*.md</div>
+  </div>
+  <div class="arr dn">↓</div>
+  <div class="seq"><div class="b auto">Data-availability check<small>verify feeds/clips/APIs are real — don't assume</small></div></div>
+</div>
+<p class="meta"><span class="k">Next</span> ▸ Gate 1 — Direction: panels + research + undecidable batch + sign BUILD-AUTONOMY.md.</p>
+
+<div class="eyebrow">Phase 4</div>
+<h2 id="p4"><span class="pid">P4</span> Spec Derivation</h2>
+<p class="desc">Derive the spec, the workflow state machine, the architecture, and the interface contracts from PRD +
+panels + research — every requirement traceable. (Design-in-plan slots in here; see next section.)</p>
+<div class="dgm">
+  <div class="seq">
+    <div class="b data">PRD-ENHANCED + synthesis + grounding</div>
+    <div class="arr">→</div>
+    <div class="col" style="gap:6px">
+      <div class="b auto">spec.md<small>tagged FROM-PRD / DERIVED / OPEN</small></div>
+      <div class="b auto">workflow.md<small>state machine + workflows.json</small></div>
+      <div class="b auto">architecture.md<small>layers · schema · serves the screens</small></div>
+      <div class="b auto">CONTRACTS.md<small>interface boundaries (D4 drift)</small></div>
+    </div>
+  </div>
+  <div class="arr dn">↓ inter-stage assertion (blocking)</div>
+  <div class="seq"><div class="b hook">Every PRD requirement maps to a spec section or an explicit OUT-OF-SCOPE tag — else retry</div></div>
+</div>
+<p class="meta"><span class="k">Out</span> <code>04-spec/{spec,workflow,architecture,CONTRACTS}.md</code></p>
+
+</main></div></div>
+</body>
+</html>

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How rapid-workflow Works — RAPID</title>
+<!-- ============================================================
+     HOW IT WORKS — a system deck on the rapid-workflow / RAPID
+     methodology. Self-contained Reveal.js deck. CSS vocabulary
+     adapted verbatim from templates/template-docs-deck.html so it
+     matches the house style (McKinsey action titles, paper theme,
+     navy/teal palette, plain-English → "Technically:" pattern).
+     Sources: CODEBASE.md, skills/rapid-workflow/SKILL.md, README.md,
+     docs/CONSTITUTION.md, docs/methodology-deck.md, CHANGELOG.md.
+     ============================================================ -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.min.css">
+<style>
+:root{
+  --ink:#0a1929; --ink-2:#374151; --ink-3:#6b7280; --ink-4:#9ca3af;
+  --paper:#fff; --hairline:#eef0f3; --rule:#d1d5db;
+  --navy:#0d2340; --teal:#1f8a8a; --teal-tint:#f3f8f8;
+  --accent:#b8400a; --amber-tint:#fdf6ec; --amber-rule:#f0c89e;
+  --spec-tint:#f3f6fc; --green:#047857; --green-tint:#ecfdf5; --green-rule:#a7f3d0;
+  --red:#b91c1c; --red-tint:#fef2f2; --purple:#6d28d9; --purple-tint:#faf5ff;
+  --ui-sans:'Inter',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --ui-serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --ui-mono:'IBM Plex Mono',Menlo,Consolas,monospace;
+}
+html,body{background:#11161d;}
+.reveal{font-family:var(--ui-sans);color:var(--ink);font-feature-settings:'ss01','cv01','cv11';-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+.reveal .slides{text-align:left;}
+.slide{position:relative;width:1280px;height:720px;padding:30px 38px 34px;box-sizing:border-box;background:var(--paper);display:flex;flex-direction:column;overflow:hidden;}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:0.22em;color:var(--teal);text-transform:uppercase;margin-bottom:5px;}
+.title{font-family:var(--ui-serif);font-size:23px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:14px;letter-spacing:-0.015em;line-height:1.28;}
+.title .badge{vertical-align:middle;}
+.footer{position:absolute;left:38px;right:38px;bottom:12px;display:flex;justify-content:space-between;font-size:10px;color:var(--ink-4);border-top:1px solid var(--hairline);padding-top:6px;letter-spacing:0.05em;}
+.footer .mono{font-family:var(--ui-mono);}
+.fill{flex:1;min-height:0;display:flex;flex-direction:column;}
+
+/* lede / plain-english + technically */
+.lede{font-size:14px;color:var(--ink-2);line-height:1.6;margin-bottom:12px;}
+.lede strong{color:var(--ink);}
+.tech{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:8px;}
+.tech .t-label{font-family:var(--ui-mono);font-size:9px;font-weight:600;letter-spacing:0.08em;color:var(--navy);text-transform:uppercase;margin-right:6px;}
+
+/* badges */
+.badge{display:inline-block;font-family:var(--ui-mono);font-size:9px;font-weight:600;letter-spacing:0.8px;padding:3px 8px;border-radius:3px;text-transform:uppercase;margin-left:10px;vertical-align:middle;}
+.badge.decided,.badge.pass{background:var(--green-tint);color:var(--green);border:1px solid var(--green-rule);}
+.badge.open,.badge.caution{background:var(--amber-tint);color:var(--accent);border:1px solid var(--amber-rule);}
+.badge.fail,.badge.block{background:var(--red-tint);color:var(--red);border:1px solid #fecaca;}
+.badge.locked{background:var(--spec-tint);color:var(--navy);border:1px solid #c7d2fe;}
+.badge.gate{background:var(--amber-tint);color:var(--accent);border:1px solid var(--amber-rule);}
+.badge.teal{background:var(--teal-tint);color:var(--teal);border:1px solid #d1e7e7;}
+.badge.purple{background:var(--purple-tint);color:var(--purple);border:1px solid #ddd6fe;}
+
+/* card grids */
+.options{display:grid;gap:13px;flex:1;min-height:0;}
+.options.cols-2{grid-template-columns:1fr 1fr;}
+.options.cols-3{grid-template-columns:1fr 1fr 1fr;}
+.options.cols-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+.option{border:1px solid var(--rule);border-radius:5px;padding:13px 15px;display:flex;flex-direction:column;background:var(--paper);}
+.option.navy{border-color:var(--navy);border-width:1.5px;background:var(--spec-tint);}
+.option.teal{border-color:var(--teal);border-width:1.5px;background:var(--teal-tint);}
+.option.green{border-color:var(--green);border-width:1.5px;background:var(--green-tint);}
+.option.accent{border-color:var(--accent);background:var(--amber-tint);}
+.option.red{border-color:var(--red);border-width:1.5px;background:var(--red-tint);}
+.option.purple{border-color:var(--purple);border-width:1.5px;background:var(--purple-tint);}
+.option .opt-name{font-family:var(--ui-serif);font-size:14.5px;font-weight:600;color:var(--ink);margin-bottom:5px;display:flex;align-items:baseline;gap:8px;}
+.option .opt-name .k{font-family:var(--ui-mono);font-size:10px;font-weight:600;color:var(--teal);}
+.option .opt-desc{font-size:11px;color:var(--ink-2);line-height:1.5;}
+.option .opt-desc b{color:var(--ink);}
+
+/* simple bullet list */
+.blist{list-style:none;padding:0;margin:0;}
+.blist li{font-size:11.5px;color:var(--ink-2);line-height:1.5;padding-left:15px;text-indent:-15px;margin-bottom:5px;}
+.blist li::before{content:"▸ ";color:var(--teal);font-weight:700;}
+.blist li b{color:var(--ink);}
+.blist.tight li{margin-bottom:3px;font-size:11px;}
+
+/* rationale / callout */
+.rationale{background:var(--spec-tint);border-left:3px solid var(--navy);padding:11px 15px;margin-top:10px;border-radius:0 4px 4px 0;}
+.rationale.teal{background:var(--teal-tint);border-left-color:var(--teal);}
+.rationale.accent{background:var(--amber-tint);border-left-color:var(--accent);}
+.rationale.green{background:var(--green-tint);border-left-color:var(--green);}
+.rationale.red{background:var(--red-tint);border-left-color:var(--red);}
+.rationale .r-label{font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--navy);text-transform:uppercase;margin-bottom:4px;}
+.rationale.teal .r-label{color:var(--teal);} .rationale.accent .r-label{color:var(--accent);} .rationale.green .r-label{color:var(--green);} .rationale.red .r-label{color:var(--red);}
+.rationale .r-text{font-size:12px;color:var(--ink-2);line-height:1.55;}
+.rationale .r-text b{color:var(--ink);}
+
+/* tables */
+.dtable{width:100%;border-collapse:collapse;}
+.dtable th{font-size:9px;font-weight:700;letter-spacing:1.1px;color:var(--ink-3);text-transform:uppercase;text-align:left;padding:7px 10px;border-bottom:2px solid var(--rule);}
+.dtable td{font-size:11px;color:var(--ink-2);padding:7px 10px;border-bottom:1px solid var(--hairline);vertical-align:top;line-height:1.45;}
+.dtable td b{color:var(--ink);}
+.dtable td.k{font-family:var(--ui-mono);font-size:10px;font-weight:600;color:var(--navy);white-space:nowrap;}
+.dtable tr.gate td{background:var(--amber-tint);}
+.dtable tr.gate td.k{color:var(--accent);}
+.dtable .art{font-family:var(--ui-mono);font-size:9.5px;color:var(--ink-3);}
+
+/* metrics */
+.metrics{display:flex;gap:14px;margin:4px 0 10px;}
+.metric{text-align:center;flex:1;border:1px solid var(--hairline);border-radius:5px;padding:10px 6px;background:#fafbfc;}
+.metric .m-value{font-family:var(--ui-serif);font-size:26px;font-weight:700;color:var(--navy);line-height:1;}
+.metric .m-value.teal{color:var(--teal);} .metric .m-value.accent{color:var(--accent);} .metric .m-value.green{color:var(--green);} .metric .m-value.red{color:var(--red);}
+.metric .m-label{font-size:8.5px;font-weight:600;letter-spacing:0.9px;color:var(--ink-4);text-transform:uppercase;margin-top:5px;line-height:1.3;}
+
+/* flow nodes */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:0;justify-content:center;}
+.flow.col{flex-direction:column;}
+.n{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid var(--rule);border-radius:4px;padding:6px 11px;font-size:11px;font-weight:600;text-align:center;background:var(--paper);white-space:nowrap;}
+.n small{font-size:8.5px;font-weight:400;color:var(--ink-4);margin-top:1px;letter-spacing:0.02em;}
+.n.auto{border-color:var(--teal);color:var(--teal);background:var(--teal-tint);}
+.n.gate{border-color:var(--accent);color:var(--accent);background:var(--amber-tint);font-weight:700;}
+.n.primary{border-color:var(--navy);background:var(--navy);color:#fff;}
+.n.primary small{color:rgba(255,255,255,0.6);}
+.n.green{border-color:var(--green);color:var(--green);background:var(--green-tint);}
+.n.purple{border-color:var(--purple);color:var(--purple);background:var(--purple-tint);}
+.arr{color:var(--ink-4);font-size:15px;padding:0 5px;font-weight:700;}
+.arr.loop{color:var(--accent);}
+
+/* divider slide */
+.slide.divider{background:var(--navy);justify-content:center;}
+.slide.divider .d-eyebrow{font-size:11px;font-weight:600;letter-spacing:0.3em;color:var(--teal);text-transform:uppercase;margin-bottom:14px;}
+.slide.divider .d-arc{font-family:var(--ui-mono);font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:8px;letter-spacing:0.1em;}
+.slide.divider .d-title{font-family:var(--ui-serif);font-size:40px;font-weight:700;color:#fff;line-height:1.15;letter-spacing:-0.02em;max-width:1000px;}
+.slide.divider .d-sub{font-size:14px;color:rgba(255,255,255,0.7);margin-top:18px;line-height:1.6;max-width:880px;}
+.slide.divider .d-phases{display:flex;gap:8px;margin-top:26px;flex-wrap:wrap;}
+.slide.divider .d-phases .p{font-family:var(--ui-mono);font-size:11px;color:rgba(255,255,255,0.85);border:1px solid rgba(255,255,255,0.25);border-radius:3px;padding:5px 10px;}
+.slide.divider .d-phases .p.gate{color:#f7c9a3;border-color:rgba(247,201,163,0.4);background:rgba(247,201,163,0.08);}
+
+/* title slide */
+.slide.cover{background:var(--navy);justify-content:center;}
+.slide.cover .c-kicker{font-family:var(--ui-mono);font-size:12px;letter-spacing:0.32em;color:var(--teal);text-transform:uppercase;margin-bottom:20px;}
+.slide.cover h1{font-family:var(--ui-serif);font-size:58px;font-weight:700;color:#fff;line-height:1.05;letter-spacing:-0.02em;margin:0 0 6px;}
+.slide.cover h1 .sub{color:rgba(255,255,255,0.45);font-weight:400;}
+.slide.cover .c-tag{font-size:17px;color:rgba(255,255,255,0.78);line-height:1.55;max-width:830px;margin-top:18px;}
+.slide.cover .c-meta{display:flex;gap:26px;margin-top:34px;font-size:11px;color:rgba(255,255,255,0.55);font-family:var(--ui-mono);letter-spacing:0.04em;flex-wrap:wrap;}
+.slide.cover .c-meta b{color:rgba(255,255,255,0.9);font-weight:600;}
+
+.note{font-size:10.5px;color:var(--ink-4);font-style:italic;margin-top:8px;line-height:1.5;}
+.kbd{font-family:var(--ui-mono);font-size:0.92em;background:var(--spec-tint);color:var(--navy);padding:1px 6px;border-radius:3px;border:1px solid #dbe3f1;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;min-height:0;}
+.two.w60{grid-template-columns:58% 1fr;}
+.colhead{font-size:10px;font-weight:700;letter-spacing:1.1px;color:var(--ink-3);text-transform:uppercase;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- ===== 1 · COVER ===== -->
+<section><div class="slide cover">
+  <div class="c-kicker">Rapid Autonomous Pipeline for Iterative Development</div>
+  <h1>RAPID <span class="sub">·</span> RAPID<br><span class="sub" style="font-size:30px;">How it works</span></h1>
+  <div class="c-tag">A gate-enforced pipeline that turns a vague idea or a stakeholder PRD into a tested, audited, deployed system — by separating the agent that <em>builds</em> from the agents that <em>audit</em>, structurally.</div>
+  <div class="c-meta">
+    <span>REPO&nbsp; <b>rapid-workflow</b></span>
+    <span>METHOD&nbsp; <b>RAPID</b></span>
+    <span>SKILL&nbsp; <b>/rapid-workflow</b></span>
+    <span>VERSION&nbsp; <b>v0.5.0</b></span>
+    <span>AUTHOR&nbsp; <b>Johnny Chung</b></span>
+  </div>
+</div></section>
+
+<!-- ===== 2 · THESIS ===== -->
+<section><div class="slide">
+  <div class="eyebrow">The core principle</div>
+  <div class="title">One agent can't both build and audit honestly — so RAPID splits the roles structurally</div>
+  <div class="fill">
+    <div class="rationale red" style="margin-top:0;">
+      <div class="r-label">The one-line thesis</div>
+      <div class="r-text"><b>The agent that writes the code must never be the agent that audits it.</b> When one agent does both, visible progress (a working app) always beats invisible safety (tests, reviews, assertions). RAPID separates those roles with hooks, separate terminals, and tiered reviewers — not with prose that fails under pressure.</div>
+    </div>
+    <div class="two" style="margin-top:14px;">
+      <div>
+        <div class="colhead">Why prose fails — an incentive misalignment, not a discipline problem</div>
+        <ul class="blist">
+          <li>The protocol says <b>"do X before proceeding."</b></li>
+          <li>X produces <b>no visible output</b> — tests, reviews, coverage.</li>
+          <li>The next step <b>does</b> produce visible output — working code, a deploy.</li>
+          <li>Under time or context pressure, the coder <b>skips X</b> and does the exciting thing. Every time.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="colhead">The fix is structural, not behavioral</div>
+        <ul class="blist">
+          <li><b>Hooks (R1, R7–R9)</b> — make advancing, stopping early, or shipping a stub mechanically impossible.</li>
+          <li><b>A separate watchdog (R2)</b> — its only job is auditing; no implementation incentive.</li>
+          <li><b>Blocking dependencies (R4)</b> — the eval harness is task-00, not a prose reminder.</li>
+          <li><b>Tiered reviewers</b> — separate subagents the coder's context can't pressure.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tech"><span class="t-label">Reading rule</span>If you see a step described in words but not enforced by a hook, a dependency, or a separate agent — that step will eventually be skipped. Every enforcement mechanism in RAPID exists because a real build skipped a prose instruction.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">02 — Core principle</span></div>
+</div></section>
+
+<!-- ===== 3 · THE MACHINE ON ONE PAGE ===== -->
+<section><div class="slide">
+  <div class="eyebrow">The system on one page</div>
+  <div class="title">RAPID is one pipeline: 12 phases, 4 human gates, three arcs from idea to deployed system</div>
+  <div class="fill">
+    <div class="flow col" style="gap:4px;margin:2px 0 6px;">
+      <div class="flow"><span class="n primary">IDEA / PRD</span></div>
+      <div class="arr" style="transform:rotate(90deg)">→</div>
+      <div class="flow" style="gap:3px;">
+        <span class="n auto">P0<small>Vision</small></span><span class="arr">→</span>
+        <span class="n auto">P1<small>Structure</small></span><span class="arr">→</span>
+        <span class="n auto">P1b<small>Decompose</small></span><span class="arr">→</span>
+        <span class="n gate">G0<small>PRD review</small></span><span class="arr">→</span>
+        <span class="n auto">P2<small>Panels</small></span><span class="arr">→</span>
+        <span class="n auto">P3<small>Research</small></span><span class="arr">→</span>
+        <span class="n gate">G1<small>Direction</small></span>
+      </div>
+      <div class="arr" style="transform:rotate(90deg)">→</div>
+      <div class="flow" style="gap:3px;">
+        <span class="n auto">P4<small>Spec</small></span><span class="arr">→</span>
+        <span class="n auto">P5<small>Tasks + Eval</small></span><span class="arr">→</span>
+        <span class="n auto">P5b<small>Deepen</small></span><span class="arr">→</span>
+        <span class="n gate">G2<small>Architecture · keys</small></span>
+      </div>
+      <div class="arr" style="transform:rotate(90deg)">→</div>
+      <div class="flow" style="gap:3px;">
+        <span class="n primary">P6<small>Build (5-lead)</small></span><span class="arr">→</span>
+        <span class="n auto">P7<small>Test + QA</small></span><span class="arr">→</span>
+        <span class="n auto">P8<small>Gap loop ↻×3</small></span><span class="arr">→</span>
+        <span class="n gate">G3<small>Ship</small></span><span class="arr">→</span>
+        <span class="n green">P9<small>Deploy</small></span><span class="arr">→</span>
+        <span class="n purple">P10<small>Pulse</small></span>
+      </div>
+    </div>
+    <div class="rationale accent" style="margin-top:4px;">
+      <div class="r-label">The compound loop</div>
+      <div class="r-text"><b>P10 (Pulse) of one project flows into P0 (Vision) of the next.</b> Prior learnings, gap patterns, and pulse reports make each subsequent build smarter. <b>The loop is the product; any single build is just an artifact.</b></div>
+    </div>
+    <div class="metrics" style="margin-top:8px;">
+      <div class="metric"><div class="m-value">3</div><div class="m-label">Arcs · understand / specify / execute</div></div>
+      <div class="metric"><div class="m-value teal">12</div><div class="m-label">Phases · P0 → P10</div></div>
+      <div class="metric"><div class="m-value accent">4</div><div class="m-label">Human gates · G0 – G3</div></div>
+      <div class="metric"><div class="m-value">5</div><div class="m-label">Build leads · writer ≠ auditor</div></div>
+      <div class="metric"><div class="m-value red">R1–R9</div><div class="m-label">Enforcement hooks</div></div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">03 — The machine</span></div>
+</div></section>
+
+<!-- ===== 4 · DETERMINISTIC vs DYNAMIC ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Deterministic vs. dynamic</div>
+  <div class="title">The pipeline is fixed; everything inside it is composed fresh for each project</div>
+  <div class="fill">
+    <div class="lede">RAPID is not a fixed system — it is a <b>dynamic workflow template that generates a project-specific build system every time it runs.</b> The scaffold never changes; the orchestrator selects and configures a framework for each phase from a library. <em>No two RAPID builds produce the same architecture.</em></div>
+    <table class="dtable">
+      <thead><tr><th style="width:14%">Layer</th><th style="width:36%">Deterministic — never changes</th><th>Dynamic — composed per project</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Pipeline</td><td>12 phases in fixed order, 4 gates at fixed positions</td><td>—</td></tr>
+        <tr><td class="k">Pillars</td><td>3–5 pillars derived at P0; pillar-derivation protocol</td><td>Content from the project's risks + goals</td></tr>
+        <tr><td class="k">Constitution</td><td><b>Articles I–V inviolable</b></td><td>Articles VI–X tailored to the project's safety domain</td></tr>
+        <tr><td class="k">Panels</td><td>Five panel areas + synthesis protocol</td><td>Which voices survive paring (by domain), which panelists (named)</td></tr>
+        <tr><td class="k">Reviewers</td><td>5 reviewer tiers, confidence gating, dedup</td><td>Weights shift — security for healthcare, perf for real-time</td></tr>
+        <tr><td class="k">Build team</td><td>5 leads, one terminal each; coder ≠ auditor; claude-peers contract</td><td>Track sizing; coder runs 1–4 coder terminals/subagents</td></tr>
+        <tr><td class="k">Eval harness</td><td>Generated from the workflow, then <b>immutable</b></td><td>Test cases from the project's workflow state machine</td></tr>
+        <tr><td class="k">Safety</td><td>Keep-or-revert, immutable evals, cost breaker, stop-condition set</td><td>Deploy target, spend ceiling, undecidable answers (signed @ G1)</td></tr>
+      </tbody>
+    </table>
+    <div class="tech"><span class="t-label">Composition rule</span>Always pull from frameworks already defined in the skill. Do not invent new protocols at runtime — if a capability has no framework, log it as a gap and use the closest one with documented adaptations.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">04 — Fixed scaffold, dynamic interior</span></div>
+</div></section>
+
+<!-- ===== 5 · ARC 1 DIVIDER ===== -->
+<section><div class="slide divider">
+  <div class="d-arc">ARC 1 OF 3</div>
+  <div class="d-eyebrow">Understand</div>
+  <div class="d-title">Turn ambiguity into a challenged, grounded direction</div>
+  <div class="d-sub">Vision sets the lens before anything is reviewed. The PRD is locked as an immutable input contract, decomposed into a priority pyramid, stress-tested through expert panels, and grounded in verified research — with two human gates to approve the requirements and the direction.</div>
+  <div class="d-phases">
+    <span class="p">P0 · Vision</span><span class="p">P1 · Structure</span><span class="p">P1b · Decompose</span>
+    <span class="p gate">G0 · PRD review</span><span class="p">P2 · Panels</span><span class="p">P3 · Research</span><span class="p gate">G1 · Direction</span>
+  </div>
+</div></section>
+
+<!-- ===== 6 · ARC 1 DETAIL ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Arc 1 · Understand — phase by phase</div>
+  <div class="title">P0–P3 set the lens, lock the PRD, stress it through panels, and ground it in research</div>
+  <div class="fill">
+    <table class="dtable">
+      <thead><tr><th style="width:11%">Phase</th><th style="width:46%">What happens</th><th>Artifact / gate</th></tr></thead>
+      <tbody>
+        <tr><td class="k">P0 Vision</td><td>Derive <b>3–5 pillars</b> + project objective + constraints. Vision is the <em>lens</em> every later prompt references by name — a PRD that violates a pillar is sent back before panels run.</td><td class="art">00-vision/ · PILLARS.md</td></tr>
+        <tr><td class="k">P1 Structure</td><td>Scaffold the numbered <kbd>docs/</kbd> tree, write <b>CONSTITUTION.md</b>, seed <b>BUILD-AUTONOMY.md</b>, and <b>lock the PRD</b> as an immutable input contract.</td><td class="art">CONSTITUTION.md · 01-intake/PRD.md</td></tr>
+        <tr><td class="k">P1b Decompose</td><td>Split the PRD into a <b>MUST / SHOULD / COULD</b> pyramid (BR → FR → TR), so priority is explicit and traceable.</td><td class="art">01-intake/PRD-ENHANCED.md</td></tr>
+        <tr class="gate"><td class="k">G0</td><td><b>PRD review.</b> Doc-review agents (feasibility · scope · coherence · adversarial) pre-screen the enhanced PRD; the operator approves or redirects.</td><td class="art">human gate</td></tr>
+        <tr><td class="k">P2 Panels</td><td><b>1–3 expert panels</b> (business · technical · SME · <b>users</b>) review the PRD <em>through the pillars</em>, in voice. The users lens names every hands-on persona (see spotlight). 2nd-order panels are escalation, not default.</td><td class="art">02-panels/ · panel decks</td></tr>
+        <tr><td class="k">P3 Research</td><td>Timeboxed grounding under a <b>VERIFIED / UNVERIFIED</b> protocol — citations land in the spec where they support a decision, cite-on-demand.</td><td class="art">03-research/</td></tr>
+        <tr class="gate"><td class="k">G1</td><td><b>Direction.</b> Operator approves the panel synthesis and <b>signs BUILD-AUTONOMY.md</b> — deploy target, spend ceiling, undecidable answers.</td><td class="art">human gate · standing authorization</td></tr>
+      </tbody>
+    </table>
+    <div class="tech"><span class="t-label">Why vision first</span>Panels prompted without a lens produce generic best-practice advice. Panels prompted <em>through pillars</em> produce advice you can actually use. The immutable PRD + maintained diff (P4) is the audit trail of every decision.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">06 — Arc 1: Understand</span></div>
+</div></section>
+
+<!-- ===== 7 · ARC 2 DIVIDER ===== -->
+<section><div class="slide divider">
+  <div class="d-arc">ARC 2 OF 3</div>
+  <div class="d-eyebrow">Specify</div>
+  <div class="d-title">Derive the spec, lock the tests, then hand over the keys</div>
+  <div class="d-sub">The spec is derived from the PRD as a maintained diff — never duplicated. Tasks are decomposed, and an immutable eval harness is generated as task-00 before any feature code exists: the tests are the spec, and the code follows. G2 is the operator's last steering point — the point of no return.</div>
+  <div class="d-phases">
+    <span class="p">P4 · Spec</span><span class="p">P5 · Tasks + Eval harness</span><span class="p">P5b · Deepen</span><span class="p gate">G2 · Architecture — point of no return</span>
+  </div>
+</div></section>
+
+<!-- ===== 8 · ARC 2 DETAIL ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Arc 2 · Specify — phase by phase</div>
+  <div class="title">P4–P5b derive the spec as a diff and lock an immutable eval harness before any code</div>
+  <div class="fill">
+    <div class="two w60">
+      <div>
+        <table class="dtable">
+          <thead><tr><th style="width:18%">Phase</th><th>What happens</th></tr></thead>
+          <tbody>
+            <tr><td class="k">P4 Spec</td><td>Derive the spec from the PRD with a <b>maintained diff</b>. One document, not two that drift. Sections tagged <span class="art">[FROM PRD §x]</span> / <span class="art">[DERIVED]</span> / <span class="art">[OPEN]</span>. For UI projects, hi-fi screen comps are built here and become P7's visual target.</td></tr>
+            <tr><td class="k">P5 Tasks<br>+ Eval</td><td>Decompose the task graph and <b>generate the eval harness from the workflow state machine — then lock it.</b> The harness is <b>task-00</b>: a blocking dependency, not a skippable step.</td></tr>
+            <tr><td class="k">P5b Deepen</td><td>Re-derive / expand thin spec sections to remove ambiguity before the keys change hands.</td></tr>
+            <tr class="gate"><td class="k">G2</td><td><b>Architecture.</b> Operator approves the spec and hands over the keys. Inputs ledger must be fully resolved. <b>The point of no return.</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="colhead">Tests are the spec — task-00 is the keystone</div>
+        <div class="flow col" style="gap:3px;margin:6px 0 12px;">
+          <span class="n auto">Workflow state machine</span>
+          <span class="arr" style="transform:rotate(90deg)">→</span>
+          <span class="n primary">.rapid/EVAL/ &nbsp;<small>generated, then LOCKED</small></span>
+          <span class="arr" style="transform:rotate(90deg)">→</span>
+          <span class="n">Build follows the tests</span>
+        </div>
+        <div class="rationale teal" style="margin-top:0;">
+          <div class="r-label">Immutable eval harness (R4)</div>
+          <div class="r-text">After P5 the harness is <b>read-only</b>. A test that fails because the system is wrong stays failing — agents never edit a test to make it pass (Constitution Art. VII). This is what makes "compiles ≠ works" mechanical.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tech"><span class="t-label">Why a diff, not a copy</span>Two parallel docs drift within a week. The diff <em>is</em> the value: every PRD requirement maps to a spec section or an explicit out-of-scope tag, and it becomes the change log when the gap loop fires.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">08 — Arc 2: Specify</span></div>
+</div></section>
+
+<!-- ===== SPOTLIGHT · USERS → SCENARIOS → TESTS ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Spotlight · users → scenarios → tests</div>
+  <div class="title">A Users panel names every hands-on persona — and their scenarios become the test suite</div>
+  <div class="fill">
+    <div class="lede">Before there is a test suite, there is a question: <b>who actually touches this app?</b> A <b>Users panel</b> enumerates every hands-on persona — not just the primary end user, but operators, admins, reviewers, support, and the people standing at the gates — and authors a detailed workflow and scenarios for each. Those scenarios are not thrown away: <b>they are the source the immutable eval harness and the Workflow Test Theater are generated from.</b></div>
+    <div class="flow" style="gap:3px;margin:6px 0 12px;justify-content:center;">
+      <span class="n purple">Users panel<small>every hands-on persona</small></span><span class="arr">→</span>
+      <span class="n">User workflow map<small>data-in · processing · data-out per node</small></span><span class="arr">→</span>
+      <span class="n primary">Eval harness<small>immutable after P5</small></span><span class="arr">→</span>
+      <span class="n green">Workflow Test Theater<small>runnable · recorded</small></span>
+    </div>
+    <div class="two">
+      <div>
+        <div class="colhead">What the Users panel produces</div>
+        <ul class="blist tight">
+          <li>A <b>persona roster</b> — every human who touches the app, each with their goal and their stakes.</li>
+          <li>A <b>golden-path scenario</b> per persona, written as concrete steps.</li>
+          <li>Named <b>edge-case &amp; failure scenarios</b> — the branches agents and humans actually hit.</li>
+          <li>The <b>gate operators count as users too</b> — their review flow is a workflow with tests.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="colhead">Why a scenario is already a test</div>
+        <ul class="blist tight">
+          <li>Each node declares <b>data-in / processing / data-out</b> → maps straight to <b>arrange / act / assert</b>.</li>
+          <li>Branches and failure paths become the <b>negative tests</b>.</li>
+          <li>Coverage is reportable <b>by persona and node</b> — a missing persona is a missing test, and a bug you won't catch.</li>
+          <li>Each workflow is a <b>runnable, recorded test</b> in the Theater (<kbd>docs/workflows.json</kbd>).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tech"><span class="t-label">Where it lives</span>P2 (the <kbd>user-panel</kbd> lens) names the personas · P5 maps each one's workflow → <kbd>users.html</kbd> · P5/P7 generate the immutable eval harness + Workflow Test Theater from those maps. <em>State that isn't drawn is state that breaks in production.</em></div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">09 — Spotlight: users → tests</span></div>
+</div></section>
+
+<!-- ===== 9 · ARC 3 DIVIDER ===== -->
+<section><div class="slide divider">
+  <div class="d-arc">ARC 3 OF 3</div>
+  <div class="d-eyebrow">Execute &amp; Converge</div>
+  <div class="d-title">Build under audit, close gaps, ship, then learn</div>
+  <div class="d-sub">A five-lead build team writes code in isolation while a separate watchdog audits every merge. Tests and visual QA run against the locked harness; gaps are classified by pillar and severity and re-derived up to three times. After the operator's ship gate, RAPID deploys, documents, and starts watching production — which feeds the next build.</div>
+  <div class="d-phases">
+    <span class="p">P6 · Build</span><span class="p">P7 · Test + QA</span><span class="p">P8 · Gap loop ↻×3</span><span class="p gate">G3 · Ship</span><span class="p">P9 · Deploy</span><span class="p">P10 · Pulse</span>
+  </div>
+</div></section>
+
+<!-- ===== 10 · ARC 3 DETAIL ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Arc 3 · Execute &amp; Converge — phase by phase</div>
+  <div class="title">P6–P10 build with a separate auditor, loop on gaps up to 3×, deploy, and feed the next build</div>
+  <div class="fill">
+    <table class="dtable">
+      <thead><tr><th style="width:11%">Phase</th><th style="width:48%">What happens</th><th>Artifact / gate</th></tr></thead>
+      <tbody>
+        <tr><td class="k">P6 Build</td><td><b>Five-lead build team</b> (planner · coder · tester · reviewer · watchdog), one terminal each, via claude-peers. The coder fans out 1–4 isolated worktree writers; the watchdog drift-checks every merge. <em>The writer is never the auditor.</em></td><td class="art">P6_EXIT.json</td></tr>
+        <tr><td class="k">P7 Test + QA</td><td>Run the <b>immutable evals</b>, Playwright flows across <b>3 viewports</b>, and visual QA with screenshot evidence against the hi-fi comps.</td><td class="art">TEST_RESULTS.md</td></tr>
+        <tr><td class="k">P8 Gap loop ↻</td><td>Classify every gap by <b>pillar + severity</b>; re-derive the spec for spec-gaps (<b>max ×3</b>); run optimization experiments on MEDIUM/LOW gaps and keep the best.</td><td class="art">GAPS.json</td></tr>
+        <tr class="gate"><td class="k">G3</td><td><b>Ship.</b> Operator reviews the live app, the audit, the gap list, the tests, and the cost. The ship gate <b>blocks on unresolved stubs (R9).</b></td><td class="art">human gate</td></tr>
+        <tr><td class="k">P9 Deploy</td><td>CI/CD, README + RUNBOOK, and a retrospective that reviews any Article VI–X overrides.</td><td class="art">RUNBOOK · RETROSPECTIVE</td></tr>
+        <tr><td class="k">P10 Pulse</td><td>Post-ship monitoring. Pulse reports feed the <b>next build's P0</b> — the compound loop closes here.</td><td class="art">docs/pulse-reports/</td></tr>
+      </tbody>
+    </table>
+    <div class="tech"><span class="t-label">Keep-or-revert</span>On any regression after a merge, RAPID <span class="art">git reset --hard</span> — only improvements survive. The gap loop is bounded at ×3 so convergence is guaranteed to terminate, not chase a moving target forever.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">10 — Arc 3: Execute &amp; Converge</span></div>
+</div></section>
+
+<!-- ===== 11 · THE FOUR GATES ===== -->
+<section><div class="slide">
+  <div class="eyebrow">The human gates</div>
+  <div class="title">Four gates are the only places a human steers — and an agent panel pre-screens each one</div>
+  <div class="fill">
+    <div class="options cols-4">
+      <div class="option accent">
+        <div class="opt-name"><span class="k">G0</span> PRD Review</div>
+        <div class="opt-desc">Are we solving the right problem? Operator approves the <b>enhanced PRD</b> or redirects.</div>
+        <div class="note" style="margin-top:auto;">After P1b · before panels</div>
+      </div>
+      <div class="option accent">
+        <div class="opt-name"><span class="k">G1</span> Direction</div>
+        <div class="opt-desc">Is the approach sound? Operator approves panel synthesis and <b>signs BUILD-AUTONOMY.md</b> (deploy target, spend ceiling, undecidables).</div>
+        <div class="note" style="margin-top:auto;">After P3 · grants standing authorization</div>
+      </div>
+      <div class="option accent">
+        <div class="opt-name"><span class="k">G2</span> Architecture</div>
+        <div class="opt-desc">Is the spec buildable? Operator approves spec + inputs ledger and <b>hands over the keys</b>.</div>
+        <div class="note" style="margin-top:auto;">After P5b · the point of no return</div>
+      </div>
+      <div class="option accent">
+        <div class="opt-name"><span class="k">G3</span> Ship</div>
+        <div class="opt-desc">Is it good enough to release? Operator reviews app, audit, gaps, tests, cost. <b>Blocks on stubs.</b></div>
+        <div class="note" style="margin-top:auto;">After P8 · before deploy</div>
+      </div>
+    </div>
+    <div class="rationale" style="margin-top:14px;">
+      <div class="r-label">Gates are pre-screened, not raw</div>
+      <div class="r-text">Before a gate reaches the operator, four <b>document-review agents</b> — <b>feasibility</b>, <b>scope guardian</b>, <b>coherence</b>, and <b>adversarial</b> — read the artifact through the project's pillars and flag issues. The human spends attention on judgment calls, not proofreading. Between gates, the build runs to completion under standing authorization (Arc 2/3), stopping only for the fixed stop-condition set: destructive, outward-facing, spends-money, or a genuinely-undecidable high-stakes call.</div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">11 — Four human gates</span></div>
+</div></section>
+
+<!-- ===== 12 · P6 FIVE-LEAD TEAM ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Deep dive · the build phase (P6)</div>
+  <div class="title">P6 runs a five-lead build team where the writer is never the auditor</div>
+  <div class="fill">
+    <div class="flow col" style="gap:2px;margin:2px 0 8px;">
+      <span class="n primary" style="padding:7px 16px;">PLANNER<small>owns the spec-of-record · pins shared seams before fan-out · arbitrates</small></span>
+      <div class="arr" style="transform:rotate(90deg)">→</div>
+      <div class="flow" style="gap:14px;align-items:stretch;">
+        <span class="n" style="border-color:var(--navy);">CODER<small>writes code · fans out 1–4 isolated worktree writers</small></span>
+        <span class="arr">‖</span>
+        <span class="n green">TESTER<small>runs evals · Playwright · screenshots</small></span>
+        <span class="arr">‖</span>
+        <span class="n teal" style="border-color:var(--teal);color:var(--teal);">REVIEWER<small>5 tiered lenses · confidence-gated</small></span>
+        <span class="arr">‖</span>
+        <span class="n red" style="border-color:var(--red);color:var(--red);">WATCHDOG<small>audits every merge vs spec + Constitution · /loop 30m</small></span>
+      </div>
+    </div>
+    <div class="two" style="margin-top:6px;">
+      <div>
+        <div class="colhead">The invariant — coder ≠ tester / reviewer / watchdog</div>
+        <ul class="blist tight">
+          <li>One <b>long-lived terminal per lead</b>, connected via claude-peers (12 message types, JSON envelope).</li>
+          <li>The <b>coder</b> runs 1–4 coder terminals only for long, interdependent tasks; otherwise fans out coding subagents — <b>bounded parallelism</b>.</li>
+          <li>The <b>watchdog</b> is never a coder — its only output is audit findings, so it has no incentive to skip them.</li>
+          <li>Beyond a fan-out of 4, the reviewer can't honestly check every diff and review stops being meaningful.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="colhead">One pipeline collapses to fit the track</div>
+        <table class="dtable">
+          <tbody>
+            <tr><td class="k">full</td><td>All <b>5 leads</b>, one terminal each</td></tr>
+            <tr><td class="k">fast</td><td>planner + coder + reviewer + watchdog <span class="note" style="display:inline;">(tester folds into coder)</span></td></tr>
+            <tr><td class="k">tiny</td><td>the whole loop as <b>subagents under the planner</b></td></tr>
+          </tbody>
+        </table>
+        <div class="note">P6 sub-phases: P6a setup → P6a-gate (pin seams) → P6b build loop → P6c watchdog loop → P6d monitoring → P6e shutdown.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">12 — P6: the five-lead team</span></div>
+</div></section>
+
+<!-- ===== 13 · REVIEWERS & TESTERS ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Deep dive · review &amp; test</div>
+  <div class="title">Code is reviewed by five confidence-gated lenses and tested across three viewports before it merges</div>
+  <div class="fill">
+    <div class="two">
+      <div>
+        <div class="colhead">Tiered review — different lenses find different bugs</div>
+        <ul class="blist tight">
+          <li><b>Per-dimension review subagents</b> (correctness · security · perf · …), each a separate subagent the coder's context can't pressure.</li>
+          <li><b>Confidence gating</b> suppresses low-confidence noise; findings are de-duplicated across reviewers.</li>
+          <li><b>Weights shift by domain</b> — security heaviest for healthcare, performance for real-time, correctness for financial.</li>
+          <li>Backed by the <kbd>review</kbd>, <kbd>simplify</kbd>, <kbd>security-review</kbd>, and <kbd>eval</kbd> skills.</li>
+        </ul>
+        <div class="rationale teal">
+          <div class="r-label">Why separate, not one reviewer</div>
+          <div class="r-text">One reviewer reading 8 parallel diffs misses things a focused lens catches. Per-dimension reviewers + dedup beats one broad pass.</div>
+        </div>
+      </div>
+      <div>
+        <div class="colhead">Test + visual QA against the locked harness</div>
+        <ul class="blist tight">
+          <li><b>Immutable evals</b> (task-00) run first — the harness is the spec.</li>
+          <li><b>Playwright flows</b> derived from the workflow map exercise the golden path + named edge cases.</li>
+          <li><b>3 viewports</b>, with <b>screenshot evidence</b> compared to the hi-fi comps approved at G2.</li>
+          <li>Integration tests hit <b>real sandboxed</b> DBs/APIs — not mocks (Constitution Art. VII).</li>
+        </ul>
+        <div class="rationale accent">
+          <div class="r-label">Agent-first walkthrough</div>
+          <div class="r-text">Agents walk the app mechanically before any human looks. The human becomes the <b>felt-sense filter</b> — "does this feel right?" — not the regression hunter.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">13 — Review &amp; test</span></div>
+</div></section>
+
+<!-- ===== 14 · SAFETY MECHANISMS IN P6 ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Deep dive · safety by construction</div>
+  <div class="title">Five mechanisms make P6 safe by construction, not by good intentions</div>
+  <div class="fill">
+    <div class="options cols-3" style="grid-template-rows:1fr 1fr;">
+      <div class="option red">
+        <div class="opt-name"><span class="k">R2</span> Separate auditor</div>
+        <div class="opt-desc">The watchdog ≠ any coder — the builder structurally <b>cannot skip its own safety checks</b>.</div>
+      </div>
+      <div class="option teal">
+        <div class="opt-name"><span class="k">R4</span> Immutable evals</div>
+        <div class="opt-desc"><kbd>.rapid/EVAL/</kbd> is <b>locked after P5</b>. Tests are the spec; code follows. No "fixing" a test to pass.</div>
+      </div>
+      <div class="option navy">
+        <div class="opt-name">Keep-or-revert</div>
+        <div class="opt-desc">Any regression after a merge → <span class="art">git reset --hard</span>. <b>Only improvements survive</b> the ratchet.</div>
+      </div>
+      <div class="option green">
+        <div class="opt-name"><span class="k">C</span> Worktree isolation</div>
+        <div class="opt-desc">Each writer records its <span class="art">worktree/branch</span> on SPAWN; <kbd>worktree-check.sh</kbd> <b>fails the P6 exit gate</b> if any writer skipped isolation or two shared one.</div>
+      </div>
+      <div class="option accent">
+        <div class="opt-name">Cost breaker</div>
+        <div class="opt-desc">Pauses at <b>80% of the token budget</b>, forcing an explicit human choice instead of a silent overrun.</div>
+      </div>
+      <div class="option">
+        <div class="opt-name">Shutdown handshake</div>
+        <div class="opt-desc">P6e tears the team down cleanly and writes <kbd>P6_EXIT.json</kbd> — the gate the next phase reads.</div>
+      </div>
+    </div>
+    <div class="tech"><span class="t-label">The pattern</span>Each mechanism replaces a hoped-for behavior with a verified fact. The skill <em>instructs</em> isolation; <kbd>worktree-check.sh</kbd> <em>verifies</em> it — and a build that fanned writers into the shared tree mechanically fails the gate.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">14 — P6 safety mechanisms</span></div>
+</div></section>
+
+<!-- ===== 15 · HOOKS OVER PROSE ===== -->
+<section><div class="slide">
+  <div class="eyebrow">The enforcement layer · hooks</div>
+  <div class="title">Every safety step is a hook, a dependency, or a separate agent — never just a sentence</div>
+  <div class="fill">
+    <div class="lede">This is where the thesis becomes mechanical. Prose can be ignored under pressure; <b>hooks cannot.</b> Hooks fire on Claude Code's <kbd>PreToolUse</kbd> / <kbd>PostToolUse</kbd> / stop events — the harness runs them, not the agent.</div>
+    <table class="dtable">
+      <thead><tr><th style="width:9%">ID</th><th style="width:22%">Hook</th><th>What it enforces</th></tr></thead>
+      <tbody>
+        <tr><td class="k">R1</td><td class="k">phase-gate-hook.sh</td><td><b>Can't advance without artifacts.</b> Blocks a write to <kbd>STATE.json</kbd> unless the target phase's required artifacts exist — e.g. no P6 without ≥1 eval file, TASKS.json, <em>and</em> a fully-resolved INPUTS.json; no P7 without a passing P6_EXIT.json.</td></tr>
+        <tr><td class="k">R7</td><td class="k">stop-hook.sh</td><td><b>Can't stop early.</b> The inverse of R1 — a continuation hook that makes it mechanically impossible to halt before the build is actually done.</td></tr>
+        <tr><td class="k">R8</td><td class="k">module-conformance-hook.sh</td><td><b>Can't drift silently.</b> Traces every <em>completed</em> module back to spec → PRD → architecture and files a gap on any break.</td></tr>
+        <tr><td class="k">R9</td><td class="k">stub-detect-hook.sh</td><td><b>Can't ship a placeholder.</b> Detects stub/placeholder code as it's written; the ship gate (R9 + <kbd>ship-gate.sh</kbd>) blocks release on unresolved stubs in required modules.</td></tr>
+        <tr><td class="k">—</td><td class="k">post-write-hook.sh</td><td><b>Keeps docs live.</b> On a STATE write, refreshes the docs registry; on writes to numbered folders / decisions / panels / tests, appends a timestamped row to CHANGES.md. No post-build cleanup.</td></tr>
+      </tbody>
+    </table>
+    <div class="tech"><span class="t-label">Install</span><kbd>tools/install-hooks.sh</kbd> wires these into the project's <kbd>.claude/settings.json</kbd>; <kbd>preflight.sh</kbd> checks the environment before a run.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">15 — Hooks over prose</span></div>
+</div></section>
+
+<!-- ===== 16 · FAIL-CLOSED GATES ===== -->
+<section><div class="slide">
+  <div class="eyebrow">The enforcement layer · fail-closed</div>
+  <div class="title">The gates fail closed: a build can't enter P6 or ship until its inputs and stubs are resolved</div>
+  <div class="fill">
+    <div class="two">
+      <div>
+        <div class="colhead">B · the inputs ledger — gather human input up front, made mechanical</div>
+        <ul class="blist tight">
+          <li><kbd>inputs-check.sh</kbd> reads <kbd>.rapid/INPUTS.json</kbd> and <b>blocks P6 entry until every required input is <span style="color:var(--green)">resolved</span> or <span style="color:var(--accent)">waived</span></b>.</li>
+          <li>Required inputs: credentials, deploy target, spend ceiling, resolved undecidables.</li>
+          <li>A <b>credential row only counts resolved once its <kbd>.env:KEY</kbd> actually exists</b> — not when someone says it's handled.</li>
+          <li>Run at G2; the phase-gate hook runs the same check independently.</li>
+        </ul>
+        <div class="rationale green">
+          <div class="r-label">Why fail-closed</div>
+          <div class="r-text">This turns "gather all human input up front, then run to completion" from a <em>hope</em> into a <em>precondition</em> — the build literally cannot start the autonomous arc with a hole in its inputs.</div>
+        </div>
+      </div>
+      <div>
+        <div class="colhead">Verified, not instructed</div>
+        <table class="dtable">
+          <tbody>
+            <tr><td class="k">C · worktree-check.sh</td><td>At P6 exit, asserts every parallel writer ran in its own declared worktree — merges <span class="art">build_writers_isolated</span> into P6_EXIT.json.</td></tr>
+            <tr><td class="k">R9 · ship-gate.sh</td><td>At G3, blocks release while required modules still contain stubs.</td></tr>
+            <tr><td class="k">E · mock-init.sh</td><td>At P4, scaffolds the hi-fi design system + screen inventory so the backend is built to serve <b>real screens</b>; comps become P7's visual target.</td></tr>
+          </tbody>
+        </table>
+        <div class="tech"><span class="t-label">The shape</span>Each verifier checks <em>what the skill only instructed</em>. Instruction + verification is the whole game — the verifier is what the gate actually trusts.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">16 — Fail-closed gates</span></div>
+</div></section>
+
+<!-- ===== 17 · CONSTITUTION ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Governance · the Constitution</div>
+  <div class="title">Ten articles govern every agent action; the first five can never be overridden</div>
+  <div class="fill">
+    <div class="two">
+      <div>
+        <div class="colhead" style="color:var(--red);">Articles I–V · inviolable · no override</div>
+        <table class="dtable">
+          <tbody>
+            <tr><td class="k">I</td><td><b>Truthfulness</b> — no invented facts, citations, or test results. "Tests pass" requires verified execution.</td></tr>
+            <tr><td class="k">II</td><td><b>User safety</b> — no unmoderated content to an end user; sandbox boundaries are inviolable.</td></tr>
+            <tr><td class="k">III</td><td><b>Data handling</b> — no PII off-device without consent; secrets never committed; COPPA/FERPA binding.</td></tr>
+            <tr><td class="k">IV</td><td><b>Reversibility</b> — destructive ops (<span class="art">rm -rf</span>, <span class="art">reset --hard</span>, force-push) require explicit confirmation.</td></tr>
+            <tr><td class="k">V</td><td><b>Scope discipline</b> — agents stay inside their declared R/W contract; out-of-scope access is a violation.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="colhead" style="color:var(--accent);">Articles VI–X · overridable only with <kbd># OVERRIDE</kbd> + logging</div>
+        <table class="dtable">
+          <tbody>
+            <tr><td class="k">VI</td><td><b>Spec authority</b> — when behavior conflicts with the spec, the spec wins; raise a gap.</td></tr>
+            <tr><td class="k">VII</td><td><b>No test theater</b> — real sandboxed DBs/APIs; a wrong-system test stays failing.</td></tr>
+            <tr><td class="k">VIII</td><td><b>Honest reporting</b> — report what was actually done, verified in the actual file.</td></tr>
+            <tr><td class="k">IX</td><td><b>Pushback discipline</b> — don't capitulate without a reason; don't invent one either.</td></tr>
+            <tr><td class="k">X</td><td><b>Root-cause discipline</b> — no papering over symptoms with try/except, retries, fallbacks.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tech"><span class="t-label">Enforcement</span>The <b>watchdog</b> audits every diff against I–V before merge · the <b>gap classifier</b> tags violations in <kbd>08-gaps/HISTORY.md</kbd> · the <b>retrospective</b> reviews every VI–X override each cycle. A copy of the Constitution sits at the generated project's root.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">17 — The Constitution</span></div>
+</div></section>
+
+<!-- ===== 18 · STATE & PERSISTENCE ===== -->
+<section><div class="slide">
+  <div class="eyebrow">State &amp; persistence</div>
+  <div class="title">A build's entire state lives in one .rapid/ directory the hooks can inspect</div>
+  <div class="fill">
+    <div class="lede">A running build keeps its state in a <kbd>.rapid/</kbd> directory inside the <em>target</em> project — never in this repo. Every file is machine-readable so a hook, a gate, or a resumed session can inspect it.</div>
+    <table class="dtable">
+      <thead><tr><th style="width:26%">File</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td class="k">STATE.json</td><td>Current phase + progress — <b>the file the phase-gate hook guards</b>.</td></tr>
+        <tr><td class="k">TASKS.json</td><td>Task graph + per-task status. task-00 is the eval harness.</td></tr>
+        <tr><td class="k">EVAL/</td><td>Test files — <b>immutable after P5</b>.</td></tr>
+        <tr><td class="k">INPUTS.json</td><td>Human-input ledger — <b>blocks P6 entry</b> until every required input is resolved (B).</td></tr>
+        <tr><td class="k">MEMORY.md</td><td>Append-only decisions / blockers / learnings, shared by all agents.</td></tr>
+        <tr><td class="k">COST.json</td><td>Token spend per agent, <b>per phase</b>, + human touchpoints per phase vs. budget.</td></tr>
+        <tr><td class="k">observe/{agent}.jsonl</td><td>Per-agent event stream → observe-server. Build-writer SPAWNs carry <span class="art">worktree/branch</span> (C).</td></tr>
+        <tr><td class="k">P6_EXIT.json · GAPS.json · AUDIT.json</td><td>Build-exit assertions · gap classification · watchdog findings.</td></tr>
+        <tr><td class="k">LEARNINGS.md</td><td>Compound learnings that carry forward into the next build.</td></tr>
+      </tbody>
+    </table>
+    <div class="tech"><span class="t-label">Resume</span><kbd>/rapid-workflow --resume</kbd> reads STATE.json and continues from the last checkpoint — state is on disk, not in a chat transcript. Phase folders (<kbd>00-vision/</kbd> … <kbd>07-gaps/</kbd>) hold the human-readable artifacts the gates and <kbd>/docs</kbd> consume.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">18 — State in .rapid/</span></div>
+</div></section>
+
+<!-- ===== 19 · OBSERVABILITY ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Observability</div>
+  <div class="title">Every agent emits an event stream, so the whole build team is watchable live</div>
+  <div class="fill">
+    <div class="flow" style="gap:3px;margin:4px 0 10px;justify-content:flex-start;">
+      <span class="n">agents emit JSONL<small>.rapid/observe/{agent}.jsonl</small></span><span class="arr">→</span>
+      <span class="n primary">observe-server.py<small>merge · sort · REST :4040</small></span><span class="arr">→</span>
+      <span class="n teal" style="border-color:var(--teal);color:var(--teal);">Observatory<small>React 19 · Vite · XYFlow</small></span>
+    </div>
+    <div class="two">
+      <div>
+        <div class="colhead">The event vocabulary</div>
+        <div class="lede" style="font-family:var(--ui-mono);font-size:11px;line-height:1.9;color:var(--ink-2);">
+          SPAWN · PHASE · GATE · READ · WRITE · TOOL ·<br>
+          SEND / RECV · LOOP_* · DECIDE · ESCALATE ·<br>
+          ERROR · CONTEXT · COMPLETE
+        </div>
+        <div class="note">The server merges and sorts per-agent streams and serves <kbd>/api/events</kbd>, <kbd>/api/agents</kbd>, <kbd>/api/meta</kbd>.</div>
+      </div>
+      <div>
+        <div class="colhead">What the Observatory shows</div>
+        <ul class="blist tight">
+          <li><b>Agent topology</b> — the live team graph (who spawned whom, who's messaging whom).</li>
+          <li><b>Event stream</b> — the merged, time-ordered feed across all agents.</li>
+          <li><b>Health view</b> — phase / tasks / tests / doc staleness at a glance.</li>
+          <li>Heartbeats every 5m during P6; <b>stall detection</b> at 10m of stale heartbeat.</li>
+        </ul>
+        <div class="rationale teal">
+          <div class="r-label">Why it matters</div>
+          <div class="r-text">An autonomous build team you can't see is one you can't trust. Observability is how the operator stays in the loop without being in the path.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">19 — Observability</span></div>
+</div></section>
+
+<!-- ===== 20 · COST & TOUCHPOINTS ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Cost &amp; touchpoints</div>
+  <div class="title">Two numbers grade a build: dollars per phase, and how often it had to stop you</div>
+  <div class="fill">
+    <div class="lede"><kbd>cost-summary.sh</kbd> parses <b>real billed tokens</b> from Claude Code transcripts per step / session / project — then attributes them <b>per RAPID phase</b> by bucketing each step into the phase active in the observe timeline, and counts <b>human touchpoints per phase</b> (GATE + ESCALATE events + needs-real-human flags). It writes <kbd>.rapid/COST.json</kbd> and regenerates <kbd>docs/cost.html</kbd>.</div>
+    <div class="metrics">
+      <div class="metric"><div class="m-value accent">$ / phase</div><div class="m-label">Where the money actually went</div></div>
+      <div class="metric"><div class="m-value navy">touchpoints / phase</div><div class="m-label">How often it stopped you</div></div>
+      <div class="metric"><div class="m-value red">80%</div><div class="m-label">Cost-breaker pause threshold</div></div>
+    </div>
+    <div class="two" style="margin-top:6px;">
+      <div>
+        <div class="rationale accent" style="margin-top:0;">
+          <div class="r-label">The two metrics you optimize on</div>
+          <div class="r-text">A build's quality isn't just "did it ship." It's <b>$ per phase</b> (is a phase burning tokens for little signal?) and <b>touchpoints per phase</b> (is a phase dragging the human back in too often?). Both come from one place.</div>
+        </div>
+      </div>
+      <div>
+        <ul class="blist tight">
+          <li>The <b>cost breaker</b> pauses at 80% of budget — an explicit human choice, never a silent overrun.</li>
+          <li>Touchpoints make the autonomy <em>measurable</em>: a phase that escalates constantly is a phase whose framework needs work.</li>
+          <li>Per-phase attribution turns "this build was expensive" into "P8's gap loop cost 40% — tighten the classifier."</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">20 — Cost &amp; touchpoints</span></div>
+</div></section>
+
+<!-- ===== 21 · COMPOUND LOOP ===== -->
+<section><div class="slide">
+  <div class="eyebrow">The compound loop</div>
+  <div class="title">The loop is the product — each build's pulse becomes the next build's vision</div>
+  <div class="fill">
+    <div class="flow" style="gap:2px;margin:10px 0 14px;justify-content:center;">
+      <span class="n purple">P10 Pulse<small>production signal</small></span><span class="arr loop">→</span>
+      <span class="n auto">P0 Vision<small>next build</small></span><span class="arr loop">→</span>
+      <span class="n">… spec …</span><span class="arr loop">→</span>
+      <span class="n primary">build</span><span class="arr loop">→</span>
+      <span class="n green">ship</span><span class="arr loop">→</span>
+      <span class="n purple">P10 Pulse<small>↻</small></span>
+    </div>
+    <div class="two">
+      <div>
+        <ul class="blist tight">
+          <li><kbd>LEARNINGS.md</kbd> carries forward — <b>each build starts where the last one left off</b>.</li>
+          <li>Gap patterns and pulse reports feed P0, so the same mistake isn't re-derived twice.</li>
+          <li>Crash recovery via session intelligence; <kbd>--resume</kbd> rejoins mid-build from disk state.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="rationale" style="margin-top:0;">
+          <div class="r-label">The thesis, restated</div>
+          <div class="r-text"><b>The loop is the product; any single build is just an artifact.</b> A one-shot build that ships is a success once. A loop that gets faster and safer every pass is a compounding asset — that's what RAPID optimizes for.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tech"><span class="t-label">Lineage of the idea</span>Karpathy's eval-first / keep-or-revert ratchet · Beck's TDD (tests before code, owned separately) · Zaharia et al. Compound AI Systems (inter-stage assertions) · Every Inc. Compound Engineering (tiered review, learning capture, doc agents, optimization loops).</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">21 — The compound loop</span></div>
+</div></section>
+
+<!-- ===== 22 · TRACKS ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Tracks</div>
+  <div class="title">One pipeline, three cadences: full, fast, and tiny</div>
+  <div class="fill">
+    <div class="lede">The same 12-phase pipeline runs at three intensities. The fast track is <b>not a degraded full track</b> — it's a different cadence that admits its constraints up front. <kbd>/rapid-workflow &lt;idea&gt; --track fast|full</kbd>.</div>
+    <table class="dtable">
+      <thead><tr><th style="width:22%">Dimension</th><th>Full — production</th><th>Fast — weekly gauntlet <span class="badge teal" style="margin:0;">default</span></th></tr></thead>
+      <tbody>
+        <tr><td class="k">Panels</td><td>Five areas (Business · Technical · Design · SME · Users); deepen orders on conflict</td><td>1 area — the most relevant one</td></tr>
+        <tr><td class="k">Build team</td><td>5 leads, one terminal each; coder fans out up to 4 writers</td><td>planner + coder + reviewer + watchdog (tester folds in)</td></tr>
+        <tr><td class="k">Spec</td><td>Full derivation with maintained diff + deepening pass</td><td>Lightweight, bullet-level</td></tr>
+        <tr><td class="k">Eval / tests</td><td>Generated from the workflow map, immutable</td><td>Golden-path + smoke tests</td></tr>
+        <tr><td class="k">Gap loop</td><td>Full re-derivation, max ×3 + optimization loop</td><td>Inline fixes, no re-derivation cycle</td></tr>
+        <tr><td class="k">Walkthrough</td><td>Agent runner + human felt-sense filter</td><td>Human only</td></tr>
+      </tbody>
+    </table>
+    <div class="tech"><span class="t-label">Plus a third</span><b>tiny</b> — for the smallest jobs, the whole build loop runs as subagents under a single planner terminal. The gates and the writer ≠ auditor invariant still hold; only the terminal count collapses.</div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">22 — Three tracks</span></div>
+</div></section>
+
+<!-- ===== 23 · WHERE TO READ / DOGFOOD / CLOSE ===== -->
+<section><div class="slide">
+  <div class="eyebrow">Orientation &amp; close</div>
+  <div class="title">RAPID runs on itself — this repo is its own first project</div>
+  <div class="fill">
+    <div class="two">
+      <div>
+        <div class="colhead">Dogfooding — RAPID builds RAPID</div>
+        <ul class="blist tight">
+          <li><kbd>rapid-workflow</kbd> tracks its <b>own</b> requirements (<kbd>01-intake/PRD-ENHANCED.md</kbd>), spec (<kbd>04-spec/</kbd>), conformance, and gaps with the same mechanisms it applies to built projects.</li>
+          <li>It has a live <kbd>.rapid/</kbd> — currently at <b>Phase 8 · gap-loop</b> — and the global hooks fire on edits here.</li>
+          <li>The <b>Workflow Test Theater</b> turns each user workflow into a runnable, recorded test (<kbd>workflow-runner.py</kbd>, driven by <kbd>docs/workflows.json</kbd>).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="colhead">Where to start reading</div>
+        <table class="dtable">
+          <tbody>
+            <tr><td>The pitch in 5 minutes</td><td class="k">README.md</td></tr>
+            <tr><td>This walkthrough, in prose</td><td class="k">CODEBASE.md</td></tr>
+            <tr><td>How a build is orchestrated</td><td class="k">skills/rapid-workflow/SKILL.md</td></tr>
+            <tr><td>The system reference (D0–D21)</td><td class="k">docs/architecture.html</td></tr>
+            <tr><td>The methodology narrative</td><td class="k">docs/methodology-deck.md</td></tr>
+            <tr><td>A concrete vision + pillars</td><td class="k">examples/vision/</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="rationale red" style="margin-top:14px;">
+      <div class="r-label">The whole deck in one line</div>
+      <div class="r-text"><b>RAPID</b> = the repo · <b>RAPID</b> = the methodology · <b>/rapid-workflow</b> = the skill that runs it. The 12-phase pipeline + 4 gates + five-lead build team + R1–R9 enforcement = the machine that turns an idea into a tested, audited, deployed system — by making the agent that builds structurally unable to be the agent that audits.</div>
+    </div>
+  </div>
+  <div class="footer"><span>RAPID · How it works</span><span class="mono">23 — Orientation &amp; close</span></div>
+</div></section>
+
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.min.js"></script>
+<script>Reveal.initialize({hash:true,width:1280,height:720,margin:0,minScale:0.2,maxScale:2,center:false,transition:'fade',controls:true,controlsTutorial:false,progress:true,slideNumber:'c/t'});</script>
+<script>
+/* Keep each slide's footer number in sync with its actual position, so
+   inserting/reordering slides never desyncs the manual labels. */
+document.querySelectorAll('.reveal > .slides > section').forEach(function (sec, i) {
+  var f = sec.querySelector('.footer .mono');
+  if (f && f.textContent.indexOf('—') !== -1) {
+    var label = f.textContent.split('—').slice(1).join('—').trim();
+    f.textContent = String(i + 1).padStart(2, '0') + ' — ' + label;
+  }
+});
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 <!--
-  FORGE TEMPLATE — Seam Contract
+  RAPID TEMPLATE — Seam Contract
   One file per shared seam. Lives in 04-spec/contracts/.
 
   WHY THIS EXISTS (the biggest reference-build failure):

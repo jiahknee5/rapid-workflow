@@ -1,5 +1,7 @@
 # Vision
 
+> **Example artifact — not Rapid's own vision.** This is sample Phase-0 output from a real build (the SuperBuilders fraction-equivalence project), kept to show what a generated `VISION.md` looks like. Rapid's own product vision lives in [`docs/00-vision/VISION.md`](../../docs/00-vision/VISION.md).
+
 > One page. Read first by every panel and every spec section. The lens through which the PRD is reviewed.
 
 ## Company / Program

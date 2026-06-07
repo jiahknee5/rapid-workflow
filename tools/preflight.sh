@@ -5,7 +5,7 @@
 # routes around a missing runtime — that produces code nobody can verify. So
 # this gate runs in P1 and BLOCKS the build until the declared stack is green.
 #
-# It reads the declared stack from .forge/preflight.json:
+# It reads the declared stack from .rapid/preflight.json:
 #   { "tools": [
 #       {"name":"node",   "check":"node --version", "install":"brew install node", "required":true},
 #       {"name":"python3","check":"python3 -V",      "install":"",                  "required":true},
@@ -24,13 +24,13 @@
 # to a log file (not piped), so $? is the command's real status — a `cmd | tee`
 # cannot launder a failure into success here. pipefail is set for the same reason.
 #
-# Per-tool report -> .forge/PREFLIGHT.json. Exits nonzero if any REQUIRED tool is
+# Per-tool report -> .rapid/PREFLIGHT.json. Exits nonzero if any REQUIRED tool is
 # still missing after install attempts.
 set -uo pipefail
 
-[ -f ".forge/STATE.json" ] || { echo "preflight: not a FORGE build (no .forge/STATE.json)" >&2; exit 2; }
-mkdir -p .forge
-CFG=".forge/preflight.json"
+[ -f ".rapid/STATE.json" ] || { echo "preflight: not a RAPID build (no .rapid/STATE.json)" >&2; exit 2; }
+mkdir -p .rapid
+CFG=".rapid/preflight.json"
 
 if [ ! -f "$CFG" ]; then
   cat > "$CFG" <<'JSON'
@@ -73,8 +73,8 @@ if not tools:
         "generated": datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z"),
         "ok": True, "nothing_declared": True, "tools": [],
     }
-    json.dump(report, open(".forge/PREFLIGHT.json", "w"), indent=2)
-    print("preflight: nothing declared — no runtimes in .forge/preflight.json. "
+    json.dump(report, open(".rapid/PREFLIGHT.json", "w"), indent=2)
+    print("preflight: nothing declared — no runtimes in .rapid/preflight.json. "
           "Declare the chosen stack so this gate can probe it (reported, non-blocking).")
     raise SystemExit(0)
 
@@ -95,8 +95,8 @@ for i, t in enumerate(tools):
         required = str(required).strip().lower() in ("1", "true", "yes")
 
     safe = "".join(c if c.isalnum() or c in "-_" else "_" for c in name) or f"tool{i}"
-    chk_log = f".forge/preflight-{safe}.check.log"
-    ins_log = f".forge/preflight-{safe}.install.log"
+    chk_log = f".rapid/preflight-{safe}.check.log"
+    ins_log = f".rapid/preflight-{safe}.install.log"
 
     installed = False
     code = run(check, chk_log)               # genuine exit code
@@ -127,7 +127,7 @@ report = {
     "ok": not blocking_missing,
     "tools": results,
 }
-json.dump(report, open(".forge/PREFLIGHT.json", "w"), indent=2)
+json.dump(report, open(".rapid/PREFLIGHT.json", "w"), indent=2)
 
 mark = {"present": "PRESENT", "installed": "INSTALLED", "missing": "MISSING", "malformed": "MALFORMED"}
 print("preflight: declared-stack runtime probe")

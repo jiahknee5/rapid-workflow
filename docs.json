@@ -1,11 +1,11 @@
 {
-  "version": 6,
-  "updated": "2026-05-30",
+  "version": 10,
+  "updated": "2026-06-06",
   "generated_by": "tools/build-docs-registry.sh",
   "categories": {
-    "forge": {
-      "label": "FORGE System",
-      "description": "How the FORGE autonomous build system works"
+    "rapid": {
+      "label": "RAPID System",
+      "description": "How the RAPID autonomous build system works"
     },
     "workflow": {
       "label": "AI Build Workflow",
@@ -45,11 +45,27 @@
       "generated": true
     },
     {
+      "file": "docs/atlas-v2-design.md",
+      "title": "Atlas V2 Design",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
       "file": "docs/cost.html",
       "title": "Cost",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "docs/doc-model-brainstorm.html",
+      "title": "Doc Model Brainstorm",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
       "generated": true
     },
     {
@@ -69,11 +85,20 @@
       "generated": true
     },
     {
-      "file": "docs/forge-reference.md",
-      "title": "FORGE Reference",
-      "category": "forge",
-      "description": "Markdown reference: core principle, dynamic composition, phase summary",
-      "status": "current"
+      "file": "docs/home.html",
+      "title": "Home",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "docs/how-it-works.html",
+      "title": "How It Works",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
     },
     {
       "file": "docs/methodology-deck.md",
@@ -85,40 +110,39 @@
     {
       "file": "docs/observatory.html",
       "title": "Observatory",
-      "category": "forge",
+      "category": "rapid",
       "description": "",
       "status": "current",
       "generated": true
     },
     {
-      "file": "docs/prd-enhanced.html",
-      "title": "Prd Enhanced",
+      "file": "docs/rapid-reconstruction-prompt.md",
+      "title": "Rapid Reconstruction Prompt",
+      "category": "rapid",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "docs/rapid-reference.md",
+      "title": "RAPID Reference",
+      "category": "rapid",
+      "description": "Markdown reference: core principle, dynamic composition, phase summary",
+      "status": "current"
+    },
+    {
+      "file": "docs/terminal-ui.html",
+      "title": "Terminal Ui",
       "category": "workflow",
       "description": "",
       "status": "current",
       "generated": true
     },
     {
-      "file": "docs/prd.html",
-      "title": "Prd",
+      "file": "docs/testsuite.html",
+      "title": "Test Suite",
       "category": "workflow",
-      "description": "",
-      "status": "current",
-      "generated": true
-    },
-    {
-      "file": "docs/spec.html",
-      "title": "Spec",
-      "category": "workflow",
-      "description": "",
-      "status": "current",
-      "generated": true
-    },
-    {
-      "file": "docs/users.html",
-      "title": "Users",
-      "category": "workflow",
-      "description": "",
+      "description": "Workflow Test Theater \u2014 runs each user workflow as a live test with a synchronized user-view / data-flow walkthrough and a per-workflow run log",
       "status": "current",
       "generated": true
     },
@@ -147,8 +171,24 @@
       "generated": true
     },
     {
-      "file": "skills/forge/SKILL.md",
-      "title": "Forge Skill",
+      "file": "skills/expert-panel/SKILL.md",
+      "title": "Expert-Panel Skill",
+      "category": "skill",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "skills/rapid-workflow/SKILL.md",
+      "title": "Rapid-Workflow Skill",
+      "category": "skill",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "skills/refine/SKILL.md",
+      "title": "Refine Skill",
       "category": "skill",
       "description": "",
       "status": "current",
@@ -184,6 +224,54 @@
       "status": "current"
     },
     {
+      "file": "templates/template-docs-page-v2.html",
+      "title": "Template Docs Page V2",
+      "category": "template",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "templates/template-docs-page.html",
+      "title": "Template Docs Page",
+      "category": "template",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/apply-docs-sidebar.py",
+      "title": "Apply Docs Sidebar",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/atlas-deploy.sh",
+      "title": "Atlas Deploy",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/atlas-init.sh",
+      "title": "Atlas Init",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/atlas-skills-gen.py",
+      "title": "Atlas Skills Gen",
+      "category": "skill",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
       "file": "tools/build-docs-registry.sh",
       "title": "Build Docs Registry",
       "category": "workflow",
@@ -196,22 +284,23 @@
       "title": "Cost Summary",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
-    },
-    {
-      "file": "tools/forge-spec.html",
-      "title": "FORGE System Specification",
-      "category": "forge",
-      "description": "Complete spec: 65 requirements across 11 categories, agent prompts, schemas, configuration",
-      "status": "current"
     },
     {
       "file": "tools/gaps-to-issues.sh",
       "title": "Gaps To Issues",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/inputs-check.sh",
+      "title": "Inputs Check",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
       "generated": true
     },
     {
@@ -219,7 +308,30 @@
       "title": "Install Hooks",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/lifecycle-e2e.sh",
+      "title": "Lifecycle E2E",
+      "category": "workflow",
+      "description": "End-to-end acceptance test of the skill: create a new project \u2192 populate docs \u2192 build local app \u2192 deploy dev, asserting each deliverable and writing .rapid/E2E.json. Surfaced as WF-5 in the Test Suite.",
+      "status": "current"
+    },
+    {
+      "file": "tools/log-decision.sh",
+      "title": "Log Decision",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/mock-init.sh",
+      "title": "Mock Init",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
       "generated": true
     },
     {
@@ -227,21 +339,35 @@
       "title": "Module Conformance Hook",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
+      "file": "tools/new-project.sh",
+      "title": "New Project",
+      "category": "workflow",
+      "description": "Create a new project using this skill \u2014 the deterministic P1 scaffold (structure + CONSTITUTION + BUILD-AUTONOMY + locked PRD + .rapid/STATE + self-contained toolset + atlas-init)",
+      "status": "current"
+    },
+    {
       "file": "tools/observe-server.py",
-      "title": "FORGE Observer Script",
-      "category": "forge",
+      "title": "RAPID Observer Script",
+      "category": "rapid",
       "description": "Python script that feeds live build data to the observatory dashboard",
       "status": "current"
     },
     {
       "file": "tools/phase-gate-hook.sh",
-      "title": "FORGE Phase Gate Script",
-      "category": "forge",
+      "title": "RAPID Phase Gate Script",
+      "category": "rapid",
       "description": "Shell script enforcing phase gate approvals during autonomous builds",
+      "status": "current"
+    },
+    {
+      "file": "tools/populate-deck.py",
+      "title": "Populate Deck",
+      "category": "workflow",
+      "description": "Deterministically renders a project's own markdown/JSON artifacts into its Atlas deck pages, replacing the atlas-stub placeholder \u2014 proves documentation populates from the project's content.",
       "status": "current"
     },
     {
@@ -253,11 +379,34 @@
       "generated": true
     },
     {
+      "file": "tools/preflight.sh",
+      "title": "Preflight",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/rapid-spec.html",
+      "title": "RAPID System Specification",
+      "category": "rapid",
+      "description": "Complete spec: 65 requirements across 11 categories, agent prompts, schemas, configuration",
+      "status": "current"
+    },
+    {
+      "file": "tools/rapid-team.sh",
+      "title": "Rapid Team",
+      "category": "rapid",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
       "file": "tools/ship-gate.sh",
       "title": "Ship Gate",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -265,7 +414,7 @@
       "title": "Stop Hook",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -273,7 +422,7 @@
       "title": "Stub Detect Hook",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -281,7 +430,38 @@
       "title": "Stub Scan",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/trace-check.sh",
+      "title": "Trace Check",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/verify.sh",
+      "title": "Verify",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
+      "generated": true
+    },
+    {
+      "file": "tools/workflow-runner.py",
+      "title": "Workflow Runner",
+      "category": "workflow",
+      "description": "Live-drives a user workflow as an executable test: runs each node's exec against the live build, threads data-out\u2192data-in, streams .rapid/RUNS/<wf>/<run>.jsonl, publishes docs/testruns.json. Codex tester + simulated-operator nodes.",
+      "status": "current"
+    },
+    {
+      "file": "tools/worktree-check.sh",
+      "title": "Worktree Check",
+      "category": "workflow",
+      "description": "",
+      "status": "current",
       "generated": true
     }
   ],
@@ -293,32 +473,68 @@
       "superseded_by": "docs/methodology-deck.html"
     },
     {
-      "file": "archive/forge-dashboard.html",
-      "title": "FORGE Observatory v1",
-      "category": "forge",
+      "file": "archive/rapid-dashboard.html",
+      "title": "RAPID Observatory v1",
+      "category": "rapid",
       "superseded_by": "tools/dashboard.html"
     },
     {
-      "file": "archive/forge-comparison.html",
-      "title": "FORGE vs TDD Scaffold",
-      "category": "forge",
+      "file": "archive/rapid-comparison.html",
+      "title": "RAPID vs TDD Scaffold",
+      "category": "rapid",
       "superseded_by": null
     },
     {
-      "file": "docs/forge-architecture.html",
-      "title": "FORGE Architecture",
-      "category": "forge",
+      "file": "docs/rapid-architecture.html",
+      "title": "RAPID Architecture",
+      "category": "rapid",
       "status": "missing"
     },
     {
       "file": "tools/dashboard.html",
-      "title": "FORGE Observatory",
-      "category": "forge",
+      "title": "RAPID Observatory",
+      "category": "rapid",
       "status": "missing"
     },
     {
       "file": "docs/methodology-deck.html",
       "title": "AI Build Workflow Deck",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/workflows.json",
+      "title": "Workflow Map",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/prd-enhanced.html",
+      "title": "Prd Enhanced",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/prd.html",
+      "title": "Prd",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/spec.html",
+      "title": "Spec",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/system-architecture.html",
+      "title": "System Architecture",
+      "category": "workflow",
+      "status": "missing"
+    },
+    {
+      "file": "docs/users.html",
+      "title": "Users",
       "category": "workflow",
       "status": "missing"
     }

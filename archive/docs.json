@@ -2,9 +2,9 @@
   "version": 1,
   "updated": "2026-05-27",
   "categories": {
-    "forge": {
-      "label": "FORGE System",
-      "description": "How the FORGE autonomous build system works"
+    "rapid": {
+      "label": "RAPID System",
+      "description": "How the RAPID autonomous build system works"
     },
     "workflow": {
       "label": "AI Build Workflow",
@@ -17,51 +17,51 @@
   },
   "docs": [
     {
-      "file": "forge-architecture.html",
-      "title": "FORGE Architecture",
-      "category": "forge",
+      "file": "rapid-architecture.html",
+      "title": "RAPID Architecture",
+      "category": "rapid",
       "description": "Full system reference (D0–D21): 12-phase pipeline, agent topology, safety mechanisms, trust model",
       "status": "current"
     },
     {
-      "file": "forge-observatory.html",
-      "title": "FORGE Observatory",
-      "category": "forge",
+      "file": "rapid-observatory.html",
+      "title": "RAPID Observatory",
+      "category": "rapid",
       "description": "Live build dashboard: agent health, event timeline, phase tracking, context estimates",
       "status": "current"
     },
     {
-      "file": "forge-spec.html",
-      "title": "FORGE System Specification",
-      "category": "forge",
+      "file": "rapid-spec.html",
+      "title": "RAPID System Specification",
+      "category": "rapid",
       "description": "Complete spec: 65 requirements across 11 categories, agent prompts, schemas, configuration",
       "status": "current"
     },
     {
-      "file": "forge-comparison.html",
-      "title": "FORGE vs TDD Scaffold",
-      "category": "forge",
-      "description": "Side-by-side comparison of FORGE and SiWarlock's TDD agent-crew scaffold",
+      "file": "rapid-comparison.html",
+      "title": "RAPID vs TDD Scaffold",
+      "category": "rapid",
+      "description": "Side-by-side comparison of RAPID and SiWarlock's TDD agent-crew scaffold",
       "status": "current"
     },
     {
-      "file": "FORGE.md",
-      "title": "FORGE Reference",
-      "category": "forge",
+      "file": "RAPID.md",
+      "title": "RAPID Reference",
+      "category": "rapid",
       "description": "Markdown reference: core principle, dynamic composition, phase summary",
       "status": "current"
     },
     {
-      "file": "forge-observe.py",
-      "title": "FORGE Observer Script",
-      "category": "forge",
+      "file": "rapid-observe.py",
+      "title": "RAPID Observer Script",
+      "category": "rapid",
       "description": "Python script that feeds live build data to the observatory dashboard",
       "status": "current"
     },
     {
-      "file": "forge-phase-gate.sh",
-      "title": "FORGE Phase Gate Script",
-      "category": "forge",
+      "file": "rapid-phase-gate.sh",
+      "title": "RAPID Phase Gate Script",
+      "category": "rapid",
       "description": "Shell script enforcing phase gate approvals during autonomous builds",
       "status": "current"
     },
@@ -116,10 +116,10 @@
       "superseded_by": "workflow-deck.html"
     },
     {
-      "file": "archive/forge-dashboard.html",
-      "title": "FORGE Observatory v1",
-      "category": "forge",
-      "superseded_by": "forge-observatory.html"
+      "file": "archive/rapid-dashboard.html",
+      "title": "RAPID Observatory v1",
+      "category": "rapid",
+      "superseded_by": "rapid-observatory.html"
     }
   ]
 }

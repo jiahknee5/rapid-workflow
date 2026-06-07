@@ -1,0 +1,723 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>P2 Expert Panels — Rapid Skills Atlas</title>
+<style>/* Rapid Skills Atlas — shared v2 "Constellation" dark theme. Generated pages embed this. */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0D1117;--surface:#161B22;--surface-alt:#1C2330;
+  --border:#2A313B;--border-light:#20262F;
+  --text:#E6EDF3;--text-muted:#9BA6B2;--text-dim:#6B7480;
+  --accent:#7AA2F7;--accent-dim:rgba(122,162,247,0.12);
+  --blue:#58A6FF;--blue-dim:rgba(88,166,255,0.14);
+  --green:#3FB950;--green-dim:rgba(63,185,80,0.14);
+  --red:#F85149;--red-dim:rgba(248,81,73,0.14);
+  --amber:#D29922;--amber-dim:rgba(210,153,34,0.14);
+  --purple:#BC8CFF;--purple-dim:rgba(188,140,255,0.14);
+  --teal:#56D4DD;--teal-dim:rgba(86,212,221,0.14);
+  --radius:8px;--radius-sm:6px;--code-bg:#0A0D12;
+  --mono:"SF Mono","Fira Code",ui-monospace,Menlo,monospace;
+}
+html{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;position:relative;overflow-x:clip;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 500px at 12% -8%,rgba(122,162,247,0.07),transparent 60%),radial-gradient(700px 500px at 100% 0%,rgba(86,212,221,0.04),transparent 55%);}
+body>*{position:relative;z-index:1;}
+a{color:inherit;}
+
+/* top nav: pipeline with REAL phase names */
+.top-nav{display:flex;align-items:center;gap:0;background:rgba(8,11,16,0.9);backdrop-filter:saturate(140%) blur(8px);padding:0 16px;flex-shrink:0;overflow-x:auto;position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--border);}
+.top-brand{display:flex;flex-direction:column;font-size:12px;font-weight:800;color:var(--text);letter-spacing:-0.02em;padding:8px 14px 8px 0;margin-right:8px;border-right:1px solid var(--border);line-height:1.2;white-space:nowrap;text-decoration:none;}
+.top-brand::before{content:"✦";color:var(--accent);margin-right:7px;font-size:13px;}
+.top-brand .sub{font-size:7px;font-weight:500;color:var(--text-dim);letter-spacing:0.06em;text-transform:uppercase;padding-left:20px;}
+.steplabel{font-size:8px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);padding:0 10px 0 4px;white-space:nowrap;}
+.step{font-size:11px;font-weight:600;color:var(--text-muted);text-decoration:none;padding:11px 6px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s;}
+.step i{font-family:var(--mono);font-style:normal;font-size:8.5px;font-weight:600;color:var(--text-dim);margin-right:3px;}
+.step:hover{color:var(--text);}
+.step:hover i{color:var(--accent);}
+.step.gate{color:var(--amber);font-weight:700;}
+.step.por{color:var(--red);font-weight:700;}
+.step.active{color:var(--accent);border-bottom-color:var(--accent);}
+.step.active i{color:var(--accent);}
+.top-nav .sep{color:var(--border);font-size:9px;}
+.dest-sep{width:1px;align-self:stretch;background:var(--border);margin:0 6px 0 2px;}
+.dest{font-size:11px;font-weight:600;color:var(--text-muted);text-decoration:none;padding:12px 12px;white-space:nowrap;border-bottom:2px solid transparent;transition:color .12s;}
+.dest:hover{color:var(--text);}
+.dest.active{color:var(--accent);border-bottom-color:var(--accent);}
+.dest.off{opacity:.4;cursor:default;border-bottom-color:transparent;}
+.dest.off:hover{color:var(--text-muted);}
+.copy-launch{background:transparent;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;line-height:1;padding:10px 6px 10px 0;align-self:center;}
+.copy-launch:hover{color:var(--accent);}
+.top-spacer{flex:1;min-width:8px;}
+.top-link{font-size:9.5px;font-weight:600;color:var(--text-dim);text-decoration:none;padding:11px 10px;white-space:nowrap;}
+.top-link:hover{color:var(--accent);}
+
+.spec-layout{display:flex;flex:1;}
+
+/* left nav: skill hierarchy */
+.sidebar{width:286px;flex-shrink:0;background:rgba(13,17,23,0.6);border-right:1px solid var(--border-light);padding:28px 16px;position:sticky;top:43px;height:calc(100vh - 43px);overflow-y:auto;}
+.sidebar-brand{font-size:1.05rem;font-weight:800;color:var(--text);letter-spacing:-0.02em;}
+.sidebar-sub{font-size:0.68rem;color:var(--text-dim);margin-bottom:20px;font-weight:500;}
+.sidebar-section{font-size:0.55rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-dim);margin:20px 0 7px;}
+.sidebar a{display:flex;align-items:baseline;gap:8px;font-size:0.78rem;color:var(--text-muted);text-decoration:none;padding:4px 10px;border-radius:var(--radius-sm);margin:1px 0;line-height:1.35;transition:background .12s,color .12s;}
+.sidebar a:hover{background:var(--surface-alt);color:var(--text);}
+.sidebar a.active{background:var(--accent-dim);color:var(--accent);font-weight:600;box-shadow:inset 2px 0 0 var(--accent);}
+.sidebar a .ph{font-family:var(--mono);font-size:0.62rem;color:var(--text-dim);min-width:26px;}
+.sidebar a.sub{padding-left:30px;font-size:0.72rem;color:var(--text-dim);}
+.sidebar a .exemplar{margin-left:auto;font-size:0.5rem;font-weight:700;letter-spacing:0.06em;color:var(--accent);background:var(--accent-dim);border-radius:9px;padding:1px 6px;text-transform:uppercase;}
+.sidebar a .gate-dot{margin-left:auto;font-size:0.55rem;color:var(--amber);font-family:var(--mono);}
+
+/* main */
+.main{flex:1;max-width:900px;padding:46px 52px 120px;}
+.section{margin-bottom:54px;padding-top:26px;border-top:1px solid var(--border-light);scroll-margin-top:60px;}
+.section:first-child{border-top:none;padding-top:6px;}
+.section-id{font-size:0.56rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.section-title{font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.24;letter-spacing:-0.01em;}
+.section-desc{font-size:0.9rem;color:var(--text-muted);margin-bottom:18px;max-width:760px;line-height:1.72;}
+.section-desc b{color:var(--text);}
+code{background:var(--surface-alt);color:#cbd3e1;padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:0.85em;}
+
+/* hub tree + pipeline */
+.tree{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:20px 22px;margin:16px 0;font-size:0.82rem;}
+.tree .t0{font-weight:700;color:var(--text);margin-bottom:4px;}
+.tree .t0 .k,.tree .t1 .k{font-family:var(--mono);font-size:0.78rem;}
+.tree .t0 .k{color:var(--accent);}
+.tree .t1{padding-left:18px;color:var(--text-muted);line-height:1.9;border-left:1px solid var(--border);margin-left:4px;}
+.tree .t1 .k{color:var(--text);}
+.tree .t2{padding-left:34px;color:var(--text-dim);font-size:0.76rem;line-height:1.8;}
+.tree .tag{font-size:0.56rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;border-radius:9px;padding:1px 6px;margin-left:6px;}
+.tag.reg{background:var(--green-dim);color:var(--green);}.tag.comp{background:var(--purple-dim);color:var(--purple);}.tag.hook{background:var(--red-dim);color:var(--red);}
+.pipeline{display:flex;align-items:center;flex-wrap:wrap;gap:5px 4px;background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:18px;margin:14px 0;}
+.pnode{font-family:var(--mono);font-size:0.7rem;font-weight:600;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 9px;color:var(--text-muted);background:var(--surface-alt);white-space:nowrap;text-decoration:none;}
+.pnode small{display:block;font-size:0.56rem;color:var(--text-dim);font-weight:400;}
+.pnode.auto{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.pnode.gate{border-color:var(--amber);color:var(--amber);background:var(--amber-dim);font-weight:800;}
+.pnode.por{border-color:var(--red);color:var(--red);background:var(--red-dim);}
+.pnode.primary{border-color:var(--accent);color:#0B0E13;background:var(--accent);}
+.parr{color:var(--text-dim);font-size:0.8rem;}
+
+/* skill card */
+.skill{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);margin-bottom:18px;overflow:hidden;}
+.skill-head{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--border-light);flex-wrap:wrap;}
+.skill-name{font-size:1.02rem;font-weight:700;color:var(--text);}
+.skill-id{font-family:var(--mono);font-size:0.72rem;color:var(--accent);}
+.skill-badges{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;}
+.sb{font-size:0.56rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;border-radius:10px;padding:3px 9px;}
+.sb.arc{background:var(--accent-dim);color:var(--accent);}.sb.reg{background:var(--green-dim);color:var(--green);}.sb.comp{background:var(--purple-dim);color:var(--purple);}.sb.gatefeed{background:var(--amber-dim);color:var(--amber);}
+.skill-body{padding:16px 18px;}
+.skill-what{font-size:0.88rem;color:var(--text);line-height:1.7;margin-bottom:16px;}
+.fielddual{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.field{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:12px 14px;}
+.field-label{font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.fixed-dyn{display:flex;flex-direction:column;gap:8px;}
+.fd-row{font-size:0.76rem;line-height:1.5;}
+.fd-row .lab{font-family:var(--mono);font-size:0.62rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:inline-block;border-radius:8px;padding:1px 7px;margin-right:6px;}
+.fd-row .lab.fixed{background:var(--blue-dim);color:var(--blue);}.fd-row .lab.dyn{background:var(--purple-dim);color:var(--purple);}
+.fd-row span{color:var(--text-muted);}
+.files{display:flex;flex-direction:column;gap:7px;}
+.fileflow{display:flex;align-items:center;gap:7px;font-size:0.74rem;flex-wrap:wrap;}
+.fileflow .io{font-size:0.52rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-dim);min-width:34px;}
+.fchip{font-family:var(--mono);font-size:0.68rem;color:var(--text-muted);background:var(--code-bg);border:1px solid var(--border-light);border-radius:5px;padding:2px 7px;}
+.fchip.out{color:var(--green);border-color:rgba(63,185,80,0.3);}
+.skill-ex{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 16px;margin-bottom:14px;}
+.skill-ex .ex-label{font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:7px;}
+.skill-ex .ex-body{font-size:0.78rem;color:#c4cad6;line-height:1.65;}
+.skill-ex .ex-body b{color:var(--text);}
+.skill-ex code{background:rgba(255,255,255,0.05);}
+.skill-val{background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 16px;}
+.skill-val .val-label{font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+.skill-val .val-body{font-size:0.84rem;color:var(--text);line-height:1.65;}
+.skill-val .val-body b{color:#fff;}
+.subskills{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:6px;}
+.subskill{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:11px 13px;}
+.subskill .ss-name{font-weight:700;font-size:0.82rem;color:var(--text);}
+.subskill .ss-id{font-family:var(--mono);font-size:0.62rem;color:var(--accent);}
+.subskill .ss-desc{font-size:0.73rem;color:var(--text-muted);line-height:1.5;margin-top:4px;}
+
+details.srctext{margin-top:14px;border-top:1px solid var(--border-light);padding-top:11px;}
+details.srctext summary{font-family:var(--mono);font-size:0.7rem;font-weight:600;color:var(--text-dim);cursor:pointer;letter-spacing:0.02em;list-style:none;}
+details.srctext summary::-webkit-details-marker{display:none;}
+details.srctext summary:hover{color:var(--accent);}
+details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
+details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
+
+/* deep sections (in-depth body below the skill card) */
+.deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
+.deep-title{font-size:0.98rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em;}
+.deep-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65;}
+.deep-sub b{color:var(--text);}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lens{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 15px;border-top:2px solid var(--accent);}
+.lens.blue{border-top-color:var(--blue);} .lens.teal{border-top-color:var(--teal);} .lens.purple{border-top-color:var(--purple);} .lens.green{border-top-color:var(--green);}
+.lens h5{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.lens .lens-skill{font-family:var(--mono);font-size:0.63rem;color:var(--accent);margin-bottom:7px;word-break:break-all;}
+.lens p{font-size:0.76rem;color:var(--text-muted);line-height:1.55;}
+.lens .catches{margin-top:7px;font-size:0.74rem;color:var(--text-muted);}
+.lens .catches b{color:var(--text);}
+.proto{counter-reset:step;list-style:none;margin:8px 0;}
+.proto li{position:relative;padding-left:32px;margin-bottom:9px;font-size:0.82rem;color:var(--text-muted);line-height:1.55;}
+.proto li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-size:0.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.proto li b{color:var(--text);}
+.deep-note{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 15px;margin-top:6px;}
+.deep-note b{color:var(--text);}
+
+/* skill index table */
+.idx{width:100%;border-collapse:collapse;font-size:0.76rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:8px;}
+.idx th{text-align:left;padding:9px 11px;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border);}
+.idx td{padding:9px 11px;border-bottom:1px solid var(--border-light);vertical-align:top;color:var(--text-muted);line-height:1.5;}
+.idx tr:nth-child(even) td{background:var(--surface);}
+.idx tr.gate td{background:var(--amber-dim);}
+.idx td.k{font-family:var(--mono);font-size:0.68rem;color:var(--text);white-space:nowrap;}
+.idx td.sk{font-weight:600;}
+.idx td.sk a{color:var(--text);text-decoration:none;}
+.idx td.sk a:hover{color:var(--accent);}
+.idx .fc{font-family:var(--mono);font-size:0.66rem;color:var(--text-dim);}
+.ex-mark{font-size:0.5rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.05em;}
+
+/* pager */
+.pagernav{display:flex;align-items:center;gap:10px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border-light);}
+.pager{font-size:0.78rem;font-weight:600;color:var(--text-muted);text-decoration:none;padding:8px 14px;border:1px solid var(--border-light);border-radius:var(--radius-sm);background:var(--surface);}
+.pager:hover{color:var(--accent);border-color:var(--accent);}
+.footnote{font-size:0.64rem;color:var(--text-dim);margin-top:14px;border-top:1px solid var(--border-light);padding-top:8px;font-style:italic;}
+
+@media (max-width:980px){.sidebar{display:none;}.main{padding:30px 22px 90px;}.fielddual,.subskills{grid-template-columns:1fr;}}
+</style></head><body>
+<nav class="top-nav"><a class="top-brand" href="index.html">RAPID<span class="sub">Skills Atlas</span></a><span class="dest-sep"></span><a class="dest active" href="index.html">Plan</a><a class="dest" href="../observatory.html">Build &amp; Observatory</a><a class="dest" href="../testsuite.html">Test Suite</a><a class="dest" href="../documentation.html">Documentation</a><a class="dest" data-dest="local" href="../home.html#product">Local&nbsp;▶</a><button class="copy-launch" type="button" hidden>⧉</button><a class="dest" data-dest="deployed" href="../home.html#product">Deployed</a><a class="dest" data-dest="source" href="../home.html#source">Source</a><span class="top-spacer"></span><a class="top-link" href="../how-it-works.html">How it works ↗</a></nav>
+<div class="spec-layout"><nav class="sidebar"><div class="sidebar-brand">✦ Skills Atlas</div><div class="sidebar-sub">Rapid — the build workflow, by skill</div><div class="sidebar-section">The package</div><a href="index.html">Overview &amp; hierarchy</a><div class="sidebar-section">Phase skills (build order)</div><a href="p0-vision.html"><span class="ph">P0</span> Vision Extraction</a><a href="p1-structure.html"><span class="ph">P1</span> Structure</a><a href="p1b-decompose.html"><span class="ph">P1b</span> PRD Decomposition</a><a class="sub" href="g0.html">⟨G0⟩ Faithful decomposition <span class="gate-dot">gate</span></a><a href="p2-panels.html" class="active"><span class="ph">P2</span> Expert Panels</a><a href="p3-research.html"><span class="ph">P3</span> Grounding Research</a><a class="sub" href="g1.html">⟨G1⟩ Direction &amp; priority <span class="gate-dot">gate</span></a><a href="p4-spec.html"><span class="ph">P4</span> Spec Derivation</a><a href="p5-tasks-eval.html"><span class="ph">P5</span> Tasks + Eval Harness</a><a href="p5b-deepen.html"><span class="ph">P5b</span> Spec Deepening</a><a href="p5c-mockups.html"><span class="ph">P5c</span> Mockups &amp; Prototype</a><a class="sub" href="g2.html">⟨G2⟩ Point of no return <span class="gate-dot">gate</span></a><a href="p6-build.html"><span class="ph">P6</span> Parallel Build</a><a href="p7-test.html"><span class="ph">P7</span> Test + Visual QA</a><a href="p8-gaps.html"><span class="ph">P8</span> Gap Loop + Optimization</a><a class="sub" href="g3.html">⟨G3⟩ Ship decision <span class="gate-dot">gate</span></a><a href="p9-deploy.html"><span class="ph">P9</span> Deploy + Document</a><a href="p10-pulse.html"><span class="ph">P10</span> Product Pulse</a><div class="sidebar-section">Cross-cutting</div><a href="compound-engineering.html">Compound Engineering</a><a href="lineage.html">Lineage &amp; vs.</a><a href="index.html#crosscut">/decision · /docs · /refine · hooks R1–R9</a><div class="sidebar-section">Reference</div><a href="../architecture.html">Architecture · D0–D21 ↗</a><a href="../workflow.html">Workflow map ↗</a></nav>
+<div class="main">
+  <section class="section">
+    <div class="section-id">Phase skill · Arc 1 · Understand</div>
+    <h2 class="section-title">P2 — Expert Panels</h2>
+    <div class="skill">
+      <div class="skill-head"><span class="skill-name">Expert Panels</span><span class="skill-id">rapid:p2-panels</span><span class="skill-badges"><span class="sb arc">Arc 1 · Understand</span><span class="sb comp">composed</span></span></div>
+      <div class="skill-body">
+        <div class="skill-what">Convenes <b>five panel areas</b> — Business · Technical · Design · SME · Users — each rostered <b>1st/2nd/3rd-order then pared</b>, reviewing the decomposed PRD <b>through the pillars</b>, each panelist in voice, then synthesizes <b>convergent / divergent / risks / open</b> with sources. Fast track runs one area; full runs all five.</div>
+        <div class="fielddual">
+          <div class="field"><div class="field-label">Fixed vs. Dynamic</div><div class="fixed-dyn">
+            <div class="fd-row"><span class="lab fixed">Fixed</span><span>Five panel areas; the roster-then-pare construction; the synthesis protocol; deeper orders only on escalation.</span></div>
+            <div class="fd-row"><span class="lab dyn">Dynamic</span><span>Which voices survive paring (by domain), which panelists (named), reviewer weights.</span></div></div></div>
+          <div class="field"><div class="field-label">Files touched</div><div class="files">
+            <div class="fileflow"><span class="io">reads</span><span class="fchip ">01-intake/PRD-ENHANCED.md</span><span class="fchip ">00-vision/PILLARS.md</span></div>
+            <div class="fileflow"><span class="io">writes</span><span class="fchip out">03-panels/synthesis.md</span></div></div></div>
+        </div>
+        <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">A healthcare build weights the <b>Technical / Security</b> lens heaviest; a kids' app leads with the <b>Users</b> lens (kids, parents, teachers in voice) plus an <b>SME</b> panel for the domain. The synthesis — not the transcripts — is what you read at G1.</div></div>
+        <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Tiered, in-voice domain challenge surfaces objections a generalist gate misses — and it runs after the cheap faithfulness gate, so panel cost is never wasted. Its output sets priority at G1.</div></div>
+        <details class="srctext"><summary>▸ Real skill text — P2 Expert Panels (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 2 — Expert Panels [AUTO]
+
+**Output:** `03-panels/synthesis.md`
+
+**Fast track (1 panel area):** Run the single most relevant panel area as a skill (stays in your context — no context duplication). Choose the area — Business, Technical, Design, SME, or Users — that most governs this project&#x27;s risk (e.g. technical-expert-panel, business-expert-panel, or a domain/SME panel).
+
+**Full track (five panel areas):** Spawn parallel subagents, one per panel area (Business · Technical · Design · SME · Users). Each receives: VISION.md, PILLARS.md, PRD-ENHANCED.md. Each reviews through the pillars, not generically.
+
+After panels complete, **synthesize** into `03-panels/synthesis.md`:
+- **Convergent findings**: where all panels agree
+- **Divergent findings**: where panels disagree (flag for Gate 1)
+- **Critical risks**: ranked by severity
+- **Open questions**: things no panel could answer (route to Phase 3)
+
+---</pre><div class="src-where" style="margin-top:12px;">The generic <code>/expert-panel</code> skill — verbatim from <code>skills/expert-panel/SKILL.md</code>:</div><pre class="src-raw">---
+name: expert-panel
+description: &gt;
+  Build a rigorous, product-agnostic expert panel for any of the five Rapid review
+  areas — Business, Technical, Design, SME (domain), Users. For each area it generates
+  1st-, 2nd-, and 3rd-order candidate experts (each wielding named frameworks and an
+  outside-view lens), scores them, and pares to the most relevant ~6–8, then runs the
+  panel through the project&#x27;s pillars and synthesizes convergent / divergent / risks /
+  open. Names disciplines and the frameworks they apply, not products — it is
+  instantiated per project and never hardcodes a particular product. Used at Phase 2
+  of a Rapid build; also usable standalone for any
+  multi-perspective review that must not be an echo chamber.
+---
+
+# Expert Panel — generic panel builder (P2)
+
+&gt; **What it is.** A reusable method for assembling an expert panel in any of **five
+&gt; areas** (Business · Technical · Design · SME · Users) and for any product. It
+&gt; overproduces candidate experts across three &quot;orders&quot; of distance from the work, scores
+&gt; them, and pares to the load-bearing set — so the panel is grounded *and* hard to fool.
+&gt; Each panelist brings not just a voice but a **named discipline, the frameworks that
+&gt; discipline wields, and an outside-view lens.** It outputs disciplines/archetypes the
+&gt; orchestrator instantiates against the project&#x27;s domain and pillars; it contains no
+&gt; product-specific content.
+&gt;
+&gt; **What it is NOT.** Not a fixed roster of named people. Not tied to any product.
+&gt; Not a single mega-panel — it builds one panel per area, on demand.
+
+---
+
+## When to use
+
+- **Phase 2 of a Rapid build** — challenge the decomposed PRD (`01-intake/PRD-ENHANCED.md`)
+  through the pillars (`00-vision/PILLARS.md`). Output → `03-panels/synthesis.md`, read at **Gate 1**.
+- **Standalone** — any time you need a structured, multi-perspective critique that won&#x27;t
+  collapse into agreement (a design review, a strategy doc, a go/no-go).
+
+---
+
+## Core thesis — why this method, not &quot;ask some experts&quot;
+
+1. **Named, opinionated personas beat &quot;an expert.&quot;** A persona with a stake argues and
+   makes a falsifiable ask; &quot;an expert&quot; hedges. *Generic ≠ vague:* the persona is an
+   **archetype** (a role + a stake), instantiated per project — not a real named person
+   for a specific product.
+2. **Insiders share blind spots.** A panel of only hands-on practitioners agrees too
+   easily and misses what its own discipline is structurally blind to. Forcing in 2nd-
+   and 3rd-order voices is how the outside view gets a seat.
+3. **Generate wide, then pare.** You don&#x27;t find the load-bearing expert by guessing six
+   up front — you overproduce candidates across three orders and cut. The cut is where
+   the rigor lives.
+4. **Score against the pillars, not in the abstract.** Relevance is relative to *this*
+   project&#x27;s pillars and risk surface, so the same area produces a different panel for a
+   kids&#x27; app than for a clearing house.
+5. **A panelist is a lens *plus a toolkit*.** The value isn&#x27;t the person — it&#x27;s the
+   **discipline + the named frameworks it wields + the outside view it imports.** A panel
+   that brings JTBD, Five Forces, Nielsen&#x27;s heuristics, STRIDE, and the Double Diamond to
+   bear *shapes the app*; a panel that only voices opinions just grades it. Each area below
+   lists the frameworks its panel should apply by name.
+
+---
+
+## The five areas — and what each is for
+
+The five areas map cleanly onto the classic product lenses (Desirability · Feasibility ·
+Viability), extended with Legitimacy for regulated/expert domains:
+
+| Area | Question it owns | Lens |
+|---|---|---|
+| **Business** | Is this viable, fundable, defensible? | **Viability** |
+| **Technical** | Will it hold up; is it sound and testable? | **Feasibility** |
+| **Design** | Is it usable, coherent, and desirable to use? | **Desirability** (craft) |
+| **Users** | Does it actually work for the people who touch it? | **Desirability** (felt experience) |
+| **SME (domain)** | Is it right, credible, and legitimate in the domain? | **Legitimacy / validity** |
+
+&gt; **Design and Users are siblings, not duplicates.** Design owns the *artifact* — IA,
+&gt; interaction, hierarchy, the craft and the heuristics. Users owns the *people* — adoption,
+&gt; felt experience, the full cast of personas. A beautiful interface no one adopts fails the
+&gt; Users panel; a beloved product that&#x27;s an accessibility and consistency mess fails the
+&gt; Design panel. You want both.
+
+---
+
+## The three orders of expertise (consistent across all five areas)
+
+Distance from the day-to-day work increases 1 → 3; per-head relevance falls, surprise rises.
+
+| Order | Name | Who they are | What they add | Risk if omitted |
+|---|---|---|---|---|
+| **1st** | **Practitioners** | Do the work in this area, hands-on, now | Ground truth, real costs, &quot;where it rots&quot; | Panel floats free of reality |
+| **2nd** | **Shapers &amp; Critics** | Fund, regulate, standardize, audit, or critique the area without doing the day-to-day | Authority + external constraint the practitioner internalizes and stops seeing | Panel ignores the rules and forces acting on it |
+| **3rd** | **Outsiders &amp; Long-horizon** | Adjacent fields, contrarians, systemic / ethical / historical / failure-mode lenses | The one voice that catches the flaw insiders are structurally blind to | The fatal, non-obvious flaw ships |
+
+&gt; **The 3rd order earns its single seat.** It has the lowest relevance per head and the
+&gt; highest payoff variance — most builds, it confirms; occasionally it saves the build.
+&gt; Cutting it to &quot;save time&quot; is cutting exactly the insurance you&#x27;re paying for.
+
+---
+
+## Construction protocol — the skill&#x27;s core loop
+
+```
+frame → generate(1st,2nd,3rd) → score → pare → instantiate → run → synthesize
+```
+
+1. **Frame.** Read the area&#x27;s charge (below), the project&#x27;s pillars, and the enhanced PRD.
+   The panel reviews *through the pillars* — every prompt names them.
+2. **Generate 1st order** — 4–6 practitioner archetypes who&#x27;d have hands-on judgment here.
+3. **Generate 2nd order** — 4–6 shaper/critic archetypes.
+4. **Generate 3rd order** — 3–5 outsider / long-horizon archetypes.
+   *Overproduce:* aim for ~12–16 candidates before paring. Cheap to list, expensive to skip.
+5. **Score** each candidate on the paring rubric (below).
+6. **Pare to the panel** — keep the top 6–8, subject to the composition rule (below).
+7. **Instantiate** — turn each kept archetype into a concrete persona for *this* project:
+   a name, a plausible background, a stake — **without inventing product facts**
+   (Constitution Art. I: an opinion is fine; a fabricated statistic is not).
+8. **Run** — each panelist reacts to a **specific PRD requirement or pillar**, in voice,
+   with **one concrete, falsifiable ask** (a change they&#x27;d make and how you&#x27;d know it worked).
+9. **Synthesize** — convergent / divergent / risks / open, each line carrying its source panelist.
+
+---
+
+## Paring rubric — score each candidate 0–2, keep the highest totals
+
+| Criterion | 0 | 1 | 2 |
+|---|---|---|---|
+| **Pillar relevance** | Touches no pillar | Touches a pillar indirectly | Maps directly to a pillar or a top-3 risk |
+| **Unique coverage** | Lens fully covered by a stronger candidate | Partial overlap | Covers a risk no one else on the shortlist covers |
+| **Concrete ask** | Can only offer platitudes | Directional advice | A falsifiable, actionable ask |
+| **Perspective distance** | Pure consensus with the 1st order | Some divergence | Genuinely moves the panel off the consensus |
+
+Ties broken toward the **more concrete ask** and the **higher order** (to protect diversity).
+
+## Composition rule — so the pared panel can&#x27;t become an echo chamber
+
+- Keep **6–8** experts (full track) or **~4** (fast track).
+- **≥3 from 1st order** (the panel must be grounded), **≥2 from 2nd order**, **≥1 from 3rd order**.
+- **No two experts with the same lens** — if two overlap, keep the one with the more concrete ask and drop the other (it&#x27;s a wasted seat).
+- At least one panelist must be positioned to say *&quot;don&#x27;t build this&quot;* — a panel that can only say &quot;build it better&quot; isn&#x27;t a review.
+
+---
+
+## The five areas
+
+Each module gives the area&#x27;s **charge**, its candidate roster **by order** (archetypes, not
+people), the **frameworks** that area&#x27;s panel should wield by name, and **relevance weighting**
+— what to score up given the project&#x27;s pillars. The roster is the generation menu for steps 2–4;
+the frameworks are the tools each panelist brings; the weighting tunes the scoring in step 5.
+
+### A · Business — *&quot;Is this viable, fundable, and defensible?&quot;*
+
+**Charge:** market &amp; timing, GTM motion, pricing &amp; packaging, unit economics, regulatory
+exposure, moat/defensibility, and the 2nd-order effects of success at scale.
+
+- **1st order — practitioners**
+  - **Startup founder / 0→1 operator** — the survival lens: speed, runway, fundraising, what to cut to stay alive.
+  - **Category operator (scale-up exec)** — has built &amp; shipped this *kind* of product past 0→1; knows the real cost and the hidden work.
+  - **Pricing &amp; packaging strategist** — tiers, willingness-to-pay, expansion, discount leakage.
+  - **Growth / acquisition lead** — the funnel for *this* motion (product-led / sales-led / marketplace / community).
+  - **Unit-economics owner (finance)** — CAC, payback, gross margin, contribution, the path to it penciling out.
+  - **GTM / sales lead** — the actual selling motion, cycle length, and who signs.
+- **2nd order — shapers, funders &amp; critics**
+  - **Venture capitalist** — the power-law / fund-returner lens: TAM, growth rate, the next-round bar, &quot;why is this a $1B+ outcome.&quot; *Tune to stage:* seed weighs team + wedge; growth weighs efficient scale.
+  - **Private equity investor** — the cash-flow &amp; efficiency lens: durable margins, multiple expansion, rollup / consolidation potential, &quot;does this throw off money or just burn it.&quot;
+  - **Corporate C-suite (incumbent executive)** — the CEO / CFO / Chief-Strategy view from an established player: build / buy / partner, competitive response, &quot;would a big incumbent crush, acquire, or ignore this.&quot;
+  - **Strategic advisor / board member / fractional exec** — the cross-company pattern-matcher: governance, &quot;I&#x27;ve seen this movie,&quot; the un-sexy operational risk insiders rationalize away.
+  - **Category / industry analyst** — the landscape, the incumbents, who else is moving.
+  - **Regulatory &amp; compliance counsel** — the legal surface for the domain (privacy, consumer, sector rules).
+  - **Partnerships / BD lead** — channels, integrations, and platform-dependency risk.
+  - **Moat / network-effects strategist** — what compounds, what&#x27;s defensible, what&#x27;s a feature not a company.
+- **3rd order — outsiders &amp; long-horizon**
+  - **Behavioral economist** — how *real* humans (not rational agents) adopt, pay, and churn.
+  - **Market historian / antitrust lens** — how this category&#x27;s incumbents won and lost before.
+  - **2nd-order-effects ethicist** — who is harmed if this *succeeds* at scale.
+  - **Macro / contrarian skeptic** — &quot;why now,&quot; and what kills this in a downturn.
+
+**Relevance weighting:** pricing &amp; unit-economics ↑ for consumer/SMB; regulatory counsel ↑
+for health / finance / education / minors; moat &amp; network-effects ↑ for platform/marketplace
+plays; ethicist ↑ where scale has externalities. **The capital lens follows the likely
+funding/exit path** — the venture capitalist ↑ for power-law, venture-scale bets; the PE
+investor ↑ for cash-generative / mature / consolidation plays; the incumbent C-suite ↑ where a
+big player is the probable acquirer or competitor; the founder lens is always in (it&#x27;s the
+builder&#x27;s own reality check).
+
+**Frameworks the panel wields:** Jobs-to-be-Done · Porter&#x27;s Five Forces · Business Model /
+Lean Canvas · unit economics (CAC · LTV · payback · contribution margin) · the Rule of 40 ·
+Helmer&#x27;s *7 Powers* · Christensen&#x27;s Disruption Theory · Wardley Mapping · TAM/SAM/SOM ·
+network-effects taxonomy (NFX 16) · cohort &amp; retention curves · the Bullseye GTM framework.
+
+### B · Technical — *&quot;Will it hold up, and is it sound and testable?&quot;*
+
+**Charge:** architecture, testability, performance, security, privacy, accessibility,
+reliability, DevEx/CI, data, and (only if the build is AI) model/inference design.
+
+- **1st order — practitioners**
+  - **Senior engineer in the primary stack** — the architecture and &quot;where does this rot in a year.&quot;
+  - **Test / QA engineer** — is it testable; what&#x27;s the failure surface; what&#x27;s flaky-by-design.
+  - **Platform / runtime specialist** — the constraints of the target (mobile / browser / embedded / cloud).
+  - **Data / storage engineer** — schema, consistency, migration, scale, the query that melts.
+  - **ML / inference engineer** — model choice, eval harness, drift, cost-per-call *(only if AI)*.
+- **2nd order — shapers &amp; critics**
+  - **Security auditor / threat modeler** — trust boundaries and the attack surface.
+  - **SRE / reliability engineer** — what pages someone at 3am; SLOs; the blast radius.
+  - **Accessibility specialist** — can *everyone* use it (WCAG, assistive tech, no-mouse/no-color paths).
+  - **Standards / interoperability owner** — does it play with the ecosystem it must.
+  - **DevEx / CI architect** — can the team ship safely and fast, or will velocity die.
+- **3rd order — outsiders &amp; long-horizon**
+  - **Adversary / abuse modeler** — how a bad actor turns the feature into a weapon.
+  - **Performance-&amp;-cost-at-scale economist** — what this costs and does at 100×.
+  - **Incident / post-mortem historian** — the *class* of outage this design invites.
+  - **Formal-methods / correctness skeptic** — where &quot;it compiles&quot; hides &quot;it&#x27;s wrong.&quot;
+  - **Privacy engineer** — data minimization, retention, consent (overlaps security; keep separate when data is sensitive).
+
+**Relevance weighting:** security &amp; privacy ↑ for sensitive/regulated data; performance &amp;
+cost-at-scale ↑ for real-time or high-volume; accessibility ↑ (and never 0) for any
+consumer/public surface; the ML engineer &amp; correctness skeptic in only when the build is AI.
+
+**Frameworks the panel wields:** the C4 model · the Test Pyramid · STRIDE threat modeling ·
+SOLID + coupling/cohesion · CAP / PACELC · the Twelve-Factor App · SRE SLOs &amp; error budgets ·
+FMEA / fault trees · Conway&#x27;s Law · resilience patterns (circuit breaker · bulkhead · backpressure) ·
+privacy-by-design · the OWASP Top 10 · (for AI) eval-harness + offline/online metrics + drift monitoring.
+
+### C · SME (domain) — *&quot;Is it right, legitimate, and credible in the domain?&quot;*
+
+**Charge:** domain correctness, accepted practice / pedagogy, legitimacy &amp; credibility,
+cultural soundness, and the domain&#x27;s real edge cases and failure modes.
+
+&gt; **The most parameterized module.** &quot;The domain&quot; is whatever the project serves — instantiate
+&gt; it per project (a clinical area, a financial instrument, a craft, a regulated activity). The
+&gt; archetypes below are roles *within whatever that domain is*; this skill names no fixed field.
+
+- **1st order — practitioners**
+  - **Senior domain practitioner** — does the real thing at a high level, daily.
+  - **Frontline domain worker** — applies domain knowledge at the coalface; sees what breaks in practice, not theory.
+  - **Domain educator / trainer** — knows how the domain is taught — and how it&#x27;s commonly *mis*-learned.
+- **2nd order — shapers &amp; critics**
+  - **Domain academic / researcher** — the evidence base; what&#x27;s actually known vs. folklore.
+  - **Domain regulator / standards body** — the binding rules, certifications, and liability.
+  - **Domain ethicist / community advocate** — whose interests the domain must protect; the harms of getting it wrong.
+  - **Domain historian** — how the domain&#x27;s practices and tools evolved, and which &quot;obvious&quot; ideas already failed.
+- **3rd order — outsiders &amp; long-horizon**
+  - **Cross-domain analogist** — has solved this *shape* of problem in a different field; imports the non-obvious fix.
+  - **Domain failure-mode expert** — the incidents, the malpractice, the cases that ended up in court or the news.
+  - **Heterodox / contrarian domain voice** — disagrees with the mainstream consensus and can say why.
+  - **Affected non-expert stakeholder** — the person the domain *acts upon* but rarely consults.
+
+**Relevance weighting:** regulator &amp; ethicist ↑ for regulated or vulnerable-population domains;
+cross-domain analogist ↑ for novel applications; community advocate ↑ where the domain has a
+represented community with standing; failure-mode expert ↑ where mistakes are costly or unsafe.
+
+**Frameworks the panel wields:** the domain&#x27;s own canon &amp; standards of evidence · evidence
+hierarchies (what counts as &quot;known&quot; here) · precedent / case / incident review · first-principles
+vs. received practice · analogical transfer from adjacent domains · the precautionary principle
+(for high-stakes/irreversible) · ethics review (consent, equity, &quot;nothing about us without us&quot;).
+
+### D · Users — *&quot;Does it actually work for the people who&#x27;ll touch it?&quot;*
+
+**Charge:** usability, felt experience, adoption &amp; abandonment, and the *full cast* of
+hands-on personas — not just the primary user. Feeds the persona → scenario → test chain (P5).
+
+- **1st order — practitioners (of using it)**
+  - **Primary end user** — the person the product is for, speaking in the first person (&quot;I&#x27;d…&quot;, not &quot;users would…&quot;).
+  - **Secondary end user** — a distinct segment with different goals and constraints.
+  - **Daily operator / admin** — configures and runs it (the most-forgotten hands-on persona).
+- **2nd order — shapers &amp; critics**
+  - **Power user / early adopter** — pushes it to its limits, wants the escape hatches.
+  - **Reluctant / skeptical user** — would rather not change; the real adoption test.
+  - **Accessibility-needs user** — a concrete disability or context constraint, in voice (not &quot;users with disabilities&quot; in the abstract).
+  - **Support / CS rep** — hears every complaint first; the canary for what&#x27;s confusing.
+- **3rd order — outsiders &amp; long-horizon**
+  - **The churned / never-started** — was supposed to adopt and didn&#x27;t; says exactly why.
+  - **The buyer-not-user** — pays or approves but doesn&#x27;t touch it (parent, manager, procurement, admin) — their criteria differ from the user&#x27;s.
+  - **The adversarial / misusing user** — the abuse, harassment, and harm lens.
+  - **The future user** — how the need shifts in 12–24 months once the easy wins are spent.
+
+**Relevance weighting:** buyer-not-user ↑ for B2B / B2B2C and anything involving minors;
+accessibility-needs user always ≥1; adversarial/misuse user ↑ for social, UGC, or
+safety-critical products; operator/admin ↑ for anything configurable or multi-tenant.
+
+**Frameworks the panel wields:** Jobs-to-be-Done · personas &amp; anti-personas · journey mapping ·
+the Kano model · the Fogg Behavior Model (B = MAP) · the Hook model *(and its ethics)* ·
+laddering / the 5 Whys · Rogers&#x27; Diffusion of Innovations (the adoption curve) · accessibility
+personas · day-in-the-life narrative.
+
+### E · Design — *&quot;Is it usable, coherent, and desirable to use?&quot;*
+
+**Charge:** product/UX design, interaction &amp; information architecture, visual hierarchy &amp; craft,
+design systems &amp; consistency, content/UX writing, design research, accessibility-as-design,
+the end-to-end service experience, and desirability/emotional resonance. (Design owns the
+*artifact*; Users owns the *people* — see &quot;Design and Users are siblings&quot; above.)
+
+- **1st order — practitioners (do design)**
+  - **Product / UX designer** — flows, information architecture, interaction; &quot;where does the user get stuck.&quot;
+  - **UI / visual designer** — hierarchy, type, color, spacing, the craft of the surface.
+  - **Interaction / motion designer** — states, transitions, feedback; the *feel* of using it.
+  - **UX researcher** — what users actually *do* vs. say; usability tests, the evidence behind the design.
+  - **Content designer / UX writer** — clarity, voice, labels, empty states, error messages — the words.
+  - **Design technologist / front-end-design** — design-to-code fidelity; what&#x27;s actually buildable.
+- **2nd order — shapers &amp; critics**
+  - **Design systems lead** — tokens, components, consistency at scale; the anti-entropy force.
+  - **Accessibility / inclusive-design specialist** — WCAG as *design intent*, not a bolt-on audit.
+  - **Brand / creative director** — identity, differentiation, the emotional and desirability bar.
+  - **Service designer** — the end-to-end journey across touchpoints and time, not one screen.
+  - **Design-ops / critique facilitator** — the quality bar and how critique actually runs.
+- **3rd order — outsiders &amp; long-horizon**
+  - **Cognitive / perceptual psychologist** — attention, memory, perception (Gestalt, signal detection).
+  - **Behavioral designer (ethical)** — habit &amp; motivation, and *dark-pattern avoidance*, not exploitation.
+  - **Anthropologist / ethnographer** — how the artifact actually lives in real context and culture.
+  - **Critical / adversarial designer** — who&#x27;s excluded, what harm the design enables, the deceptive-pattern lens.
+  - **Cross-medium designer** (game / industrial / architecture / typography) — imports a non-software design tradition.
+
+**Frameworks the panel wields:** the Double Diamond · Design Thinking (IDEO) · Nielsen&#x27;s 10
+usability heuristics · Norman&#x27;s affordances &amp; signifiers + the Gulfs of Execution/Evaluation ·
+Gestalt principles · Fitts&#x27;s &amp; Hick&#x27;s laws · the Laws of UX · Jobs-to-be-Done · the Kano model
+(expected vs. delight) · journey &amp; service blueprints · WCAG / inclusive design · Atomic Design
+&amp; design tokens · the serial-position &amp; von Restorff effects · desirability testing.
+
+**Relevance weighting:** visual &amp; interaction craft ↑ for consumer / brand-forward products;
+accessibility-as-design always ≥1; service designer ↑ for multi-touchpoint / omni-channel;
+content designer ↑ for information-dense or high-stakes flows; the critical/adversarial designer
+↑ for persuasive or engagement-driven products (the dark-pattern risk).
+
+---
+
+## Instantiation — how &quot;product-agnostic&quot; is enforced
+
+- The rosters are **archetypes (a role + a stake), not people and not products.** At P2, the
+  orchestrator instantiates each *kept* archetype against this project&#x27;s domain + pillars,
+  giving it a name and a plausible background. The **skill file stays clean of any product.**
+- A panelist must reference a **specific PRD requirement or pillar** — never &quot;the doc in general.&quot;
+- The same skill serves any product: a language-learning app and a settlement system each get a
+  Business / Technical / Design / SME / Users panel from these rosters, instantiated differently. If a
+  product name ever appears *in this file*, that&#x27;s a bug — it belongs in the generated
+  `03-panels/synthesis.md`, not here.
+- **No invented facts.** A panelist&#x27;s judgment and priorities are theirs to assert; a specific
+  number, citation, or claim about the world must be VERIFIED (route to P3 grounding) or flagged
+  UNVERIFIED. The panel produces *opinions and asks*, not fabricated evidence.
+
+---
+
+## Output contract — `03-panels/synthesis.md`
+
+The deliverable is the **synthesis**, not the transcripts:
+
+| Section | Contents |
+|---|---|
+| **Convergent** | Where the panel agrees — the consensus the spec can rely on. |
+| **Divergent** | Where it disagrees — surfaced for the operator at **Gate 1**, never averaged away. |
+| **Risks** | Named failure modes, each tagged with the panelist who raised it, ranked by stakes. |
+| **Open** | Questions the panel couldn&#x27;t settle → routed to **P3 grounding** or the **Gate-1 undecidable batch**. |
+
+Every line carries its **source persona + order**, so a divergence can be weighed by who&#x27;s
+raising it and from what distance.
+
+---
+
+## Panel observability — the roster, the cuts, and the contributions
+
+Paring is a decision, and decisions must be **auditable**. Alongside the synthesis, the panel
+emits a **roster record** so you can see, after the fact: **who survived, who was cut and why,**
+and — for each survivor — **what they asked and how it changed the spec/design.** A panel that
+can&#x27;t show its cuts is roster theater; a survivor whose ask changed nothing was a wasted seat.
+
+**Output:** `03-panels/roster.json` (one block per area), beside `synthesis.md`.
+
+```json
+{
+  &quot;area&quot;: &quot;Business&quot;,
+  &quot;candidates&quot;: [
+    { &quot;order&quot;: 1, &quot;archetype&quot;: &quot;Unit-economics owner&quot;,
+      &quot;scores&quot;: {&quot;pillar&quot;:2,&quot;coverage&quot;:2,&quot;ask&quot;:2,&quot;distance&quot;:0}, &quot;total&quot;: 6,
+      &quot;kept&quot;: true,  &quot;reason&quot;: &quot;covers the unit-economics pillar; concrete, falsifiable ask&quot; },
+    { &quot;order&quot;: 2, &quot;archetype&quot;: &quot;Category analyst&quot;,
+      &quot;scores&quot;: {&quot;pillar&quot;:1,&quot;coverage&quot;:0,&quot;ask&quot;:1,&quot;distance&quot;:1}, &quot;total&quot;: 3,
+      &quot;kept&quot;: false, &quot;reason&quot;: &quot;lens fully covered by the VC — wasted seat (dedup)&quot; }
+  ],
+  &quot;panel&quot;: [
+    { &quot;archetype&quot;: &quot;Unit-economics owner&quot;, &quot;persona&quot;: &quot;…&quot;, &quot;order&quot;: 1,
+      &quot;ask&quot;: &quot;tie pricing to a CAC-payback under 6 months&quot;,
+      &quot;changed&quot;: [
+        { &quot;what&quot;: &quot;added pricing-guardrail requirement&quot;, &quot;ref&quot;: &quot;01-intake/PRD-ENHANCED.md#FR-12&quot; },
+        { &quot;what&quot;: &quot;spec section now caps trial length&quot;,   &quot;ref&quot;: &quot;04-spec/spec.md#S-07&quot; }
+      ] }
+  ]
+}
+```
+
+**Visible live in the Observatory** (`.rapid/observe/*.jsonl` → the dashboard):
+- **`DECIDE` per candidate** — `kept` / `cut` + the one-line reason, so every cut is on the
+  timeline, not buried in a file. (`detail: &quot;cut: Category analyst — overlaps the VC&quot;`.)
+- **`DECIDE` per survivor ask that lands a change** — `basis:&quot;panel&quot;`, pointing at the
+  spec / PRD / mock anchor it changed, so a panelist&#x27;s *influence on the build* is traceable.
+
+**The two questions it answers, by construction:**
+1. *Who survived, who was cut, and why?* → `candidates[]` with `kept` + `reason` (and the score breakdown).
+2. *For survivors, what did they contribute and how did it improve the design/spec?* →
+   `panel[].ask` + `panel[].changed[]` with refs into the actual spec/PRD/mock.
+
+This makes the panel&#x27;s value **measurable**: a survivor with an empty `changed[]` is a flag (did
+the panel cost buy anything?), and a high-scoring cut candidate is a note for next time.
+
+---
+
+## Tracks
+
+| | Panels run | Experts each | Orders required |
+|---|---|---|---|
+| **full** | all five areas | 6–8 | ≥3 / ≥2 / ≥1 |
+| **fast** | the 1–2 most pillar-relevant areas | ~4 | ≥1 non-1st-order (never all insiders) |
+
+Escalate to a **2nd-order *panel*** (experts critiquing the panel&#x27;s *output* — distinct from the
+3rd-*order* expert) only when: a panel disagrees internally on a load-bearing, irreversible
+decision; the stakes cross a defined threshold (safety, compliance, reputation); or two areas&#x27;
+panels contradict each other. Default is no 2nd-order panel — it roughly doubles cost.
+
+---
+
+## Anti-patterns (the watchdog for this skill)
+
+- **All-1st-order panel** — grounded but blind; it will agree with the builder.
+- **&quot;An expert says…&quot;** — no name, no stake, no falsifiable ask; delete it.
+- **Product-specific hardcoding** — names a product/feature in the skill; defeats reuse.
+- **Skipping the 3rd order** — that&#x27;s the seat that catches the non-obvious, fatal flaw.
+- **Averaging divergence** — collapsing a real disagreement into a bland middle instead of
+  surfacing it to Gate 1.
+- **Roster theater** — listing 16 candidates and keeping all 16; the pare *is* the method.
+- **Fabricated evidence** — a panelist citing a number they made up; route real claims to P3.
+
+---
+
+*This skill is the generic source of truth for Rapid&#x27;s P2 panels. Product-specific panels
+(e.g. any built project&#x27;s instantiated panel) are **outputs** of running it — they live in that
+project&#x27;s `03-panels/`, never in this file.*
+</pre></details>
+      </div>
+    </div>
+    
+    <div class="deep-sec">
+      <div class="deep-title">The five panel lenses</div>
+      <div class="deep-sub">Five areas, mapping to the classic product lenses — <b>Viability</b> (Business), <b>Feasibility</b> (Technical), <b>Desirability</b> (Design + Users), and <b>Legitimacy</b> (SME). Each panel wields <b>named frameworks</b>, not just opinions — Five Forces, the Test Pyramid, the Double Diamond, Nielsen's heuristics, JTBD. Which lenses run is composed per project; full track runs all five.</div>
+      <div class="lens-grid">
+        <div class="lens blue"><h5>Business</h5><div class="lens-skill">/expert-panel · Business</div><p>Market &amp; timing, GTM motion, pricing &amp; packaging, unit economics, regulatory exposure, moat/defensibility, 2nd-order effects of success at scale.</p><div class="catches"><b>Catches:</b> is this viable, fundable, defensible?</div></div>
+        <div class="lens teal"><h5>Technical</h5><div class="lens-skill">/expert-panel · Technical</div><p>Architecture, testability, performance, security, privacy, accessibility, reliability, DevEx/CI, data, and model/inference design (if AI).</p><div class="catches"><b>Catches:</b> will it hold up? is it testable? where does it break?</div></div>
+        <div class="lens"><h5>Design</h5><div class="lens-skill">/expert-panel · Design</div><p>The <i>artifact</i> — IA, interaction, visual hierarchy, motion, design systems, content/UX writing, and accessibility-as-design. Owns craft &amp; desirability.</p><div class="catches"><b>Catches:</b> is it usable, coherent, and desirable to use?</div></div>
+        <div class="lens purple"><h5>SME (domain)</h5><div class="lens-skill">/expert-panel · SME</div><p>Domain experts in voice — the project's own field, whatever it is. Domain correctness, accepted practice, legitimacy, cultural soundness, real edge cases.</p><div class="catches"><b>Catches:</b> is it right and credible in the domain?</div></div>
+        <div class="lens green"><h5>Users</h5><div class="lens-skill">/expert-panel · Users</div><p>Every hands-on persona in first person — primary &amp; secondary users, the operator/admin, the skeptic, the buyer-not-user, the misuser. Feeds P5 → tests.</p><div class="catches"><b>Catches:</b> does it actually work for the people who touch it?</div></div>
+      </div>
+    </div>
+
+    <div class="deep-sec">
+      <div class="deep-title">Building a panel — three orders, then pare</div>
+      <div class="deep-sub">Each area's panel is constructed by the generic <code>/expert-panel</code> skill: <b>overproduce candidates across three orders of distance from the work, score them, and pare to the load-bearing 6–8</b> — grounded and hard to fool. The skill names disciplines, not people, and is instantiated per project (no product baked in).</div>
+      <div class="lens-grid">
+        <div class="lens blue"><h5>1st order · Practitioners</h5><p>Do the work hands-on, now. Ground truth and real costs. <b>≥3</b> on the panel.</p></div>
+        <div class="lens teal"><h5>2nd order · Shapers &amp; Critics</h5><p>Fund, regulate, standardize, audit. The external constraint insiders stop seeing. <b>≥2</b>.</p></div>
+        <div class="lens purple"><h5>3rd order · Outsiders &amp; Long-horizon</h5><p>Adjacent / contrarian / systemic / failure-mode. Catches the non-obvious fatal flaw. <b>≥1 — never cut</b>.</p></div>
+        <div class="lens green"><h5>Pare to 6–8</h5><p>Score on pillar-relevance · unique coverage · concrete ask · perspective distance. The composition rule keeps it from becoming an echo chamber.</p></div>
+      </div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">How a panel runs</div>
+      <ol class="proto">
+        <li><b>Select panel areas by track</b> — one area (fast) or all five (full). A healthcare build weights Technical/Security heaviest; a kids' app leads with Users + SME.</li>
+        <li><b>Name the panelists</b> — real, opinionated personas with a stake, not "an expert." Named people argue; "an expert" hedges.</li>
+        <li><b>Prompt each through the pillars</b> + the enhanced PRD — every panelist reacts to a specific requirement or PRD section, never the doc in general.</li>
+        <li><b>Each speaks in voice</b> with one concrete ask — a change they'd make, rooted in their discipline.</li>
+        <li><b>Synthesize</b> into convergent / divergent / risks / open, each line carrying its source panelist.</li>
+        <li><b>Hand the synthesis to G1</b> (direction &amp; priority) — the operator sets priority with this in hand. The transcripts are not the deliverable; the synthesis is.</li>
+      </ol>
+    </div>
+
+    <div class="deep-sec">
+      <div class="deep-title">Synthesis schema — what lands in 03-panels/synthesis.md</div>
+      <table class="idx"><thead><tr><th style="width:20%">Section</th><th>Contents</th></tr></thead><tbody>
+        <tr><td class="k">Convergent</td><td>Where the panels agree — the load-bearing consensus the spec can rely on.</td></tr>
+        <tr><td class="k">Divergent</td><td>Where they disagree — surfaced for the operator to resolve at G1, never silently averaged.</td></tr>
+        <tr><td class="k">Risks</td><td>Named failure modes with the panelist who raised each, ranked by stakes.</td></tr>
+        <tr><td class="k">Open</td><td>Questions the panels couldn't settle → routed to P3 grounding research or the G1 undecidable batch.</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="deep-sec">
+      <div class="deep-title">Escalation — 1st vs 2nd order</div>
+      <div class="deep-sub"><b>Default is three 1st-order panels.</b> A 2nd-order panel (experts critiquing the 1st-order panel's output) is escalation, not routine — it roughly doubles cost for marginal gain on most builds.</div>
+      <div class="deep-note"><b>Add a 2nd-order panel only when</b> a 1st-order panel disagrees internally on a load-bearing decision · the decision is irreversible (architecture lock-in, public commitment, a contract) · or the stakes cross a defined threshold (compliance, safety, reputation).</div>
+    </div>
+
+    <div class="deep-sec">
+      <div class="deep-title">Output &amp; integration</div>
+      <div class="deep-sub">The deliverable is the <b>synthesis</b> (convergent / divergent / risks / open) — not the transcripts — read by the operator at <b>Gate 1</b>. The same generic skill serves any product; a built project's <i>instantiated</i> panel (with named personas) lives in that project's <code>03-panels/</code>, never in the skill. The full skill text is embedded below.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Panel observability — the roster, the cuts, the contributions</div>
+      <div class="deep-sub">Paring is a decision, so it's <b>recorded</b>: <code>03-panels/roster.json</code> logs every candidate with its score, <code>kept</code> / <code>cut</code>, and the reason — and for each survivor, their ask and the spec/design changes it produced (with refs). Cuts and contributions are also <code>DECIDE</code> events in the Observatory, so a panel's influence on the build is visible live, not buried in a file.</div>
+      <div class="lens-grid">
+        <div class="lens blue"><h5>Who survived &amp; who was cut — why</h5><p><code>candidates[]</code> — order, score breakdown, <code>kept</code>, and a one-line reason ("overlaps the VC — wasted seat").</p></div>
+        <div class="lens green"><h5>What each survivor changed</h5><p><code>panel[].ask</code> + <code>panel[].changed[]</code> with refs into the spec / PRD / mock — a panelist's influence on the build is traceable.</p></div>
+      </div>
+      <div class="deep-note">Makes the panel's value <b>measurable</b>: a survivor with an empty <code>changed[]</code> is a flag (did the panel cost buy anything?), and a high-scoring <i>cut</i> is a note for next time.</div>
+    </div>
+   
+    <div class="pagernav"><a class="pager" href="g0.html">← G0 Faithful decomposition</a><span style="flex:1"></span><a class="pager" href="p3-research.html">P3 Grounding Research →</a></div>
+  </section>
+</div></div><script src="atlas-env.js" defer></script></body></html>

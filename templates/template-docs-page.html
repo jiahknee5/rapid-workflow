@@ -6,9 +6,9 @@
 <title>{{TITLE}} — RAPID</title>
 <!-- ============================================================
      STANDARD DOCS WEB-PAGE TEMPLATE  (the "spec" layout)
-     Top forge-nav (cross-page) + left sidebar (in-page menu) + main.
+     Top rapid-nav (cross-page) + left sidebar (in-page menu) + main.
      This is the single source of truth for the RAPID documentation
-     web site, and the standard layout FORGE emits for every project's
+     web site, and the standard layout RAPID emits for every project's
      doc site. (The Reveal.js per-folder decks from /docs build are a
      separate artifact and unchanged.)
 
@@ -17,6 +17,15 @@
        {{NAV}}        cross-page links (mark current with class="active")
        {{SIDEBAR}}    in-page menu: .sidebar-section headers + <a href="#id">
        {{MAIN}}       page content (.section blocks)
+
+     Required sibling assets — every emitted page loads two scripts (see the
+     bottom of this file). Any builder/skill/generator that writes these pages
+     MUST copy BOTH next to the HTML (same dir), or the page renders broken:
+       env-links.js   harness tag + top-nav Product/Source links + Regenerate
+       sidebar.js     left-menu Atlas map (Deployments + all pages & sections,
+                      page list derived from {{NAV}} — no per-project edits)
+     The Atlas copy helpers (tools/atlas-init.sh, tools/atlas-deploy.sh) ship
+     both automatically; a standalone generator must do the same.
      ============================================================ -->
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -143,17 +152,17 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 }
 
 /* Top cross-page nav */
-.forge-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
-.forge-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
-.forge-nav-brand .forge-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
-.forge-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
-.forge-nav a:hover { color: rgba(255,255,255,0.85); }
-.forge-nav a.active { color: #fff; border-bottom-color: #fff; }
+.rapid-nav { display: flex; align-items: center; gap: 0; background: #1A2744; padding: 0 20px; flex-shrink: 0; overflow-x: auto; position: sticky; top: 0; z-index: 1000; }
+.rapid-nav-brand { display: flex; flex-direction: column; font-size: 12px; font-weight: 800; color: #fff; letter-spacing: -0.02em; padding: 6px 16px 6px 0; margin-right: 8px; border-right: 1px solid rgba(255,255,255,0.15); line-height: 1.2; }
+.rapid-nav-brand .rapid-nav-sub { font-size: 7px; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.06em; text-transform: uppercase; }
+.rapid-nav a { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.55); text-decoration: none; padding: 10px 12px; letter-spacing: 0.3px; white-space: nowrap; transition: color 0.1s; border-bottom: 2px solid transparent; }
+.rapid-nav a:hover { color: rgba(255,255,255,0.85); }
+.rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
 </head>
 <body>
-<nav class="forge-nav">
-  <span class="forge-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="forge-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
+<nav class="rapid-nav">
+  <span class="rapid-nav-brand">RAPID <span style="font-weight:400;opacity:0.5;font-size:10px;">/ AI Build Workflow</span><span class="rapid-nav-sub">Rapid Autonomous Pipeline for Iterative Development</span></span>
   {{NAV}}
 </nav>
 <div class="spec-layout">
@@ -167,7 +176,9 @@ body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
 </div>
 </div>
 <!-- Project harness = developer view. env-links.js renders the Local/Dev/Production
-     links to the finished PRODUCT (from env.json) and tags this deck as the dev view. -->
+     links to the finished PRODUCT (from env.json) and tags this deck as the dev view.
+     sidebar.js builds the left-menu Atlas map: Deployments + all pages & sections. -->
 <script src="env-links.js" defer></script>
+<script src="sidebar.js" defer></script>
 </body>
 </html>

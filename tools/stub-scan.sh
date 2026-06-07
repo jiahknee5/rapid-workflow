@@ -10,22 +10,22 @@
 #   stub-scan.sh --tree [dir]    scan a tree    → JSONL findings on stdout
 #                                                  exit 3 if any stub found
 #
-# A line containing `forge:allow-stub` is exempt (intentional, documented).
+# A line containing `rapid:allow-stub` is exempt (intentional, documented).
 set -uo pipefail
 
-# Source extensions only — docs/markdown legitimately contain markers like TODO.  (forge:allow-stub)
+# Source extensions only — docs/markdown legitimately contain markers like TODO.  (rapid:allow-stub)
 SRC_RE='\.(ts|tsx|js|jsx|mjs|cjs|py|go|rs|java|rb|php|c|cc|cpp|h|hpp|cs|swift|kt|kts|scala|sh)$'
 
 # High-signal stub markers (extended regex). Conservative on purpose.
 # Note: the bare word "placeholder" was dropped (it false-matched HTML/React
 # props); use the explicit at-placeholder annotation for a deliberate stub.
-MARKER_RE='TODO|FIXME|XXX|HACK|NotImplementedError|NotImplemented|raise[[:space:]]+NotImplemented|not[[:space:]]+implemented|unimplemented|@stub|@placeholder|lorem[[:space:]]+ipsum|throw[[:space:]]+new[[:space:]]+Error\([[:space:]]*["'"'"']?(not[[:space:]]+implemented|todo|unimplemented|stub)'  # forge:allow-stub: marker definitions, not stubs
+MARKER_RE='TODO|FIXME|XXX|HACK|NotImplementedError|NotImplemented|raise[[:space:]]+NotImplemented|not[[:space:]]+implemented|unimplemented|@stub|@placeholder|lorem[[:space:]]+ipsum|throw[[:space:]]+new[[:space:]]+Error\([[:space:]]*["'"'"']?(not[[:space:]]+implemented|todo|unimplemented|stub)'  # rapid:allow-stub: marker definitions, not stubs
 
 scan_file() {
   local f="$1"
   [ -f "$f" ] || return 0
   # grep -nE: line numbers; -I skips binary. Filter allowlist. Emit JSONL.
-  grep -nEI "$MARKER_RE" "$f" 2>/dev/null | grep -v 'forge:allow-stub' | \
+  grep -nEI "$MARKER_RE" "$f" 2>/dev/null | grep -v 'rapid:allow-stub' | \
   while IFS=: read -r lineno text; do
     marker=$(printf '%s' "$text" | grep -oEi "$MARKER_RE" | head -1)
     python3 -c "import json,sys
@@ -46,7 +46,10 @@ if [ "${1:-}" = "--tree" ]; then
     if [ -n "$out" ]; then printf '%s\n' "$out"; found=1; fi
   done < <(grep -rEIl "$MARKER_RE" "$dir" 2>/dev/null \
              --exclude-dir=node_modules --exclude-dir=.git \
-             --exclude-dir=.forge --exclude-dir=dist --exclude-dir=build \
+             --exclude-dir=.rapid --exclude-dir=dist --exclude-dir=build \
+             --exclude-dir=.venv --exclude-dir=venv --exclude-dir=env \
+             --exclude-dir=__pycache__ --exclude-dir=.mypy_cache \
+             --exclude-dir=.pytest_cache --exclude-dir=site-packages \
            | grep -E "$SRC_RE" || true)
   [ "$found" -eq 1 ] && exit 3 || exit 0
 else

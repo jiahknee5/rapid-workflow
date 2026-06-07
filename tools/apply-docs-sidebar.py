@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """apply-docs-sidebar.py — convert a RAPID docs web page to the standard
-spec-style layout: top forge-nav (kept) + left .sidebar menu + content.
+spec-style layout: top rapid-nav (kept) + left .sidebar menu + content.
 
 The canonical layout/CSS lives in templates/template-docs-page.html; this
 applies it to existing pages in place. Idempotent (skips pages already

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FORGE Observe — lightweight server for the live observability dashboard.
+"""RAPID Observe — lightweight server for the live observability dashboard.
 
 Usage:
     cd <project-root>
@@ -7,7 +7,7 @@ Usage:
 
 Serves:
     /                    → dashboard HTML
-    /api/events          → merged, sorted JSONL from .forge/observe/*.jsonl
+    /api/events          → merged, sorted JSONL from .rapid/observe/*.jsonl
     /api/agents          → current agent summary (latest state per agent)
     /api/meta            → phase, totals, config
 """
@@ -15,6 +15,7 @@ Serves:
 import argparse
 import json
 import os
+import sys
 import glob
 import time
 import subprocess
@@ -24,7 +25,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 DASHBOARD_PATH = Path(__file__).parent.parent / "docs" / "observatory.html"
-OBSERVE_DIR = ".forge/observe"
+OBSERVE_DIR = ".rapid/observe"
 
 
 def read_all_events(observe_dir, since_seq=0):
@@ -106,8 +107,8 @@ def get_meta(events, observe_dir):
         agent_count.add(evt.get("agent", ""))
     # Cross-system status (R-12/R-13): eval test gate + docs currency, so the
     # dashboard surfaces test pass/fail and doc freshness alongside the build.
-    forge_dir = os.path.dirname(observe_dir) or "."
-    root = os.path.dirname(forge_dir) or "."
+    rapid_dir = os.path.dirname(observe_dir) or "."
+    root = os.path.dirname(rapid_dir) or "."
 
     def _load(p):
         try:
@@ -116,7 +117,7 @@ def get_meta(events, observe_dir):
         except Exception:
             return None
 
-    exitj = _load(os.path.join(forge_dir, "P6_EXIT.json"))
+    exitj = _load(os.path.join(rapid_dir, "P6_EXIT.json"))
     eval_status = {"present": exitj is not None, "pass": 0, "fail": 0}
     if exitj is not None:
         asserts = exitj if isinstance(exitj, list) else exitj.get("assertions", [])
@@ -162,18 +163,24 @@ class ObserveHandler(SimpleHTTPRequestHandler):
             self.serve_json(self.get_agents())
         elif path == "/api/meta":
             self.serve_json(self.get_meta())
+        elif path == "/api/runs":
+            self.serve_json(self.list_runs(qs.get("wf", [""])[0]))
+        elif path == "/api/run":
+            since = int(qs.get("since", ["0"])[0])
+            self.serve_json(self.run_events(qs.get("wf", [""])[0], qs.get("run", [""])[0], since))
         else:
             self.serve_static(path)
 
     def do_POST(self):
         parsed = urlparse(self.path)
         qs = parse_qs(parsed.query)
-        # drain any body so the connection doesn't hang
+        # read any body so the connection doesn't hang (and so /api/run can use it)
         length = int(self.headers.get("Content-Length", 0) or 0)
-        if length:
-            self.rfile.read(length)
+        body = self.rfile.read(length) if length else b""
         if parsed.path == "/api/regen":
             self.regen(qs.get("page", [""])[0])
+        elif parsed.path == "/api/run":
+            self.start_run(qs.get("wf", [""])[0], body)
         else:
             self.send_error(404)
 
@@ -196,10 +203,81 @@ class ObserveHandler(SimpleHTTPRequestHandler):
                              "reason": (entry or {}).get("note", "no generator for this page") if isinstance(entry, dict) else "no generator for this page"})
             return
         try:
-            os.makedirs(".forge", exist_ok=True)
-            logf = open(os.path.join(".forge", "regen-" + page.replace("/", "_") + ".log"), "ab")
+            os.makedirs(".rapid", exist_ok=True)
+            logf = open(os.path.join(".rapid", "regen-" + page.replace("/", "_") + ".log"), "ab")
             subprocess.Popen(["bash", "-lc", cmd], stdout=logf, stderr=logf, cwd=os.getcwd())
             self.serve_json({"ok": True, "started": True, "page": page, "cmd": cmd, "kind": kind})
+        except Exception as e:
+            self.serve_json({"ok": False, "reason": str(e)})
+
+    # --- Workflow Test Theater (live-drive) -------------------------------
+    # The testsuite page reads these to (1) list past runs, (2) live-tail a run
+    # currently executing, and (3) trigger a new live-drive run. Runs are streamed
+    # to .rapid/RUNS/<wf>/<run>.jsonl by tools/workflow-runner.py.
+    RUNS_DIR = ".rapid/RUNS"
+
+    def list_runs(self, wf):
+        base = os.path.join(os.getcwd(), self.RUNS_DIR)
+        out = {}
+        if not os.path.isdir(base):
+            return {"workflows": {}, "present": False}
+        wfs = [wf] if wf else sorted(os.listdir(base))
+        for w in wfs:
+            idx = os.path.join(base, w, "index.json")
+            try:
+                rows = json.load(open(idx))
+            except Exception:
+                rows = []
+            out[w] = [{k: v for k, v in r.items() if k != "trace"} for r in rows[:25]]
+        return {"workflows": out, "present": True}
+
+    def run_events(self, wf, run, since=0):
+        # path-safety: wf/run are filename components, never traverse
+        if not wf or not run or "/" in wf or "/" in run or ".." in (wf + run):
+            return {"events": [], "error": "bad wf/run"}
+        fp = os.path.join(os.getcwd(), self.RUNS_DIR, wf, run + ".jsonl")
+        if not os.path.isfile(fp):
+            return {"events": [], "done": False, "missing": True}
+        events, done = [], False
+        for line in open(fp, encoding="utf-8", errors="replace"):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                evt = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if evt.get("seq", 0) >= since:
+                events.append(evt)
+            if evt.get("type") == "run_done":
+                done = True
+        return {"events": events, "done": done, "wf": wf, "run": run}
+
+    def start_run(self, wf, body):
+        if not wf or "/" in wf or ".." in wf:
+            self.serve_json({"ok": False, "reason": "bad wf"})
+            return
+        try:
+            payload = json.loads(body.decode() or "{}")
+        except Exception:
+            payload = {}
+        run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        runner = os.path.join(os.path.dirname(os.path.abspath(__file__)), "workflow-runner.py")
+        # Live ▶ Run uses the real agents (codex tester + simulated operator) by default;
+        # the client may pass {"agents":"off"} to force the deterministic fallback.
+        agents = payload.get("agents", "auto")
+        if agents not in ("auto", "on", "off"):
+            agents = "auto"
+        cmd = [sys.executable, runner, "--wf", wf, "--run-id", run_id, "--agents", agents]
+        if payload.get("input") is not None:
+            cmd += ["--input", json.dumps(payload["input"])]
+        elif payload.get("preset"):
+            cmd += ["--preset", str(payload["preset"])]
+        try:
+            os.makedirs(".rapid", exist_ok=True)
+            logf = open(os.path.join(".rapid", "run-" + wf + ".log"), "ab")
+            subprocess.Popen(cmd, stdout=logf, stderr=logf, cwd=os.getcwd())
+            self.serve_json({"ok": True, "started": True, "wf": wf, "run_id": run_id})
         except Exception as e:
             self.serve_json({"ok": False, "reason": str(e)})
 
@@ -279,7 +357,7 @@ class ObserveHandler(SimpleHTTPRequestHandler):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="FORGE Observe dashboard server")
+    parser = argparse.ArgumentParser(description="RAPID Observe dashboard server")
     parser.add_argument("--port", type=int, default=4040, help="Port (default: 4040)")
     args = parser.parse_args()
 

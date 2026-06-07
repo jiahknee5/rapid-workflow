@@ -4,7 +4,7 @@
 >
 > **Why it exists.** A build that pauses on every `npm install`, file write, or config edit isn't autonomous — it's a chat session. This contract front-loads the trust (and the few hard limits) so the loop runs uninterrupted while the gap loop + requirements/issue tracking keep its green honest. Mirrors the operator's `~/.claude/CLAUDE.md` carve-out: act freely, stop only for the irreversible/outward/costly/undecidable.
 >
-> Signed at: **Gate 1 (D3 — Direction)**. Without this file present, FORGE falls back to per-step confirmation.
+> Signed at: **Gate 1 (D3 — Direction)**. Without this file present, RAPID falls back to per-step confirmation.
 
 ---
 
@@ -32,7 +32,7 @@ With this file + `CONSTITUTION.md` + a locked PRD present, the build runs to com
 - Add / remove / pin **dependencies within the pre-approved toolchain** (below).
 - Install missing runtimes/toolchain via `tools/preflight.sh` (within the declared stack).
 - Run build / lint / unit / e2e gates, scaffold tests, refactor, and re-run `tools/verify.sh`.
-- Make every PRD-silent call as a **logged decision** (`.forge/DECISIONS.json`), not a pause.
+- Make every PRD-silent call as a **logged decision** (`.rapid/DECISIONS.json`), not a pause.
 
 Everything in scope is decided and logged. The build surfaces to the human **only** for a Stop Condition.
 
@@ -60,6 +60,8 @@ The languages, frameworks, package managers, and runtimes the build may install 
 
 High-stakes choices settled **before** the build so they are not mid-build interrupts. Genuinely-undecidable high-stakes items are batched to the human **at Gate 1** (a *Gate-1 decision batch*) and recorded here. Anything not listed here is decided by the build and logged (see Decision protocol).
 
+> **Machine-checked mirror: `.rapid/INPUTS.json`.** This table is the human-readable record; `.rapid/INPUTS.json` is its enforceable twin. Every required input the build needs — the deploy target and spend ceiling above, each resolved decision below, and every credential the code will call — is a row there. `tools/inputs-check.sh` and the phase-gate hook **refuse to let the build enter P6 until every required row is `resolved` or `waived`** (a credential row only counts resolved once its `.env:KEY` actually exists). Keep the two in sync; the JSON is what the gate reads.
+
 | # | Decision | Resolution | Decided by |
 | --- | --- | --- | --- |
 | 1 | `<e.g. auth approach>` | `<resolved value>` | operator @ Gate 1 |
@@ -85,7 +87,7 @@ Anything **not** on this list is in scope under standing authorization. When in 
 
 Everything outside a Stop Condition is **decided and logged**, never a mid-build pause.
 
-- Every PRD-silent call becomes an entry in `.forge/DECISIONS.json` via
+- Every PRD-silent call becomes an entry in `.rapid/DECISIONS.json` via
   `tools/log-decision.sh "<decision>" spec|interpretation`.
 - **`basis="spec"`** — the decision follows directly from a PRD fact (no judgment added).
 - **`basis="interpretation"`** — the PRD is silent and the build chose a reasonable default; flagged so a reviewer / the gap loop can revisit it.
@@ -96,7 +98,7 @@ Everything outside a Stop Condition is **decided and logged**, never a mid-build
 
 ## Shared-seam contracts (gate before fan-out)
 
-Standing authorization to fan out implementors is conditional on **every shared seam being pinned first**. (The largest observed failure: two layers agreed the API but never the DOM/test contract → 100% of e2e failed.) Before any parallel fan-out in P6, enumerate **every** seam two or more agents will share and pin each in `04-spec/contracts/` as the single source of truth both sides build against:
+Standing authorization to fan out coder subagents is conditional on **every shared seam being pinned first**. (The largest observed failure: two layers agreed the API but never the DOM/test contract → 100% of e2e failed.) Before any parallel fan-out in P6, enumerate **every** seam two or more agents will share and pin each in `04-spec/contracts/` as the single source of truth both sides build against:
 
 - [ ] **API contract** — endpoints, request/response shapes, status codes
 - [ ] **DOM contract** — selectors / `data-testid` / element structure the UI and e2e both target
@@ -110,7 +112,7 @@ A **GATE blocks P6 fan-out** until every shared seam has a pinned contract. e2e 
 
 ## Verification waivers
 
-`tools/verify.sh` runs **build / lint / unit / e2e** with genuine exit codes (`set -o pipefail`, output **redirected not piped**, so a `cmd | tee` cannot mask a failure), writes `.forge/VERIFY.json`, and the **ship gate (`verification_real`)** blocks release unless every required layer is green. The build reports, per layer, what actually **ran** vs what was only **inspected**, and surfaces anything that could not be verified.
+`tools/verify.sh` runs **build / lint / unit / e2e** with genuine exit codes (`set -o pipefail`, output **redirected not piped**, so a `cmd | tee` cannot mask a failure), writes `.rapid/VERIFY.json`, and the **ship gate (`verification_real`)** blocks release unless every required layer is green. The build reports, per layer, what actually **ran** vs what was only **inspected**, and surfaces anything that could not be verified.
 
 **Default: NO waivers. e2e is required to ship** — it is the point of the loop and catches what every other layer misses.
 
@@ -121,7 +123,7 @@ A **GATE blocks P6 fan-out** until every shared seam has a pinned contract. e2e 
 | unit | **required** | — |
 | e2e | **required** | `<none — waiving e2e requires explicit operator sign-off here, with reason>` |
 
-> A waiver here is the **only** way a layer becomes non-blocking; it is recorded in `.forge/verify.cmds.json` `"waive"` and is visible in every ship-gate report. Waiving e2e defeats run-to-completion verification — do it only with a stated, accepted reason.
+> A waiver here is the **only** way a layer becomes non-blocking; it is recorded in `.rapid/verify.cmds.json` `"waive"` and is visible in every ship-gate report. Waiving e2e defeats run-to-completion verification — do it only with a stated, accepted reason.
 
 ---
 

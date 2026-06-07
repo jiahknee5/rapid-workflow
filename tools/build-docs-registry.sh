@@ -39,7 +39,7 @@ if os.path.exists(docs_json_path):
 old_docs = {d["file"]: d for d in existing.get("docs", [])}
 old_archive = {d["file"]: d for d in existing.get("archive", [])}
 default_categories = {
-    "forge": {"label": "FORGE System", "description": "How the FORGE autonomous build system works"},
+    "rapid": {"label": "RAPID System", "description": "How the RAPID autonomous build system works"},
     "workflow": {"label": "AI Build Workflow", "description": "Johnny's methodology for AI-assisted software builds"},
     "template": {"label": "Templates", "description": "Reusable templates for projects built with the workflow"},
     "skill": {"label": "Skills", "description": "Claude Code skill definitions"},
@@ -55,10 +55,10 @@ def infer_category(relpath):
         return "template"
     if "skill" in relpath:
         return "skill"
-    if "forge" in relpath or "observe" in relpath or "phase-gate" in relpath or "dashboard" in relpath:
-        return "forge"
+    if "rapid" in relpath or "observe" in relpath or "phase-gate" in relpath or "dashboard" in relpath:
+        return "rapid"
     if "observatory" in relpath:
-        return "forge"
+        return "rapid"
     return "workflow"
 
 # Infer title from filename
