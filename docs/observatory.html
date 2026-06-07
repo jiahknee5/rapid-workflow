@@ -169,6 +169,33 @@ body { margin: 0; height: 100vh; display: flex; flex-direction: column; overflow
 .rapid-nav a:hover { color: rgba(255,255,255,0.85); }
 .rapid-nav a.active { color: #fff; border-bottom-color: #fff; }
 </style>
+<style>
+/* ===== Constellation dark override — re-themes this bespoke app page ===== */
+:root{
+  --bg:#0D1117;--surface:#161B22;--surface-alt:#1C2330;
+  --border:#2A313B;--border-light:#20262F;
+  --text:#E6EDF3;--text-muted:#9BA6B2;--text-dim:#6B7480;
+  --navy:#7AA2F7;--accent:#7AA2F7;--accent-dim:rgba(122,162,247,0.12);
+  --blue:#58A6FF;--blue-dim:rgba(88,166,255,0.14);
+  --green:#3FB950;--green-dim:rgba(63,185,80,0.14);
+  --red:#F85149;--red-dim:rgba(248,81,73,0.14);
+  --amber:#D29922;--amber-dim:rgba(210,153,34,0.14);
+  --purple:#BC8CFF;--teal:#56D4DD;--code-bg:#0A0D12;
+}
+html,body{background:#0D1117 !important;color:#E6EDF3 !important;}
+/* dark chrome — elements that used navy as a FILL must be dark surfaces, not accent */
+.rapid-nav{background:rgba(8,11,16,0.92) !important;border-bottom:1px solid #2A313B !important;}
+.sidebar{background:rgba(13,17,23,0.6) !important;border-color:#20262F !important;}
+.col-left-header,.col-right-header,.log-header,.pane-head,.compare-table th,.step-table th,table th{background:#1C2330 !important;color:#7AA2F7 !important;border-color:#2A313B !important;}
+.ph{background:#1C2330 !important;color:#9BA6B2 !important;}
+/* surfaces, cards, borders */
+.card,.panel,.box,.metric,.compare-table,.step-table,.diagram{background:#161B22 !important;border-color:#20262F !important;}
+code,pre,.code-block{background:#0A0D12 !important;color:#c4cad6 !important;border-color:#20262F !important;}
+/* keep accent fills readable (accent bg → dark text) */
+.n-primary,.btn-primary,.wf-tab.active,.regen-btn{color:#0B0E13 !important;}
+a{color:#7AA2F7;}
+</style>
+
 </head>
 <body>
 <nav class="rapid-nav">

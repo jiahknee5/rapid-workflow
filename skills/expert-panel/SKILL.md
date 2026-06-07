@@ -7,8 +7,8 @@ description: >
   outside-view lens), scores them, and pares to the most relevant ~6–8, then runs the
   panel through the project's pillars and synthesizes convergent / divergent / risks /
   open. Names disciplines and the frameworks they apply, not products — it is
-  instantiated per project and never hardcodes a particular product (no ASL, no
-  SuperBuilders). Used at Phase 2 of a Rapid build; also usable standalone for any
+  instantiated per project and never hardcodes a particular product. Used at Phase 2
+  of a Rapid build; also usable standalone for any
   multi-perspective review that must not be an echo chamber.
 ---
 
