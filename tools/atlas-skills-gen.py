@@ -353,6 +353,33 @@ PH = [
     </div>
    '''),
 
+ dict(slug="p5c-mockups", ph="P5c", name="Mockups & Prototype", arc="Arc 2 · Specify", kind="phase",
+   what="For any UI build, produces <b>hi-fi, clickable comps</b> of every screen <i>before</i> the keys change hands — scaffolded by <code>mock-init.sh</code>, explored with the <code>mock-lab</code> skill, and iterated by the <b>refine loop</b> against a desirability bar. The <b>Design panel</b> reviews them; the operator approves them at G2; they become P7's visual target.",
+   fixed="Design is a gated artifact before build; comps are the P7 visual target; seams are derived from approved screens. Skipped (and logged) for non-UI builds.",
+   dynamic="The screens, the design direction, and the desirability rubric — per project.",
+   example="Every node in <code>workflow.md</code> with a surface gets a screen in <code>04-spec/screens.md</code>; each comp is refined via <code>skills/refine</code> — a <code>/loop</code> on a Design-panel goal: propose 3 directions → score → keep best — until it clears the bar.",
+   value="Rapid chose <b>hi-fi over lo-fi</b>: the comp is close enough that the backend is built to serve <i>real</i> screens, and design quality is decided in planning — not patched in mid-build.",
+   reads=["04-spec/spec.md","04-spec/workflow.md","03-panels/synthesis.md (Design)"], writes=["04-spec/mocks/","04-spec/screens.md","04-spec/CONTRACTS.md"], exemplar=False,
+   deep='''
+    <div class="deep-sec">
+      <div class="deep-title">The design pipeline</div>
+      <ol class="proto">
+        <li><b>Scaffold</b> — <code>mock-init.sh</code> lays a token system, a hi-fi screen template, a gallery, and <code>screens.md</code> from the workflow state machine (every node with a surface → a screen).</li>
+        <li><b>Explore</b> — the <code>mock-lab</code> skill fans out N genuinely distinct directions to pick from (real layout, real copy — never lorem).</li>
+        <li><b>Refine</b> — the <code>refine</code> loop iterates each screen to a desirability bar: propose variants → score (Design-panel rubric + a11y) → keep-or-revert.</li>
+        <li><b>Derive the seams</b> — the DOM / API / data contracts come from the <i>approved</i> comps, so the backend is built to serve real screens.</li>
+      </ol>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">loop · goal · autoresearch — on design, not just code</div>
+      <div class="deep-note">Design iteration is the <code>refine</code> primitive (Karpathy <b>autoresearch</b>, generalized): a measurable <b>goal</b> (a Design-panel desirability rubric + accessibility), <b>propose</b> N directions, <b>measure</b>, <b>keep-or-revert</b>. It runs as a <code>/loop</code> and emits <code>LOOP_*</code> events, so design iteration is visible in the Observatory exactly like code iteration.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Non-UI builds</div>
+      <div class="deep-note">CLI / library / service builds <b>skip P5c</b> — the skip is recorded in <code>.rapid/MEMORY.md</code> so it's an explicit decision, not a silent gap.</div>
+    </div>
+   '''),
+
  dict(slug="g2", ph="G2", name="Point of no return", arc="Human gate", kind="gate", por=True,
    what="<b>You hand over the keys.</b> Approve the final spec / architecture / tasks / eval, the cost projection, the deploy target, and the <code>.env</code> values. Pre-screened by <b>Scope · Coherence · Adversarial</b> + deepening findings. After this, the build proceeds; no major redirect without re-entering P4–P5.",
    fixed="The gate position (after P5b); the inputs ledger must be fully resolved.", dynamic="The spec you approve and the credentials you provide.",
@@ -443,9 +470,13 @@ PH = [
       <div class="deep-title">Visual QA + walkthrough</div>
       <ol class="proto">
         <li><b>Playwright flows</b> derived from the workflow map exercise the golden path + named edge cases.</li>
-        <li><b>Screenshots across 3 viewports</b>, compared to the hi-fi comps approved at G2.</li>
-        <li><b>A concrete walkthrough of every surface</b> → <code>WALKTHROUGH.md</code>; R1 blocks P8 unless it covers every surface in <code>workflow.md</code>.</li>
+        <li><b>Screenshots across 3 viewports</b>, compared to the hi-fi comps approved at G2/P5c.</li>
+        <li><b>A walkthrough that touches every function</b> → <code>WALKTHROUGH.md</code> records a per-surface <b>function inventory</b> and marks each <code>{touched, pass/fail, evidence}</code>.</li>
       </ol>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Test-suite acceptance — every function checked</div>
+      <div class="deep-note"><b>Completeness = function-level coverage.</b> Not "we ran some flows" — <b>every interactive function on every surface is touched and considered</b> by a test/workflow flow, so we <i>know</i> nothing went unchecked. P8 can't begin until <code>untouched_functions == 0</code>; the ship gate blocks on any untouched function on a MUST surface. The Test Theater (<code>workflow-runner.py</code>) is the recorded, replayable proof each function was exercised.</div>
     </div>
     <div class="deep-sec">
       <div class="deep-title">Recorded runs → the Test Theater</div>
@@ -585,12 +616,13 @@ def load_skill_sections():
     keymap = {
       "Phase 0":"p0-vision","Phase 1":"p1-structure","Phase 1b":"p1b-decompose",
       "GATE 0":"g0","Phase 2":"p2-panels","Phase 3":"p3-research","GATE 1":"g1",
-      "Phase 4":"p4-spec","Phase 5":"p5-tasks-eval","Phase 5b":"p5b-deepen","GATE 2":"g2",
+      "Phase 4":"p4-spec","Phase 5":"p5-tasks-eval","Phase 5b":"p5b-deepen",
+      "Phase 5c":"p5c-mockups","GATE 2":"g2",
       "Phase 6":"p6-build","Phase 7":"p7-test","Phase 8":"p8-gaps","GATE 3":"g3",
       "Phase 9":"p9-deploy","Phase 10":"p10-pulse",
     }
-    H  = _re.compile(r"^#{1,3} ")                              # any h1–h3 ends a section
-    PG = _re.compile(r"^### (?:▸ )?(GATE \d+|Phase \d+b?)\b")   # a phase/gate header starts one
+    H  = _re.compile(r"^#{1,3} ")                               # any h1–h3 ends a section
+    PG = _re.compile(r"^### (?:▸ )?(GATE \d+|Phase \d+[bc]?)\b") # a phase/gate header starts one
     secs, i, n = {}, 0, len(lines)
     while i < n:
         m = PG.match(lines[i])
@@ -651,7 +683,9 @@ def sidebar(active):
             cls = ' class="active"' if p["slug"]==active else ''
             rows.append(f'<a href="{p["slug"]}.html"{cls}><span class="ph">{p["ph"]}</span> {html.escape(p["name"])}</a>')
     rows.append('<div class="sidebar-section">Cross-cutting</div>')
-    rows.append('<a href="index.html#crosscut">/decision · /docs · hooks R1–R9</a>')
+    rows.append('<a href="compound-engineering.html"%s>Compound Engineering</a>' % (' class="active"' if active=="compound-engineering" else ""))
+    rows.append('<a href="lineage.html"%s>Lineage &amp; vs.</a>' % (' class="active"' if active=="lineage" else ""))
+    rows.append('<a href="index.html#crosscut">/decision · /docs · /refine · hooks R1–R9</a>')
     return '<nav class="sidebar"><div class="sidebar-brand">✦ Skills Atlas</div><div class="sidebar-sub">Rapid — the build workflow, by skill</div>' + "".join(rows) + '</nav>'
 
 def chips(items, cls=""):
@@ -776,10 +810,70 @@ def index_page():
   </section>
 </div></div><script src="atlas-env.js" defer></script></body></html>'''
 
+# ---- cross-cutting pages ----
+def cross_page(c):
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{html.escape(c["title"])} — Rapid Skills Atlas</title>
+<style>{STYLE}</style></head><body>
+{topnav(c["slug"])}
+<div class="spec-layout">{sidebar(c["slug"])}
+<div class="main">{c["body"]}</div></div>
+<script src="atlas-env.js" defer></script></body></html>'''
+
+CE_ROWS = [
+  ("1","Tiered multi-agent review","P6 — reviewer lead, 3–5 confidence-gated subagents per dimension"),
+  ("2","Compound learning capture","<code>.rapid/LEARNINGS.md</code> — carried into the next build"),
+  ("3","Doc-review agents at gates","G0 / G1 / G2 — feasibility · scope · coherence · adversarial"),
+  ("4","Product Pulse","P10 — post-ship signal → next P0"),
+  ("5","Session intelligence / crash recovery","<code>--resume</code> from <code>.rapid/STATE.json</code>"),
+  ("6","Structured debug protocol","P6 — reproduce → trace → hypothesis → test-first fix"),
+  ("7","Optimization loops","P8 — the <code>refine</code> loop (autoresearch) against a goal"),
+  ("8","Simplification pass","P7 — 3 parallel simplifier agents before gap classification"),
+  ("9","Compound refresh","P0 — mark stale LEARNINGS before injecting"),
+  ("10","Dogfood QA","P7 — diff-scoped autonomous QA beyond screenshots"),
+  ("11","Learnings researcher","P6 debug — read LEARNINGS before re-solving a known problem"),
+  ("12","Spec deepening pass","P5b — flow / confidence / deliverable subagents"),
+  ("13","Strategy as a living doc","VISION / PILLARS re-runnable on <code>--resume</code>"),
+  ("14","Interactive brainstorm","P1 — <code>01-intake/BRAINSTORM.md</code> for vague inputs"),
+  ("15","Spec flow analyzer","P5b — unreachable states, missing error paths"),
+]
+ce_body = ('<section class="section"><div class="section-id">Cross-cutting capability</div>'
+  '<h1 class="section-title">Compound Engineering — 15 capabilities woven across the pipeline</h1>'
+  '<p class="section-desc">Compound Engineering is <b>not a standalone skill</b> — it is an integrated lineage (from Every Inc.\'s CE plugin) threaded through the phases as numbered capabilities. The <b>outer compound loop</b> is P10 → P0 (each build starts smarter); these 15 are the <b>inner</b> capabilities that make it compound. Nothing here was lost in the rename — it was always woven in, not a separate file.</p>'
+  '<table class="idx"><thead><tr><th style="width:8%">CE#</th><th style="width:34%">Capability</th><th>Where it lives</th></tr></thead><tbody>'
+  + "".join(f'<tr><td class="k">{n}</td><td class="sk">{name}</td><td><span class="fc">{where}</span></td></tr>' for n,name,where in CE_ROWS)
+  + '</tbody></table>'
+  '<div class="deep-note" style="margin-top:18px;">The compound loop <b>is</b> the product: a one-shot build ships once; a loop that captures learnings and starts the next build smarter is a compounding asset. Source: Every Inc., <i>Compound Engineering</i>.</div></section>')
+
+LIN_ROWS = [
+  ("Karpathy — autoresearch","Eval-first; propose → measure → keep-or-revert","task-00 immutable harness; the <code>refine</code> loop (P5c / P6 / P8)"),
+  ("Beck — TDD","Tests before code, owned by a separate concern","Eval harness locked at P5; tester ≠ coder"),
+  ("Zaharia — Compound AI Systems","Inter-stage assertions; model routing","An inter-stage assertion at every phase exit"),
+  ("Every Inc. — Compound Engineering","Tiered review, learning capture, doc-review gates, optimization","15 CE capabilities — see the Compound Engineering page"),
+  ("gstack (Garry Tan)","Role personas as slash commands; think→plan→build→review→test→ship→reflect","Rapid <i>is</i> that sequence — but gated &amp; enforced; the five-lead build team"),
+  ("Boris Cherny (Claude Code)","Plan-mode→auto-accept; 5 parallel Claudes; subagents per phase; verify every change in a browser","G2 hand-over-the-keys; P6 five leads + 1–4 fan-out; P7 visual verify"),
+]
+lin_body = ('<section class="section"><div class="section-id">Cross-cutting</div>'
+  '<h1 class="section-title">Lineage &amp; what makes Rapid different</h1>'
+  '<p class="section-desc">Rapid stands on proven ideas and borrows the best of the leading agentic-coding workflows. The difference is <b>how</b> it uses them — mechanically, not as habits.</p>'
+  '<table class="idx"><thead><tr><th style="width:22%">Source</th><th style="width:34%">Its core move</th><th>How Rapid uses it</th></tr></thead><tbody>'
+  + "".join(f'<tr><td class="k">{src}</td><td>{mv}</td><td><span class="fc">{use}</span></td></tr>' for src,mv,use in LIN_ROWS)
+  + '</tbody></table>'
+  '<div class="deep-sec" style="border-top:none;padding-top:14px;"><div class="deep-title">The differentiator — convention vs. enforcement</div>'
+  '<div class="deep-note">gstack and Boris\'s workflows are <b>process conventions</b>: personas, habits, and prompts a disciplined human follows. Rapid makes the same moves <b>mechanical</b> — a hook that can\'t be skipped, an immutable eval harness, a <i>separate</i> auditor, gates that fail closed. gstack\'s "QA persona" is a prompt you can forget; Rapid\'s watchdog is a hook you can\'t. <b>Prose fails under pressure; structure doesn\'t.</b> That is the moat.</div></div></section>')
+
+CROSS = [
+  dict(slug="compound-engineering", title="Compound Engineering", body=ce_body),
+  dict(slug="lineage", title="Lineage & vs.", body=lin_body),
+]
+
 # ---- write ----
 n=0
 open(os.path.join(OUT,"index.html"),"w").write(index_page()); n+=1
 for i,p in enumerate(PH):
     open(os.path.join(OUT,p["slug"]+".html"),"w").write(page(p,i)); n+=1
+for c in CROSS:
+    open(os.path.join(OUT,c["slug"]+".html"),"w").write(cross_page(c)); n+=1
 print(f"wrote {n} pages to {OUT}")
 print("pages:", ", ".join([p["slug"] for p in PH]))

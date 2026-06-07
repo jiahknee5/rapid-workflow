@@ -500,6 +500,21 @@ Before the operator sees the spec at G2, run a **deepening pass** — sub-agents
 
 ---
 
+### Phase 5c — Mockups & Prototype [AUTO] (UI projects only)
+
+**Output:** `04-spec/mocks/` — hi-fi, *clickable* comps of every screen, a gallery, and `04-spec/screens.md` (the screen inventory). Skipped for non-UI builds (CLI, library, service) — record the skip in `.rapid/MEMORY.md`.
+
+For any build with a user-facing surface, design is **not** a P6 afterthought — it is a **planned, gated artifact produced before the keys change hands.** The **Design panel** (P2, area E) reviews the comps; the operator approves them at **G2**; they become the **visual target** P7 QA compares the built UI against. This is the explicit design phase — Rapid chose hi-fi over lo-fi: the comp is close enough to the real thing that the backend is built to serve it.
+
+1. **Scaffold the design system** — run `tools/mock-init.sh`: a design-token system (`04-spec/mocks/_tokens.css`), a hi-fi screen template, a gallery, and `screens.md` derived from the workflow state machine (every node with a surface gets a screen).
+2. **Generate the comps** — for each screen, build a **hi-fi, clickable** comp with real layout, real tokens, and real copy from the spec — never lorem. Use the `mock-lab` skill when exploring multiple directions; it fans out N genuinely distinct mockups to pick from.
+3. **Refine to a desirability bar** — run the `refine` loop (`skills/refine`) on each screen against a Design-panel rubric + accessibility checks: propose variants → score → keep best, keep-or-revert. Stop at the bar or the budget.
+4. **Derive the seams from the screens** — the DOM / API / data contracts (`04-spec/CONTRACTS.md`) are derived from the *approved comps*, so the backend is built to serve real screens, not the reverse.
+
+**Inter-stage assertion:** P5c cannot complete until every surface in `04-spec/workflow.md` has an approved comp in `04-spec/mocks/`, OR the build is flagged non-UI. The comps are presented at G2 and pinned as the P7 visual target.
+
+---
+
 ### ▸ GATE 2 — Architecture [HUMAN] (D3)
 
 **This is the point of no return. Implementation starts after this.**
@@ -546,6 +561,17 @@ The five lead roles:
 **CORE PRINCIPLE — the writer is never the auditor.** The **coder** is a different agent from the **tester**, the **reviewer**, and the **watchdog**. The reviewer checks the *diff*; the watchdog independently checks *drift against spec*. These are not merged — they catch different failures.
 
 **Subagents are the parallel muscle; terminals are the coordination spine.** The leads dispatch **ephemeral subagents** (via the Workflow/Agent tools) for the bounded, parallel, independent work: coding tasks, per-surface tests, per-dimension reviews, plus expert panels, grounding research, doc-review, and deepening passes.
+
+#### Observability & the Test Suite — how the surfaces get built (logging · hooks · polling)
+
+Every Rapid project ships its own **Observatory** and **Test Suite (Theater)** — they are scaffolded at P1, fed during P6, recorded at P7, and deployed at P9. The wiring is explicit so the surfaces stay live without anyone remembering to update them:
+
+- **Logging (the event stream).** Every lead, subagent, and hook appends one JSONL event per line to `.rapid/observe/<role>.jsonl`, stamped with a monotonic `seq` from `.rapid/observe/seq.txt` (pre-increment) and the fixed vocabulary: `SPAWN · PHASE · GATE · READ · WRITE · TOOL · SEND · RECV · DECIDE · ESCALATE · LOOP_START · LOOP_ITER · LOOP_END · STOP · CONTEXT · COMPLETE · ERROR`. Append-only is the contract — never truncate mid-run. Role attribution comes from `RAPID_ROLE`, exported per terminal at P6a.
+- **Hooks auto-emit.** The PostToolUse / Stop hooks (R1/R7/R8/R9 + post-write) emit observe events as a side-effect of every Write/Edit/Stop, so the timeline populates **mechanically** — an agent that forgets to log is still logged. Loop constructs (`/loop`, the `refine` loop, autoresearch passes) emit `LOOP_START/ITER/END` so iteration is visible, not opaque.
+- **The server.** `tools/observe-server.py` (default `:4040`) merges + sorts the per-role JSONL and serves the dashboard + REST (`/api/events?since=<seq>`, `/api/agents`, `/api/meta`).
+- **Polling keeps it refreshed.** `docs/observatory.html` polls `/api/events?since=<lastSeq>` on a short interval (~2s), requesting **only events after the last seq it rendered** — incremental and cheap. (Polling-since-seq is preferred over a long-lived SSE stream: it survives a server restart and degrades honestly to a static "no build running" panel when the server is absent.)
+- **The Test Suite / Theater.** `tools/workflow-runner.py` replays each workflow from `docs/workflows.json` node-by-node, recording `.rapid/RUNS/<wf>/<run>.jsonl` + `index.json`, published to `docs/testruns.json`; `docs/testsuite.html` renders the live theater + run log, polling `testruns.json` the same incremental way. Recorded at P7; deployed at P9.
+- **Build order:** P1 scaffolds the surfaces (atlas-init copies `observatory.html` + `testsuite.html` + their JS) → P6 feeds them via JSONL + hooks → P7 records the workflow runs → P9 deploys them next to the product at `/_atlas`.
 
 **Subagent vs. agent-team — the decision rule.** Own terminal IF the role is singular, long-lived, and coordinates continuously (the 5 leads). Subagent IF the work is bounded, parallel, and independent (everything the leads dispatch).
 
@@ -895,18 +921,19 @@ All inter-terminal messages use a structured JSON envelope inside the `message` 
    - Send screenshots to Claude vision: check for overlapping text, clipped elements, broken layouts, unreadable diagrams
    - **Compare against the approved comps (E):** for each screen, diff the built screenshot against its `04-spec/mocks/<screen-id>.html` comp (the GATE-2-approved visual target) — same layout, same states, same components. A built screen that diverges from its approved comp is a gap (either the build drifted or the comp needs an operator-approved update — do not silently accept either). This is what makes the plan-phase design an enforced target rather than a discarded sketch.
    - On failure: implementor fixes → re-screenshot → re-check (max 3 iterations per component)
-4. **Concrete walkthrough — not "run walkthrough," but these exact steps (R6):**
-   - Start the dev server (`npm run dev` or equivalent)
-   - Open the app in a browser (Playwright or agent-browser)
-   - For each surface in workflow.md (S1, S2, ... SN), in sequence:
-     - Navigate to the surface
-     - Screenshot it: `.rapid/walkthrough/S{N}.png`
-     - Interact with it (click primary action, fill forms, trigger transitions)
-     - Screenshot the result state
-     - If any surface errors, throws, or shows broken layout: that is a BLOCKER gap
-   - Write `.rapid/WALKTHROUGH.md` with: surface ID, screenshot path, pass/fail, error description
-   - **Phase 8 cannot begin until WALKTHROUGH.md covers every surface in workflow.md**
-   - Phase gate hook enforces this: STATE.json cannot advance to phase 8 without WALKTHROUGH.md (R1)
+4. **Concrete walkthrough — every function on every surface must be touched (R6):**
+
+   **Test-suite acceptance = function-level completeness.** The bar is not "we ran some flows" — it is **every interactive function on every surface is touched and considered by at least one test/workflow flow.** "We are complete" means *we know every function was checked.* Surface-level coverage is necessary but not sufficient; a surface can render fine while a button on it does nothing.
+
+   - Start the dev server (`npm run dev` or equivalent); open the app (Playwright or agent-browser).
+   - **Enumerate the functions.** For each surface in `workflow.md`, list **every interactive function** — every button/handler, form field, link, state transition, keyboard path, and error path. This is the surface's **function inventory**, written to `.rapid/WALKTHROUGH.md`.
+   - **Touch each function.** For each surface S1…SN, in sequence:
+     - Navigate; screenshot `.rapid/walkthrough/S{N}.png`.
+     - Exercise **every** function in the inventory — click each action, fill each field, trigger each transition, walk each error path — **not just the primary action.**
+     - Screenshot the result state; mark each function `{ touched: true, pass|fail, evidence }`.
+     - Any error / throw / broken layout / no-op on any function is a **BLOCKER** gap.
+   - **Coverage assertion.** `.rapid/WALKTHROUGH.md` records, per surface: the function inventory and each function's `{touched, pass/fail, evidence}`. Compute `untouched_functions` = functions with `touched:false`.
+   - **Phase 8 cannot begin until every surface is covered AND `untouched_functions == 0`** — every function considered and checked. The phase-gate hook (R1) blocks STATE.json → phase 8 without a complete WALKTHROUGH.md, and the ship gate counts any untouched function on a MUST surface as a **release blocker**. The Workflow Test Theater (`workflow-runner.py`) is the recorded, replayable proof that each function was exercised.
    Concrete commands get followed. Vague instructions get interpreted — and "interpreted" under time pressure means "skipped."
 5. **Dogfood QA (CE #10):** If the project has a frontend or user-facing interface, run an autonomous diff-scoped QA pass that goes beyond screenshots:
    - Build an exhaustive test matrix from the git diff (what changed since the spec was locked at G2)
@@ -945,12 +972,12 @@ Classify each gap: `{ pillar, severity, spec_ref, description, type }`
 
 **For PRD-level gaps:** Queue for Gate 3. Do not guess.
 
-**For optimization gaps** (inspired by CE's `/ce-optimize`): When a gap is type `optimization` (MEDIUM/LOW severity — the feature works but performance, UX, or code quality could improve):
-1. Define a measurable goal: "reduce bundle size from 180KB to under 100KB" or "improve LCP from 3.2s to under 2s"
-2. Run up to 3 parallel experiment branches (worktree agents), each trying a different approach
-3. Measure each against the goal (run benchmarks, Lighthouse, Playwright timing)
-4. Keep the best-performing approach, discard others
-5. Log the experiment results to `.rapid/OPTIMIZE.json`: `{ goal, experiments: [{ approach, result, kept }] }`
+**For optimization gaps** — this is the **`refine` loop** (Karpathy autoresearch generalized: a measurable *goal* → propose variants → measure → keep-or-revert), invoked here against a performance/quality goal (CE's `/ce-optimize` is the same shape). When a gap is type `optimization` (MEDIUM/LOW severity — the feature works but performance, UX, or code quality could improve):
+1. Define a measurable **goal**: "reduce bundle size from 180KB to under 100KB" or "improve LCP from 3.2s to under 2s" — no goal, no loop.
+2. **Propose** up to 3 parallel experiment branches (worktree agents), each a *different approach*, not three tweaks.
+3. **Measure** each against the goal (benchmarks, Lighthouse, Playwright timing).
+4. **Keep-or-revert** — adopt the best only if it beats the baseline; else revert (never regress).
+5. Log to `.rapid/OPTIMIZE.json`: `{ goal, experiments: [{ approach, result, kept }] }`. (Use `skills/refine` for the loop mechanics; emit `LOOP_*` events so the run shows in the Observatory.)
 
 This is optional on fast track (skip optimization gaps, log them as WONTFIX with rationale).
 
