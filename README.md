@@ -16,6 +16,8 @@ rapid-workflow/
 │   ├── rapid-workflow/SKILL.md        The RAPID orchestrator
 │   ├── expert-panel/SKILL.md          Five panel areas (Business·Technical·Design·SME·Users)
 │   ├── refine/SKILL.md                Goal-directed propose→measure→keep-or-revert loop
+│   ├── observe/SKILL.md               Generates the project-tailored Observatory (live build view)
+│   ├── test-theater/SKILL.md          Generates the project-tailored Test Theater + coverage proof
 │   ├── decision/SKILL.md              Decision & panel documentation
 │   ├── docs/SKILL.md                  Documentation deck generator
 │   └── workflow/SKILL.md              Alias → /rapid-workflow
