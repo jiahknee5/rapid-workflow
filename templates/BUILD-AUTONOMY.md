@@ -98,7 +98,7 @@ Everything outside a Stop Condition is **decided and logged**, never a mid-build
 
 ## Shared-seam contracts (gate before fan-out)
 
-Standing authorization to fan out implementors is conditional on **every shared seam being pinned first**. (The largest observed failure: two layers agreed the API but never the DOM/test contract → 100% of e2e failed.) Before any parallel fan-out in P6, enumerate **every** seam two or more agents will share and pin each in `04-spec/contracts/` as the single source of truth both sides build against:
+Standing authorization to fan out coder subagents is conditional on **every shared seam being pinned first**. (The largest observed failure: two layers agreed the API but never the DOM/test contract → 100% of e2e failed.) Before any parallel fan-out in P6, enumerate **every** seam two or more agents will share and pin each in `04-spec/contracts/` as the single source of truth both sides build against:
 
 - [ ] **API contract** — endpoints, request/response shapes, status codes
 - [ ] **DOM contract** — selectors / `data-testid` / element structure the UI and e2e both target

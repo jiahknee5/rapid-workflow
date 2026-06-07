@@ -218,7 +218,7 @@
           "id": "n3-stall", "label": "Stall detect", "lane": "system", "node_class": "n-guard",
           "in": "Heartbeat timestamps per role",
           "proc": "Monitor compares each heartbeat to the threshold; flags the stale one",
-          "out": "A stall alert flagging the exact terminal (e.g. impl-2)",
+          "out": "A stall alert flagging the exact terminal (e.g. coder-2)",
           "exec": { "kind": "file", "path": "tools/stop-hook.sh", "mode": "exists" },
           "view": { "kind": "iframe", "src": "observatory.html" },
           "required": true

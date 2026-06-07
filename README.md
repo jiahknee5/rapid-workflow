@@ -4,7 +4,7 @@ A repeatable methodology for turning stakeholder ambiguity into tested, audited 
 
 ## Core Principle
 
-The agent implementing the code must never be the same agent auditing the code. When one agent does both, the implementor always wins — it produces visible progress while the auditor produces invisible safety. Under pressure, invisible work gets skipped. Every enforcement mechanism in RAPID exists because prose instructions fail under pressure.
+The agent implementing the code must never be the same agent auditing the code. When one agent does both, the builder always wins — it produces visible progress while the auditor produces invisible safety. Under pressure, invisible work gets skipped. Every enforcement mechanism in RAPID exists because prose instructions fail under pressure.
 
 ## What This Repo Contains
 

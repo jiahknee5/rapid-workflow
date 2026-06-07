@@ -27,7 +27,7 @@ The operator runs `/rapid-workflow <idea>`, watches the build at four gates, and
 
 - **Hooks over prose**: anything load-bearing is enforced by a hook, a blocking dependency, or a separate agent (R1 phase-gate, R7 stop-hook, R8 conformance, R9 stub-scan) — never a reminder that gets skipped under pressure.
 - **Builder is never the auditor**: the agent writing code never audits it; the watchdog and reviewer are independent, and the eval harness is locked (`.rapid/EVAL/`) before any code so agents can't game their own success criteria.
-- **Fan-out hard-capped at ≤4 implementors + 1 watchdog**: beyond 4, reviewers can't honestly review the diffs — need more parallelism, sequence two rounds.
+- **Coder fan-out hard-capped at ≤4 subagents + 1 watchdog**: beyond 4, reviewers can't honestly review the diffs — need more parallelism, sequence two rounds.
 - **Gap loop capped at 3 automatic BLOCKER/HIGH iterations**: remaining gaps surface at Gate 3 rather than looping forever.
 - **e2e is required to ship**: a build cannot ship on a green it only *inspected*; `verify.sh` runs build/lint/unit/e2e as separate layers with genuine, unmaskable exit codes. "Compiles" ≠ "works."
 - **Bounded by construction**: lifecycle/workflow tests exercise real plumbing against small apps with local/staging deploys only — no cloud, no paid services, no recursive `/rapid-workflow` build.

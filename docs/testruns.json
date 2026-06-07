@@ -1036,11 +1036,11 @@
               "pattern": ".rapid/observe/*.jsonl",
               "count": 9,
               "sample": [
-                "impl-2.jsonl",
-                "supervisor.jsonl",
+                "coder-2.jsonl",
+                "planner.jsonl",
                 "workflow-subagent.jsonl",
                 "conformance.jsonl",
-                "impl-1.jsonl",
+                "coder-1.jsonl",
                 "stub.jsonl"
               ]
             }
@@ -1072,11 +1072,11 @@
               "pattern": ".rapid/observe/*.jsonl",
               "count": 9,
               "sample": [
-                "impl-2.jsonl",
-                "supervisor.jsonl",
+                "coder-2.jsonl",
+                "planner.jsonl",
                 "workflow-subagent.jsonl",
                 "conformance.jsonl",
-                "impl-1.jsonl",
+                "coder-1.jsonl",
                 "stub.jsonl"
               ]
             },
@@ -1106,7 +1106,7 @@
             "declared": {
               "in": "Heartbeat timestamps per role",
               "proc": "Monitor compares each heartbeat to the threshold; flags the stale one",
-              "out": "A stall alert flagging the exact terminal (e.g. impl-2)"
+              "out": "A stall alert flagging the exact terminal (e.g. coder-2)"
             },
             "data_in": {
               "path": ".rapid/observe/seq.txt",
