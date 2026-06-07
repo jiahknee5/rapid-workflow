@@ -2,7 +2,7 @@
 
 ## The Core Principle: Separate the Builder from the Auditor
 
-The agent implementing the code must never be the same agent auditing the code. When one agent does both, the implementor always wins — it produces visible progress, while the auditor produces invisible safety. Under pressure, invisible work gets skipped. Every time. This isn't a discipline problem. It's an incentive misalignment that prose instructions cannot fix.
+The agent implementing the code must never be the same agent auditing the code. When one agent does both, the builder always wins — it produces visible progress, while the auditor produces invisible safety. Under pressure, invisible work gets skipped. Every time. This isn't a discipline problem. It's an incentive misalignment that prose instructions cannot fix.
 
 Every enforcement mechanism in RAPID exists because of this principle: hooks that block advancement (R1), a separate watchdog terminal (R2), blocking task dependencies (R4), tiered reviewers as independent subagents, and document review agents that pre-screen before the operator sees anything. If a step is described in words but not enforced structurally — that step will eventually be skipped.
 
@@ -12,7 +12,7 @@ RAPID is not a fixed system — it's a **template that generates a project-speci
 
 This means no two RAPID builds produce the same architecture. A healthcare AI security platform generates different pillars, different panels (security-expert-panel, not user-panel), different reviewer configurations (Security reviewer weighted highest), and different Constitution overridables than a children's math tutor. The pipeline is the scaffold; the project fills it.
 
-**Technically:** A 12-phase autonomous build pipeline with 4 human gates, 4 safety mechanisms, a 3-terminal architecture during build phase, tiered multi-agent code review, compound learning capture, and document review agents at every gate. Takes a product idea or PRD, produces a deployed, spec-compliant application. Start with D0 (full architecture), then drill into D1–D19 for detail.
+**Technically:** A 12-phase autonomous build pipeline with 4 human gates, 4 safety mechanisms, a five-lead build team (planner · coder · tester · reviewer · watchdog) during the build phase, tiered per-dimension code review, compound learning capture, and document review agents at every gate. Takes a product idea or PRD, produces a deployed, spec-compliant application. Start with D0 (full architecture), then drill into D1–D16 for detail.
 
 ### How the architecture adapts per project
 
@@ -22,12 +22,12 @@ This means no two RAPID builds produce the same architecture. A healthcare AI se
 | **Pillars** (P0) | Format: 3–5 evaluation questions | Content: derived from project risks and goals — never generic |
 | **Constitution** (P1) | Articles I–V inviolable | Articles VI–X tailored to project safety concerns |
 | **PRD Decomposition** (P1b) | MUST/SHOULD/COULD categorization | Requirements, assumptions, constraints from the specific PRD |
-| **Panels** (P2) | 1–3 panels, convergent/divergent synthesis | Which panels: technical, business, SME — chosen by domain. Panelists named per project. |
+| **Panels** (P2) | Five areas: Business · Technical · Design · SME · Users — each a 1st/2nd/3rd-order roster, then pared | Panelists named per project; which voices survive the paring rubric is domain-driven. |
 | **Research** (P3) | VERIFIED/UNVERIFIED/OPEN protocol | Questions from the specific panel synthesis |
 | **Spec** (P4) | Derived from PRD with maintained diff | Sections, workflow nodes, interfaces — all project-specific |
-| **Agent topology** (P5) | Orchestrator + supervisor + ≤4 impl + watchdog | Fan-out count from task dependency graph. Reviewer weights from project domain. |
+| **Agent topology** (P5) | Five-lead build team: planner + coder (+≤4 worktree subagents) + tester + reviewer + watchdog | Coder-subagent fan-out from the task dependency graph. Reviewer weights from project domain. |
 | **Eval harness** (P5) | Generated from workflow state machine, immutable | Tests are project-specific — every workflow node becomes a test case |
-| **Code review** (P6) | 5 reviewer types with confidence gating | Reviewer weights shift by domain (security heaviest for healthcare, performance heaviest for real-time) |
+| **Code review** (P6) | Reviewer lead fans out a subagent per dimension (correctness · security · …) with confidence gating | Reviewer weights shift by domain (security heaviest for healthcare, performance heaviest for real-time) |
 | **Learnings** (P6e) | Structured format: context, learning, evidence, reuse | Content from the specific build. Future builds of the same project read prior learnings. |
 | **Prompt files** (P6a) | Role definitions, message contract | Task references, spec sections, project paths — all project-specific |
 | **Product Pulse** (P10) | Report format: metrics, issues, actions | Data sources, dashboards, thresholds — from the specific deployment |
@@ -71,7 +71,7 @@ Legend: 🟢 Autonomous phase · 🟡 Human gate · 🔴 Safety / guard · 🔵 
 
 | Agents | Pipeline Phase | Safety & Guards | Data Written |
 |---|---|---|---|
-| **Orchestrator** (monitors, tmux manager) · **Supervisor** (tmux terminal, spawned P6a, killed P6e) → **Impl 1–4** (worktree agents, fan-out 1–4, D7) · **Watchdog** (tmux terminal, spawned P6a, killed P6e, /loop 30m) | P6: Build (D8) — 3-terminal architecture: orchestrator monitors, supervisor assigns tasks + runs smoke tests, watchdog drift-checks on PR/merge/30m. Communication via claude-peers (11 message types). Shutdown handshake at P6 end. | 🔴 Watchdog (D4) on PR_SUBMITTED + PR_MERGED + /loop 30m · 🔴 Reviewer: spec + constitution per PR · 🔴 Keep-or-revert: regression = git reset · 🔴 Cost breaker (D12): pause at 80% · 🔴 DRIFT_CRITICAL → orchestrator (emergency halt) | git branches, .rapid/AUDIT.json, .rapid/MEMORY.md, .rapid/COST.json, .rapid/MESSAGES.json, .rapid/prompts/, TASKS.json (status) |
+| **Five-lead build team** (each a tmux terminal over claude-peers, spawned P6a, killed P6e): **planner** (owns plan + gates + decomposition) · **coder** (build lead → fans out ≤4 worktree coder subagents, D7) · **tester** (immutable eval harness) · **reviewer** (per-dimension review subagents) · **watchdog** (/loop 30m, drift) | P6: Build (D8) — five-lead build team: planner decomposes + assigns, coder fans out worktree subagents + runs smoke tests, tester runs the eval harness, reviewer aggregates per-dimension verdicts, watchdog drift-checks on PR/merge/30m. Communication via claude-peers (11 message types). Shutdown handshake at P6 end. | 🔴 Watchdog (D4) on PR_SUBMITTED + PR_MERGED + /loop 30m · 🔴 Reviewer: spec + constitution per PR · 🔴 Keep-or-revert: regression = git reset · 🔴 Cost breaker (D12): pause at 80% · 🔴 DRIFT_CRITICAL → planner (emergency halt) | git branches, .rapid/AUDIT.json, .rapid/MEMORY.md, .rapid/COST.json, .rapid/MESSAGES.json, .rapid/prompts/, TASKS.json (status) |
 | **Tester** (subagent + Playwright), **Visual QA** (screenshots + vision) | P7: Test + Visual QA (D10) | 🔴 Immutable eval harness · 🔴 Visual: 3 viewports · fix → screenshot → check ×3 | test results, screenshot evidence, .rapid/GAPS.json |
 | **Orchestrator** (classifies gaps) | P8: Gap Loop (D9) — classify by pillar + severity · spec-level: re-derive § → rebuild · PRD-level: queue for G3 · 🔄 loop to P6 (×3 max) | 🔴 Auto re-derivation (spec-level only) · PRD gaps → operator | .rapid/GAPS.json (updated), 01-intake/DIFF.md, 04-spec/spec.md (re-derived) |
 | ⏸ **OPERATOR** | **G3: Ship Decision (D3)** | Evidence: app, audit, gaps, tests, screenshots, cost | Ship / Loop / Redirect / Kill |
@@ -88,15 +88,15 @@ Legend: 🟢 Autonomous phase · 🟡 Human gate · 🔴 Safety / guard · 🔵 
 
 ## D1 — Master Pipeline
 
-**The complete pipeline: 10 phases, 3 gates, 1 feedback loop.**
+**The complete pipeline: 12 phases, 4 gates, 1 feedback loop.**
 
 ```
-Idea/PRD → P0:Vision → P1:Structure → P2:Panels → P3:Research → [G1] → P4:Spec → P5:Tasks → [G2] → P6:Build → P7:Test → P8:Gaps ↻ → [G3] → P9:Deploy → Ship
+Idea/PRD → P0:Vision → P1:Structure → P1b:Decompose → [G0] → P2:Panels → P3:Research → [G1] → P4:Spec → P5:Tasks → P5b:Deepen → P5c:Mockups → [G2] → P6:Build → P7:Test → P8:Gaps ↻ → [G3] → P9:Deploy → P10:Pulse ↻ → Ship
 ```
 
-Legend: 🟢 Autonomous · 🟡 Human gate · 🔄 Gap loop (×3 max)
+Legend: 🟢 Autonomous · 🟡 Human gate · 🔄 Gap loop (×3 max) · 🔄 Compound loop (P10 → next P0)
 
-**Three arcs.** P0–P3 = Understand (challenge requirements). P4–P5 = Specify (derive buildable contract). P6–P9 = Execute + Converge (build, test, loop, ship). The gap loop (P8) re-derives the spec on failure — the code follows. Arc 3 is cyclical; Arcs 1–2 are linear.
+**Three arcs.** P0–P3 = Understand (challenge requirements). P4–P5c = Specify (derive buildable contract, approve mockups). P6–P10 = Execute + Converge (build, test, loop, ship, pulse). The gap loop (P8) re-derives the spec on failure — the code follows. Arc 3 is cyclical; Arcs 1–2 are linear.
 
 **Eval-first / TDD invariant.** Before P6 begins, P5 generates an immutable eval harness from the workflow state machine (P4). Tests are written before code, generated from spec — not by the implementing agent. Agents cannot modify their own success criteria. The branch only advances on verified improvement (keep-or-revert ratchet). *Sources: Karpathy autoresearch loop (program.md: "prepare.py is read-only"); Kent Beck, Test-Driven Development (2002): red-green-refactor with the test surface owned by a separate concern.*
 
@@ -113,9 +113,9 @@ Legend: 🟢 Autonomous · 🟡 Human gate · 🔄 Gap loop (×3 max)
 
 ## D2 — Agent Topology
 
-**10 agents mapped to pipeline phases, each selected for isolation and cost.**
+**Agents mapped to pipeline phases, each selected for isolation and cost.**
 
-Three primitives: skill (orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). See D7 for fan-out sizing.
+Three primitives: skill (the orchestrator's context), agent/subagent (own context), prompt injection (behavioral rule). During P6 the build runs as five lead terminals; the coder fans out ephemeral subagents as the parallel muscle. See D7 for fan-out sizing.
 
 ```
                     Rapid Orchestrator (Skill · persistent · all phases)
@@ -132,13 +132,13 @@ Three primitives: skill (orchestrator's context), agent/subagent (own context), 
                                     │
                           [Gate 2: Architecture]
                                     │
-          ──────── Arc 3: Execute + Converge (P6–P9) ────────
+          ──────── Arc 3: Execute + Converge (P6–P10) ────────
                                     │
-                    Supervisor (separate terminal, P6)
+      Planner ⟷ Coder ⟷ Tester ⟷ Reviewer ⟷ Watchdog   (5 lead terminals · claude-peers)
                         │       │       │       │
-                     Impl 1  Impl 2  Impl 3  Impl 4  (worktrees)
+              Coder fans out ≤4 worktree subagents (sub-1 … sub-4)
                                     │
-                   Reviewer · Watchdog · Tester · Visual QA
+                          Visual QA · screenshots
                                     │
                           [Gate 3: Ship Decision]
 ```
@@ -150,11 +150,12 @@ Three primitives: skill (orchestrator's context), agent/subagent (own context), 
 | Orchestrator | Skill | Needs operator context, approvals, API keys | .rapid/STATE.json |
 | Panelist ×1–3 | Skill (fast: 1) / Subagent (full: 3) | Fast: stays in orchestrator context. Full: 3 agents parallel, 3x context cost. | 03-panels/*.md |
 | Researcher | Subagent | Needs WebSearch, 15m timebox | 02-grounding/*.md |
-| Supervisor | Terminal | Long-running, manages task queue | .rapid/MEMORY.md |
-| Implementor ×4 | Agent (worktree) | Parallel code; git isolation prevents conflicts | Branch git log |
-| Reviewer | Subagent | Reads PR + spec, returns verdict. Optional 2nd model (Codex). | .rapid/MEMORY.md |
-| Watchdog | Event + /loop 30m | On PR submit, on merge, every 30m on main. Never checks WIP. | .rapid/AUDIT.json |
-| Tester | Subagent + Playwright | Runs tests + screenshots | .rapid/GAPS.json |
+| Planner (team lead) | Terminal | Owns the plan, task queue, the 4 gates, the operator relationship | .rapid/STATE.json, MEMORY.md |
+| Coder (build lead) | Terminal | Implements tasks; fans out ≤4 worktree coder subagents | .rapid/MEMORY.md |
+| Coder subagent ×≤4 | Agent (worktree) | Parallel code; git isolation prevents conflicts | Branch git log |
+| Reviewer (review lead) | Terminal → per-dimension subagents | Fans out a subagent per dimension (correctness / security / …); confidence-gated verdict. Optional 2nd model (Codex). | .rapid/MEMORY.md |
+| Watchdog (lead) | Terminal + /loop 30m | On PR submit, on merge, every 30m on main. Never checks WIP. Never a coder. | .rapid/AUDIT.json |
+| Tester (test lead) | Terminal + Playwright subagents | Owns the immutable eval harness; runs tests + screenshots | .rapid/GAPS.json |
 | Decision Router | Prompt injection | Behavioral rule, no tools, all agents | MEMORY.md |
 
 Communication: .rapid/MEMORY.md (append-only, all agents) + claude-peers MCP (real-time nudges between terminals). Naming: rapid/{phase}/{task-slug} branches, [SPEC §X.Y] commits.
@@ -187,7 +188,7 @@ Does it need to take actions (tools, file writes, shell)?
 
 ## D3 — Human Gates
 
-**3 decision points where the pipeline pauses for operator input.**
+**4 decision points where the pipeline pauses for operator input.**
 
 Escalation format enforced: every question includes options, recommendation, reversibility. See D5 for how non-gate decisions are routed.
 
@@ -199,6 +200,11 @@ Phase completes → System presents structured artifacts → Operator reviews
     └── Kill → (Gate 3 only)
 ```
 
+### G0: PRD Review
+- **System presents:** Decomposed PRD (MUST / SHOULD / COULD), the locked raw PRD, doc-review pre-screen
+- **Operator provides:** Confirms the decomposition is a *faithful* split of the PRD (priority is set later, at G1)
+- **Position:** First gate (D1 between P1b–P2)
+
 ### G1: Direction
 - **System presents:** Vision, pillars, panel synthesis, research decisions, spec outline
 - **Operator provides:** Strategic direction, domain constraints, priority ranking
@@ -207,7 +213,7 @@ Phase completes → System presents structured artifacts → Operator reviews
 ### G2: Architecture
 - **System presents:** Full spec, workflow, architecture, tasks, cost projection
 - **Operator provides:** API keys, credentials, deploy target, sign-off
-- **Position:** Point of no return (D1 between P5–P6)
+- **Position:** Point of no return (D1 between P5c–P6)
 
 ### G3: Ship
 - **System presents:** Working app, compliance audit, test results, gap report, cost actuals
@@ -234,7 +240,7 @@ The watchdog does not run on a blind timer against in-progress worktrees — age
 Read target (PR diff or main HEAD) → Diff vs spec.md → Diff vs CONTRACTS.md → Check 7 categories → Classify
     │
     ├── CLEAN → PR approved to proceed to reviewer. Log to AUDIT.json.
-    ├── DRIFT → Block PR. Notify supervisor. Trigger D8 bug-fix loop.
+    ├── DRIFT → Block PR. Notify planner. Trigger D8 bug-fix loop.
     └── CRITICAL → Halt build. Alert operator. Invariant violated. Cannot be auto-fixed.
 ```
 
@@ -260,11 +266,11 @@ Agent encounters decision → Classify: reversible?
     │
     ├── Tactical (naming, style, imports) → Decide silently
     ├── Technical (library, pattern, cache) → Decide + log to MEMORY.md
-    ├── Architectural (new dep, interface change) → Escalate to supervisor (with options + rec)
+    ├── Architectural (new dep, interface change) → Escalate to planner (with options + rec)
     └── Strategic (scope, pivot, drop) → Queue for gate (irreversible, D3)
 ```
 
-**Stall protocol:** no commit in 15m → supervisor checks → 3 retries → escalate with what was tried. See D8.
+**Stall protocol:** no commit in 15m → planner checks → 3 retries → escalate with what was tried. See D8.
 
 ---
 
@@ -284,27 +290,27 @@ Panel flags question → Spawn researcher → WebSearch + docs → 3+ options + 
 
 **Research agent output format:** Question (from panel), Options (min 3 with cost/perf/complexity matrix), Evidence (primary sources, version-pinned), Recommendation (with falsifiable assumptions), Fallback (what to do when recommendation fails), Verification (how to confirm at runtime).
 
-**Three review lenses:** Technical (benchmarks, not intuition), Business (TAM, unit economics, regulatory), Domain SME (what tech panels miss: microstructure, clinical safety, cultural sensitivity). Domain errors = BLOCKER severity.
+**Five review lenses** (one per panel area): Technical (benchmarks, not intuition), Business (TAM, unit economics, regulatory), Design (usability, accessibility, information architecture), Domain SME (what tech panels miss: clinical safety, regulatory nuance, cultural sensitivity), Users (the hands-on personas → scenarios → tests). Domain errors = BLOCKER severity.
 
-*Lesson from ASL project: research assumed 200 training clips available; actual was 52. Rapid verifies data availability in P3, not P6.*
+*Lesson from a real build: research assumed a dataset ~4× larger than what actually existed. Rapid verifies data availability in P3, not P6.*
 
 ---
 
 ## D7 — Fan-Out Sizing
 
-**How the system determines implementor count during P5 (Task Decomposition).**
+**How the system determines coder-subagent count during P5 (Task Decomposition).**
 
 Based on task count, dependency parallelism, and reviewer capacity. Cap: ≤4 (beyond 4, review quality degrades).
 
 ```
 Analyze spec: count tasks, map dependencies → Identify max parallelizable tasks
     │
-    ├── ≤5 tasks, linear → 1 impl (fast track)
-    ├── 6–12 tasks, 2–3 parallel → 2 impl (moderate)
-    └── 13+ tasks, 3+ parallel → 3–4 impl (complex)
+    ├── ≤5 tasks, linear → 1 coder subagent (fast track)
+    ├── 6–12 tasks, 2–3 parallel → 2 coder subagents (moderate)
+    └── 13+ tasks, 3+ parallel → 3–4 coder subagents (complex)
 ```
 
-Constraint: reviewer (D2) must honestly review all PRs. >4 concurrent implementors degrades review quality.
+Constraint: the reviewer (D2) must honestly review all PRs. >4 concurrent coder subagents degrades review quality.
 
 ---
 
@@ -346,10 +352,10 @@ This prevents the failure mode where the orchestrator writes tests for the compo
 Implements keep-or-revert ratchet: the branch only advances on verified improvement. Failed tests trigger a 3-attempt fix loop before escalation. *Source: Karpathy autoresearch (program.md: "improvements advance the branch; regressions git reset --hard").*
 
 ```
-Supervisor assigns task to implementor (includes spec section, contracts, eval harness)
+Planner assigns task; coder fans out a subagent (includes spec section, contracts, eval harness)
     │
     ▼
-Implementor writes code in worktree (commits reference [SPEC §X.Y])
+Coder subagent writes code in worktree (commits reference [SPEC §X.Y])
     │
     ▼
 Run eval harness (immutable tests from P5 — agents cannot modify)
@@ -403,7 +409,7 @@ Catches overlapping text, clipped elements, broken layouts that code review cann
 UI change merged → Playwright screenshots (mobile / tablet / desktop) → Claude vision analysis (overlaps? clips? breaks?)
     │
     ├── Pass → Continue to next task
-    └── Fail → Implementor fixes UI → Re-screenshot → Re-check (↻ ×3 max) → Still failing? Escalate with screenshots
+    └── Fail → Coder subagent fixes UI → Re-screenshot → Re-check (↻ ×3 max) → Still failing? Escalate with screenshots
 ```
 
 ---
@@ -455,11 +461,11 @@ Two communication channels: file-based (persistent, survives crashes) and claude
 |---|---|---|---|
 | STATE.json | Orchestrator | All agents, /rapid-workflow --resume | After every phase + gate |
 | MEMORY.md | All agents (append-only) | All agents, operator | On every decision, assignment, escalation |
-| TASKS.json | Spec writer (P5), supervisor (P6) | Supervisor, implementors, operator | On task assign/complete/block |
-| AUDIT.json | Watchdog | Supervisor, reviewer, operator | On PR submit, merge, and every 30m |
+| TASKS.json | Spec writer (P5), planner (P6) | Planner, coder subagents, operator | On task assign/complete/block |
+| AUDIT.json | Watchdog | Planner, reviewer, operator | On PR submit, merge, and every 30m |
 | GAPS.json | Tester (P7), gap loop (P8) | Orchestrator, operator | After test runs + walkthrough |
 | COST.json | Orchestrator (per agent call) | Budget circuit-breaker, operator | After every agent spawn/return |
-| EVAL/ | Spec writer (P5) — then locked | All implementors, tester | Written once, immutable |
+| EVAL/ | Spec writer (P5) — then locked | All coder subagents, tester | Written once, immutable |
 
 ### D13b: Agent output persistence invariant
 
@@ -485,8 +491,8 @@ Enforcement: After every agent spawn/return, the orchestrator checks that the de
 
 | Status | Condition | Action |
 |---|---|---|
-| HEALTHY | All impl committing. Watchdog: CLEAN. Cost: under budget. | Continue |
-| STALLED | No commit in 15m | Supervisor nudges (D5). 3 nudges unanswered → escalate to operator. |
+| HEALTHY | All coder subagents committing. Watchdog: CLEAN. Cost: under budget. | Continue |
+| STALLED | No commit in 15m | Planner nudges (D5). 3 nudges unanswered → escalate to operator. |
 | DRIFTED | Spec violation (D4) | PR blocked. If invariant: halt build. Trigger D8 bug-fix. |
 | BLOCKED | Needs external input (API key, service acct) | Queued for next gate (D3). Build continues elsewhere. |
 | OVER BUDGET | COST.json ≥ 80% cap | Circuit-breaker (D12). Pause build, alert operator. Resume or kill. |
@@ -553,7 +559,7 @@ Each row shows what was previously manual, what replaces it, what catches failur
 
 | Previously manual | Rapid mechanism | What catches failure | Operator sees at gate |
 |---|---|---|---|
-| Synthesize 3 panel outputs | Auto-synthesis (P2) | Inter-stage assertion: every PRD req → spec section | G1: synthesis with flagged divergences |
+| Synthesize five panel areas | Auto-synthesis (P2) | Inter-stage assertion: every PRD req → spec section | G1: synthesis with flagged divergences |
 | Research trade-offs | Research agents with required format (D6) | VERIFIED / UNVERIFIED / OPEN classification | G1: trade-off matrices with sources |
 | Derive spec, tag every requirement | Spec writer with PRD trace (P4) | Assertion: every PRD req → spec or [OUT OF SCOPE] | G2: full spec with traceable tags |
 | Write tests manually | Eval harness from workflow (D7b) | Tests are immutable — agents cannot weaken them | G2: test count + coverage map |
@@ -578,9 +584,9 @@ Each row shows what was previously manual, what replaces it, what catches failur
 | **Karpathy** (autoresearch) | Immutable eval harness ("prepare.py is read-only") | D7b (TDD) → .rapid/EVAL/ · D8 reads it | **Metric gaming.** Agents cannot weaken tests to make code pass. |
 | **Karpathy** | Keep-or-revert ratchet ("improvements advance; regressions reset") | D8 (build loop) git reset --hard on regression | **Regression accumulation.** Branch only moves forward on verified improvement. |
 | **Karpathy** | Never stop, never ask ("when stuck, think harder") | D5 (decision router) Tactical + technical: decide, don't ask | **Analysis paralysis.** Only strategic/irreversible decisions pause the build. |
-| **Karpathy** | Surgical changes + explicit assumptions | D8 (implementor prompt) Each task → one spec section | **Silent assumptions becoming bugs.** Every change traces to a spec section. |
+| **Karpathy** | Surgical changes + explicit assumptions | D8 (coder-subagent prompt) Each task → one spec section | **Silent assumptions becoming bugs.** Every change traces to a spec section. |
 | **Compound AI** (Zaharia et al.) | Inter-stage assertions (DSPy Assert/Suggest) | D1 between P4, P5, P6 | **Silent contract violations.** Bad output caught at boundary before it propagates. |
-| **Compound AI** | Multi-model routing | D14 (rapid.yaml) models.overrides per role | **Uniform cost for non-uniform tasks.** Panels use Sonnet; implementors use Opus. |
+| **Compound AI** | Multi-model routing | D14 (rapid.yaml) models.overrides per role | **Uniform cost for non-uniform tasks.** Panels use Sonnet; coder subagents use Opus. |
 | **Compound AI** | Program logic between model calls | D4 (watchdog), D12 (cost), D5 (routing) | **Over-reliance on LLM judgment.** Drift checks use programmatic rules. |
 | **Beck** (TDD, 2002) | Red-green-refactor | D7b → D8 Tests from workflow, fail red, code makes green | **Tests drift to match implementation.** Tests derived from spec, not by implementing agent. |
 | **Rapid-native** | Gap loop as convergence | D9 P7–P8 feedback to P4 | **One-shot builds with no feedback.** Quality converges over iterations. |

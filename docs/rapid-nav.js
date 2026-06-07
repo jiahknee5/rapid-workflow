@@ -16,12 +16,13 @@
   }
   var inner =
     '<a class="rn-brand" href="' + A + 'index.html">✦ RAPID<span>Skills Atlas</span></a>' +
+    // Logical lifecycle order: method → design references → run → verify → docs
     dest('Skills Atlas',        A + 'index.html',        inAtlas) +
+    dest('Workflow',            P + 'workflow.html',     file === 'workflow.html') +
+    dest('Architecture',        P + 'architecture.html', file === 'architecture.html') +
     dest('Build &amp; Observatory', P + 'observatory.html', file === 'observatory.html') +
     dest('Test Suite',          P + 'testsuite.html',    file === 'testsuite.html') +
     dest('Documentation',       P + 'documentation.html', file === 'documentation.html') +
-    dest('Architecture',        P + 'architecture.html', file === 'architecture.html') +
-    dest('Workflow',            P + 'workflow.html',     file === 'workflow.html') +
     '<span class="rn-spacer"></span>' +
     dest('Local&nbsp;▶', P + 'home.html#product', false, ' data-rn="local"') +
     dest('Deployed',     P + 'home.html#product', false, ' data-rn="deployed"') +

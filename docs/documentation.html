@@ -341,11 +341,11 @@ code { background: var(--surface-alt); color: #cbd3e1; padding: 1px 5px; border-
     <div class="diagram">
       <div class="diagram-label">Agent team · one terminal per agent, connected over the peers bus</div>
       <div class="hflow">
-        <span class="n n-primary">Orchestrator<small>runs the pipeline</small></span>
+        <span class="n n-primary">Planner<small>plan + the 4 gates</small></span>
         <span class="arr">&rarr;</span>
-        <span class="n">Implementor<small>builds</small></span>
-        <span class="n">Implementor<small>builds</small></span>
-        <span class="n">Implementor<small>builds</small></span>
+        <span class="n">Coder<small>builds · fans out subagents</small></span>
+        <span class="n">Tester<small>immutable eval harness</small></span>
+        <span class="n">Reviewer<small>per-dimension review</small></span>
         <span class="arr">&rarr;</span>
         <span class="n n-guard">Watchdog<small>independent audit</small></span>
       </div>
