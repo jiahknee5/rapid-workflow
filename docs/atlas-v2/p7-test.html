@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,59 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">Playwright flows derived from the workflow map exercise the golden path + named edge cases; <code>.rapid/WALKTHROUGH.md</code> must cover every surface or R1 blocks P8.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Agents walk the app mechanically first; you become the felt-sense filter, not the regression hunter.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P7 — Test + Visual QA). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P7 Test + Visual QA (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 7 — Test + Visual QA [AUTO]
+
+**Output:** Test results, visual QA results, extracted gaps
+
+1. **Execute the project&#x27;s test suite via `tools/verify.sh`** — not a file audit, not a markdown review, and not a pipe that can hide a failure. The tester runs `tools/verify.sh`, which runs build / lint / unit / **e2e** as separate layers with **genuine exit codes**: it sets `-o pipefail` and **redirects rather than pipes** (a `cmd | tee log` can mask a non-zero exit; `cmd &gt; log 2&gt;&amp;1; rc=$?` cannot), so a green result means the layer actually passed. It writes per-layer results to `.rapid/VERIFY.json`. **e2e is required** — it is the whole point of the loop, the thing that catches the seam failures unit tests pass right over. Underneath, verify.sh runs the project&#x27;s real commands:
+   - `anchor test` (or equivalent for the smart contract / backend)
+   - `npm run build` in every package directory (frontend, automation, root)
+   - `npm test` if test scripts exist
+   - the e2e command (Playwright / equivalent) — **required**, not optional
+   - `make setup` or the project&#x27;s one-command entry point
+   Capture stdout/stderr per layer. If any required layer fails, that is a gap — do not paper over it. Write `.rapid/VERIFY.json` plus the raw command output to `.rapid/TEST_RESULTS.md`. &quot;Compiles&quot; ≠ &quot;works&quot; — you must run it and see it pass.
+
+   **Report per-layer run-vs-inspected.** For each layer state explicitly what was **actually run** (a command executed with an observed exit code) versus what was only **inspected** (read, grepped, reasoned about). Anything that could not be verified — a layer that wouldn&#x27;t run, an environment that wasn&#x27;t available, an e2e flow that couldn&#x27;t be exercised — is **surfaced, not silently dropped**: it goes into `.rapid/VERIFY.json` as `unverified` with the reason, and becomes a gap. Never report a layer as green that you only inspected.
+
+2. **Cross-check spec coverage:** For each section in spec.md (S1, S2, ...), verify there is implementing code in the repo. For each route in S5 (frontend), verify the route exists in the filesystem. For each instruction in S3 (smart contract), verify the handler exists. This is a `grep`/`find` exercise, not a read-and-judge exercise. Write a coverage table to `.rapid/AUDIT.json`.
+
+3. If the project has a frontend, run **visual QA** (D10):
+   - Start the dev server
+   - Playwright screenshots of every route at 3 viewports (mobile 390px, tablet 768px, desktop 1440px)
+   - Send screenshots to Claude vision: check for overlapping text, clipped elements, broken layouts, unreadable diagrams
+   - **Compare against the approved comps (E):** for each screen, diff the built screenshot against its `04-spec/mocks/&lt;screen-id&gt;.html` comp (the GATE-2-approved visual target) — same layout, same states, same components. A built screen that diverges from its approved comp is a gap (either the build drifted or the comp needs an operator-approved update — do not silently accept either). This is what makes the plan-phase design an enforced target rather than a discarded sketch.
+   - On failure: implementor fixes → re-screenshot → re-check (max 3 iterations per component)
+4. **Concrete walkthrough — not &quot;run walkthrough,&quot; but these exact steps (R6):**
+   - Start the dev server (`npm run dev` or equivalent)
+   - Open the app in a browser (Playwright or agent-browser)
+   - For each surface in workflow.md (S1, S2, ... SN), in sequence:
+     - Navigate to the surface
+     - Screenshot it: `.rapid/walkthrough/S{N}.png`
+     - Interact with it (click primary action, fill forms, trigger transitions)
+     - Screenshot the result state
+     - If any surface errors, throws, or shows broken layout: that is a BLOCKER gap
+   - Write `.rapid/WALKTHROUGH.md` with: surface ID, screenshot path, pass/fail, error description
+   - **Phase 8 cannot begin until WALKTHROUGH.md covers every surface in workflow.md**
+   - Phase gate hook enforces this: STATE.json cannot advance to phase 8 without WALKTHROUGH.md (R1)
+   Concrete commands get followed. Vague instructions get interpreted — and &quot;interpreted&quot; under time pressure means &quot;skipped.&quot;
+5. **Dogfood QA (CE #10):** If the project has a frontend or user-facing interface, run an autonomous diff-scoped QA pass that goes beyond screenshots:
+   - Build an exhaustive test matrix from the git diff (what changed since the spec was locked at G2)
+   - For each changed surface: navigate to it in a real browser, exercise the primary user journey, check for errors
+   - On failure: **auto-fix the issue, commit the fix, and re-test** — fully autonomous fix loops (max 3 per surface)
+   - This upgrades the current P7 visual QA from &quot;screenshot and flag&quot; to &quot;screenshot, fix, retest, and commit until green&quot;
+   - Write results to `.rapid/DOGFOOD.md` with fix-commit hashes
+
+6. **Simplification pass (CE #8):** After all tests pass and the dogfood QA is green, run 3 parallel simplification agents before gap classification:
+   - **Reuse reviewer**: Find duplicated logic that should be extracted into shared functions
+   - **Quality reviewer**: Find overly complex code that can be simplified without changing behavior
+   - **Efficiency reviewer**: Find performance anti-patterns (unnecessary re-renders, redundant queries, bloated imports)
+   Each produces findings. The supervisor applies safe simplifications (those that keep all tests green) and discards risky ones. This prevents &quot;it works but it&#x27;s ugly&quot; from shipping. Write applied simplifications to `.rapid/SIMPLIFY.md`.
+
+7. **Capture a recorded run of every user workflow (S-14).** Run `python3 tools/workflow-runner.py --all` to live-drive each workflow in `docs/workflows.json` node by node, threading each node&#x27;s data-out into the next node&#x27;s data-in. This streams a per-node trace to `.rapid/RUNS/&lt;wf&gt;/&lt;run&gt;.jsonl`, appends `.rapid/RUNS/&lt;wf&gt;/index.json`, and publishes `docs/testruns.json` — so the Workflow Test Theater (`docs/testsuite.html`) has a recorded run to replay and a run log, and any workflow whose final node misses its golden assertion becomes a gap. This complements (does not replace) the eval harness in step 1: step 1 proves the layers; this proves the user workflows end-to-end.
+
+8. **Extract gaps** from all failures: test failures, visual QA failures, dogfood failures, spec coverage misses, walkthrough findings, recorded-run golden-assertion misses, simplification opportunities that were too risky to auto-apply
+
+---</pre></details>
       </div>
     </div>
     

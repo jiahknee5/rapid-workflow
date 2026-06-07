@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,42 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">You confirm every requirement was captured, tagged, and traced — and confirm what's out of scope. A redirect re-runs P1b.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">A cheap faithfulness check before you spend on expensive expert panels. You never convene specialists on a PRD that failed a coherence read.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Defined in the orchestrator's gate protocol (Gate G0 — Faithful decomposition); the pre-screen doc-review agents are composed from the project's pillars. Verbatim in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — G0 Faithful decomposition (from SKILL.md)</summary><div class="src-where">Verbatim from the orchestrator's gate protocol in <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### ▸ GATE 0 — Enhanced PRD Review [HUMAN]
+
+The operator reviews the enhanced PRD before expert panels use it. This is the cheapest possible correction point — fixing a misunderstood requirement here costs nothing. Fixing it after panels have run costs a full re-run. Fixing it after build has started costs real money.
+
+**Technically:** Human gate between PRD decomposition and expert panels. Validates completeness, priority, and scope before downstream phases consume the requirements.
+
+**Document review agents (pre-screen before operator):** Before presenting to the operator, spawn 3 parallel document review subagents (inspired by CE&#x27;s document review personas). Each reviews PRD-ENHANCED.md through a single lens:
+
+| Reviewer | Lens | What it catches |
+|---|---|---|
+| **Feasibility** | Can this actually be built with the stated constraints? | Requirements that sound good but are technically impossible or wildly expensive |
+| **Scope Guardian** | Is anything here unjustified complexity or scope creep? | Gold-plating, premature features, requirements that don&#x27;t serve the pillars |
+| **Coherence** | Do the requirements contradict each other? Is terminology consistent? | Section A says &quot;real-time&quot; but Section B says &quot;batch&quot;; MUST items that conflict |
+
+Each returns structured findings: `{ finding, severity, section_ref, recommendation }`. Merge into a pre-screen report that the operator sees alongside the enhanced PRD.
+
+**Present to operator using AskUserQuestion:**
+- Document review pre-screen report (feasibility, scope, coherence findings)
+- Summary table (counts by category and priority)
+- Any `[RISKY]` assumptions that could invalidate the build
+- Open questions that need stakeholder input
+- The full `PRD-ENHANCED.md` for line-by-line review
+
+**Collect from operator:**
+- Corrections to requirement priority (MUST/SHOULD/COULD)
+- Answers to open questions
+- Additional requirements the PRD missed
+- Confirmation that out-of-scope list is correct
+- Resolution of any `[RISKY]` assumptions
+- Response to document review findings (accept/reject each)
+
+**On redirect:** Re-run P1b with operator notes merged into the enhanced PRD.
+
+After approval, update `01-intake/PRD-ENHANCED.md` with operator corrections. This becomes the input for P2 (Expert Panels) and P4 (Spec Derivation).
+
+---</pre></details>
       </div>
     </div>
     

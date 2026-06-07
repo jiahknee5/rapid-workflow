@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,38 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">You rank a contested FR as SHOULD (the panel split on it), answer the one undecidable — “SQLite, not Postgres” — written back to the spec with <code>basis=spec</code>, and sign BUILD-AUTONOMY with the deploy target + spend ceiling. The build now runs to completion, bounded by the fixed stop-condition set.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">One place to set strategy with expert input in hand, and to grant the autonomy that lets the rest of the build run unattended.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Defined in the orchestrator's gate protocol (Gate G1 — Direction &amp; priority); the pre-screen doc-review agents are composed from the project's pillars. Verbatim in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — G1 Direction &amp; priority (from SKILL.md)</summary><div class="src-where">Verbatim from the orchestrator's gate protocol in <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### ▸ GATE 1 — Direction [HUMAN] (D3)
+
+**Document review agents (pre-screen):** Before presenting to operator, spawn 2 parallel doc review subagents on the panel synthesis + research decisions:
+- **Adversarial reviewer**: Challenge premises, surface unstated assumptions, stress-test decisions. &quot;What breaks if this assumption is wrong?&quot;
+- **Feasibility reviewer**: Given the research findings, can the proposed spec outline actually be built within constraints?
+
+Each returns findings with severity. Merge into pre-screen report.
+
+**Present to operator using AskUserQuestion:**
+- Document review pre-screen (adversarial + feasibility findings)
+- Vision + pillars (from P0)
+- Panel synthesis: convergent/divergent/risks (from P2)
+- Research decisions with trade-off matrices (from P3)
+- Any [OPEN] or [UNVERIFIED] items that need operator judgment
+- Spec outline (proposed sections)
+- **Undecidable decision batch (D5):** the set of genuinely-undecidable high-stakes items — each with options, the consequence of each branch, and why the PRD/spec give no basis. These are batched here, at Gate 1, precisely so they are resolved **before** the build starts and never become a mid-build interrupt.
+- **BUILD-AUTONOMY.md for signature:** the standing-authorization charter and its fixed stop-condition set, presented for the operator to sign once.
+
+**Collect from operator:**
+- Strategic direction on panel divergences
+- Domain constraints the system cannot discover
+- Priority ranking of conflicting requirements
+- Any context, API keys, or credentials available now
+- Response to adversarial/feasibility findings
+- **Answers to the undecidable decision batch** — written back into the spec/PRD-ENHANCED so the build has a basis (these become `basis=&quot;spec&quot;` from here on)
+- **Signature on BUILD-AUTONOMY.md** — operator fills in the deploy target, the spend ceiling, and confirms the stop-condition set. This is what authorizes run-to-completion; without it the build falls back to per-step confirmation.
+
+**Update the input ledger (B):** As decisions are resolved here, write them back into `.rapid/INPUTS.json` — set `spend_ceiling` to `resolved`, and add one row per undecidable-batch decision (`kind:&quot;decision&quot;`, `status:&quot;resolved&quot;`, `value_ref` pointing at the spec/BUILD-AUTONOMY anchor that now records it). Any credential the operator can provide now is added as a `resolved` `kind:&quot;secret&quot;` row pointing at its `.env:KEY`. Anything the operator defers stays `unresolved` and must be cleared at Gate 2 — the build cannot enter P6 with it open.
+
+**On redirect:** Re-run P2–P3 with operator notes as additional constraint.
+
+---</pre></details>
       </div>
     </div>
     

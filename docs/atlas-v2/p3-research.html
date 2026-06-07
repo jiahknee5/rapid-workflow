@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,25 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">“Is there a free ASL handshape dataset with a usable license?” → a grounding note with options, evidence, a recommendation, a fallback, and a VERIFIED/UNVERIFIED tag.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Front-loaded knowledge gets read once and ignored; cite-on-demand grounding lands in the spec where it supports a decision, every time it's needed.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P3 — Grounding Research). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P3 Grounding Research (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 3 — Grounding Research [AUTO]
+
+**Output:** `02-grounding/*.md` (one file per question)
+
+For each [OPEN] question from the panel synthesis:
+1. Spawn a research subagent with WebSearch access
+2. Timebox: 15 minutes per question
+3. Required output format per question:
+   - **Question**: exact question from panel synthesis
+   - **Options**: minimum 3, with cost/performance/complexity trade-off matrix
+   - **Evidence**: primary sources only (docs, RFCs, papers — not blog posts). Version-pinned, date-checked.
+   - **Recommendation**: with explicit falsifiable assumptions
+   - **Fallback**: what to do when the recommendation fails at runtime
+   - **Verification**: how to confirm (spike test, devnet deploy, API call)
+4. Classify each answer: `[VERIFIED]` (source confirmed, API tested), `[UNVERIFIED]` (assumption flagged, fallback required), or `[OPEN]` (timebox expired, surface at Gate 1)
+
+**Data availability check**: If the project depends on external data (training data, API feeds, third-party services), verify actual availability in this phase. Do not assume. (Lesson: ASL project expected 200 training clips, actual was 52.)
+
+---</pre></details>
       </div>
     </div>
     

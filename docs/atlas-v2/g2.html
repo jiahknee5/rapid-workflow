@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,36 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">A credential row only counts resolved once its <code>.env:KEY</code> actually exists — the gate fails closed otherwise.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">The single most consequential decision — everything after runs autonomously against what you lock here.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Defined in the orchestrator's gate protocol (Gate G2 — Point of no return); the pre-screen doc-review agents are composed from the project's pillars. Verbatim in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — G2 Point of no return (from SKILL.md)</summary><div class="src-where">Verbatim from the orchestrator's gate protocol in <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### ▸ GATE 2 — Architecture [HUMAN] (D3)
+
+**This is the point of no return. Implementation starts after this.**
+
+**Document review agents (pre-screen):** Before presenting to operator, spawn 3+3 parallel doc review subagents — the standard 3 (scope, coherence, adversarial) plus the deepening findings from P5b:
+- **Scope Guardian**: Is the spec overbuilt for the stated timeline? Are there tasks that don&#x27;t serve any pillar?
+- **Coherence reviewer**: Do spec sections contradict each other? Does the architecture match the workflow state machine?
+- **Adversarial reviewer**: What&#x27;s the most likely way this build fails? Which assumption is weakest?
+
+Each returns findings with severity. Merge into pre-screen report.
+
+**Present to operator using AskUserQuestion:**
+- Document review pre-screen (scope, coherence, adversarial findings)
+- Full spec with workflow state machine
+- **Design comps (E) [UI projects]:** the hi-fi mocks in `04-spec/mocks/` (open `index.html`) for visual sign-off, alongside `04-spec/screens.md` and the screen-derived seam contracts. This is the cheapest point to change the look and the data shape together — after G2 they&#x27;re the build&#x27;s target. Collect: visual approval (or change requests), and confirmation the screen inventory is complete (no missing screen/state).
+- Architecture diagram + interface contracts (derived to serve the screens)
+- Task decomposition with dependency graph and estimated implementor count
+- Eval harness summary (test count, coverage map)
+- Cost projection: estimated build tokens + runtime infra (from P3 research)
+
+**Collect from operator:**
+- Response to doc review findings
+- API keys, service credentials, external accounts
+- Deploy target confirmation (Vercel, Railway, devnet, etc.)
+- Final architecture sign-off
+- `.env` values → write to `.env` (gitignored)
+
+**Close the input ledger — this gate is fail-closed (B).** By now `.rapid/INPUTS.json` must enumerate *every* human input the build needs: the architecture review surfaces which credentials/services the code will call, and each becomes a required row. Mark each resolved as the operator provides it (a `kind:&quot;secret&quot;`/`env`/`credential` row is only truly resolved once its `.env:KEY` actually exists — `tools/inputs-check.sh` verifies this, it does not take the row&#x27;s word for it). Then **run `tools/inputs-check.sh`**; it must exit 0 before you advance STATE.json to P6. The phase-gate hook (R1) runs the same check independently, so a build with any unresolved required input **cannot** enter P6 — it stops here, at the last gate, rather than mid-build. This is the guarantee that the build, once started, runs to completion without surfacing for a missing key or an undecided fork. Anything the operator genuinely wants to defer must be explicitly `waived` (with a reason), never left `unresolved`.
+
+---</pre></details>
       </div>
     </div>
     

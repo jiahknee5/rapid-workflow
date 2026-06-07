@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,31 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">A weekly pulse note in <code>docs/pulse-reports/</code> surfaces the top error and the least-used feature — which become inputs to the next build's pillars.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body"><b>The loop is the product.</b> Each build's pulse makes the next build start smarter; a single build is just an artifact.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P10 — Product Pulse). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P10 Product Pulse (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 10 — Product Pulse [OPTIONAL, POST-SHIP]
+
+After the build ships, the product&#x27;s job isn&#x27;t done — it&#x27;s being used. Product Pulse (inspired by CE&#x27;s `/ce-product-pulse`) generates a time-windowed report on what users actually experienced, so the next iteration has real signal to anchor to.
+
+**Technically:** A `/loop`-based monitoring skill that runs post-deploy and writes reports to `docs/pulse-reports/`.
+
+**Invocation:** `/rapid-workflow pulse [--window 24h|7d|30d]` or set `pulse.auto: true` in rapid.yaml for automatic daily reports.
+
+**What it checks:**
+1. **Usage**: page views, session counts, feature adoption (from analytics if available)
+2. **Performance**: LCP, CLS, FID from real user metrics (if available) or synthetic Lighthouse runs
+3. **Errors**: error rates, top error messages, stack traces from logs or error tracking
+4. **User feedback**: support tickets, GitHub issues, Slack mentions (if accessible via MCP)
+
+**Output:** `docs/pulse-reports/YYYY-MM-DD.md` — a single-page report with:
+- Headline metrics (up/down vs. previous window)
+- Top 3 issues by impact
+- Recommended actions (linked to spec sections where applicable)
+- Signal for the next brainstorm/gap loop cycle
+
+**Compound loop:** Each pulse report feeds into the next build&#x27;s P0 (Vision) — if pulse shows a feature is unused, the next build can deprioritize it. If pulse shows a failure mode, the next build&#x27;s pillars can address it. The build → ship → pulse → build cycle is the outer compound loop.
+
+On fast track: skip (no time for post-ship monitoring in a 1-week gauntlet).
+
+---</pre></details>
       </div>
     </div>
     

@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,23 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">“Ship” → P9; “Loop” → back to P8 with constraints; “Redirect” → re-run from a phase; “Kill” → stop + retro.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">The release call stays human — with a complete, honest evidence bundle and a hard stub block behind it.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Defined in the orchestrator's gate protocol (Gate G3 — Ship decision); the pre-screen doc-review agents are composed from the project's pillars. Verbatim in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — G3 Ship decision (from SKILL.md)</summary><div class="src-where">Verbatim from the orchestrator's gate protocol in <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### ▸ GATE 3 — Ship Decision [HUMAN] (D3)
+
+**Present to operator using AskUserQuestion:**
+- Working app (live URL or instructions to run locally)
+- Spec compliance audit (% per domain from AUDIT.json)
+- Test results + visual QA results
+- Gap report: resolved gaps, remaining gaps (with severity and type)
+- Cost actuals vs projection (from COST.json)
+- Any PRD-level gaps that need operator direction
+
+**Operator options:**
+- **Ship** → proceed to Phase 9
+- **Another gap loop** → re-enter Phase 8 with operator direction
+- **Redirect** → operator provides new constraints, re-run from appropriate phase
+- **Kill** → stop the build, write retro
+
+---</pre></details>
       </div>
     </div>
     

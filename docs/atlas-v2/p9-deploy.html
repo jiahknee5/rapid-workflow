@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,22 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">The same Atlas you're reading is generated for the built project and shipped next to it, so the next developer lands in a navigable map.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Ship + document in one move, with no manual cleanup — the docs are already live from the post-write hook.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P9 — Deploy + Document). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P9 Deploy + Document (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 9 — Deploy + Document [AUTO]
+
+**Output:** Deployed app, README.md, RUNBOOK.md, retro, documentation decks
+
+1. Deploy to the target specified at Gate 2 (Vercel, Railway, devnet, etc.)
+2. Generate/update `README.md` with quick-start instructions
+3. Generate `RUNBOOK.md` with operational procedures (start, stop, monitor, troubleshoot)
+4. Write `.rapid/RETRO.md`: what worked, what drifted, what the gap loop caught, token spend, time breakdown
+5. **Generate all documentation decks:** Run `/docs build` to produce per-folder Reveal.js decks and the master hub at `docs/hub.html`. This is the final documentation pass — every folder gets a navigable deck with diagrams, change tracking, and cross-links.
+   - **Documentation web site (standard layout):** the sectioned doc web pages (PRD, spec, architecture, eval, …) use the standard spec-style layout — top `rapid-nav` + left `.sidebar` in-page menu + `.main` — defined in `templates/template-docs-page.html`. Apply it to a page with `python3 tools/apply-docs-sidebar.py docs/&lt;page&gt;.html --title &lt;Title&gt;`. This is the standard for every project&#x27;s doc web site (slide-deck output above is unchanged). Page types that aren&#x27;t sectioned docs (a Reveal slide deck, a live dashboard) keep the top-nav only.
+6. **Deploy Atlas alongside the product.** Atlas ships with the product so the developer view is reachable next to the thing it documents. Run `tools/atlas-deploy.sh --out &lt;deploy_dir&gt; --url &lt;product_url&gt;` — it folds the static deck into the product deploy under `/_atlas`, then records `atlas.url` (and the matching `dev`/`prod` entries) back into `docs/env.json`. Commit `docs/env.json`.
+
+   **Technically:** `tools/atlas-deploy.sh` copies the static deck half into `&lt;deploy_dir&gt;/_atlas` so it deploys as part of the product, and writes the resolved `atlas.url`/`dev`/`prod` into `docs/env.json` (the single wiring file `env-links.js` reads to render the Atlas/Product/Source clusters). The **two-halves rule**: only the **static deck** (PRD/spec/arch/… pages) deploys with the product under `/_atlas`; the **live view** half — the Observatory, Cost, and regen surfaces — stays **local**, served by `observe-server`, and is never folded into the public deploy. The **Test Suite** page (`testsuite.html`, S-14) is itself two-halved: its diagram + replay of the published `docs/testruns.json` ride along in the static `/_atlas` deck, while its live `▶ Run` (`POST /api/run` → `workflow-runner.py`) stays local under `observe-server` like the other live surfaces.
+7. Final STATE.json: `{ &quot;phase&quot;: 9, &quot;status&quot;: &quot;shipped&quot; }`
+
+---</pre></details>
       </div>
     </div>
     

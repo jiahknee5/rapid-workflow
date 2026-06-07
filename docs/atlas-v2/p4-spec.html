@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,38 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body"><code>### S-04 [DERIVED]</code> traces to <code>FR-7</code>; the workflow state machine becomes <code>docs/workflows.json</code>, which the eval harness reads node-by-node.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Two parallel docs drift within a week. The diff <i>is</i> the value — it's the audit trail and the change log when the gap loop fires.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P4 — Spec Derivation). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P4 Spec Derivation (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 4 — Spec Derivation [AUTO]
+
+**Output:** `04-spec/spec.md`, `04-spec/workflow.md`, `04-spec/mocks/*.html` + `04-spec/screens.md` (UI projects), `04-spec/architecture.md`, `04-spec/CONTRACTS.md`
+
+**Design-first ordering (E).** For any project with a user-facing surface, the order is **spec → workflow → design the screens → derive architecture + contracts from the screens**, not the other way round. A hi-fi comp of each screen forces the data question — *exactly what does this screen read and write?* — and the backend is then built to serve real screens instead of a guessed API. Step 2b below sits between the workflow and the architecture for that reason. (Headless projects — pure CLI/library/service with no UI — skip 2b and note it `n/a` in the spec.)
+
+1. **spec.md**: Derive from PRD + panel synthesis + research. Every requirement tagged:
+   - `[FROM PRD §X]` — directly from the stakeholder PRD
+   - `[DERIVED]` — inferred from panels/research, not in PRD
+   - `[OPEN — needs decision]` — ambiguous, flagged
+   - Each section references its pillar (P1/P2/P3/etc.)
+
+2. **workflow.md**: State machine for the user experience. Every node declares:
+   - `in:` what data/state enters this node
+   - `proc:` what processing happens
+   - `out:` what data/state exits
+   - Golden path + named edge cases + failure paths + recovery
+   - **Also emit `docs/workflows.json`** — the machine-readable form of this same map (per node: `in`/`proc`/`out`, a per-workflow `golden` assertion, a `view` for the user-facing surface, and a bounded `exec` that drives that node against the real app). This single file feeds the runnable Workflow Test Theater (`docs/testsuite.html`, S-14): the diagram, the per-node breakdown, and the executable test all derive from it. Point each node&#x27;s `exec` at THIS project&#x27;s own test/e2e command or UI surface — never a real `/rapid-workflow` build (bounded by construction).
+
+2b. **Design mocks → screens → contracts (E) [UI projects].** Before deriving architecture, design the screens. Run `tools/mock-init.sh` to scaffold `04-spec/mocks/` (a real design-token system `_tokens.css` + a hi-fi screen template + a gallery) and `04-spec/screens.md` (the screen inventory). Then:
+   - **Inventory every screen** in `04-spec/screens.md`: route, states (loading/empty/populated/error), the exact data it reads, and each action → endpoint.
+   - **Build a hi-fi comp per screen** as `04-spec/mocks/&lt;screen-id&gt;.html`, composed only from `_tokens.css` so the whole set stays in sync (re-skin from a reference screenshot via `tools/design-extract-prompt.md` if the operator has a brand). Dispatch this as a design subagent fan-out — one comp (or one screen-cluster) per subagent — and depict each meaningful state. Keep each comp&#x27;s metadata header in sync with `screens.md`.
+   - **Derive the seam contracts from the screens**: the DOM contract (`data-testid`s / roles each comp exposes), the API contract (the endpoints + request/response shapes the actions imply), and the data schema (the entities/fields the screens render) are written to `04-spec/contracts/{dom,api,schema}.md` *from the mocks*. This is the first draft of the P6a-gate seam contracts, pulled forward to plan time — so architecture is built against pinned, screen-derived contracts rather than the build discovering them at fan-out.
+   - These comps are presented for visual sign-off at **GATE 2** and become the **visual target P7 QA** compares the built UI against.
+
+3. **architecture.md**: File structure, layer boundaries, interface contracts, schema/PDA design. **For UI projects, derive this to serve the screens** — the API surface, data model, and layer boundaries follow from `04-spec/screens.md` + the screen-derived contracts in `04-spec/contracts/`, not from a guessed backend. A backend endpoint that no screen consumes (and no non-UI requirement needs) is scope to question, not build.
+
+4. **CONTRACTS.md**: Interface boundaries between layers. Function signatures, type exports, API endpoints. This is what the drift checker (D4) validates against. For UI projects the shared seams (DOM/API/data) live in the per-seam files under `04-spec/contracts/` derived in 2b; CONTRACTS.md references them rather than restating them.
+
+**Inter-stage assertion (Compound AI):** After this phase, programmatically verify: every PRD requirement maps to a spec section OR has an explicit `[OUT OF SCOPE]` tag. If any requirement is unmapped, retry with the violation appended.
+
+---</pre></details>
       </div>
     </div>
     

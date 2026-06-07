@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,57 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">Each workflow node → a test (arrange from <code>in</code>, act from <code>proc</code>, assert from <code>out</code>); each branch → a negative test; each failure path → a recovery test.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Tests are the spec, locked before any feature code. A failing test means the code is wrong (or the spec is — re-derive it; never weaken the test).</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P5 — Tasks + Eval Harness). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P5 Tasks + Eval Harness (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 5 — Task Decomposition + Eval Harness [AUTO]
+
+**Output:** `.rapid/TASKS.json`, `04-spec/agents/*.md`, `.rapid/EVAL/`
+
+1. **Analyze spec complexity** and determine implementor count (D7):
+   - ≤5 tasks with linear deps → 1 implementor
+   - 6–12 tasks with 2–3 parallel → 2 implementors
+   - 13+ tasks with 3+ parallel → 3–4 implementors
+   - Cap: ≤4 concurrent (reviewer capacity constraint)
+
+2. **task-00: eval-harness (BLOCKING — R4).** The eval harness is not a step the orchestrator performs. It is the **first task** in TASKS.json, and every other task depends on it. The build literally cannot start until tests are generated. This turns a skippable step into a blocking dependency.
+   ```json
+   { &quot;id&quot;: &quot;task-00&quot;, &quot;name&quot;: &quot;eval-harness&quot;, &quot;spec_ref&quot;: &quot;ALL&quot;,
+     &quot;depends_on&quot;: [], &quot;estimated_lines&quot;: 0, &quot;agent_slot&quot;: 0,
+     &quot;description&quot;: &quot;Generate immutable eval harness from workflow state machine&quot; }
+   ```
+   - From workflow.md: each node → test case (arrange from `in`, act from `proc`, assert from `out`)
+   - Each branch → negative test
+   - Each failure path → recovery test
+   - Output: `.rapid/EVAL/` directory with test files
+   - **Lock this directory. Agents cannot modify it.** Tests are the contract.
+   - task-00 must be status &quot;done&quot; before any other task can begin.
+   - **Wire each `docs/workflows.json` node&#x27;s `exec` to the same assertion** so the runnable test theater (S-14) and the immutable harness share one source of truth: a node&#x27;s `exec` is the walkable, recorded form of the node&#x27;s eval test (a real command + an expected exit/value), not a second definition.
+
+3. **Decompose remaining work into tasks** with dependency graph (all depend on task-00):
+   ```json
+   { &quot;id&quot;: &quot;task-01&quot;, &quot;name&quot;: &quot;init-config&quot;, &quot;spec_ref&quot;: &quot;S3.1&quot;,
+     &quot;prd_ref&quot;: &quot;R-12&quot;, &quot;arch_ref&quot;: &quot;C2&quot;,
+     &quot;depends_on&quot;: [&quot;task-00&quot;], &quot;estimated_lines&quot;: 150, &quot;agent_slot&quot;: 1 }
+   ```
+   Every non-eval task MUST carry `spec_ref` (a section id in `04-spec/spec.md`) and `prd_ref` (a requirement id in `01-intake/PRD-ENHANCED.md`); `arch_ref` (a component id in `04-spec/architecture.md`) is optional. These are what the module-conformance hook (R8) traces when the task completes — a task with a missing or dangling ref is filed as a conformance gap.
+
+4. **Deliverable coverage assertion (R3).** After task decomposition, verify that every deliverable listed in the PRD&#x27;s &quot;Deliverables&quot; section maps to at least one task:
+   - Parse the deliverables from `01-intake/PRD-ENHANCED.md` (MUST items)
+   - For each deliverable: assert at least one task in TASKS.json references it
+   - If a deliverable has no corresponding task: **create one before proceeding**
+   - This is a hard check, not advisory. Missing deliverable coverage = phase fails.
+
+5. **Generate agent role files** in `04-spec/agents/`: implementor.md, reviewer.md, watchdog.md. Each includes R/W contract (which files the agent may modify) and the Decision Router rules (D5).
+
+6. **Generate CI/CD config** (D11): `.github/workflows/rapid-workflow-ci.yml` or `.gitlab-ci.yml` based on rapid.yaml `ci_platform` setting. Stages: lint → test → build → drift-check → constitution → visual-qa → deploy.
+
+**Inter-stage assertion (blocking — P5 cannot complete until all pass):**
+- Every task references a spec section. Dependency graph has no cycles.
+- Every spec section is covered by at least one task.
+- **Every PRD deliverable maps to at least one task** (R3 — the assertion that catches missing deliverables).
+- **task-00 (eval-harness) exists and is the root of the dependency graph** (R4).
+- **Eval completeness:** Every node in workflow.md has a corresponding test file and at least one test function. Every spec section (S1, S2, ...) has at least one test that exercises it. Missing coverage = phase fails, orchestrator generates the missing test stub before proceeding.
+- **Phase gate hook enforced:** STATE.json cannot advance to phase 6 unless `.rapid/EVAL/` has test files (R1).
+
+---</pre></details>
       </div>
     </div>
     

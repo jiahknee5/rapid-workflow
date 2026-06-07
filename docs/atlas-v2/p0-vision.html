@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,24 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">For a kids' ASL tutor the pillars resolve to <b>[Deaf-community trust · recognition accuracy · sub-200ms latency · COPPA-safe]</b>. From here on every panel is prompted “review through these pillars,” and a requirement that violates one is sent back before panels run.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Panels prompted without a lens give <b>generic best-practice advice</b>; prompted through pillars, they give advice you can use. Vision-first is the cheapest move that prevents drift downstream.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P0 — Vision Extraction). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P0 Vision Extraction (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 0 — Vision Extraction [AUTO]
+
+**Input:** Product idea or PRD text
+**Output:** `00-vision/VISION.md`, `00-vision/PILLARS.md`
+
+1. Extract from the input:
+   - **North star**: one sentence describing the end state
+   - **Success signals**: 3–5 observable indicators that the build succeeded
+   - **Project objective**: what a user can do when this ships
+2. Derive 3–5 **evaluation pillars** specific to this project (not generic). Examples: Correctness, Liveness, Operability, Defensibility. These pillars will be referenced by every panel, spec section, and gap classification.
+3. Write `00-vision/VISION.md` and `00-vision/PILLARS.md`
+4. **Strategy as living doc (CE #13):** VISION.md and PILLARS.md are not write-once artifacts. They are re-runnable — `/rapid-workflow` can be invoked with `--resume` to update them when direction changes. All downstream phases (panels, spec, gap loop) read these files as grounding on every invocation. If a previous build exists for this project, read its VISION.md and PILLARS.md first and present the diff to the operator: &quot;Last build&#x27;s vision was X. Is this still correct, or has direction changed?&quot;
+5. **Compound refresh (CE #9):** If a previous build&#x27;s `.rapid/LEARNINGS.md` exists, run a refresh pass before reading it: check each learning against the current codebase — are the files/functions it references still there? Is the pattern still applicable? Mark stale entries with `status: stale` and a reason. Only inject non-stale learnings into agent prompts.
+6. **Interactive brainstorm (CE #14):** If the input is vague (a rough idea rather than a PRD), engage the operator in a collaborative Q&amp;A before proceeding: &quot;What problem does this solve? Who is the user? What does success look like? What&#x27;s out of scope?&quot; Surface ambiguities through dialogue, not assumptions. Write the output as `01-intake/BRAINSTORM.md` and use it as input for P1b (PRD Decomposition).
+
+**Do not use generic pillars.** Derive them from the specific risks and goals of this project.
+
+---</pre></details>
       </div>
     </div>
     

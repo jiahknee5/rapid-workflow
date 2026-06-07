@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,22 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">The flow analyzer notices a workflow branch with no defined recovery path → a blocking question lands in <code>.rapid/DEEPENING.md</code> for you to resolve at G2.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">The last cheap chance to fix ambiguity before the keys change hands and rework gets expensive.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P5b — Spec Deepening). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P5b Spec Deepening (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 5b — Spec Deepening Pass [AUTO] (CE #12)
+
+Before the operator sees the spec at G2, run a **deepening pass** — sub-agents review the spec for gaps, weak assumptions, and missing edge cases. This catches spec problems before the point of no return, where they&#x27;re cheap to fix. After the point of no return, spec problems become build problems.
+
+1. Spawn 3 parallel deepening subagents:
+   - **Spec flow analyzer** (CE #15): Analyze the workflow state machine for unreachable states, missing error paths, and edges that don&#x27;t connect. Report: &quot;State S3 has no error path — what happens when the API call fails?&quot;
+   - **Confidence checker**: For each spec section, rate confidence HIGH/MEDIUM/LOW. LOW = based on an unverified assumption or missing research. MEDIUM = reasonable but untested. HIGH = verified or deterministic.
+   - **Deliverable verifier**: Cross-check spec → tasks → deliverables → PRD. Every PRD deliverable must trace through to a task. Flag orphaned deliverables.
+
+2. Merge findings into `.rapid/DEEPENING.md`: section, confidence, gaps found, missing flows.
+
+3. Any LOW-confidence finding or missing flow becomes a **blocking question** for G2 — the operator must resolve it before approving the build.
+
+**Inter-stage assertion:** P5b cannot complete until every spec section has a confidence rating and every deliverable traces to a task.
+
+---</pre></details>
       </div>
     </div>
     

@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,21 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">A healthcare build weights the <code>security-expert-panel</code> heaviest; a kids' app convenes a <code>user-panel</code> of kids, parents, and teachers in voice plus <code>asl-expert-panel</code>. The synthesis — not the transcripts — is what you read at G1.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Tiered, in-voice domain challenge surfaces objections a generalist gate misses — and it runs after the cheap faithfulness gate, so panel cost is never wasted. Its output sets priority at G1.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P2 — Expert Panels). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P2 Expert Panels (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 2 — Expert Panels [AUTO]
+
+**Output:** `03-panels/synthesis.md`
+
+**Fast track (1 panel):** Run the most relevant panel as a skill (stays in your context — no context duplication). Choose: technical-expert-panel, business-expert-panel, or domain-specific panel based on the project type.
+
+**Full track (3 panels):** Spawn 3 parallel subagents, one per panel type (technical, business, domain SME). Each receives: VISION.md, PILLARS.md, PRD-ENHANCED.md. Each reviews through the pillars, not generically.
+
+After panels complete, **synthesize** into `03-panels/synthesis.md`:
+- **Convergent findings**: where all panels agree
+- **Divergent findings**: where panels disagree (flag for Gate 1)
+- **Critical risks**: ranked by severity
+- **Open questions**: things no panel could answer (route to Phase 3)
+
+---</pre></details>
       </div>
     </div>
     

@@ -139,6 +139,8 @@ details.srctext summary::-webkit-details-marker{display:none;}
 details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
+details.srctext .src-where{font-size:0.74rem;color:var(--text-muted);line-height:1.55;margin-bottom:8px;}
+details.srctext .src-raw{background:var(--code-bg);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:0.7rem;line-height:1.6;color:#b8c0cc;white-space:pre-wrap;word-break:break-word;overflow-x:auto;max-height:560px;overflow-y:auto;margin:0;}
 
 /* deep sections (in-depth body below the skill card) */
 .deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
@@ -201,7 +203,31 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         </div>
         <div class="skill-ex"><div class="ex-label">Example</div><div class="ex-body">The raw PRD is copied to <code>01-intake/PRD.md</code> and frozen; an empty <code>DIFF.md</code> opens the audit trail. Preflight then probes the declared stack — a missing required runtime <b>blocks</b> P1 rather than letting the build route around it.</div></div>
         <div class="skill-val"><div class="val-label">Why it's valuable</div><div class="val-body">Everything downstream depends on a clean, locked, runnable starting point. Locking the PRD here is what makes the maintained diff (P4) trustworthy.</div></div>
-        <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P1 — Structure). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
+        <details class="srctext"><summary>▸ Real skill text — P1 Structure (from SKILL.md)</summary><div class="src-where">Verbatim from <code>skills/rapid-workflow/SKILL.md</code>.</div><pre class="src-raw">### Phase 1 — Structure [AUTO]
+
+**Output:** Folder structure, locked PRD, CONSTITUTION.md, BUILD-AUTONOMY.md, .rapid/ initialized
+
+1. Create the numbered folder structure:
+   ```
+   00-vision/  01-intake/  02-grounding/  03-panels/  04-spec/  05-gaps/
+   04-spec/agents/  audits/  decisions/  panels/  tests/  docs/  .rapid/
+   ```
+2. Copy or write the PRD to `01-intake/PRD.md` — this file is **immutable** from this point
+3. Create `01-intake/DIFF.md` (empty — will track divergences from PRD)
+4. Generate `CONSTITUTION.md` at project root with Articles I–X tailored to this project&#x27;s risks:
+   - Articles I–V: **inviolable** (truthfulness, user safety, data handling, reversibility, scope discipline)
+   - Articles VI–X: **overridable with logging** (spec authority, no test theater, honest reporting, pushback discipline, root-cause discipline)
+5. Write `BUILD-AUTONOMY.md` at project root, seeded from `templates/BUILD-AUTONOMY.md`. This is the standing-authorization charter (see &quot;Standing Authorization — Run to Completion&quot; above): it states that with CONSTITUTION.md + the locked PRD present the build runs to completion without per-step gates, and it carries the fixed stop-condition set (destructive/irreversible, outward-facing, spends-money, undecidable high-stakes). Leave the operator-signed fields (deploy target, spend ceiling, undecidable-batch answers) blank — they are filled at Gate 1.
+   - **Seed `.rapid/INPUTS.json` from `templates/INPUTS.json`** — the machine-checked human-input ledger (B). It starts with the two always-required rows (`deploy_target`, `spend_ceiling`) and grows as panels/spec discover credentials and decisions the build will need. It is *populated* at Gate 1/Gate 2 and *enforced* at the P6 boundary: `tools/inputs-check.sh` and the phase-gate hook refuse to let STATE.json reach phase 6 until every `required` input is `resolved` (or `waived`). This is what turns &quot;gather human input up front, then run to completion&quot; from a convention into a mechanical gate.
+6. **Preflight — probe and provision the declared stack.** Run `tools/preflight.sh`. It probes every runtime the declared stack needs (node/npm version, python, the package manager, anchor/cargo, browsers for Playwright, etc.), **installs any that are missing within the declared stack**, and **hard-fails if it cannot** install or detect one. The build is **blocked until preflight is green** — `tools/preflight.sh` writes `.rapid/PREFLIGHT.json` and STATE.json cannot leave Phase 1 until it shows all required runtimes present. **Never write code that routes around a missing runtime** (a shim, a mock-because-it-won&#x27;t-install, a &quot;skip if unavailable&quot; branch) — that produces code that can&#x27;t be verified, which defeats the point of the loop. If a runtime genuinely cannot be installed, that is a Gate-1 blocker, not a thing to code around.
+7. Initialize `.rapid/STATE.json`: `{ &quot;phase&quot;: 1, &quot;status&quot;: &quot;complete&quot;, &quot;track&quot;: &quot;fast|full&quot; }`
+8. **Scaffold Atlas (R-10).** Every project gets its own Atlas — the developer-view harness — generated and live from the very first phase, not bolted on at the end. Run `tools/atlas-init.sh`. It scaffolds the deck shell (the 10-page nav: prd, prd-enhanced, architecture, workflow, users, spec, observatory, eval, cost, documentation), writes the single wiring file `docs/env.json` (with `product{local,dev,prod}`, `source{github,gitlab}`, and `atlas{url}`) plus `docs/regen.json`, copies the harness assets `env-links.js`, `sidebar.js`, and `home.html`, and drops a `.vscode` config. Atlas is then prepopulated and live from day one.
+
+   **The content is the PROJECT&#x27;s own — never the workflow&#x27;s.** Atlas is generated *inside the target project* and every page is filled from *that project&#x27;s* artifacts (its vision, PRD, spec, architecture, users, tests, deploys). The kit (rapid-workflow) supplies only the **form** — template, CSS, nav, tools; the project supplies the **content**. A build of `gauntlet-st6` produces *st6&#x27;s* Atlas — st6&#x27;s DESIGN-SPEC, its Spring Boot + micro-frontend architecture, its e2e suite — not anything about RAPID. rapid-workflow&#x27;s own Atlas is solely the reference/dogfood instance; never copy kit or workflow content into a project&#x27;s Atlas.
+
+   **Technically:** `tools/atlas-init.sh` lays down the static deck shell and the live-view scaffolding so the developer view exists before any content does. The pages **self-populate as phases complete** — P1b fills prd/prd-enhanced, P4 fills architecture/workflow/spec, P5 fills eval, P6+ fill observatory/cost/users — each phase writing its artifacts back into the matching page. The **static deck** half (the PRD/spec/arch/… pages) is deployable; the **live view** half (Observatory, Cost, regen) is served locally by `observe-server` (the same observe server at localhost:4040). `env-links.js`, already wired on every page, renders the &quot;Atlas&quot; tag, the Product and Source clusters, and the ↻ Regenerate button — all driven by `docs/env.json`. Its sibling `sidebar.js` (also wired on every page, and copied by atlas-init) builds the left-menu Atlas map — a Deployments block plus a tree of all pages with sections nested, the page list **derived from the rapid-nav** so it adapts to any project&#x27;s page set. Both scripts must travel together; deterministic generators (e.g. `cost-summary.sh`) emit both.
+
+---</pre></details>
       </div>
     </div>
     

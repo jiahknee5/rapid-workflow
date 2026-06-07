@@ -572,6 +572,45 @@ PH = [
 
 STYLE = open("/Users/johnny/projects/rapid-workflow/docs/atlas-v2/_style.css").read()
 
+import re as _re
+ROOT = "/Users/johnny/projects/rapid-workflow"
+def load_skill_sections():
+    """Extract verbatim per-phase/gate sections from the orchestrator SKILL.md."""
+    try:
+        lines = open(ROOT+"/skills/rapid-workflow/SKILL.md").read().split("\n")
+    except Exception:
+        return {}
+    keymap = {
+      "Phase 0":"p0-vision","Phase 1":"p1-structure","Phase 1b":"p1b-decompose",
+      "GATE 0":"g0","Phase 2":"p2-panels","Phase 3":"p3-research","GATE 1":"g1",
+      "Phase 4":"p4-spec","Phase 5":"p5-tasks-eval","Phase 5b":"p5b-deepen","GATE 2":"g2",
+      "Phase 6":"p6-build","Phase 7":"p7-test","Phase 8":"p8-gaps","GATE 3":"g3",
+      "Phase 9":"p9-deploy","Phase 10":"p10-pulse",
+    }
+    H  = _re.compile(r"^#{1,3} ")                              # any h1–h3 ends a section
+    PG = _re.compile(r"^### (?:▸ )?(GATE \d+|Phase \d+b?)\b")   # a phase/gate header starts one
+    secs, i, n = {}, 0, len(lines)
+    while i < n:
+        m = PG.match(lines[i])
+        if m:
+            key = keymap.get(m.group(1)); j = i+1
+            while j < n and not H.match(lines[j]): j += 1
+            if key: secs[key] = "\n".join(lines[i:j]).strip()
+            i = j
+        else:
+            i += 1
+    return secs
+SKILL_SECTIONS = load_skill_sections()
+
+def load_role_briefs():
+    out = []
+    for r in ["planner","coder","tester","reviewer","watchdog"]:
+        p = ROOT+"/templates/agent-roles/"+r+".md"
+        if os.path.exists(p):
+            out.append("# ========== "+r+".md ==========\n"+open(p).read().strip())
+    return "\n\n".join(out)
+ROLE_BRIEFS = load_role_briefs()
+
 def topnav(active):
     # Slim, high-level developer destinations — phases live in the left nav + hub stepper.
     # active="index" highlights Plan (every Skills-Atlas page is part of the plan).
@@ -620,13 +659,20 @@ def skill_card(p):
     if p.get("subskills"):
         cells = "".join(f'<div class="subskill"><span class="ss-name">{n}</span> <span class="ss-id">rapid:role-{n}</span><div class="ss-desc">{d}</div></div>' for n,d in p["subskills"])
         sub = f'<div class="field-label" style="margin-top:18px;">Role sub-skills (gstack personas — each a bounded contract)</div><div class="subskills">{cells}</div>'
-    if p["kind"]=="gate":
-        src = f'Defined in the orchestrator\'s gate protocol (Gate {p["ph"]} — {html.escape(p["name"])}); the pre-screen doc-review agents are composed from the project\'s pillars. Verbatim in <code>skills/rapid-workflow/SKILL.md</code>.'
+    raw = SKILL_SECTIONS.get(p["slug"], "")
+    where = ("Verbatim from the orchestrator's gate protocol in <code>skills/rapid-workflow/SKILL.md</code>."
+             if p["kind"]=="gate" else
+             "Verbatim from <code>skills/rapid-workflow/SKILL.md</code>" + (" + the build-team role briefs in <code>templates/agent-roles/</code>" if p.get("subskills") else "") + ".")
+    if raw:
+        block = (f'<details class="srctext"><summary>▸ Real skill text — {p["ph"]} {html.escape(p["name"])} (from SKILL.md)</summary>'
+                 f'<div class="src-where">{where}</div><pre class="src-raw">{html.escape(raw)}</pre>')
+        if p.get("subskills") and ROLE_BRIEFS:
+            block += (f'<div class="src-where" style="margin-top:12px;">Build-team role briefs — verbatim from <code>templates/agent-roles/</code>:</div>'
+                      f'<pre class="src-raw">{html.escape(ROLE_BRIEFS)}</pre>')
+        block += '</details>'
+        sub += block
     else:
-        src = f'Composed inside the <code>/rapid-workflow</code> orchestrator (Phase {p["ph"]} — {html.escape(p["name"])}). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>'
-        src += ' plus the role briefs in <code>templates/agent-roles/*.md</code>.' if p.get("subskills") else '.'
-    src += ' Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.'
-    sub += f'<details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">{src}</div></details>'
+        sub += f'<details class="srctext"><summary>▸ Skill text</summary><div class="src-where">{where}</div></details>'
     return f'''<div class="skill">
       <div class="skill-head"><span class="skill-name">{html.escape(p["name"])}</span><span class="skill-id">rapid:{p["slug"]}</span><span class="skill-badges">{badges}</span></div>
       <div class="skill-body">
