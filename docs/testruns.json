@@ -213,7 +213,7 @@
             "elapsed_s": 0.0,
             "view": {
               "kind": "iframe",
-              "src": "prd-enhanced.html"
+              "src": "documentation.html"
             },
             "declared": {
               "in": "One-line idea (/rapid-workflow \"<idea>\")",
@@ -522,7 +522,7 @@
             "elapsed_s": 0.0,
             "view": {
               "kind": "iframe",
-              "src": "spec.html"
+              "src": "architecture.html"
             },
             "declared": {
               "in": "Stakeholder PRD document",
@@ -889,7 +889,7 @@
             "elapsed_s": 0.0,
             "view": {
               "kind": "iframe",
-              "src": "prd-enhanced.html"
+              "src": "documentation.html"
             },
             "declared": {
               "in": "Doc site + visible test status",
@@ -901,7 +901,7 @@
               "exists": true
             },
             "data_out": {
-              "path": "docs/prd-enhanced.html",
+              "path": "docs/documentation.html",
               "exists": true
             }
           }

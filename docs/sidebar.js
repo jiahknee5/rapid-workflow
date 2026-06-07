@@ -39,10 +39,11 @@
     if (!nav) return null;
     var out = [], seen = {};
     var add = function (href, label) {
-      var slug = (href || '').split('#')[0].split('/').pop();
+      var clean = (href || '').split('#')[0];          // keep the relative path (e.g. atlas-v2/index.html)
+      var slug = clean.split('/').pop();
       if (!slug || seen[slug]) return;
       seen[slug] = 1;
-      out.push([slug, (label || slug).replace(/\s+/g, ' ').trim()]);
+      out.push([clean, (label || slug).replace(/\s+/g, ' ').trim()]);
     };
     // The Atlas hub lives in the brand area as env-links.js' dev-view-tag
     // (href=home.html). Surface it first so the hub is in the tree.
@@ -129,7 +130,7 @@
   // Per-page nodes: a link row (+ caret for non-active) and a sub container.
   var subBoxes = {};
   PAGES.forEach(function (p) {
-    var href = p[0], label = p[1], active = href === here;
+    var href = p[0], label = p[1], active = href.split('/').pop() === here;
 
     var row = document.createElement('a');
     row.className = 'atlas-page' + (active ? ' active' : ''); // sections shown by default; caret collapses
