@@ -888,5 +888,15 @@ for i,p in enumerate(PH):
     open(os.path.join(OUT,p["slug"]+".html"),"w").write(page(p,i)); n+=1
 for c in CROSS:
     open(os.path.join(OUT,c["slug"]+".html"),"w").write(cross_page(c)); n+=1
+
+# Keep the docs registry in sync so documentation.html / home.html never show a stale
+# doc set (the post-write hook only refreshes it on STATE/numbered-folder writes).
+try:
+    import subprocess
+    subprocess.run(["bash", ROOT+"/tools/build-docs-registry.sh"], cwd=ROOT,
+                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30)
+    print("refreshed docs.json registry")
+except Exception as _e:
+    print("registry refresh skipped:", _e)
 print(f"wrote {n} pages to {OUT}")
 print("pages:", ", ".join([p["slug"] for p in PH]))

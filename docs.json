@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "updated": "2026-06-06",
   "generated_by": "tools/build-docs-registry.sh",
   "categories": {
@@ -49,7 +49,7 @@
       "title": "Atlas V2 Design",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -65,7 +65,7 @@
       "title": "Doc Model Brainstorm",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -89,7 +89,7 @@
       "title": "Home",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -97,7 +97,7 @@
       "title": "How It Works",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -136,7 +136,7 @@
       "title": "Rapid Reconstruction Prompt",
       "category": "rapid",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -159,7 +159,7 @@
       "title": "System Architecture",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -167,7 +167,7 @@
       "title": "Terminal Ui",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -215,7 +215,7 @@
       "title": "Expert-Panel Skill",
       "category": "skill",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -231,7 +231,7 @@
       "title": "Refine Skill",
       "category": "skill",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -268,7 +268,7 @@
       "title": "Template Docs Page V2",
       "category": "template",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -276,7 +276,7 @@
       "title": "Template Docs Page",
       "category": "template",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -284,7 +284,7 @@
       "title": "Apply Docs Sidebar",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -292,7 +292,7 @@
       "title": "Atlas Deploy",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -300,7 +300,7 @@
       "title": "Atlas Init",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -308,7 +308,7 @@
       "title": "Atlas Skills Gen",
       "category": "skill",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -340,7 +340,7 @@
       "title": "Inputs Check",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -363,7 +363,7 @@
       "title": "Log Decision",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -371,7 +371,7 @@
       "title": "Mock Init",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -423,7 +423,7 @@
       "title": "Preflight",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -438,7 +438,7 @@
       "title": "Rapid Team",
       "category": "rapid",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -478,7 +478,7 @@
       "title": "Verify",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     },
     {
@@ -493,7 +493,7 @@
       "title": "Worktree Check",
       "category": "workflow",
       "description": "",
-      "status": "new",
+      "status": "current",
       "generated": true
     }
   ],
