@@ -695,6 +695,9 @@ def sidebar(active):
     rows.append('<a href="compound-engineering.html"%s>Compound Engineering</a>' % (' class="active"' if active=="compound-engineering" else ""))
     rows.append('<a href="lineage.html"%s>Lineage &amp; vs.</a>' % (' class="active"' if active=="lineage" else ""))
     rows.append('<a href="index.html#crosscut">/decision · /docs · /refine · hooks R1–R9</a>')
+    rows.append('<div class="sidebar-section">Reference</div>')
+    rows.append('<a href="../architecture.html">Architecture · D0–D21 ↗</a>')
+    rows.append('<a href="../workflow.html">Workflow map ↗</a>')
     return '<nav class="sidebar"><div class="sidebar-brand">✦ Skills Atlas</div><div class="sidebar-sub">Rapid — the build workflow, by skill</div>' + "".join(rows) + '</nav>'
 
 def chips(items, cls=""):
