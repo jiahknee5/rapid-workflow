@@ -220,11 +220,12 @@ After panels complete, **synthesize** into `03-panels/synthesis.md`:
 ---</pre><div class="src-where" style="margin-top:12px;">The generic <code>/expert-panel</code> skill — verbatim from <code>skills/expert-panel/SKILL.md</code>:</div><pre class="src-raw">---
 name: expert-panel
 description: &gt;
-  Build a rigorous, product-agnostic expert panel for any of the four Rapid review
-  areas — Business, Technical, SME (domain), Users. For each area it generates
-  1st-, 2nd-, and 3rd-order candidate experts, scores them, and pares to the most
-  relevant ~6–8, then runs the panel through the project&#x27;s pillars and synthesizes
-  convergent / divergent / risks / open. Names disciplines, not products — it is
+  Build a rigorous, product-agnostic expert panel for any of the five Rapid review
+  areas — Business, Technical, Design, SME (domain), Users. For each area it generates
+  1st-, 2nd-, and 3rd-order candidate experts (each wielding named frameworks and an
+  outside-view lens), scores them, and pares to the most relevant ~6–8, then runs the
+  panel through the project&#x27;s pillars and synthesizes convergent / divergent / risks /
+  open. Names disciplines and the frameworks they apply, not products — it is
   instantiated per project and never hardcodes a particular product (no ASL, no
   SuperBuilders). Used at Phase 2 of a Rapid build; also usable standalone for any
   multi-perspective review that must not be an echo chamber.
@@ -232,10 +233,12 @@ description: &gt;
 
 # Expert Panel — generic panel builder (P2)
 
-&gt; **What it is.** A reusable method for assembling an expert panel in any of four
-&gt; areas and for any product. It overproduces candidate experts across three &quot;orders&quot;
-&gt; of distance from the work, scores them, and pares to the load-bearing set — so the
-&gt; panel is grounded *and* hard to fool. It outputs disciplines/archetypes that the
+&gt; **What it is.** A reusable method for assembling an expert panel in any of **five
+&gt; areas** (Business · Technical · Design · SME · Users) and for any product. It
+&gt; overproduces candidate experts across three &quot;orders&quot; of distance from the work, scores
+&gt; them, and pares to the load-bearing set — so the panel is grounded *and* hard to fool.
+&gt; Each panelist brings not just a voice but a **named discipline, the frameworks that
+&gt; discipline wields, and an outside-view lens.** It outputs disciplines/archetypes the
 &gt; orchestrator instantiates against the project&#x27;s domain and pillars; it contains no
 &gt; product-specific content.
 &gt;
@@ -268,10 +271,36 @@ description: &gt;
 4. **Score against the pillars, not in the abstract.** Relevance is relative to *this*
    project&#x27;s pillars and risk surface, so the same area produces a different panel for a
    kids&#x27; app than for a clearing house.
+5. **A panelist is a lens *plus a toolkit*.** The value isn&#x27;t the person — it&#x27;s the
+   **discipline + the named frameworks it wields + the outside view it imports.** A panel
+   that brings JTBD, Five Forces, Nielsen&#x27;s heuristics, STRIDE, and the Double Diamond to
+   bear *shapes the app*; a panel that only voices opinions just grades it. Each area below
+   lists the frameworks its panel should apply by name.
 
 ---
 
-## The three orders of expertise (consistent across all four areas)
+## The five areas — and what each is for
+
+The five areas map cleanly onto the classic product lenses (Desirability · Feasibility ·
+Viability), extended with Legitimacy for regulated/expert domains:
+
+| Area | Question it owns | Lens |
+|---|---|---|
+| **Business** | Is this viable, fundable, defensible? | **Viability** |
+| **Technical** | Will it hold up; is it sound and testable? | **Feasibility** |
+| **Design** | Is it usable, coherent, and desirable to use? | **Desirability** (craft) |
+| **Users** | Does it actually work for the people who touch it? | **Desirability** (felt experience) |
+| **SME (domain)** | Is it right, credible, and legitimate in the domain? | **Legitimacy / validity** |
+
+&gt; **Design and Users are siblings, not duplicates.** Design owns the *artifact* — IA,
+&gt; interaction, hierarchy, the craft and the heuristics. Users owns the *people* — adoption,
+&gt; felt experience, the full cast of personas. A beautiful interface no one adopts fails the
+&gt; Users panel; a beloved product that&#x27;s an accessibility and consistency mess fails the
+&gt; Design panel. You want both.
+
+---
+
+## The three orders of expertise (consistent across all five areas)
 
 Distance from the day-to-day work increases 1 → 3; per-head relevance falls, surprise rises.
 
@@ -330,11 +359,12 @@ Ties broken toward the **more concrete ask** and the **higher order** (to protec
 
 ---
 
-## The four areas
+## The five areas
 
 Each module gives the area&#x27;s **charge**, its candidate roster **by order** (archetypes, not
-people), and **relevance weighting** — what to score up given the project&#x27;s pillars. The
-roster is the generation menu for steps 2–4; the weighting tunes the scoring in step 5.
+people), the **frameworks** that area&#x27;s panel should wield by name, and **relevance weighting**
+— what to score up given the project&#x27;s pillars. The roster is the generation menu for steps 2–4;
+the frameworks are the tools each panelist brings; the weighting tunes the scoring in step 5.
 
 ### A · Business — *&quot;Is this viable, fundable, and defensible?&quot;*
 
@@ -371,6 +401,11 @@ investor ↑ for cash-generative / mature / consolidation plays; the incumbent C
 big player is the probable acquirer or competitor; the founder lens is always in (it&#x27;s the
 builder&#x27;s own reality check).
 
+**Frameworks the panel wields:** Jobs-to-be-Done · Porter&#x27;s Five Forces · Business Model /
+Lean Canvas · unit economics (CAC · LTV · payback · contribution margin) · the Rule of 40 ·
+Helmer&#x27;s *7 Powers* · Christensen&#x27;s Disruption Theory · Wardley Mapping · TAM/SAM/SOM ·
+network-effects taxonomy (NFX 16) · cohort &amp; retention curves · the Bullseye GTM framework.
+
 ### B · Technical — *&quot;Will it hold up, and is it sound and testable?&quot;*
 
 **Charge:** architecture, testability, performance, security, privacy, accessibility,
@@ -398,6 +433,11 @@ reliability, DevEx/CI, data, and (only if the build is AI) model/inference desig
 **Relevance weighting:** security &amp; privacy ↑ for sensitive/regulated data; performance &amp;
 cost-at-scale ↑ for real-time or high-volume; accessibility ↑ (and never 0) for any
 consumer/public surface; the ML engineer &amp; correctness skeptic in only when the build is AI.
+
+**Frameworks the panel wields:** the C4 model · the Test Pyramid · STRIDE threat modeling ·
+SOLID + coupling/cohesion · CAP / PACELC · the Twelve-Factor App · SRE SLOs &amp; error budgets ·
+FMEA / fault trees · Conway&#x27;s Law · resilience patterns (circuit breaker · bulkhead · backpressure) ·
+privacy-by-design · the OWASP Top 10 · (for AI) eval-harness + offline/online metrics + drift monitoring.
 
 ### C · SME (domain) — *&quot;Is it right, legitimate, and credible in the domain?&quot;*
 
@@ -427,6 +467,11 @@ cultural soundness, and the domain&#x27;s real edge cases and failure modes.
 cross-domain analogist ↑ for novel applications; community advocate ↑ where the domain has a
 represented community with standing; failure-mode expert ↑ where mistakes are costly or unsafe.
 
+**Frameworks the panel wields:** the domain&#x27;s own canon &amp; standards of evidence · evidence
+hierarchies (what counts as &quot;known&quot; here) · precedent / case / incident review · first-principles
+vs. received practice · analogical transfer from adjacent domains · the precautionary principle
+(for high-stakes/irreversible) · ethics review (consent, equity, &quot;nothing about us without us&quot;).
+
 ### D · Users — *&quot;Does it actually work for the people who&#x27;ll touch it?&quot;*
 
 **Charge:** usability, felt experience, adoption &amp; abandonment, and the *full cast* of
@@ -451,6 +496,49 @@ hands-on personas — not just the primary user. Feeds the persona → scenario 
 accessibility-needs user always ≥1; adversarial/misuse user ↑ for social, UGC, or
 safety-critical products; operator/admin ↑ for anything configurable or multi-tenant.
 
+**Frameworks the panel wields:** Jobs-to-be-Done · personas &amp; anti-personas · journey mapping ·
+the Kano model · the Fogg Behavior Model (B = MAP) · the Hook model *(and its ethics)* ·
+laddering / the 5 Whys · Rogers&#x27; Diffusion of Innovations (the adoption curve) · accessibility
+personas · day-in-the-life narrative.
+
+### E · Design — *&quot;Is it usable, coherent, and desirable to use?&quot;*
+
+**Charge:** product/UX design, interaction &amp; information architecture, visual hierarchy &amp; craft,
+design systems &amp; consistency, content/UX writing, design research, accessibility-as-design,
+the end-to-end service experience, and desirability/emotional resonance. (Design owns the
+*artifact*; Users owns the *people* — see &quot;Design and Users are siblings&quot; above.)
+
+- **1st order — practitioners (do design)**
+  - **Product / UX designer** — flows, information architecture, interaction; &quot;where does the user get stuck.&quot;
+  - **UI / visual designer** — hierarchy, type, color, spacing, the craft of the surface.
+  - **Interaction / motion designer** — states, transitions, feedback; the *feel* of using it.
+  - **UX researcher** — what users actually *do* vs. say; usability tests, the evidence behind the design.
+  - **Content designer / UX writer** — clarity, voice, labels, empty states, error messages — the words.
+  - **Design technologist / front-end-design** — design-to-code fidelity; what&#x27;s actually buildable.
+- **2nd order — shapers &amp; critics**
+  - **Design systems lead** — tokens, components, consistency at scale; the anti-entropy force.
+  - **Accessibility / inclusive-design specialist** — WCAG as *design intent*, not a bolt-on audit.
+  - **Brand / creative director** — identity, differentiation, the emotional and desirability bar.
+  - **Service designer** — the end-to-end journey across touchpoints and time, not one screen.
+  - **Design-ops / critique facilitator** — the quality bar and how critique actually runs.
+- **3rd order — outsiders &amp; long-horizon**
+  - **Cognitive / perceptual psychologist** — attention, memory, perception (Gestalt, signal detection).
+  - **Behavioral designer (ethical)** — habit &amp; motivation, and *dark-pattern avoidance*, not exploitation.
+  - **Anthropologist / ethnographer** — how the artifact actually lives in real context and culture.
+  - **Critical / adversarial designer** — who&#x27;s excluded, what harm the design enables, the deceptive-pattern lens.
+  - **Cross-medium designer** (game / industrial / architecture / typography) — imports a non-software design tradition.
+
+**Frameworks the panel wields:** the Double Diamond · Design Thinking (IDEO) · Nielsen&#x27;s 10
+usability heuristics · Norman&#x27;s affordances &amp; signifiers + the Gulfs of Execution/Evaluation ·
+Gestalt principles · Fitts&#x27;s &amp; Hick&#x27;s laws · the Laws of UX · Jobs-to-be-Done · the Kano model
+(expected vs. delight) · journey &amp; service blueprints · WCAG / inclusive design · Atomic Design
+&amp; design tokens · the serial-position &amp; von Restorff effects · desirability testing.
+
+**Relevance weighting:** visual &amp; interaction craft ↑ for consumer / brand-forward products;
+accessibility-as-design always ≥1; service designer ↑ for multi-touchpoint / omni-channel;
+content designer ↑ for information-dense or high-stakes flows; the critical/adversarial designer
+↑ for persuasive or engagement-driven products (the dark-pattern risk).
+
 ---
 
 ## Instantiation — how &quot;product-agnostic&quot; is enforced
@@ -460,7 +548,7 @@ safety-critical products; operator/admin ↑ for anything configurable or multi-
   giving it a name and a plausible background. The **skill file stays clean of any product.**
 - A panelist must reference a **specific PRD requirement or pillar** — never &quot;the doc in general.&quot;
 - The same skill serves any product: a language-learning app and a settlement system each get a
-  Business / Technical / SME / Users panel from these rosters, instantiated differently. If a
+  Business / Technical / Design / SME / Users panel from these rosters, instantiated differently. If a
   product name ever appears *in this file*, that&#x27;s a bug — it belongs in the generated
   `03-panels/synthesis.md`, not here.
 - **No invented facts.** A panelist&#x27;s judgment and priorities are theirs to assert; a specific
@@ -489,8 +577,8 @@ raising it and from what distance.
 
 | | Panels run | Experts each | Orders required |
 |---|---|---|---|
-| **full** | all four areas | 6–8 | ≥3 / ≥2 / ≥1 |
-| **fast** | the single most pillar-relevant area | ~4 | ≥1 non-1st-order (never all insiders) |
+| **full** | all five areas | 6–8 | ≥3 / ≥2 / ≥1 |
+| **fast** | the 1–2 most pillar-relevant areas | ~4 | ≥1 non-1st-order (never all insiders) |
 
 Escalate to a **2nd-order *panel*** (experts critiquing the panel&#x27;s *output* — distinct from the
 3rd-*order* expert) only when: a panel disagrees internally on a load-bearing, irreversible
@@ -520,11 +608,12 @@ project&#x27;s `03-panels/`, never in this file.*
     </div>
     
     <div class="deep-sec">
-      <div class="deep-title">The four panel lenses</div>
-      <div class="deep-sub">Every panel is one of four lenses. Which lenses run, and who sits on each, is composed per project; <b>the default full track convenes Business + Technical + SME/Users</b>, fast track picks the single most relevant.</div>
+      <div class="deep-title">The five panel lenses</div>
+      <div class="deep-sub">Five areas, mapping to the classic product lenses — <b>Viability</b> (Business), <b>Feasibility</b> (Technical), <b>Desirability</b> (Design + Users), and <b>Legitimacy</b> (SME). Each panel wields <b>named frameworks</b>, not just opinions — Five Forces, the Test Pyramid, the Double Diamond, Nielsen's heuristics, JTBD. Which lenses run is composed per project; full track runs all five.</div>
       <div class="lens-grid">
         <div class="lens blue"><h5>Business</h5><div class="lens-skill">/expert-panel · Business</div><p>Market &amp; timing, GTM motion, pricing &amp; packaging, unit economics, regulatory exposure, moat/defensibility, 2nd-order effects of success at scale.</p><div class="catches"><b>Catches:</b> is this viable, fundable, defensible?</div></div>
         <div class="lens teal"><h5>Technical</h5><div class="lens-skill">/expert-panel · Technical</div><p>Architecture, testability, performance, security, privacy, accessibility, reliability, DevEx/CI, data, and model/inference design (if AI).</p><div class="catches"><b>Catches:</b> will it hold up? is it testable? where does it break?</div></div>
+        <div class="lens"><h5>Design</h5><div class="lens-skill">/expert-panel · Design</div><p>The <i>artifact</i> — IA, interaction, visual hierarchy, motion, design systems, content/UX writing, and accessibility-as-design. Owns craft &amp; desirability.</p><div class="catches"><b>Catches:</b> is it usable, coherent, and desirable to use?</div></div>
         <div class="lens purple"><h5>SME (domain)</h5><div class="lens-skill">/expert-panel · SME</div><p>Domain experts in voice — the project's own field, whatever it is. Domain correctness, accepted practice, legitimacy, cultural soundness, real edge cases.</p><div class="catches"><b>Catches:</b> is it right and credible in the domain?</div></div>
         <div class="lens green"><h5>Users</h5><div class="lens-skill">/expert-panel · Users</div><p>Every hands-on persona in first person — primary &amp; secondary users, the operator/admin, the skeptic, the buyer-not-user, the misuser. Feeds P5 → tests.</p><div class="catches"><b>Catches:</b> does it actually work for the people who touch it?</div></div>
       </div>

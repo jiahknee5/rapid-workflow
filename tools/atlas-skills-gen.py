@@ -146,11 +146,12 @@ PH = [
    reads=["01-intake/PRD-ENHANCED.md","00-vision/PILLARS.md"], writes=["03-panels/synthesis.md"], exemplar=True, extra_skill="expert-panel",
    deep='''
     <div class="deep-sec">
-      <div class="deep-title">The four panel lenses</div>
-      <div class="deep-sub">Every panel is one of four lenses. Which lenses run, and who sits on each, is composed per project; <b>the default full track convenes Business + Technical + SME/Users</b>, fast track picks the single most relevant.</div>
+      <div class="deep-title">The five panel lenses</div>
+      <div class="deep-sub">Five areas, mapping to the classic product lenses — <b>Viability</b> (Business), <b>Feasibility</b> (Technical), <b>Desirability</b> (Design + Users), and <b>Legitimacy</b> (SME). Each panel wields <b>named frameworks</b>, not just opinions — Five Forces, the Test Pyramid, the Double Diamond, Nielsen's heuristics, JTBD. Which lenses run is composed per project; full track runs all five.</div>
       <div class="lens-grid">
         <div class="lens blue"><h5>Business</h5><div class="lens-skill">/expert-panel · Business</div><p>Market &amp; timing, GTM motion, pricing &amp; packaging, unit economics, regulatory exposure, moat/defensibility, 2nd-order effects of success at scale.</p><div class="catches"><b>Catches:</b> is this viable, fundable, defensible?</div></div>
         <div class="lens teal"><h5>Technical</h5><div class="lens-skill">/expert-panel · Technical</div><p>Architecture, testability, performance, security, privacy, accessibility, reliability, DevEx/CI, data, and model/inference design (if AI).</p><div class="catches"><b>Catches:</b> will it hold up? is it testable? where does it break?</div></div>
+        <div class="lens"><h5>Design</h5><div class="lens-skill">/expert-panel · Design</div><p>The <i>artifact</i> — IA, interaction, visual hierarchy, motion, design systems, content/UX writing, and accessibility-as-design. Owns craft &amp; desirability.</p><div class="catches"><b>Catches:</b> is it usable, coherent, and desirable to use?</div></div>
         <div class="lens purple"><h5>SME (domain)</h5><div class="lens-skill">/expert-panel · SME</div><p>Domain experts in voice — the project's own field, whatever it is. Domain correctness, accepted practice, legitimacy, cultural soundness, real edge cases.</p><div class="catches"><b>Catches:</b> is it right and credible in the domain?</div></div>
         <div class="lens green"><h5>Users</h5><div class="lens-skill">/expert-panel · Users</div><p>Every hands-on persona in first person — primary &amp; secondary users, the operator/admin, the skeptic, the buyer-not-user, the misuser. Feeds P5 → tests.</p><div class="catches"><b>Catches:</b> does it actually work for the people who touch it?</div></div>
       </div>
