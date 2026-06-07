@@ -1,10 +1,26 @@
 {
-  "generated": "2026-06-01T01:40:23Z",
+  "generated": "2026-06-07T04:22:38Z",
   "generated_by": "tools/workflow-runner.py",
   "note": "Published run log + latest full trace per workflow. The testsuite page replays this when observe-server is not running (static /_atlas deploy); when the server is up it live-tails .rapid/RUNS/<wf>/<run>.jsonl instead.",
   "workflows": {
     "WF-1": {
       "runs": [
+        {
+          "run_id": "20260607T042235Z",
+          "wf": "WF-1",
+          "title": "One-line idea \u2192 shipped app (operator happy path)",
+          "started": "2026-06-07T04:22:35Z",
+          "finished": "2026-06-07T04:22:36Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "After /rapid-workflow \"<idea>\" and approval at the four decision points, the operator has a deployed app, a handoff-ready doc site (no manual cleanup), a test report, and a full build timeline.",
+          "input": {
+            "idea": "build a math tutor for kids"
+          }
+        },
         {
           "run_id": "20260531T215441Z",
           "wf": "WF-1",
@@ -167,17 +183,17 @@
         }
       ],
       "latest": {
-        "run_id": "20260531T215441Z",
+        "run_id": "20260607T042235Z",
         "summary": {
           "seq": 11,
           "type": "run_done",
           "wf": "WF-1",
-          "run_id": "20260531T215441Z",
-          "t": "2026-05-31T21:55:16Z",
+          "run_id": "20260607T042235Z",
+          "t": "2026-06-07T04:22:36Z",
           "status": "pass",
-          "pass": 4,
+          "pass": 5,
           "fail": 0,
-          "info": 1,
+          "info": 0,
           "total": 5
         },
         "nodes": [
@@ -185,8 +201,8 @@
             "seq": 2,
             "type": "node_done",
             "wf": "WF-1",
-            "run_id": "20260531T215441Z",
-            "t": "2026-05-31T21:54:41Z",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:35Z",
             "node_id": "n1-start",
             "label": "Understand",
             "lane": "system",
@@ -209,7 +225,7 @@
             },
             "data_out": {
               "path": "01-intake/PRD-ENHANCED.md",
-              "matches": 23,
+              "matches": 24,
               "pattern": "^### (BR|FR|TR|NFR)-"
             }
           },
@@ -217,8 +233,8 @@
             "seq": 4,
             "type": "node_done",
             "wf": "WF-1",
-            "run_id": "20260531T215441Z",
-            "t": "2026-05-31T21:54:41Z",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:35Z",
             "node_id": "n2-plan",
             "label": "Plan + tests-first (gate 1)",
             "lane": "system",
@@ -238,7 +254,7 @@
             },
             "data_in": {
               "path": "01-intake/PRD-ENHANCED.md",
-              "matches": 23,
+              "matches": 24,
               "pattern": "^### (BR|FR|TR|NFR)-"
             },
             "data_out": {
@@ -253,8 +269,8 @@
             "seq": 6,
             "type": "node_done",
             "wf": "WF-1",
-            "run_id": "20260531T215441Z",
-            "t": "2026-05-31T21:54:41Z",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:35Z",
             "node_id": "n3-build",
             "label": "Agents build in parallel",
             "lane": "system",
@@ -282,15 +298,15 @@
             "data_out": {
               "path": ".rapid/TASKS.json",
               "extract": "tasks.$len",
-              "value": 15
+              "value": 16
             }
           },
           {
             "seq": 8,
             "type": "node_done",
             "wf": "WF-1",
-            "run_id": "20260531T215441Z",
-            "t": "2026-05-31T21:54:53Z",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:36Z",
             "node_id": "n4-test",
             "label": "Test vs criteria (codex tester)",
             "lane": "system",
@@ -298,7 +314,7 @@
             "index": 3,
             "status": "pass",
             "required": true,
-            "elapsed_s": 12.27,
+            "elapsed_s": 0.61,
             "view": {
               "kind": "iframe",
               "src": "eval.html"
@@ -311,20 +327,20 @@
             "data_in": {
               "path": ".rapid/TASKS.json",
               "extract": "tasks.$len",
-              "value": 15
+              "value": 16
             },
             "data_out": {
-              "role": "tester",
-              "engine": "codex",
-              "verdict": {
-                "status": "pass",
-                "evidence": "Observed `bash tools/ship-gate.sh` exit code 0. `docs/eval.json` summary shows pass=4, fail=0, total=4; every assertion has pass:true (`no_open_stub_gaps`, `no_stubs_in_tree`, `no_open_conformance_gaps`, `verification_real`). Harness shows 1/1 passing.",
-                "commands_run": [
-                  "bash tools/ship-gate.sh",
-                  "cat docs/eval.json"
-                ],
-                "_engine": "codex",
-                "_sandbox": "workspace-write"
+              "role": "codex",
+              "engine": "fallback (agents=off)",
+              "cmd": "bash tools/ship-gate.sh",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.61,
+              "tail": "wrote docs/eval.json (4/4 assertions, 1/1 harness test(s) passing)\n  [PASS] verification_real: all required layers green with genuine exit codes\n  [PASS] no_open_stub_gaps: 0 open MAJOR+ stub gap(s)\n  [PASS] no_stubs_in_tree: 0 stub marker(s) found in source tree\n  [PASS] no_open_conformance_gaps: 0 open MAJOR+ conformance gap(s)\n\nSHIP GATE OPEN: stub + conformance assertions pass.",
+              "parsed": {
+                "pass": 4,
+                "fail": 0,
+                "total": 4
               }
             }
           },
@@ -332,16 +348,16 @@
             "seq": 10,
             "type": "node_done",
             "wf": "WF-1",
-            "run_id": "20260531T215441Z",
-            "t": "2026-05-31T21:55:16Z",
+            "run_id": "20260607T042235Z",
+            "t": "2026-06-07T04:22:36Z",
             "node_id": "n5-ship",
             "label": "Ship gate (gate 3 \u00b7 simulated operator)",
             "lane": "actor",
             "node_class": "n-gate",
             "index": 4,
-            "status": "info",
+            "status": "pass",
             "required": true,
-            "elapsed_s": 22.61,
+            "elapsed_s": 0.0,
             "view": {
               "kind": "iframe",
               "src": "documentation.html"
@@ -352,32 +368,25 @@
               "out": "Decision {approve|reject|hold} + rationale; deploy/doc-site follow on approve"
             },
             "data_in": {
-              "role": "tester",
-              "engine": "codex",
-              "verdict": {
-                "status": "pass",
-                "evidence": "Observed `bash tools/ship-gate.sh` exit code 0. `docs/eval.json` summary shows pass=4, fail=0, total=4; every assertion has pass:true (`no_open_stub_gaps`, `no_stubs_in_tree`, `no_open_conformance_gaps`, `verification_real`). Harness shows 1/1 passing.",
-                "commands_run": [
-                  "bash tools/ship-gate.sh",
-                  "cat docs/eval.json"
-                ],
-                "_engine": "codex",
-                "_sandbox": "workspace-write"
+              "role": "codex",
+              "engine": "fallback (agents=off)",
+              "cmd": "bash tools/ship-gate.sh",
+              "exit": 0,
+              "expect_exit": 0,
+              "elapsed_s": 0.61,
+              "tail": "wrote docs/eval.json (4/4 assertions, 1/1 harness test(s) passing)\n  [PASS] verification_real: all required layers green with genuine exit codes\n  [PASS] no_open_stub_gaps: 0 open MAJOR+ stub gap(s)\n  [PASS] no_stubs_in_tree: 0 stub marker(s) found in source tree\n  [PASS] no_open_conformance_gaps: 0 open MAJOR+ conformance gap(s)\n\nSHIP GATE OPEN: stub + conformance assertions pass.",
+              "parsed": {
+                "pass": 4,
+                "fail": 0,
+                "total": 4
               }
             },
             "data_out": {
-              "role": "operator (simulated)",
-              "engine": "codex",
-              "gate": "Ship decision (gate 3)",
-              "verdict": {
-                "decision": "hold",
-                "rationale": "The tester verdict is passing and the documentation registry criterion is met, but this is a ship gate whose approve path would lead to deploy/doc-site follow-up. Under the simulated-operator guardrails, any outward-facing or potentially money-spending deploy must be held for a real human decision.",
-                "evidence_cited": "Prior node data: `bash tools/ship-gate.sh` exit code 0; `docs/eval.json` summary pass=4, fail=0, total=4; all assertions pass:true; harness 1/1 passing. Local read of `docs.json`: `docs` is an array with 37 entries, so the docs array is non-empty.",
-                "needs_real_human": true,
-                "_engine": "codex",
-                "_sandbox": "read-only",
-                "_simulated": true
-              }
+              "role": "human",
+              "engine": "fallback (agents=off)",
+              "path": "docs.json",
+              "extract": "docs.$len",
+              "value": 61
             }
           }
         ]
@@ -385,6 +394,22 @@
     },
     "WF-2": {
       "runs": [
+        {
+          "run_id": "20260607T042236Z",
+          "wf": "WF-2",
+          "title": "PRD \u2192 gated build, failing gate, gap loop, re-converge",
+          "started": "2026-06-07T04:22:36Z",
+          "finished": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A build that hits a failing gate (e.g. 3/50 failing) runs the gap loop and re-converges so the same locked criteria pass, with every fail/fix visible in dashboard, docs, and the decision point \u2014 never buried in a log.",
+          "input": {
+            "source": ".rapid/GAPS.json"
+          }
+        },
         {
           "run_id": "20260531T215425Z",
           "wf": "WF-2",
@@ -467,13 +492,13 @@
         }
       ],
       "latest": {
-        "run_id": "20260531T215425Z",
+        "run_id": "20260607T042236Z",
         "summary": {
           "seq": 9,
           "type": "run_done",
           "wf": "WF-2",
-          "run_id": "20260531T215425Z",
-          "t": "2026-05-31T21:54:25Z",
+          "run_id": "20260607T042236Z",
+          "t": "2026-06-07T04:22:37Z",
           "status": "pass",
           "pass": 4,
           "fail": 0,
@@ -485,8 +510,8 @@
             "seq": 2,
             "type": "node_done",
             "wf": "WF-2",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:36Z",
             "node_id": "n1-intake",
             "label": "Intake + lock criteria",
             "lane": "system",
@@ -519,8 +544,8 @@
             "seq": 4,
             "type": "node_done",
             "wf": "WF-2",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:36Z",
             "node_id": "n2-gate",
             "label": "Gate hit \u2014 scan for gaps",
             "lane": "system",
@@ -528,7 +553,7 @@
             "index": 1,
             "status": "pass",
             "required": true,
-            "elapsed_s": 0.1,
+            "elapsed_s": 0.19,
             "view": {
               "kind": "iframe",
               "src": "eval.html"
@@ -549,7 +574,7 @@
               "cmd": "bash tools/stub-scan.sh --tree",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.1,
+              "elapsed_s": 0.19,
               "tail": ""
             }
           },
@@ -557,8 +582,8 @@
             "seq": 6,
             "type": "node_done",
             "wf": "WF-2",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:36Z",
             "node_id": "n3-gaploop",
             "label": "Gap loop \u2014 fix or flag",
             "lane": "system",
@@ -580,7 +605,7 @@
               "cmd": "bash tools/stub-scan.sh --tree",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.1,
+              "elapsed_s": 0.19,
               "tail": ""
             },
             "data_out": {
@@ -593,8 +618,8 @@
             "seq": 8,
             "type": "node_done",
             "wf": "WF-2",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042236Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n4-reconverge",
             "label": "Re-converge (codex tester)",
             "lane": "system",
@@ -602,7 +627,7 @@
             "index": 3,
             "status": "pass",
             "required": true,
-            "elapsed_s": 0.46,
+            "elapsed_s": 0.54,
             "view": {
               "kind": "iframe",
               "src": "eval.html"
@@ -623,7 +648,7 @@
               "cmd": "bash tools/ship-gate.sh",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.46,
+              "elapsed_s": 0.54,
               "tail": "wrote docs/eval.json (4/4 assertions, 1/1 harness test(s) passing)\n  [PASS] verification_real: all required layers green with genuine exit codes\n  [PASS] no_open_stub_gaps: 0 open MAJOR+ stub gap(s)\n  [PASS] no_stubs_in_tree: 0 stub marker(s) found in source tree\n  [PASS] no_open_conformance_gaps: 0 open MAJOR+ conformance gap(s)\n\nSHIP GATE OPEN: stub + conformance assertions pass.",
               "parsed": {
                 "pass": 4,
@@ -637,6 +662,22 @@
     },
     "WF-3": {
       "runs": [
+        {
+          "run_id": "20260607T042237Z",
+          "wf": "WF-3",
+          "title": "Stakeholder receives the shipped project and navigates the docs",
+          "started": "2026-06-07T04:22:37Z",
+          "finished": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "After deploy, the stakeholder can open the documentation site and navigate it \u2014 phases and test coverage included \u2014 with no manual cleanup required from the operator.",
+          "input": {
+            "source": "docs.json"
+          }
+        },
         {
           "run_id": "20260531T215425Z",
           "wf": "WF-3",
@@ -719,13 +760,13 @@
         }
       ],
       "latest": {
-        "run_id": "20260531T215425Z",
+        "run_id": "20260607T042237Z",
         "summary": {
           "seq": 9,
           "type": "run_done",
           "wf": "WF-3",
-          "run_id": "20260531T215425Z",
-          "t": "2026-05-31T21:54:25Z",
+          "run_id": "20260607T042237Z",
+          "t": "2026-06-07T04:22:37Z",
           "status": "pass",
           "pass": 4,
           "fail": 0,
@@ -737,8 +778,8 @@
             "seq": 2,
             "type": "node_done",
             "wf": "WF-3",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n1-during",
             "label": "Docs built per phase",
             "lane": "system",
@@ -762,15 +803,15 @@
             "data_out": {
               "path": "docs.json",
               "extract": "updated",
-              "value": "2026-05-30"
+              "value": "2026-06-06"
             }
           },
           {
             "seq": 4,
             "type": "node_done",
             "wf": "WF-3",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n2-reorg",
             "label": "Reorganize into a clean site",
             "lane": "system",
@@ -791,20 +832,20 @@
             "data_in": {
               "path": "docs.json",
               "extract": "updated",
-              "value": "2026-05-30"
+              "value": "2026-06-06"
             },
             "data_out": {
               "path": "docs.json",
               "extract": "docs.$len",
-              "value": 37
+              "value": 61
             }
           },
           {
             "seq": 6,
             "type": "node_done",
             "wf": "WF-3",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n3-handoff",
             "label": "Stakeholder navigates",
             "lane": "actor",
@@ -825,7 +866,7 @@
             "data_in": {
               "path": "docs.json",
               "extract": "docs.$len",
-              "value": 37
+              "value": 61
             },
             "data_out": {
               "path": "docs/eval.html",
@@ -836,8 +877,8 @@
             "seq": 8,
             "type": "node_done",
             "wf": "WF-3",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n4-accept",
             "label": "Accept handoff",
             "lane": "actor",
@@ -869,6 +910,22 @@
     },
     "WF-4": {
       "runs": [
+        {
+          "run_id": "20260607T042237Z",
+          "wf": "WF-4",
+          "title": "Operator monitors a live build and handles a drift/stall alert",
+          "started": "2026-06-07T04:22:37Z",
+          "finished": "2026-06-07T04:22:37Z",
+          "status": "pass",
+          "pass": 4,
+          "fail": 0,
+          "info": 0,
+          "total": 4,
+          "golden": "A per-role terminal whose heartbeat exceeds the threshold is flagged for restart in /rapid-workflow status and the observatory; live terminals keep building; persistent stalls escalate to the operator after 5 same-phase nudges \u2014 a stall is localized and surfaced, never silent.",
+          "input": {
+            "source": ".rapid/observe"
+          }
+        },
         {
           "run_id": "20260531T215425Z",
           "wf": "WF-4",
@@ -935,13 +992,13 @@
         }
       ],
       "latest": {
-        "run_id": "20260531T215425Z",
+        "run_id": "20260607T042237Z",
         "summary": {
           "seq": 9,
           "type": "run_done",
           "wf": "WF-4",
-          "run_id": "20260531T215425Z",
-          "t": "2026-05-31T21:54:25Z",
+          "run_id": "20260607T042237Z",
+          "t": "2026-06-07T04:22:37Z",
           "status": "pass",
           "pass": 4,
           "fail": 0,
@@ -953,8 +1010,8 @@
             "seq": 2,
             "type": "node_done",
             "wf": "WF-4",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n1-observe",
             "label": "Observe \u2014 per-role terminals",
             "lane": "system",
@@ -992,8 +1049,8 @@
             "seq": 4,
             "type": "node_done",
             "wf": "WF-4",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n2-heartbeat",
             "label": "Heartbeat per role",
             "lane": "system",
@@ -1032,8 +1089,8 @@
             "seq": 6,
             "type": "node_done",
             "wf": "WF-4",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n3-stall",
             "label": "Stall detect",
             "lane": "system",
@@ -1064,8 +1121,8 @@
             "seq": 8,
             "type": "node_done",
             "wf": "WF-4",
-            "run_id": "20260531T215425Z",
-            "t": "2026-05-31T21:54:25Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n4-continue",
             "label": "Continuous build + escalation",
             "lane": "system",
@@ -1096,6 +1153,22 @@
     },
     "WF-5": {
       "runs": [
+        {
+          "run_id": "20260607T042237Z",
+          "wf": "WF-5",
+          "title": "Project lifecycle E2E \u2014 create a new project, populate docs, build local, deploy dev",
+          "started": "2026-06-07T04:22:37Z",
+          "finished": "2026-06-07T04:22:38Z",
+          "status": "pass",
+          "pass": 5,
+          "fail": 0,
+          "info": 0,
+          "total": 5,
+          "golden": "Running the skill on a fresh idea produces a project whose documentation is populated (no stub pages), whose local app builds (dist/ output), and whose dev is deployed (app + /_atlas in the staging dir, env.json dev.url set) \u2014 each stage actually executed and asserted.",
+          "input": {
+            "name": "rapid_workflow_test_1"
+          }
+        },
         {
           "run_id": "20260601T014023Z",
           "wf": "WF-5",
@@ -1210,13 +1283,13 @@
         }
       ],
       "latest": {
-        "run_id": "20260601T014023Z",
+        "run_id": "20260607T042237Z",
         "summary": {
           "seq": 11,
           "type": "run_done",
           "wf": "WF-5",
-          "run_id": "20260601T014023Z",
-          "t": "2026-06-01T01:40:23Z",
+          "run_id": "20260607T042237Z",
+          "t": "2026-06-07T04:22:38Z",
           "status": "pass",
           "pass": 5,
           "fail": 0,
@@ -1228,8 +1301,8 @@
             "seq": 2,
             "type": "node_done",
             "wf": "WF-5",
-            "run_id": "20260601T014023Z",
-            "t": "2026-06-01T01:40:23Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n1-create",
             "label": "Create project (scaffold)",
             "lane": "system",
@@ -1237,7 +1310,7 @@
             "index": 0,
             "status": "pass",
             "required": true,
-            "elapsed_s": 0.18,
+            "elapsed_s": 0.16,
             "view": {
               "kind": "text"
             },
@@ -1253,7 +1326,7 @@
               "cmd": "bash tools/lifecycle-e2e.sh --stage create --name rapid_workflow_test_1",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.18,
+              "elapsed_s": 0.16,
               "tail": "STAGE create \u2014 scaffold the project via the skill\n  [PASS] project scaffolded at /Users/johnny/projects/rapid_workflow_test_1 (structure + CONSTITUTION + BUILD-AUTONOMY + Atlas deck)"
             }
           },
@@ -1261,8 +1334,8 @@
             "seq": 4,
             "type": "node_done",
             "wf": "WF-5",
-            "run_id": "20260601T014023Z",
-            "t": "2026-06-01T01:40:23Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:37Z",
             "node_id": "n2-docs",
             "label": "Populate documentation",
             "lane": "system",
@@ -1270,7 +1343,7 @@
             "index": 1,
             "status": "pass",
             "required": true,
-            "elapsed_s": 0.38,
+            "elapsed_s": 0.74,
             "view": {
               "kind": "text"
             },
@@ -1283,14 +1356,14 @@
               "cmd": "bash tools/lifecycle-e2e.sh --stage create --name rapid_workflow_test_1",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.18,
+              "elapsed_s": 0.16,
               "tail": "STAGE create \u2014 scaffold the project via the skill\n  [PASS] project scaffolded at /Users/johnny/projects/rapid_workflow_test_1 (structure + CONSTITUTION + BUILD-AUTONOMY + Atlas deck)"
             },
             "data_out": {
               "cmd": "bash tools/lifecycle-e2e.sh --stage docs --name rapid_workflow_test_1",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.38,
+              "elapsed_s": 0.74,
               "tail": "STAGE docs \u2014 write real artifacts + populate the deck (no stub pages)\npopulate-deck: populated /Users/johnny/projects/rapid_workflow_test_1/docs\n  [PASS] documentation populated + distinct (9 pages: no stub, no dead links, prd\u2260prd-enhanced, workflow\u2260users, branded rapid_workflow_test_1)"
             }
           },
@@ -1298,8 +1371,8 @@
             "seq": 6,
             "type": "node_done",
             "wf": "WF-5",
-            "run_id": "20260601T014023Z",
-            "t": "2026-06-01T01:40:23Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:38Z",
             "node_id": "n3-build",
             "label": "Build local app (codex tester)",
             "lane": "system",
@@ -1307,7 +1380,7 @@
             "index": 2,
             "status": "pass",
             "required": true,
-            "elapsed_s": 0.12,
+            "elapsed_s": 0.4,
             "view": {
               "kind": "text"
             },
@@ -1320,7 +1393,7 @@
               "cmd": "bash tools/lifecycle-e2e.sh --stage docs --name rapid_workflow_test_1",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.38,
+              "elapsed_s": 0.74,
               "tail": "STAGE docs \u2014 write real artifacts + populate the deck (no stub pages)\npopulate-deck: populated /Users/johnny/projects/rapid_workflow_test_1/docs\n  [PASS] documentation populated + distinct (9 pages: no stub, no dead links, prd\u2260prd-enhanced, workflow\u2260users, branded rapid_workflow_test_1)"
             },
             "data_out": {
@@ -1329,7 +1402,7 @@
               "cmd": "bash tools/lifecycle-e2e.sh --stage build --name rapid_workflow_test_1",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.12,
+              "elapsed_s": 0.4,
               "tail": "STAGE build \u2014 seed the real app + build it locally\n  [PASS] local app built \u2192 dist/ (3 files), app.js valid, eval seeded"
             }
           },
@@ -1337,8 +1410,8 @@
             "seq": 8,
             "type": "node_done",
             "wf": "WF-5",
-            "run_id": "20260601T014023Z",
-            "t": "2026-06-01T01:40:23Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:38Z",
             "node_id": "n4-approve",
             "label": "Approve dev deploy (simulated operator)",
             "lane": "actor",
@@ -1361,7 +1434,7 @@
               "cmd": "bash tools/lifecycle-e2e.sh --stage build --name rapid_workflow_test_1",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.12,
+              "elapsed_s": 0.4,
               "tail": "STAGE build \u2014 seed the real app + build it locally\n  [PASS] local app built \u2192 dist/ (3 files), app.js valid, eval seeded"
             },
             "data_out": {
@@ -1380,8 +1453,8 @@
             "seq": 10,
             "type": "node_done",
             "wf": "WF-5",
-            "run_id": "20260601T014023Z",
-            "t": "2026-06-01T01:40:23Z",
+            "run_id": "20260607T042237Z",
+            "t": "2026-06-07T04:22:38Z",
             "node_id": "n5-deploy",
             "label": "Deploy dev + verify",
             "lane": "system",
@@ -1389,7 +1462,7 @@
             "index": 4,
             "status": "pass",
             "required": true,
-            "elapsed_s": 0.22,
+            "elapsed_s": 0.17,
             "view": {
               "kind": "text"
             },
@@ -1413,7 +1486,7 @@
               "cmd": "bash tools/lifecycle-e2e.sh --stage deploy --name rapid_workflow_test_1 && bash tools/lifecycle-e2e.sh --stage verify --name rapid_workflow_test_1",
               "exit": 0,
               "expect_exit": 0,
-              "elapsed_s": 0.22,
+              "elapsed_s": 0.17,
               "tail": "STAGE deploy \u2014 local/staging dev deploy (app + /_atlas)\n  [PASS] dev deployed \u2192 /tmp/rapid_workflow_test_1-dev (app + /_atlas), env.json dev.url=http://localhost:4173\nSTAGE verify \u2014 assert the three deliverables + write E2E.json\n  wrote /Users/johnny/projects/rapid-workflow/.rapid/E2E.json\n  [PASS] documentation populated\n  [PASS] local app built\n  [PASS] dev deployed\nLIFECYCLE E2E GREEN: rapid_workflow_test_1 created, documented, built, and dev-deployed.",
               "parsed": {
                 "pass": 3,
