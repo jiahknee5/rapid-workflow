@@ -16,3 +16,6 @@ CHANGES.md
 
 # Playwright MCP scratch (snapshots/console logs)
 .playwright-mcp/
+
+# Loop/scheduler lock (transient)
+.claude/scheduled_tasks.lock
