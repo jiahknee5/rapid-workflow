@@ -23,10 +23,8 @@ rapid-workflow/
 ├── docs/                              Documentation of the methodology
 │   ├── architecture.html              D0–D32 interactive architecture reference
 │   ├── rapid-reference.md             Text reference (all diagrams as markdown)
-│   ├── rapid-comparison.html          RAPID vs TDD Agent-Crew Scaffold
 │   ├── methodology-deck.md            18-slide methodology walkthrough (source)
-│   ├── methodology-deck.html          18-slide methodology walkthrough (presentation)
-│   └── constitution.md                Articles I–X governance
+│   └── CONSTITUTION.md                Articles I–X governance
 │
 ├── templates/                         CSS/HTML templates used by skills at runtime
 │   ├── template-decision-deck.html    For /decision skill output
