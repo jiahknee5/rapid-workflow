@@ -65,11 +65,13 @@ rapid-workflow/
 ├── CODEBASE.md            ← this file
 ├── docs.json              docs registry snapshot
 │
-├── skills/                the six Claude Code skills (symlinked to ~/.claude/skills/)
+├── skills/                the eight Claude Code skills (symlinked to ~/.claude/skills/)
 │   ├── rapid-workflow/SKILL.md orchestrator — runs the 12-phase pipeline
 │   ├── workflow/SKILL.md     alias → /rapid-workflow
 │   ├── expert-panel/SKILL.md  five panel areas (Business·Technical·Design·SME·Users), 1st/2nd/3rd-order
 │   ├── refine/SKILL.md        goal-directed propose→measure→keep-or-revert loop (Karpathy-style)
+│   ├── observe/SKILL.md       generates the project-tailored Observatory (live build view)
+│   ├── test-theater/SKILL.md  generates the project-tailored Test Theater + coverage proof
 │   ├── decision/SKILL.md     /decision — decision + panel documentation
 │   └── docs/SKILL.md         /docs — generates Reveal.js documentation decks
 │
@@ -109,9 +111,9 @@ rapid-workflow/
 
 ---
 
-## 4. The six skills
+## 4. The eight skills
 
-All six live in `skills/` (the source of truth) and are symlinked into `~/.claude/skills/` so Claude Code can find them. Editing here and committing tracks the change in git.
+All eight live in `skills/` (the source of truth) and are symlinked into `~/.claude/skills/` so Claude Code can find them. Editing here and committing tracks the change in git.
 
 ### `/rapid-workflow` — the orchestrator
 `skills/rapid-workflow/SKILL.md` (~1100+ lines). Runs the full pipeline.
@@ -140,6 +142,12 @@ It separates **deterministic** components (same every run — the 12 phases, 4 g
 
 ### `/refine` — the goal-directed loop primitive (P8)
 `skills/refine/SKILL.md`. Karpathy's autoresearch loop, generalized: **propose → measure → keep-or-revert** against an explicit goal and eval. Used by the P8 gap loop so only improvements survive (regression ⇒ `git reset --hard`).
+
+### `/observe` — the dynamic Observability builder (P1·P6·P9)
+`skills/observe/SKILL.md`. Generates a **project-tailored Observatory** — it inspects the project's agent roster (`04-spec/agents/`), phases, and acceptance signals and *generates* the dashboard + the event-logging contract + the polling wiring for that project, rather than copying a generic shell. The deterministic spine (append-only JSONL per role, monotonic `seq`, `observe-server.py` merge/serve, poll-since-seq, hooks auto-emit) is fixed; the topology, health signals, and phase ribbon are composed from the project. Observability = the trust mechanism for hands-off autonomy.
+
+### `/test-theater` — the dynamic Test Theater builder (P4·P5·P7·P9)
+`skills/test-theater/SKILL.md`. Generates a **project-tailored Workflow Test Theater** — the test suite *is* the user workflows made runnable. It derives `docs/workflows.json` from `04-spec/workflow.md`, **parses the built code for a function inventory**, builds a coverage matrix, and generates `docs/testsuite.html` + the `workflow-runner.py` wiring. The invariant is fixed: each node's `exec` **is** the walkable/recorded form of that node's immutable eval test (one source of truth, so tests can't drift). Acceptance is provable: **`untouched_functions == 0`**.
 
 ### `/decision` — decision & panel documentation
 `skills/decision/SKILL.md`. Two corpora in one skill: resolved **decisions** and expert **panel findings**. Each decision is a `D-NN.md` file with YAML frontmatter (question, phase, pillars, options w/ pros/cons, rationale + sources, panel input, cascade impacts). Regenerates McKinsey-style Reveal.js decks (`decisions/deck.html`, `panels/deck.html`).
