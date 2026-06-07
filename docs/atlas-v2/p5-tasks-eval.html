@@ -140,6 +140,26 @@ details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
 
+/* deep sections (in-depth body below the skill card) */
+.deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
+.deep-title{font-size:0.98rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em;}
+.deep-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65;}
+.deep-sub b{color:var(--text);}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lens{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 15px;border-top:2px solid var(--accent);}
+.lens.blue{border-top-color:var(--blue);} .lens.teal{border-top-color:var(--teal);} .lens.purple{border-top-color:var(--purple);} .lens.green{border-top-color:var(--green);}
+.lens h5{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.lens .lens-skill{font-family:var(--mono);font-size:0.63rem;color:var(--accent);margin-bottom:7px;word-break:break-all;}
+.lens p{font-size:0.76rem;color:var(--text-muted);line-height:1.55;}
+.lens .catches{margin-top:7px;font-size:0.74rem;color:var(--text-muted);}
+.lens .catches b{color:var(--text);}
+.proto{counter-reset:step;list-style:none;margin:8px 0;}
+.proto li{position:relative;padding-left:32px;margin-bottom:9px;font-size:0.82rem;color:var(--text-muted);line-height:1.55;}
+.proto li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-size:0.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.proto li b{color:var(--text);}
+.deep-note{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 15px;margin-top:6px;}
+.deep-note b{color:var(--text);}
+
 /* skill index table */
 .idx{width:100%;border-collapse:collapse;font-size:0.76rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:8px;}
 .idx th{text-align:left;padding:9px 11px;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border);}
@@ -184,6 +204,33 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P5 — Tasks + Eval Harness). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
       </div>
     </div>
+    
+    <div class="deep-sec">
+      <div class="deep-title">task-00 — the eval harness is the root of the graph</div>
+      <div class="deep-note">The harness is <code>task-00</code>: <code>depends_on:[]</code>, and <b>every other task depends on it</b>. The supervisor verifies <code>task-00</code> is <code>done</code> before assigning any other task. Tests-before-code isn't a guideline here — it's the shape of the dependency graph.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">How tests are generated from the workflow</div>
+      <ol class="proto">
+        <li><b>Each node → a test</b> — arrange from its <code>in</code>, act from its <code>proc</code>, assert on its <code>out</code>.</li>
+        <li><b>Each branch → a negative test</b> — the path not taken still has to behave.</li>
+        <li><b>Each failure path → a recovery test</b> — errors are designed for, not hoped against.</li>
+      </ol>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Immutable after P5</div>
+      <div class="deep-note">Agents <b>EXTEND</b> tests, never <b>EDIT</b> them to make code pass. A failing test means the code is wrong — or the spec is, in which case you re-derive the spec and never weaken the test (Constitution Art. VII: no test theater).</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Fan-out sizing</div>
+      <table class="idx"><thead><tr><th style="width:30%">Task count</th><th>Implementors</th></tr></thead><tbody>
+        <tr><td class="k">≤ 5 tasks</td><td>1 coder (fans out subagents)</td></tr>
+        <tr><td class="k">6 – 12 tasks</td><td>2 coder terminals</td></tr>
+        <tr><td class="k">13+ tasks</td><td>3 – 4 coder terminals (+ 1 watchdog)</td></tr>
+      </tbody></table>
+      <div class="deep-sub" style="margin-top:8px;">Beyond 4 implementors, honest review degrades and supervisor arbitration becomes noise — sequence two rounds of 4 rather than fanning out 8.</div>
+    </div>
+   
     <div class="pagernav"><a class="pager" href="p4-spec.html">← P4 Spec Derivation</a><span style="flex:1"></span><a class="pager" href="p5b-deepen.html">P5b Spec Deepening →</a></div>
   </section>
 </div></div><script src="atlas-env.js" defer></script></body></html>

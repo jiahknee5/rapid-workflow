@@ -140,6 +140,26 @@ details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
 
+/* deep sections (in-depth body below the skill card) */
+.deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
+.deep-title{font-size:0.98rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em;}
+.deep-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65;}
+.deep-sub b{color:var(--text);}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lens{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 15px;border-top:2px solid var(--accent);}
+.lens.blue{border-top-color:var(--blue);} .lens.teal{border-top-color:var(--teal);} .lens.purple{border-top-color:var(--purple);} .lens.green{border-top-color:var(--green);}
+.lens h5{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.lens .lens-skill{font-family:var(--mono);font-size:0.63rem;color:var(--accent);margin-bottom:7px;word-break:break-all;}
+.lens p{font-size:0.76rem;color:var(--text-muted);line-height:1.55;}
+.lens .catches{margin-top:7px;font-size:0.74rem;color:var(--text-muted);}
+.lens .catches b{color:var(--text);}
+.proto{counter-reset:step;list-style:none;margin:8px 0;}
+.proto li{position:relative;padding-left:32px;margin-bottom:9px;font-size:0.82rem;color:var(--text-muted);line-height:1.55;}
+.proto li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-size:0.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.proto li b{color:var(--text);}
+.deep-note{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 15px;margin-top:6px;}
+.deep-note b{color:var(--text);}
+
 /* skill index table */
 .idx{width:100%;border-collapse:collapse;font-size:0.76rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:8px;}
 .idx th{text-align:left;padding:9px 11px;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border);}
@@ -184,6 +204,31 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P0 — Vision Extraction). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
       </div>
     </div>
+    
+    <div class="deep-sec">
+      <div class="deep-title">How pillars are derived</div>
+      <ol class="proto">
+        <li><b>Read for the north star</b> — the single outcome that defines success for this build.</li>
+        <li><b>Surface the top 3–5 risks &amp; goals</b> that could make or break that outcome.</li>
+        <li><b>Name each as a testable pillar</b> — a yardstick you can hold a decision against, not a platitude.</li>
+        <li><b>Write the one-pager</b> — north star + success signals + the pillars. One page, no more.</li>
+        <li><b>Compound-refresh</b> — pull prior <code>LEARNINGS.md</code>, mark stale entries (referenced files/patterns gone) so old lessons don't mislead.</li>
+      </ol>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">What makes a pillar load-bearing</div>
+      <div class="deep-note">A good pillar is <b>testable, project-specific, and decision-shaping</b>. "High quality" is not a pillar — you can't hold a design against it. "Sub-200ms recognition latency on a mid-range phone" is: every architecture choice either clears that bar or doesn't.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">The lens, downstream — where pillars are cited by name</div>
+      <table class="idx"><thead><tr><th style="width:24%">Phase</th><th>How the pillars are used</th></tr></thead><tbody>
+        <tr><td class="k">P2 · Panels</td><td>Every panel is prompted "review through these pillars" — that's what makes the advice usable, not generic.</td></tr>
+        <tr><td class="k">P4 · Spec</td><td>Each spec section maps to the pillar(s) it serves; a section serving no pillar is scope creep.</td></tr>
+        <tr><td class="k">Gates G0–G3</td><td>The doc-review agents' criteria are derived from the pillars.</td></tr>
+        <tr><td class="k">P8 · Gap loop</td><td>Every gap is classified by the pillar it threatens, so severity ties back to what matters.</td></tr>
+      </tbody></table>
+    </div>
+   
     <div class="pagernav"><span style="flex:1"></span><a class="pager" href="p1-structure.html">P1 Structure →</a></div>
   </section>
 </div></div><script src="atlas-env.js" defer></script></body></html>

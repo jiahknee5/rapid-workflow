@@ -140,6 +140,26 @@ details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
 
+/* deep sections (in-depth body below the skill card) */
+.deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
+.deep-title{font-size:0.98rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em;}
+.deep-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65;}
+.deep-sub b{color:var(--text);}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lens{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 15px;border-top:2px solid var(--accent);}
+.lens.blue{border-top-color:var(--blue);} .lens.teal{border-top-color:var(--teal);} .lens.purple{border-top-color:var(--purple);} .lens.green{border-top-color:var(--green);}
+.lens h5{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.lens .lens-skill{font-family:var(--mono);font-size:0.63rem;color:var(--accent);margin-bottom:7px;word-break:break-all;}
+.lens p{font-size:0.76rem;color:var(--text-muted);line-height:1.55;}
+.lens .catches{margin-top:7px;font-size:0.74rem;color:var(--text-muted);}
+.lens .catches b{color:var(--text);}
+.proto{counter-reset:step;list-style:none;margin:8px 0;}
+.proto li{position:relative;padding-left:32px;margin-bottom:9px;font-size:0.82rem;color:var(--text-muted);line-height:1.55;}
+.proto li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-size:0.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.proto li b{color:var(--text);}
+.deep-note{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 15px;margin-top:6px;}
+.deep-note b{color:var(--text);}
+
 /* skill index table */
 .idx{width:100%;border-collapse:collapse;font-size:0.76rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:8px;}
 .idx th{text-align:left;padding:9px 11px;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border);}
@@ -184,6 +204,35 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P1 — Structure). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
       </div>
     </div>
+    
+    <div class="deep-sec">
+      <div class="deep-title">The numbered folder skeleton</div>
+      <div class="deep-sub">P1 lays down the same tree every build uses, so any developer (or agent) lands in a known map.</div>
+      <table class="idx"><thead><tr><th style="width:24%">Folder</th><th>Holds</th></tr></thead><tbody>
+        <tr><td class="k">00-vision/</td><td>VISION.md + PILLARS.md — the lens.</td></tr>
+        <tr><td class="k">01-intake/</td><td>The locked PRD, the maintained DIFF, the enhanced PRD.</td></tr>
+        <tr><td class="k">02-grounding/</td><td>Cite-on-demand research notes (P3).</td></tr>
+        <tr><td class="k">03-panels/</td><td>Panel synthesis (P2).</td></tr>
+        <tr><td class="k">04-spec/</td><td>spec · workflow · architecture · CONTRACTS · agents/.</td></tr>
+        <tr><td class="k">05-gaps/</td><td>Gap history + retrospective.</td></tr>
+        <tr><td class="k">docs/ · src/</td><td>The Atlas + the product code.</td></tr>
+        <tr><td class="k">.rapid/</td><td>Runtime state (gitignored) — STATE, TASKS, EVAL, COST, observe…</td></tr>
+      </tbody></table>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Locking the PRD</div>
+      <div class="deep-note">The raw stakeholder PRD is copied to <code>01-intake/PRD.md</code> and <b>frozen — never edited again</b>. An empty <code>DIFF.md</code> opens. Why: the diff between PRD and the derived spec (P4) becomes the audit trail of every decision, and a stakeholder can re-read their own doc and trust nothing changed under them.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Preflight — the runtime gate</div>
+      <ol class="proto">
+        <li><b>Read the declared stack</b> from <code>.rapid/preflight.json</code> (node, python, playwright, …).</li>
+        <li><b>Probe each tool</b> (default <code>command -v</code>) with the exit code captured, not piped.</li>
+        <li><b>Install what's missing &amp; re-check</b> where an install command is declared.</li>
+        <li><b>Block P1 from exiting</b> if any required tool is still missing — never route around an absent runtime.</li>
+      </ol>
+    </div>
+   
     <div class="pagernav"><a class="pager" href="p0-vision.html">← P0 Vision Extraction</a><span style="flex:1"></span><a class="pager" href="p1b-decompose.html">P1b PRD Decomposition →</a></div>
   </section>
 </div></div><script src="atlas-env.js" defer></script></body></html>

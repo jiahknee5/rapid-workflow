@@ -140,6 +140,26 @@ details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
 
+/* deep sections (in-depth body below the skill card) */
+.deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
+.deep-title{font-size:0.98rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em;}
+.deep-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65;}
+.deep-sub b{color:var(--text);}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lens{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 15px;border-top:2px solid var(--accent);}
+.lens.blue{border-top-color:var(--blue);} .lens.teal{border-top-color:var(--teal);} .lens.purple{border-top-color:var(--purple);} .lens.green{border-top-color:var(--green);}
+.lens h5{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.lens .lens-skill{font-family:var(--mono);font-size:0.63rem;color:var(--accent);margin-bottom:7px;word-break:break-all;}
+.lens p{font-size:0.76rem;color:var(--text-muted);line-height:1.55;}
+.lens .catches{margin-top:7px;font-size:0.74rem;color:var(--text-muted);}
+.lens .catches b{color:var(--text);}
+.proto{counter-reset:step;list-style:none;margin:8px 0;}
+.proto li{position:relative;padding-left:32px;margin-bottom:9px;font-size:0.82rem;color:var(--text-muted);line-height:1.55;}
+.proto li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-size:0.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.proto li b{color:var(--text);}
+.deep-note{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 15px;margin-top:6px;}
+.deep-note b{color:var(--text);}
+
 /* skill index table */
 .idx{width:100%;border-collapse:collapse;font-size:0.76rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:8px;}
 .idx th{text-align:left;padding:9px 11px;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border);}
@@ -184,6 +204,33 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P1b — PRD Decomposition). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
       </div>
     </div>
+    
+    <div class="deep-sec">
+      <div class="deep-title">The requirement pyramid</div>
+      <div class="deep-sub">Prose becomes a three-tier pyramid so priority and traceability are explicit — each lower tier serves the one above it.</div>
+      <div class="lens-grid">
+        <div class="lens blue"><h5>BR — Business requirements</h5><p>Why the product exists; the outcomes the stakeholder is buying. The top of the pyramid.</p></div>
+        <div class="lens teal"><h5>FR — Functional requirements</h5><p>What the product must do for a user to realize each BR. The behaviour.</p></div>
+        <div class="lens purple"><h5>TR — Technical requirements</h5><p>What the system must satisfy to deliver each FR — perf, security, platform.</p></div>
+        <div class="lens green"><h5>Traceability</h5><p>Every requirement gets a stable ID (<code>BR-1 · FR-7 · TR-3</code>) so the spec, tasks, and tests can all point back to it.</p></div>
+      </div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Tags — priority &amp; status on every requirement</div>
+      <table class="idx"><thead><tr><th style="width:22%">Tag</th><th>Meaning</th></tr></thead><tbody>
+        <tr><td class="k">[MUST]</td><td>Non-negotiable for this release — as the stakeholder stated it.</td></tr>
+        <tr><td class="k">[SHOULD]</td><td>Strongly wanted; cut only with a reason.</td></tr>
+        <tr><td class="k">[COULD]</td><td>Nice-to-have; first to drop under pressure.</td></tr>
+        <tr><td class="k">[OPEN]</td><td>Unresolved question → routed to P3 grounding or the G1 batch.</td></tr>
+        <tr><td class="k">[RISKY]</td><td>Flagged for explicit operator attention at G0.</td></tr>
+        <tr><td class="k">[OUT OF SCOPE]</td><td>Explicitly excluded — recorded, not silently dropped.</td></tr>
+      </tbody></table>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Example</div>
+      <div class="skill-ex"><div class="ex-label">Decomposition</div><div class="ex-body">A line of PRD prose — "kids should get instant feedback" — becomes <code>### FR-7 [MUST] Learner sees correctness feedback &lt;100ms after an answer</code>, tracing to <code>BR-2 (engagement)</code> and pinning <code>TR-4 [MUST] client-side validation, no round-trip</code>. Now a panel can argue FR-7 specifically, and a test can assert the 100ms.</div></div>
+    </div>
+   
     <div class="pagernav"><a class="pager" href="p1-structure.html">← P1 Structure</a><span style="flex:1"></span><a class="pager" href="g0.html">G0 Faithful decomposition →</a></div>
   </section>
 </div></div><script src="atlas-env.js" defer></script></body></html>

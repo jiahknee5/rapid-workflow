@@ -140,6 +140,26 @@ details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
 
+/* deep sections (in-depth body below the skill card) */
+.deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
+.deep-title{font-size:0.98rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em;}
+.deep-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65;}
+.deep-sub b{color:var(--text);}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lens{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 15px;border-top:2px solid var(--accent);}
+.lens.blue{border-top-color:var(--blue);} .lens.teal{border-top-color:var(--teal);} .lens.purple{border-top-color:var(--purple);} .lens.green{border-top-color:var(--green);}
+.lens h5{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.lens .lens-skill{font-family:var(--mono);font-size:0.63rem;color:var(--accent);margin-bottom:7px;word-break:break-all;}
+.lens p{font-size:0.76rem;color:var(--text-muted);line-height:1.55;}
+.lens .catches{margin-top:7px;font-size:0.74rem;color:var(--text-muted);}
+.lens .catches b{color:var(--text);}
+.proto{counter-reset:step;list-style:none;margin:8px 0;}
+.proto li{position:relative;padding-left:32px;margin-bottom:9px;font-size:0.82rem;color:var(--text-muted);line-height:1.55;}
+.proto li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-size:0.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.proto li b{color:var(--text);}
+.deep-note{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 15px;margin-top:6px;}
+.deep-note b{color:var(--text);}
+
 /* skill index table */
 .idx{width:100%;border-collapse:collapse;font-size:0.76rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:8px;}
 .idx th{text-align:left;padding:9px 11px;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border);}
@@ -184,6 +204,41 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         <div class="field-label" style="margin-top:18px;">Role sub-skills (gstack personas — each a bounded contract)</div><div class="subskills"><div class="subskill"><span class="ss-name">planner</span> <span class="ss-id">rapid:role-planner</span><div class="ss-desc">owns the spec-of-record; pins shared seams before fan-out; arbitrates</div></div><div class="subskill"><span class="ss-name">coder</span> <span class="ss-id">rapid:role-coder</span><div class="ss-desc">writes code; fans out 1–4 isolated worktree writers. Never audits</div></div><div class="subskill"><span class="ss-name">tester</span> <span class="ss-id">rapid:role-tester</span><div class="ss-desc">runs the locked harness, Playwright, screenshots. Never writes features</div></div><div class="subskill"><span class="ss-name">reviewer</span> <span class="ss-id">rapid:role-reviewer</span><div class="ss-desc">5 tiered, confidence-gated lenses; one verdict per PR</div></div><div class="subskill"><span class="ss-name">watchdog</span> <span class="ss-id">rapid:role-watchdog</span><div class="ss-desc">audits every merge vs spec + Constitution. Never an implementor</div></div></div><details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Composed inside the <code>/rapid-workflow</code> orchestrator (Phase P6 — Parallel Build). The verbatim instruction block lives in <code>skills/rapid-workflow/SKILL.md</code> plus the role briefs in <code>templates/agent-roles/*.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
       </div>
     </div>
+    
+    <div class="deep-sec">
+      <div class="deep-title">The P6 sub-phases</div>
+      <ol class="proto">
+        <li><b>P6a — Team setup</b>: the planner spins up one terminal per lead and writes each role's brief.</li>
+        <li><b>P6a-gate — Pin every shared seam</b>: interfaces in <code>CONTRACTS.md</code> are frozen <i>before</i> fan-out, so parallel coders can't collide on a contract.</li>
+        <li><b>P6b — Build loop</b>: coders implement to the locked spec; keep-or-revert after every commit.</li>
+        <li><b>P6c — Watchdog loop</b>: a <code>/loop 30m</code> drift audit writes <code>AUDIT.json</code>.</li>
+        <li><b>P6d — Monitoring</b>: the orchestrator watches heartbeats, nudges stalls.</li>
+        <li><b>P6e — Shutdown handshake</b>: clean teardown, writes <code>P6_EXIT.json</code> — the gate P7 reads.</li>
+      </ol>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Five mechanisms — safe by construction</div>
+      <table class="idx"><thead><tr><th style="width:30%">Mechanism</th><th>What it guarantees</th></tr></thead><tbody>
+        <tr><td class="k">R2 separate auditor</td><td>The watchdog ≠ any implementor — the builder can't skip its own checks.</td></tr>
+        <tr><td class="k">R4 immutable evals</td><td><code>.rapid/EVAL/</code> locked after P5 — code follows tests, not the reverse.</td></tr>
+        <tr><td class="k">Keep-or-revert</td><td>Any regression after a merge → <code>git reset --hard</code>; only improvements survive.</td></tr>
+        <tr><td class="k">Worktree isolation</td><td>Each writer in its own worktree; verified at P6 exit or the gate fails.</td></tr>
+        <tr><td class="k">Cost breaker</td><td>Pauses at 80% of the token budget — an explicit human choice, never a silent overrun.</td></tr>
+      </tbody></table>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">One pipeline, three tracks</div>
+      <table class="idx"><thead><tr><th style="width:18%">Track</th><th>P6 team</th></tr></thead><tbody>
+        <tr><td class="k">full</td><td>All 5 leads, one terminal each.</td></tr>
+        <tr><td class="k">fast</td><td>planner + coder + reviewer + watchdog (tester folds into the coder's keep-or-revert).</td></tr>
+        <tr><td class="k">tiny</td><td>the whole loop as subagents under a single planner terminal.</td></tr>
+      </tbody></table>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">The claude-peers contract</div>
+      <div class="deep-note">Leads coordinate over the <b>claude-peers</b> bus (12 message types, JSON envelope); every send/recv is also appended to <code>MESSAGES.json</code> as a durable fallback. Heartbeats every 5m; a lead silent &gt;10m is STALLED and the orchestrator nudges it. Conversation is disposable — the files are the record.</div>
+    </div>
+   
     <div class="pagernav"><a class="pager" href="g2.html">← G2 Point of no return</a><span style="flex:1"></span><a class="pager" href="p7-test.html">P7 Test + Visual QA →</a></div>
   </section>
 </div></div><script src="atlas-env.js" defer></script></body></html>

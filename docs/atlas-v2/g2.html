@@ -140,6 +140,26 @@ details.srctext summary:hover{color:var(--accent);}
 details.srctext[open] summary{color:var(--accent);margin-bottom:8px;}
 details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:1.65;}
 
+/* deep sections (in-depth body below the skill card) */
+.deep-sec{margin-top:24px;padding-top:18px;border-top:1px solid var(--border-light);}
+.deep-title{font-size:0.98rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em;}
+.deep-sub{font-size:0.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.65;}
+.deep-sub b{color:var(--text);}
+.lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lens{background:var(--surface-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:13px 15px;border-top:2px solid var(--accent);}
+.lens.blue{border-top-color:var(--blue);} .lens.teal{border-top-color:var(--teal);} .lens.purple{border-top-color:var(--purple);} .lens.green{border-top-color:var(--green);}
+.lens h5{font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.lens .lens-skill{font-family:var(--mono);font-size:0.63rem;color:var(--accent);margin-bottom:7px;word-break:break-all;}
+.lens p{font-size:0.76rem;color:var(--text-muted);line-height:1.55;}
+.lens .catches{margin-top:7px;font-size:0.74rem;color:var(--text-muted);}
+.lens .catches b{color:var(--text);}
+.proto{counter-reset:step;list-style:none;margin:8px 0;}
+.proto li{position:relative;padding-left:32px;margin-bottom:9px;font-size:0.82rem;color:var(--text-muted);line-height:1.55;}
+.proto li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--accent-dim);color:var(--accent);font-size:0.66rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
+.proto li b{color:var(--text);}
+.deep-note{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--accent-dim);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:11px 15px;margin-top:6px;}
+.deep-note b{color:var(--text);}
+
 /* skill index table */
 .idx{width:100%;border-collapse:collapse;font-size:0.76rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin-top:8px;}
 .idx th{text-align:left;padding:9px 11px;font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border);}
@@ -184,6 +204,20 @@ details.srctext .src-body{font-size:0.78rem;color:var(--text-muted);line-height:
         <details class="srctext"><summary>▸ Skill text · where it lives</summary><div class="src-body">Defined in the orchestrator's gate protocol (Gate G2 — Point of no return); the pre-screen doc-review agents are composed from the project's pillars. Verbatim in <code>skills/rapid-workflow/SKILL.md</code>. Regenerate the Atlas (<code>tools/atlas-skills-gen.py</code>) to embed it inline.</div></details>
       </div>
     </div>
+    
+    <div class="deep-sec">
+      <div class="deep-title">The 3 + 3 pre-screen</div>
+      <div class="deep-sub">Three doc-review agents — <b>Scope Guardian · Coherence · Adversarial</b> — plus the three deepening findings carried forward from P5b, so nothing flagged as LOW-confidence reaches the operator unexamined.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">The inputs ledger — fail-closed</div>
+      <div class="deep-note">G2 cannot pass until <b>every required input is resolved or waived</b> in <code>.rapid/INPUTS.json</code>: credentials, deploy target, spend ceiling, resolved undecidables. A credential row counts resolved <b>only once its <code>.env:KEY</code> actually exists</b> — not when someone says it's handled. This turns "gather all input up front" from a hope into a mechanical precondition.</div>
+    </div>
+    <div class="deep-sec">
+      <div class="deep-title">Why it's the point of no return</div>
+      <div class="deep-note">After you approve, P6 builds to the <b>locked</b> spec, the eval harness is locked, and cost is budgeted. A major change means <b>re-entering P4–P5</b>, not patching mid-build. Everything downstream runs autonomously against what you lock here — which is why the deepening pass and the fail-closed ledger sit right before it.</div>
+    </div>
+   
     <div class="pagernav"><a class="pager" href="p5b-deepen.html">← P5b Spec Deepening</a><span style="flex:1"></span><a class="pager" href="p6-build.html">P6 Parallel Build →</a></div>
   </section>
 </div></div><script src="atlas-env.js" defer></script></body></html>
