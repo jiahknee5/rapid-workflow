@@ -48,13 +48,17 @@ rapid-workflow/
 
 ### Skills are symlinked to Claude Code
 
-The `skills/` directory is the source of truth for all skill definitions. Each is symlinked into `~/.claude/skills/` so Claude Code finds them:
+The `skills/` directory is the source of truth for all **eight skills**. Each is symlinked into `~/.claude/skills/` so Claude Code finds them:
 
 ```bash
-ln -sf ~/projects/workflow/skills/rapid-workflow    ~/.claude/skills/rapid-workflow
-ln -sf ~/projects/workflow/skills/decision ~/.claude/skills/decision
-ln -sf ~/projects/workflow/skills/docs     ~/.claude/skills/docs
-ln -sf ~/projects/workflow/skills/workflow  ~/.claude/skills/workflow
+ln -sf ~/projects/rapid-workflow/skills/rapid-workflow ~/.claude/skills/rapid-workflow
+ln -sf ~/projects/rapid-workflow/skills/workflow       ~/.claude/skills/workflow
+ln -sf ~/projects/rapid-workflow/skills/expert-panel   ~/.claude/skills/expert-panel
+ln -sf ~/projects/rapid-workflow/skills/refine         ~/.claude/skills/refine
+ln -sf ~/projects/rapid-workflow/skills/observe        ~/.claude/skills/observe
+ln -sf ~/projects/rapid-workflow/skills/test-theater   ~/.claude/skills/test-theater
+ln -sf ~/projects/rapid-workflow/skills/decision       ~/.claude/skills/decision
+ln -sf ~/projects/rapid-workflow/skills/docs           ~/.claude/skills/docs
 ```
 
 This means `git diff` shows skill changes, cloning the repo gives you the skills, and Claude Code still finds them at the expected path.

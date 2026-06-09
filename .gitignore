@@ -19,3 +19,4 @@ CHANGES.md
 
 # Loop/scheduler lock (transient)
 .claude/scheduled_tasks.lock
+__pycache__/

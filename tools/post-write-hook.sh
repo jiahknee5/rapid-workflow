@@ -32,6 +32,27 @@ if [[ "$FILE_PATH" == *".rapid/STATE.json"* ]]; then
   exit 0
 fi
 
+# ── Mechanical observe logging ───────────────────────────────────────────────
+# Every Write/Edit also emits a WRITE event to the role's observe stream with a
+# monotonic seq from .rapid/observe/seq.txt (pre-increment) — so the timeline
+# populates whether or not the agent remembered to log it ("mechanical, not
+# voluntary"). RAPID_ROLE is exported per terminal at P6a; default orchestrator.
+# Best-effort: PostToolUse hooks fire ~serially per terminal, so the read-inc-write
+# of seq.txt is portable (no flock needed on macOS) and collision-safe enough.
+OBS_DIR="$PROJECT_ROOT/.rapid/observe"
+if mkdir -p "$OBS_DIR" 2>/dev/null; then
+  ROLE="${RAPID_ROLE:-orchestrator}"; SEQ_FILE="$OBS_DIR/seq.txt"
+  _S=$(cat "$SEQ_FILE" 2>/dev/null || echo 0); SEQ=$(( _S + 1 )); printf '%s' "$SEQ" > "$SEQ_FILE"
+  _REL=$(python3 -c "import os;print(os.path.relpath('$FILE_PATH','$PROJECT_ROOT'))" 2>/dev/null || echo "$FILE_PATH")
+  _PH=$(python3 -c "import json;print('P'+str(json.load(open('$PROJECT_ROOT/.rapid/STATE.json')).get('phase','?')))" 2>/dev/null || echo "—")
+  python3 - "$OBS_DIR/$ROLE.jsonl" "$SEQ" "$ROLE" "$_REL" "$_PH" <<'PY' 2>/dev/null || true
+import json, sys, datetime
+f, seq, role, rel, ph = sys.argv[1:6]
+open(f, "a").write(json.dumps({"t": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+    "seq": int(seq), "agent": role, "role": role, "event": "WRITE", "detail": rel, "phase": ph, "task": ""}) + "\n")
+PY
+fi
+
 # Numbered folder, decisions/, panels/, tests/ → append to CHANGES.md
 if [[ "$FILE_PATH" =~ [0-9]{2}-[^/]+ ]] || \
    [[ "$FILE_PATH" == *"decisions/"* ]] || \

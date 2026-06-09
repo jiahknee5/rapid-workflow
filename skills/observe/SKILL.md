@@ -45,7 +45,7 @@ When one agent both builds and audits, visible progress beats invisible safety �
 | Layer | **Fixed** (the deterministic spine — identical every project) | **Dynamic** (composed from THIS project) |
 |---|---|---|
 | Event stream | One append-only JSONL line per event to `.rapid/observe/<role>.jsonl`; monotonic `seq` from `.rapid/observe/seq.txt` (pre-increment); the fixed vocabulary below | Which `<role>` files exist (the project's agent roster) |
-| Vocabulary | `SPAWN · PHASE · GATE · READ · WRITE · TOOL · SEND · RECV · DECIDE · ESCALATE · LOOP_START · LOOP_ITER · LOOP_END · STOP · CONTEXT · COMPLETE · ERROR` | — (closed set; do not invent event types) |
+| Vocabulary | `SPAWN · PHASE · GATE · READ · WRITE · TOOL · SEND · RECV · DECIDE · ESCALATE · LOOP_START · LOOP_ITER · LOOP_END · STOP · CONTEXT · COMPLETE · ERROR` — plus the enforcement-hook events `STUB · CONFORMANCE` (emitted by `stub-detect-hook.sh` / `module-conformance-hook.sh`) | — (the core set is closed; agents do not invent event types — enforcement hooks own the two extras) |
 | Server | `tools/observe-server.py` merges + sorts the per-role JSONL and serves `/api/events?since=<seq>`, `/api/agents`, `/api/meta` | The port (default `:4040`); `env.json` `local.url` + `launch` |
 | Refresh | Dashboard polls `/api/events?since=<lastSeq>` (~2s, incremental — only events after the last rendered seq) | The poll interval if the project needs it tuned |
 | Hooks | PostToolUse/Stop hooks auto-emit observe events (R1/R7/R8/R9 + post-write) | Which hook set the project installs |
