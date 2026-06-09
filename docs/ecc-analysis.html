@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ECC — what's worth integrating into Rapid</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D1117;--surface:#161B22;--surface-alt:#1C2330;--border:#2A313B;--border-light:#20262F;
+  --text:#E6EDF3;--text-muted:#9BA6B2;--text-dim:#6B7480;
+  --accent:#7AA2F7;--accent-dim:rgba(122,162,247,0.12);
+  --blue:#58A6FF;--green:#3FB950;--green-dim:rgba(63,185,80,.12);--red:#F85149;--red-dim:rgba(248,81,73,.1);
+  --amber:#D29922;--amber-dim:rgba(210,153,34,.12);--purple:#BC8CFF;--teal:#56D4DD;
+  --radius:8px;--radius-sm:6px;--mono:ui-monospace,"SF Mono","Fira Code",monospace;
+}
+html{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{min-height:100vh;display:flex;flex-direction:column}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 500px at 12% -8%,rgba(122,162,247,.07),transparent 60%),radial-gradient(700px 500px at 100% 0%,rgba(86,212,221,.04),transparent 55%)}
+body>*{position:relative;z-index:1}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:baseline;gap:14px;padding:13px 26px;
+  background:rgba(8,11,16,.92);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--border)}
+.top .brand{font-size:13px;font-weight:800;color:var(--text)}
+.top .brand .acc{color:var(--accent)}
+.top .t{font-size:12px;color:var(--text-dim)}
+.top .src{margin-left:auto;font-size:11px;font-family:var(--mono)}
+.top .src a{color:var(--text-dim);text-decoration:none}.top .src a:hover{color:var(--accent)}
+
+.layout{display:flex;flex:1}
+
+/* sidebar nav */
+.side{width:262px;flex-shrink:0;border-right:1px solid var(--border-light);padding:26px 16px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto;background:rgba(13,17,23,.5)}
+.side .grp{font-size:.55rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);margin:20px 0 7px 10px}
+.side .grp:first-child{margin-top:0}
+.side a{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-muted);text-decoration:none;padding:5px 10px;border-radius:var(--radius-sm);margin:1px 0;line-height:1.35}
+.side a:hover{background:var(--surface-alt);color:var(--text)}
+.side a.active{background:var(--accent-dim);color:var(--accent);font-weight:600;box-shadow:inset 2px 0 0 var(--accent)}
+.side a .n{font-family:var(--mono);font-size:.62rem;color:var(--text-dim);min-width:14px}
+.side a.star{color:var(--accent)}.side a.star .n{color:var(--accent)}
+
+/* main */
+.main{flex:1;max-width:860px;padding:40px 56px 120px}
+.lede{font-size:1.02rem;color:var(--text-muted);line-height:1.75;margin-bottom:8px;max-width:760px}
+.lede b{color:var(--text)}
+section{margin:54px 0;padding-top:26px;border-top:1px solid var(--border-light);scroll-margin-top:64px}
+section:first-of-type{border-top:none;padding-top:0;margin-top:26px}
+.eyebrow{font-size:.58rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:9px}
+.eyebrow.star{color:var(--amber)}
+h2{font-size:1.42rem;font-weight:700;line-height:1.28;letter-spacing:-.01em;margin-bottom:14px}
+h3{font-size:.98rem;font-weight:700;margin:22px 0 8px}
+p{color:var(--text-muted);line-height:1.74;margin-bottom:12px}
+p b,li b{color:var(--text)}
+code{font-family:var(--mono);font-size:.82em;background:#0A0D12;border:1px solid var(--border-light);border-radius:4px;padding:1px 5px;color:var(--teal)}
+ul{margin:0 0 14px 0;padding-left:0;list-style:none}
+ul li{position:relative;padding-left:18px;margin-bottom:7px;color:var(--text-muted);line-height:1.7}
+ul li::before{content:"›";position:absolute;left:2px;color:var(--accent);font-weight:700}
+
+/* callouts */
+.note{border-left:3px solid var(--accent);background:var(--surface);padding:13px 18px;border-radius:0 var(--radius) var(--radius) 0;margin:16px 0;font-size:.9rem;line-height:1.7;color:var(--text-muted)}
+.note.amber{border-left-color:var(--amber);background:var(--amber-dim)}
+.note.green{border-left-color:var(--green);background:var(--green-dim)}
+.note .l{display:block;font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px}
+.quote{font-family:var(--mono);font-size:.82rem;color:var(--text-muted);background:#0A0D12;border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0;line-height:1.7}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:.82rem;border:1px solid var(--border-light);border-radius:var(--radius);overflow:hidden;margin:14px 0}
+th{text-align:left;padding:9px 13px;font-size:.56rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--surface-alt);border-bottom:1px solid var(--border)}
+td{padding:9px 13px;border-bottom:1px solid var(--border-light);vertical-align:top;color:var(--text-muted);line-height:1.6}
+tr:last-child td{border-bottom:none}td:first-child{color:var(--text);font-weight:600}
+.tag{font-family:var(--mono);font-size:.68rem;padding:1px 7px;border-radius:10px;white-space:nowrap}
+.tag.have{background:var(--green-dim);color:var(--green)}
+.tag.take{background:var(--accent-dim);color:var(--accent)}
+.tag.skip{background:var(--red-dim);color:var(--red)}
+.tag.maybe{background:var(--amber-dim);color:var(--amber)}
+
+/* the ladder visual */
+.ladder{display:flex;flex-direction:column;gap:0;margin:18px 0}
+.rung{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:start;padding:14px 16px;background:var(--surface);border:1px solid var(--border-light);border-left:3px solid var(--accent);border-radius:var(--radius);margin-bottom:8px}
+.rung .stage{font-weight:700;font-size:.84rem;color:var(--text)}
+.rung .stage .sub{display:block;font-family:var(--mono);font-size:.62rem;color:var(--text-dim);font-weight:400;margin-top:3px}
+.rung .d{font-size:.85rem;color:var(--text-muted);line-height:1.6}
+.rung.r1{border-left-color:var(--text-dim)}.rung.r2{border-left-color:var(--amber)}.rung.r3{border-left-color:var(--accent)}.rung.r4{border-left-color:var(--green)}
+.arrow{text-align:center;color:var(--text-dim);font-size:13px;margin:-2px 0}
+.foot{margin-top:60px;padding-top:18px;border-top:1px solid var(--border-light);font-size:.72rem;color:var(--text-dim);font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span class="brand">✦ <span class="acc">RAPID</span> · analysis</span>
+  <span class="t">ECC — what's worth integrating</span>
+  <span class="src"><a href="https://github.com/affaan-m/ECC" target="_blank" rel="noopener">github.com/affaan-m/ECC ↗</a></span>
+</div>
+
+<div class="layout">
+  <nav class="side" id="side">
+    <div class="grp">Context</div>
+    <a href="#overview"><span class="n">01</span>What ECC is</a>
+    <a href="#take"><span class="n">02</span>The discerning take</a>
+    <div class="grp">ECC</div>
+    <a href="#components"><span class="n">03</span>Component map</a>
+    <div class="grp">Fit</div>
+    <a href="#have"><span class="n">04</span>What we already have</a>
+    <a href="#skip"><span class="n">05</span>What not to take</a>
+    <div class="grp">Integrate</div>
+    <a href="#ladder" class="star"><span class="n">★</span>The maturation ladder</a>
+    <a href="#learn"><span class="n">06</span>A /learn skill</a>
+    <a href="#grader"><span class="n">07</span>Graders + pass@k</a>
+    <a href="#token"><span class="n">08</span>Token optimization</a>
+    <div class="grp">Decision</div>
+    <a href="#reco"><span class="n">09</span>Recommendation</a>
+  </nav>
+
+  <main class="main">
+    <p class="lede"><b>ECC</b> is a 209k-star, cross-harness "operator system for agentic work" — skills, instincts, memory, security, research-first development, spanning Claude Code / Codex / Cursor / Gemini / Zed. Most of its surface is breadth we don't want; underneath it there is <b>one idea worth stealing outright</b>, two worth borrowing in part, and a lot we already do better for our narrower mandate.</p>
+
+    <section id="overview">
+      <div class="eyebrow">Context · 01</div>
+      <h2>ECC is a broad, multi-harness operator kit — wide, not deep on any one harness</h2>
+      <p>Self-described as "the harness-native operator system for agentic work … not just configs. A complete system: skills, instincts, memory optimization, continuous learning, security scanning, and research-first development." It ships adapters for ~12 agent harnesses and ~12 language ecosystems, an MIT core, and a paid <code>ECC Pro</code> / GitHub-App tier.</p>
+      <p>Its guide table is the clearest statement of what it actually teaches: <b>token optimization</b>, <b>memory persistence</b> (hooks that save/load context across sessions), <b>continuous learning</b> (auto-extract patterns into skills), <b>verification loops</b> (graders, pass@k), <b>parallelization</b> (worktrees, "cascade"), and <b>subagent orchestration</b>.</p>
+    </section>
+
+    <section id="take">
+      <div class="eyebrow">Context · 02</div>
+      <h2>Separate the marketing from the transferable substance</h2>
+      <p>ECC is heavily marketed — inflated star counts, sponsor walls, a $19/seat Pro tier, 12 translated READMEs. Read past that. <b>Rapid is deliberately Claude-Code-native</b>; ECC's biggest selling point (cross-harness portability) is a non-goal for us. The transferable substance is narrow but real:</p>
+      <ul>
+        <li>A <b>continuous-learning pipeline with a maturation ladder</b> — the one genuinely novel thing relative to us.</li>
+        <li>A <b>richer verification vocabulary</b> — graders + pass@k for non-deterministic output.</li>
+        <li>A <b>disciplined token-optimization</b> habit.</li>
+      </ul>
+      <p>Everything else is either something we already have, or something we intentionally don't want.</p>
+    </section>
+
+    <section id="components">
+      <div class="eyebrow">ECC · 03</div>
+      <h2>Component map — and how each lands for us</h2>
+      <table>
+        <thead><tr><th>ECC component</th><th>What it is</th><th>For us</th></tr></thead>
+        <tbody>
+          <tr><td>Continuous Learning v2</td><td>Hooks capture observations → background loop analyzes → instincts scored/persisted → graduate into skills</td><td><span class="tag take">take</span></td></tr>
+          <tr><td>Instincts (<code>homunculus/</code>)</td><td>Portable, learned behavioral heuristics (export / import / status)</td><td><span class="tag take">take (as a tier)</span></td></tr>
+          <tr><td>Evaluator (GAN + RAG)</td><td>Grader taxonomy, pass@k, candidate-vs-verifier traces</td><td><span class="tag maybe">borrow</span></td></tr>
+          <tr><td>Token optimization</td><td>Model selection, prompt slimming, background processes</td><td><span class="tag maybe">borrow</span></td></tr>
+          <tr><td>AgentShield (security)</td><td>Agent-code security scanning + policy exceptions</td><td><span class="tag maybe">adjacent</span></td></tr>
+          <tr><td>Memory persistence</td><td>Hook-driven context save/load across sessions</td><td><span class="tag have">have</span></td></tr>
+          <tr><td>Worktrees / cascade / subagents</td><td>Parallelization + orchestration patterns</td><td><span class="tag have">have</span></td></tr>
+          <tr><td>Operator-readiness dashboard</td><td>A status/health view</td><td><span class="tag have">have</span></td></tr>
+          <tr><td>Cross-harness adapters</td><td>Codex / Cursor / Gemini / Zed / …</td><td><span class="tag skip">skip</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="have">
+      <div class="eyebrow">Fit · 04</div>
+      <h2>Most of ECC's value we already have — for our narrower mandate, better</h2>
+      <table>
+        <thead><tr><th>ECC</th><th>Rapid equivalent</th></tr></thead>
+        <tbody>
+          <tr><td>Skills + memory</td><td>8 Claude-Code skills + the file-based memory system</td></tr>
+          <tr><td>Worktrees / parallelization / orchestration</td><td>The five-lead build team + coder worktree subagents + <code>worktree-check.sh</code> (isolation <i>verified</i>, not just instructed)</td></tr>
+          <tr><td>Operator dashboard</td><td>The Observatory — now <i>generated per project</i> by <code>/observe</code></td></tr>
+          <tr><td>Eval harness</td><td>The immutable harness + <code>untouched_functions == 0</code> coverage proof</td></tr>
+          <tr><td>Continuous learning (the idea)</td><td><code>LEARNINGS.md</code> + the P10→P0 compound loop — but <b>manual and flat</b> (see below)</td></tr>
+        </tbody>
+      </table>
+      <p>The gap isn't that we lack a learning loop — it's that ours is <b>hand-written and has no promotion path</b>. That's exactly the hole ECC fills.</p>
+    </section>
+
+    <section id="skip">
+      <div class="eyebrow">Fit · 05</div>
+      <h2>What we should explicitly not take</h2>
+      <ul>
+        <li><b>Cross-harness portability.</b> Rapid is Claude-Code skills + hooks by design; multi-harness adapters add surface and dilute the thesis.</li>
+        <li><b>Memory architecture.</b> We have a robust one; ECC's isn't better, just different.</li>
+        <li><b>The dashboard / worktree / orchestration patterns.</b> Ours are equivalent and tighter (verified isolation, five-lead model, skill-generated surfaces).</li>
+        <li><b>The marketing apparatus.</b> Stars, tiers, sponsor walls — not signal.</li>
+      </ul>
+    </section>
+
+    <section id="ladder">
+      <div class="eyebrow star">★ Integrate · the big one</div>
+      <h2>Steal the maturation ladder: observation → scored instinct → graduated skill</h2>
+      <p>Rapid's single best differentiator is the compound claim — <i>"the loop is the product; each build makes the next smarter."</i> Today that's realized as <code>LEARNINGS.md</code> + P10→P0: <b>manual</b> (the agent must remember to write a learning) and <b>flat</b> (a learning is written or not; nothing graduates). ECC's Continuous Learning v2 supplies the missing mechanism — a promotion ladder with scoring:</p>
+      <div class="ladder">
+        <div class="rung r1"><div class="stage">Observation<span class="sub">.rapid/observe/*.jsonl</span></div><div class="d">Already captured mechanically — every WRITE / ERROR / DECIDE / LOOP_* event the hooks emit. Nothing new to instrument; the raw material is the event stream we already ship.</div></div>
+        <div class="arrow">▼ <code>/learn</code> extracts</div>
+        <div class="rung r2"><div class="stage">Scored instinct<span class="sub">.rapid/INSTINCTS.json</span></div><div class="d">A lightweight heuristic with a hit-count + confidence (error→fix patterns, debugging moves, library quirks). The tier we're missing between "noted once" and "codified skill."</div></div>
+        <div class="arrow">▼ recurs across builds, score clears a bar</div>
+        <div class="rung r3"><div class="stage">Candidate skill<span class="sub">draft in skills/</span></div><div class="d">An instinct that keeps proving out graduates into a real skill — the compound loop made <b>mechanical</b>, not aspirational.</div></div>
+        <div class="arrow">▼ reviewed at a gate</div>
+        <div class="rung r4"><div class="stage">Durable skill<span class="sub">skills/&lt;name&gt;/SKILL.md</span></div><div class="d">Promoted, named, product-agnostic — and now it makes every <i>future</i> build smarter, which is the whole thesis.</div></div>
+      </div>
+      <div class="note green"><span class="l">Why it fits us so well</span>We already have the two inputs ECC's pipeline needs — the <b>observe event stream</b> (mechanical logging) and <code>MEMORY.md</code>. We'd only be adding the <b>scoring + graduation</b> on top. ECC built this for portability; we'd build it for compounding.</div>
+    </section>
+
+    <section id="learn">
+      <div class="eyebrow">Integrate · 06</div>
+      <h2>Add a <code>/learn</code> skill — extraction becomes mechanical, not hoped-for</h2>
+      <p>ECC's <code>/learn</code> mines a finished session for <b>error-resolution patterns, debugging techniques, and workarounds</b>, then writes candidate guidance. Our version would read the build's own observe stream + <code>MEMORY.md</code> (richer than a raw transcript) and emit scored instincts into <code>.rapid/INSTINCTS.json</code> — the entry point to the ladder above.</p>
+      <ul>
+        <li><b>Fixed:</b> the extraction taxonomy (error→root-cause→fix; tool combos; library quirks; what-worked) and the scoring contract.</li>
+        <li><b>Dynamic:</b> the patterns themselves, mined from <i>this</i> build.</li>
+        <li><b>Composes with:</b> <code>/refine</code> (keep-or-revert) and the P8 gap loop — a gap that recurs becomes an instinct becomes a skill.</li>
+      </ul>
+      <div class="note"><span class="l">Honesty</span>This is the one place we're genuinely behind: our learning capture is voluntary. Making it a skill wired to the (already-mechanical) event stream removes the "did the agent remember" failure mode — the same writer-≠-auditor logic we apply to logging, applied to learning.</div>
+    </section>
+
+    <section id="grader">
+      <div class="eyebrow">Integrate · 07</div>
+      <h2>Borrow a grader taxonomy + pass@k for non-deterministic output</h2>
+      <p>Our verification is binary completeness — <code>untouched_functions == 0</code> — which is exactly right for <i>structural</i> coverage. It's too coarse for <b>AI-output</b> projects, where "did it pass" isn't yes/no. ECC's evaluator (GAN-style candidate-vs-verifier, RAG-backed, with grader types and <b>pass@k</b>) is the vocabulary <code>/test-theater</code> and <code>/refine</code> lack for stochastic surfaces.</p>
+      <ul>
+        <li>Add grader <i>types</i> (exact / rubric / model-graded / pass@k) to a node's eval contract — scoped to AI-feature builds.</li>
+        <li>Keep the immutable-harness invariant; the grader is just a richer assertion than <code>==</code>.</li>
+      </ul>
+    </section>
+
+    <section id="token">
+      <div class="eyebrow">Integrate · 08</div>
+      <h2>Honorable mention: a token-optimization discipline</h2>
+      <p>We already route models (panels → Sonnet, code → Opus) and have the cost breaker. ECC's systematic habits — prompt slimming, background processes, per-task model selection — could sharpen the panel/lead routing and tighten the cost story. Low–medium value; we mostly have the bones.</p>
+    </section>
+
+    <section id="reco">
+      <div class="eyebrow">Decision · 09</div>
+      <h2>Recommendation — build one thing, borrow one, ignore the rest</h2>
+      <div class="note amber"><span class="l">Build</span><b>The maturation ladder + a <code>/learn</code> skill</b> (§★, §06). It's the highest-leverage thing ECC has that we lack, and it turns our best differentiator — compound learning — from a slogan into a mechanism, reusing the observe stream + MEMORY.md we already ship. Shape: <code>skills/learn/</code> → <code>.rapid/INSTINCTS.json</code> (scored) → graduate to <code>skills/</code> at a gate.</div>
+      <div class="note"><span class="l">Borrow (follow-on)</span><b>Grader taxonomy + pass@k</b> (§07) into the eval / <code>/test-theater</code> / <code>/refine</code> layer — only for non-deterministic / AI-output builds.</div>
+      <div class="note"><span class="l">Ignore</span>Cross-harness adapters, ECC's memory, its dashboard/orchestration patterns, and the marketing. We have equivalents or better, scoped to a tighter mandate.</div>
+      <p style="margin-top:18px">Net: ECC validates several of our bets (eval-first, worktrees, observability, learning-as-product) and surfaces exactly one capability gap worth closing — the promotion path from observation to skill. Worth a single, well-scoped PR; not worth chasing its breadth.</p>
+    </section>
+
+    <div class="foot">Source: github.com/affaan-m/ECC (MIT core) · analysis for rapid-workflow · ✦ RAPID</div>
+  </main>
+</div>
+
+<script>
+// active-section highlighting as you scroll
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.side a'));
+  var map={};links.forEach(function(a){var id=a.getAttribute('href').slice(1);map[id]=a;});
+  var secs=[].slice.call(document.querySelectorAll('section[id]'));
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(a){a.classList.remove('active');});
+        if(map[e.target.id])map[e.target.id].classList.add('active');
+      }
+    });
+  },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+  secs.forEach(function(s){obs.observe(s);});
+})();
+</script>
+<script src="rapid-nav.js" defer></script>
+</body>
+</html>
